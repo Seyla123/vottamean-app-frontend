@@ -1,0 +1,8 @@
+/* Set to default */
+* {
+  margin: 0;
+}
+
+.app-component {
+  margin: 16px;
+}
