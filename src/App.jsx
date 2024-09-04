@@ -69,10 +69,10 @@ const AppRoutes = () => (
 
         {/* Class Period */}
         <Route path="/class-period">
-          <Route path='' element={<ClassPeriodListPage/>}/>
-          <Route path=':id' element={<ClassPeriodDetailPage/>}/>
-          <Route path='create' element={<ClassPeriodCreatePage/>}/>
-          <Route path='update/:id' element={<ClassPeriodUpdatePage/>}/>
+          <Route path='' element={<ClassPeriodListPage/>} />
+          <Route path=':id' element={<ClassPeriodDetailPage/>} />
+          <Route path='create' element={<ClassPeriodCreatePage/>} />
+          <Route path='update/:id' element={<ClassPeriodUpdatePage/>} />
         </Route>
       {/* </Route> */}
 
