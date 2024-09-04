@@ -9,6 +9,7 @@ import {
   Stepper,
   StepLabel,
   TextField,
+  Checkbox
 } from "@mui/material";
 function SignupPage() {
   return (
@@ -27,7 +28,7 @@ function SignupPage() {
           </Stepper>
         </Box>
         <AuthContainerCard sideCard="left">
-          <Container sx={{ display: "flex", minWidth: 1, bgcolor: "#90CAF9", flexDirection: "column", gap: 2 }}>
+          <Container sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box >
               <Typography variant="h4" fontWeight={500} padding={0}>
                 Get Started
@@ -35,29 +36,38 @@ function SignupPage() {
               <Typography variant="body1">Create your account now</Typography>
             </Box>
             <Box display={'flex'} flexDirection={"column"} gap={3}>
-              <Box>
+              <Box display={'flex'} flexDirection={"column"} gap={0.5}>
                 <Typography variant="body1">Email</Typography>
                 <TextField 
                   fullWidth={true}
-                  helperText="Please enter your name"
+                  // helperText="Please enter your name"
                   id="demo-helper-text-aligned"
                   placeholder="email"
                 />
               </Box>
-              <Box>
+              <Box display={'flex'} flexDirection={"column"} gap={0.5}>
                 <Typography variant="body1">Password</Typography>
                 <TextField
                 fullWidth={true}
                   placeholder="password"
                 />
               </Box>
-              <Box>
+              <Box display={'flex'} flexDirection={"column"} gap={0.5}>
                 <Typography variant="body1">Confirm Password </Typography>
                 <TextField
                 fullWidth={true}
                   placeholder="confirm password"
                 />
               </Box>
+            </Box>
+            <Box>
+              <Checkbox
+                color="primary"
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+              <Typography variant="body1">
+                I agree to the Terms of Service and Privacy Policy
+              </Typography>
             </Box>
           </Container>
         </AuthContainerCard>
