@@ -27,53 +27,59 @@ function SignupPage() {
             ))}
           </Stepper>
         </Box>
-        <AuthContainerCard sideCard="left">
-          <Container sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <AuthContainerCard sideCard="left" >
+          <Box  sx={{gap: 3,justifyContent: "center", display: "flex", flexDirection: "column"}}>
             <Box >
-              <Typography variant="h4" fontWeight={500} padding={0}>
+              <Typography variant="h4" fontWeight={600} padding={0}>
                 Get Started
               </Typography>
-              <Typography variant="body1">Create your account now</Typography>
+              <Typography variant="subtitle1">Create your account now</Typography>
             </Box>
-            <Box display={'flex'} flexDirection={"column"} gap={3}>
+
+            {/* form container */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4} }}>
+              {/* email input container */}
               <Box display={'flex'} flexDirection={"column"} gap={0.5}>
                 <Typography variant="body1">Email</Typography>
-                <TextField 
+                <TextField
                   fullWidth={true}
-                  // helperText="Please enter your name"
-                  id="demo-helper-text-aligned"
                   placeholder="email"
                 />
               </Box>
+              {/* Password input container */}
               <Box display={'flex'} flexDirection={"column"} gap={0.5}>
                 <Typography variant="body1">Password</Typography>
                 <TextField
-                fullWidth={true}
+                  fullWidth={true}
                   placeholder="password"
                 />
               </Box>
+              {/* Confirm password input container */}
               <Box display={'flex'} flexDirection={"column"} gap={0.5}>
                 <Typography variant="body1">Confirm Password </Typography>
                 <TextField
-                fullWidth={true}
+                  fullWidth={true}
                   placeholder="confirm password"
                 />
               </Box>
             </Box>
-            <Box>
+
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <Checkbox
-                color="primary"
+                color="default"
                 inputProps={{ 'aria-label': 'primary checkbox' }}
               />
               <Typography variant="body1">
-                I agree to the Terms of Service and Privacy Policy
+              By Signing Up I Agree with 
+              <Typography variant="body1" component={"span"} color={'primary'}> Terms and Conditions</Typography>
               </Typography>
             </Box>
-          </Container>
+            <Button sx={{padding: {xs: 1, md: 2}}} variant="contained" color="primary">Continue</Button>
+          </Box>
         </AuthContainerCard>
       </Container>
       <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-        <Button color="inherit" disabled={false} sx={{ mr: 1 }}>
+        <Button color="inherit"  disabled={false} sx={{ mr: 1 }}>
           Back
         </Button>
         <Box sx={{ flex: "1 1 auto" }} />
