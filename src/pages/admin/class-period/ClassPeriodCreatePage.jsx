@@ -12,18 +12,18 @@ import Card from "@mui/material/Card";
 
 function ClassPeriodCreatePage() {
   return (
-    <Box sx={{mx: 4}}>
+    <Box sx={{mx: {lg: 4, xs: 2}}}>
       {/* Title */}
       <Box sx={{my: 3}}>
-        <Typography variant="h4" fontWeight="bold" sx={{ my: 0 }} gutterBottom>
+        <Typography  fontWeight="bold" sx={{ my: 0, fontSize: {lg: 32, xs: 20}}} gutterBottom>
           ADD CLASS PERIOD
         </Typography>
-        <Typography variant="subtitle1" color="textDisabled">
+        <Typography color="textDisabled" sx={{ fontSize: {lg: 16, xs:14}}}>
           Please Fill Class Period Information
         </Typography>
       </Box>
       {/* Form */}
-      <Card sx={{ boxShadow: 2, Shadow: 1, padding: 3}}>
+      <Card sx={{ boxShadow: 2, Shadow: 1, padding: {lg: 3, xs: 3}}}>
         {/* title field */}
         <Typography gutterBottom variant="subtitle1" fontWeight="bold">
           Class Period Information
