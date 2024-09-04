@@ -13,12 +13,6 @@ let theme = createTheme({
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
-    body1: {
-      fontSize: '16px',
-      '@media (max-width:600px)': {
-        fontSize: '12px',
-      },
-    },
     // Define other typography settings as needed
   },
 });
