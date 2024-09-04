@@ -23,6 +23,14 @@ const SubjectListPage = lazy(() => import('./pages/admin/subject/SubjectListPage
 const SubjectDetailPage = lazy(() => import('./pages/admin/subject/SubjectDetailPage'));
 const SubjectCreatePage = lazy(() => import('./pages/admin/subject/SubjectCreatePage'));
 const SubjectUpdatePage = lazy(() => import('./pages/admin/subject/SubjectUpdatePage'));
+// Teacher Page
+const TeacherListPage = lazy(() => import('./pages/admin/teacher/TeacherListPage'));
+const TeacherDetailPage = lazy(() => import('./pages/admin/teacher/TeacherDetailPage'));
+const TeacherCreatePage = lazy(() => import('./pages/admin/teacher/TeacherCreatePage'));
+const TeacherUpdatePage = lazy(() => import('./pages/admin/teacher/TeacherUpdatePage'));
+
+// Error Page
+
 
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -61,6 +69,15 @@ const AppRoutes = () => (
           <Route path="create" element={<SubjectCreatePage />} /> 
           <Route path="update/:id" element={<SubjectUpdatePage />} />
         </Route>
+
+        {/* Teacher Routes */}
+        <Route path="/teacher">
+          <Route path=''  element={<TeacherListPage />}/>
+          <Route path=":id" element={<TeacherDetailPage />} /> 
+          <Route path="create" element={<TeacherCreatePage />} /> 
+          <Route path="update/:id" element={<TeacherUpdatePage />} />
+        </Route>
+      
       {/* </Route> */}
 
       <Route path="*" element={<NotFoundPage />} />
