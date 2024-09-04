@@ -54,15 +54,11 @@ function ClassPeriodCreatePage() {
             <Stack
               spacing={3}
               direction="row"
-              sx={{
-                mt: 4,
-                width: "350px",
-              }}
-            >
-              <Button variant="outlined" size="large" sx={{ width: "100%", height: 40 }} color="black">
+              sx={{ mt: 4, width: "318px" }}>
+              <Button variant="outlined" size="medium" sx={{ width: "100%", height: {sm: 38, lg: 42} }} color="black">
                 cancel
               </Button>
-              <Button variant="contained" size="large" sx={{ width: "100%", height: 40}}>
+              <Button variant="contained" size="medium" sx={{ width: "100%", height: {sm: 38, lg: 42} }}>
                 add period
               </Button>
             </Stack>
