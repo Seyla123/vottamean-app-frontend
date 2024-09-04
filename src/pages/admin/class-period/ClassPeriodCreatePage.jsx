@@ -1,46 +1,47 @@
-import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DemoItem, DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs,  } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { DemoItem } from "@mui/x-date-pickers/internals/demo";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import Card from "@mui/material/Card";
+import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
 
 function ClassPeriodCreatePage() {
+  // style
+  const button = { width: "100%", height: { sm: 38, lg: 42 } };
+  const form = { boxShadow: 2, Shadow: 1, padding: { lg: 4, xs: 4 } };
+  const margin = { lg: 4, xs: 2 };
+  const fullWidth = { width: "100%" };
+
   return (
-    <Box sx={{mx: {lg: 4, xs: 2}}}>
+    <Box sx={{ mx: margin }}>
       {/* Title */}
-      <Box sx={{my:{lg: 4, xs: 2}}}>
-        <Typography  fontWeight="bold" sx={{ my: 0, fontSize: {lg: 32, xs: 20}}} gutterBottom>
+      <Box sx={{ my: margin }}>
+        <Typography
+          fontWeight="bold"
+          sx={{ my: 0, fontSize: { lg: 32, xs: 20 } }}>
           ADD CLASS PERIOD
         </Typography>
-        <Typography color="textDisabled" sx={{ fontSize: {lg: 16, xs:14}}}>
+        <Typography color="textDisabled" sx={{ fontSize: { lg: 16, xs: 14 } }}>
           Please Fill Class Period Information
         </Typography>
       </Box>
       {/* Form */}
-      <Card sx={{ boxShadow: 2, Shadow: 1, padding: {lg: 4, xs: 4}}}>
+      <Card sx={form}>
         {/* title field */}
-        <Typography gutterBottom variant="subtitle1" fontWeight="bold">
+        <Typography variant="subtitle1" fontWeight="bold">
           Class Period Information
         </Typography>
-        <Divider sx={{ bgcolor: "black", my: 2 }}></Divider>
+        <Divider sx={{ bgcolor: "black", my: 2 }} />
         {/* content field */}
         <Box>
           {/* time field */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
-              components={["TimePicker", "TimePicker", "TimePicker"]}
-            >
+              components={["TimePicker", "TimePicker", "TimePicker"]}>
               <DemoItem label="Start time">
-                <TimePicker sx={{ width: "100%" }} label="select" />
+                <TimePicker sx={fullWidth} label="select" />
               </DemoItem>
               <DemoItem label="End time">
-                <TimePicker sx={{ width: "100%" }} label="select" />
+                <TimePicker sx={fullWidth} label="select" />
               </DemoItem>
             </DemoContainer>
           </LocalizationProvider>
@@ -50,14 +51,15 @@ function ClassPeriodCreatePage() {
               display: "flex",
               justifyContent: "flex-end",
             }}>
-            <Stack
-              spacing={3}
-              direction="row"
-              sx={{ mt: 4, width: "318px" }}>
-              <Button variant="outlined" size="medium" sx={{ width: "100%", height: {sm: 38, lg: 42} }} color="black">
+            <Stack spacing={3} direction="row" sx={{ mt: 4, width: "318px" }}>
+              <Button
+                variant="outlined"
+                size="medium"
+                sx={button}
+                color="black" >
                 cancel
               </Button>
-              <Button variant="contained" size="medium" sx={{ width: "100%", height: {sm: 38, lg: 42} }}>
+              <Button variant="contained" size="medium" sx={button}>
                 add period
               </Button>
             </Stack>
