@@ -1,8 +1,8 @@
-import React from 'react'
+
 
 function ClassPeriodCreatePage() {
   return (
-    <div>ClassPeriodCreatePage</div>
+    <div></div>
   )
 }
 
