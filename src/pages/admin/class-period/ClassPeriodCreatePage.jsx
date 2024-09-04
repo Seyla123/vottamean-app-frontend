@@ -14,7 +14,7 @@ function ClassPeriodCreatePage() {
   return (
     <Box sx={{mx: {lg: 4, xs: 2}}}>
       {/* Title */}
-      <Box sx={{my: 3}}>
+      <Box sx={{my:{lg: 4, xs: 2}}}>
         <Typography  fontWeight="bold" sx={{ my: 0, fontSize: {lg: 32, xs: 20}}} gutterBottom>
           ADD CLASS PERIOD
         </Typography>
@@ -23,12 +23,12 @@ function ClassPeriodCreatePage() {
         </Typography>
       </Box>
       {/* Form */}
-      <Card sx={{ boxShadow: 2, Shadow: 1, padding: {lg: 3, xs: 3}}}>
+      <Card sx={{ boxShadow: 2, Shadow: 1, padding: {lg: 4, xs: 4}}}>
         {/* title field */}
         <Typography gutterBottom variant="subtitle1" fontWeight="bold">
           Class Period Information
         </Typography>
-        <Divider sx={{ bgcolor: "black", my: 1.5 }}></Divider>
+        <Divider sx={{ bgcolor: "black", my: 2 }}></Divider>
         {/* content field */}
         <Box>
           {/* time field */}
@@ -49,8 +49,7 @@ function ClassPeriodCreatePage() {
             sx={{
               display: "flex",
               justifyContent: "flex-end",
-            }}
-          >
+            }}>
             <Stack
               spacing={3}
               direction="row"
