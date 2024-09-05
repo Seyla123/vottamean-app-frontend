@@ -19,7 +19,7 @@ const handleNext = () => {
   setStepActive(stepActive + 1)
 }
 const stepFrom = {
-  0: <GetStartSignUpForm/>,
+  0: <GetStartSignUpForm onClickNext={handleNext}/>,
   1: <PersonalInformationForm onClickBack={handleBack}/>
 }
   return (

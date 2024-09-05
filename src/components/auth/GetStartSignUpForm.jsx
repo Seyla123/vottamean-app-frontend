@@ -1,6 +1,6 @@
 import { Box, Typography, TextField, Button, Checkbox } from "@mui/material";
 import HeaderTitle from "./HeaderTitle";
-function GetStartSignUp() {
+function GetStartSignUp({ onClickNext}) {
   return (
     <Box
       sx={{
@@ -11,7 +11,7 @@ function GetStartSignUp() {
       }}
     >
       {/* header title */}
-      <HeaderTitle 
+      <HeaderTitle
         title={"Get started"}
         subTitle={"Create an account"}
       />
@@ -63,7 +63,7 @@ function GetStartSignUp() {
           textAlign: "center",
         }}
       >
-        <Button sx={{ padding: { xs: 1, md: 2 } }} variant="contained">
+        <Button onClick={onClickNext} sx={{ padding: { xs: 1, md: 2 } }} variant="contained">
           Continue
         </Button>
         <Typography variant="body1">
