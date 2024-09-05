@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Typography, TextField, Button, Link, Card} from "@mui/material";
-import BackButton from "../../../components/common/BackButton";
-import forget from "../../../assets/image/forget.png";
+import forget from "../../../assets/icon/forget.png";
 function PasswordForgotPage() {
   const screen = {
     width: "100%",
