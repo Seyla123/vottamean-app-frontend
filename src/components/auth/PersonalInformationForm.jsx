@@ -3,7 +3,7 @@ import HeaderTitle from './HeaderTitle'
 import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
 import GoBackButton from '../common/GoBackButton';
 
-function PersonalInformationForm({onClickBack}) {
+function PersonalInformationForm({ onClickBack }) {
     const [gender, setGender] = useState('');
 
     const handleChange = (e) => {
@@ -12,12 +12,14 @@ function PersonalInformationForm({onClickBack}) {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
             {/* header title */}
-            
-            <GoBackButton handleOnClick={onClickBack}/>
-            <HeaderTitle
-                title={"Personal information"}
-                subTitle={"Input your information"}
-            />
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 1, md: 3 } }}>
+                <GoBackButton handleOnClick={onClickBack} />
+                <HeaderTitle
+                    title={"Personal information"}
+                    subTitle={"Input your information"}
+                />
+            </Box>
 
             {/* form container */}
             <Box
