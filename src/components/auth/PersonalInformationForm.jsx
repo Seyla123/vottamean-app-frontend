@@ -2,6 +2,7 @@ import { useState } from 'react';
 import HeaderTitle from './HeaderTitle'
 import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
 import GoBackButton from '../common/GoBackButton';
+<<<<<<< HEAD
 
 function PersonalInformationForm({ onClickBack }) {
     const [gender, setGender] = useState('');
@@ -21,6 +22,26 @@ function PersonalInformationForm({ onClickBack }) {
                 />
             </Box>
 
+=======
+
+function PersonalInformationForm({onClickBack}) {
+    const [gender, setGender] = useState('');
+
+    const handleChange = (e) => {
+        setGender(e.target.value);
+    };
+    return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
+            {/* header title */}
+            
+            <GoBackButton onClick={console.log('clicked');
+            }/>
+            <HeaderTitle
+                title={"Personal information"}
+                subTitle={"Input your information"}
+            />
+
+>>>>>>> e4a59e2 (feature : add GoBack button)
             {/* form container */}
             <Box
                 sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}
