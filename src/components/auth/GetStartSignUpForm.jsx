@@ -1,5 +1,5 @@
 import { Box, Typography, TextField, Button, Checkbox } from "@mui/material";
-
+import HeaderTitle from "./HeaderTitle";
 function GetStartSignUp() {
   return (
     <Box
@@ -10,12 +10,11 @@ function GetStartSignUp() {
         flexDirection: "column",
       }}
     >
-      <Box>
-        <Typography variant="h4" fontWeight={"bold"} padding={0}>
-          Get Started
-        </Typography>
-        <Typography variant="subtitle1">Create your account now</Typography>
-      </Box>
+      {/* header title */}
+      <HeaderTitle 
+        title={"Get started"}
+        subTitle={"Create an account"}
+      />
 
       {/* form container */}
       <Box
