@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
+import { Button, Stack, Divider, Card, Typography, Box, Alert } from "@mui/material";
 
 function ClassPeriodCreatePage() {
+  // States for time values
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [error, setError] = useState(false); // State to handle validation errors
+
   // style
   const containerButton = { mt: {lg: 4, xs: 2}, maxWidth: "334px", width:"100%", display: "flex", gap: 4 };
   const containerInput = {display: "flex", flexDirection: "column", gap: {xs: 1, lg: 3}};
@@ -13,16 +19,26 @@ function ClassPeriodCreatePage() {
   const section = { my: 0, fontSize: { lg: 32, xs: 20 } };
   const title = { fontSize: { lg: 16, xs: 14 }};
   const divider = { bgcolor: "black", my: 2 };
-  const timeInput = { width: "100%", my: 1 };
+  const timeInput = { width: "100%", my: 1}
   const margin = { lg: 4, xs: 2 };
+  // const errorTypo = (error ? (color: "red"): "")
+
+  const handleSubmit = () => {
+    // Validate if both start and end times are filled
+    if (!startTime || !endTime) {
+      setError(true);
+    } else {
+      setError(false);
+      // Proceed with form submission logic here
+      console.log("Form submitted with:", { startTime, endTime });
+    }
+  };
 
   return (
     <Box sx={{ mx: margin }}>
       {/* Title */}
       <Box sx={{ my: margin }}>
-        <Typography
-          fontWeight="bold"
-          sx={section} >
+        <Typography fontWeight="bold" sx={section}>
           ADD CLASS PERIOD
         </Typography>
         <Typography color="textDisabled" sx={title}>
@@ -40,31 +56,44 @@ function ClassPeriodCreatePage() {
         <Box>
           {/* time field */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer
-              components={["TimePicker", "TimePicker", "TimePicker"]} >
+            <DemoContainer components={["TimePicker", "TimePicker", "TimePicker"]}>
               <Box sx={containerInput}>
                 <Box>
-                  <Typography>Start time</Typography>
-                  <TimePicker sx={timeInput} label="select" />
+                  <Typography color={!startTime && error ? 'red' : 'inherit'}>Start time</Typography>
+                  <TimePicker
+                    sx={timeInput}
+                    label="select"
+                    value={startTime}
+                    onChange={(newValue) => setStartTime(newValue)} // Update start time
+                  />
                 </Box>
                 <Box>
-                  <Typography>End time</Typography>
-                  <TimePicker sx={timeInput} label="select" />
+                  <Typography color={!startTime && error ? 'red' : 'inherit'}>End time</Typography>
+                  <TimePicker
+                    sx={timeInput}
+                    label="select"
+                    value={endTime}
+                    onChange={(newValue) => setEndTime(newValue)} // Update end time
+                  />
                 </Box>
               </Box>
             </DemoContainer>
           </LocalizationProvider>
 
+          {/* Show error message */}
+          {error && (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              Both start and end times must be filled!
+            </Alert>
+          )}
+
           {/* button field */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end" }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Stack direction="row" sx={containerButton}>
               <Button sx={button} variant="outlined" color="black">
                 cancel
               </Button>
-              <Button sx={button} variant="contained">
+              <Button sx={button} variant="contained" onClick={handleSubmit}>
                 add period
               </Button>
             </Stack>
@@ -73,6 +102,6 @@ function ClassPeriodCreatePage() {
       </Card>
     </Box>
   );
-};
+}
 
 export default ClassPeriodCreatePage;
