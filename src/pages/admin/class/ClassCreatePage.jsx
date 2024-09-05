@@ -76,6 +76,7 @@ const ClassCreatePage = () => {
 
   return (
     <Box sx={containerStyles}>
+        {/* Card Title*/}
       <Box>
         <Typography
           sx={{ fontFamily: "Roboto", fontSize: { xs: "20px", sm: "32px" } }}
@@ -92,7 +93,6 @@ const ClassCreatePage = () => {
           Please fill in the Information about the Class
         </Typography>
       </Box>
-
       {/* Input Form */}
       <Card
         component="form"
@@ -103,6 +103,7 @@ const ClassCreatePage = () => {
           borderRadius: "4px",
         }}
       >
+  
         {error && (
           <Alert severity="error" sx={{ marginBottom: "16px" }}>
             {error}
@@ -119,6 +120,7 @@ const ClassCreatePage = () => {
           Class Information
         </Typography>
         <Divider sx={{ my: { xs: "12px", sm: "16px" } }} />
+        {/* Form Class Name */}
         <Box>
           <Typography sx={{ fontSize: "16px" }}>Class Name</Typography>
           <TextField
@@ -136,6 +138,7 @@ const ClassCreatePage = () => {
             </FormHelperText>
           )}
         </Box>
+        {/* Form Class Description */}
         <Box>
           <Typography sx={{ fontSize: "16px", pt: "16px" }}>
             Description
@@ -159,6 +162,7 @@ const ClassCreatePage = () => {
             </FormHelperText>
           )}
         </Box>
+        {/* Button cancel and Add*/}
         <Box
           sx={{
             display: "flex",
