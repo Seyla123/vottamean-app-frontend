@@ -5,12 +5,12 @@ import {
   TextField,
   Button,
   Box,
-  Container,
   Typography,
   Alert,
   FormHelperText,
   Divider,
   useMediaQuery,
+  Card,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -66,42 +66,40 @@ const ClassCreatePage = () => {
   };
 
   const containerStyles = {
-    width: "Auto",
+    width: 1,
     maxWidth: "lg",
-    minWidth: "300px",
     margin: "0 auto",
-    padding: "32px",
     flexWrap: "wrap",
-    backgroundColor: "#F9FAFB",
   };
   // Set size for mobile devices
-  const isMobile = useMediaQuery("(max-width:sm)");
-
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   return (
-    <Container sx={containerStyles}>
-      <Typography
-        sx={{ fontFamily: "Roboto", fontSize: isMobile ? "20px" : "32px" }}
-      >
-        CLASS ADD
-      </Typography>
-      <Typography
-        sx={{
-          fontFamily: "Roboto",
-          fontSize: isMobile ? "14px" : "16px",
-          marginBottom: "24px",
-        }}
-      >
-        Please fill in the Information about the Class
-      </Typography>
+    <Box sx={containerStyles}>
+      <Box>
+        <Typography
+          sx={{ fontFamily: "Roboto", fontSize: { xs: "20px", sm: "32px" } }}
+        >
+          CLASS ADD
+        </Typography>
+        <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontSize: isMobile ? "14px" : "16px",
+            marginBottom: "24px",
+          }}
+        >
+          Please fill in the Information about the Class
+        </Typography>
+      </Box>
 
       {/* Input Form */}
-      <Box
+      <Card
         component="form"
         onSubmit={handleCreate}
         sx={{
           backgroundColor: "#ffffff",
-          padding: "24px",
+          padding: { xs: 2, sm: 3 },
           borderRadius: "4px",
         }}
       >
@@ -113,20 +111,18 @@ const ClassCreatePage = () => {
         <Typography
           sx={{
             backgroundColor: "#ffffff",
-            marginBottom: "16px",
+            // pb: "16px",
             fontWeight: 600,
             fontSize: "18px",
           }}
         >
           Class Information
         </Typography>
-        <Divider />
+        <Divider sx={{ my: { xs: "12px", sm: "16px" } }} />
         <Box>
-          <Typography sx={{ fontSize: "16px", marginTop: "16px" }}>
-            Class Name
-          </Typography>
+          <Typography sx={{ fontSize: "16px" }}>Class Name</Typography>
           <TextField
-            placeholder="Class Name"
+            placeholder="Class name"
             variant="outlined"
             value={newPost.title}
             onChange={handleTitleChange}
@@ -135,11 +131,13 @@ const ClassCreatePage = () => {
             error={titleError}
           />
           {titleError && (
-            <FormHelperText error>Class Name is required.</FormHelperText>
+            <FormHelperText sx={{ fontSize: "14px" }} error>
+              Class name is required.
+            </FormHelperText>
           )}
         </Box>
         <Box>
-          <Typography sx={{ fontSize: "16px", marginTop: "16px" }}>
+          <Typography sx={{ fontSize: "16px", pt: "16px" }}>
             Description
           </Typography>
           <TextField
@@ -156,7 +154,9 @@ const ClassCreatePage = () => {
             rows={4}
           />
           {contentError && (
-            <FormHelperText error>Description is required.</FormHelperText>
+            <FormHelperText sx={{ fontSize: "14px" }} error>
+              Description is required.
+            </FormHelperText>
           )}
         </Box>
         <Box
@@ -165,7 +165,7 @@ const ClassCreatePage = () => {
             justifyContent: "right",
             gap: isMobile ? "16px" : "24px",
             alignItems: "center",
-            marginTop: "16px",
+            pt: { xs: 1, sm: 2 },
             backgroundColor: "#ffffff",
           }}
         >
@@ -176,7 +176,7 @@ const ClassCreatePage = () => {
             sx={{
               backgroundColor: "#ffffff",
               color: "black",
-              width: isMobile ? "167px" : "140px",
+              width: { xs: 1, sm: "140px" },
               height: "42px",
             }}
           >
@@ -186,13 +186,13 @@ const ClassCreatePage = () => {
             type="submit"
             variant="contained"
             color="primary"
-            sx={{ width: isMobile ? "167px" : "140px", height: "42px" }}
+            sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
           >
             Add Class
           </Button>
         </Box>
-      </Box>
-    </Container>
+      </Card>
+    </Box>
   );
 };
 

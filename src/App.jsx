@@ -37,6 +37,12 @@ const TeacherUpdatePage = lazy(() => import('./pages/admin/teacher/TeacherUpdate
 // Error Page
 
 
+// Class Page
+const ClassListPage = lazy(() => import('./pages/admin/class/ClassListPage'));
+const ClassDetailPage = lazy(() => import('./pages/admin/class/ClassDetailPage'));
+const ClassCreatePage = lazy(() => import('./pages/admin/class/ClassCreatePage'));
+const ClassUpdatePage = lazy(() => import('./pages/admin/class/ClassUpdatePage'));
+
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
