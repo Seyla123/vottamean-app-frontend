@@ -24,6 +24,12 @@ const SubjectDetailPage = lazy(() => import('./pages/admin/subject/SubjectDetail
 const SubjectCreatePage = lazy(() => import('./pages/admin/subject/SubjectCreatePage'));
 const SubjectUpdatePage = lazy(() => import('./pages/admin/subject/SubjectUpdatePage'));
 
+// Class Page
+const ClassListPage = lazy(() => import('./pages/admin/class/ClassListPage'));
+const ClassDetailPage = lazy(() => import('./pages/admin/class/ClassDetailPage'));
+const ClassCreatePage = lazy(() => import('./pages/admin/class/ClassCreatePage'));
+const ClassUpdatePage = lazy(() => import('./pages/admin/class/ClassUpdatePage'));
+
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
