@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoutes from './routes/ProtectedRoutes';
-
+import { CssBaseline } from '@mui/material';
 // Authentication Pages
 const LoginPage = lazy(() => import('./pages/auth/login/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/signup/SignupPage'));
@@ -27,6 +27,8 @@ const SubjectUpdatePage = lazy(() => import('./pages/admin/subject/SubjectUpdate
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
+  <>
+  <CssBaseline />
   <Suspense fallback={<div>Loading...</div>}>
     <Routes>
       <Route path="/login" element={<LoginPage />} />
@@ -64,6 +66,7 @@ const AppRoutes = () => (
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   </Suspense>
+  </>
 );
 
 export default AppRoutes;
