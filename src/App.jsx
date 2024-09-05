@@ -61,6 +61,13 @@ const AppRoutes = () => (
           <Route path="create" element={<SubjectCreatePage />} /> 
           <Route path="update/:id" element={<SubjectUpdatePage />} />
         </Route>
+        {/* Subject */}
+        <Route path="/class">
+          <Route path=''  element={<ClassListPage />}/>
+          <Route path=":id" element={<ClassDetailPage />} /> 
+          <Route path="create" element={<ClassCreatePage />} /> 
+          <Route path="update/:id" element={<ClassUpdatePage />} />
+        </Route>
       {/* </Route> */}
 
       <Route path="*" element={<NotFoundPage />} />
