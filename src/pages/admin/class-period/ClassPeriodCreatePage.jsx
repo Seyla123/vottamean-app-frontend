@@ -44,7 +44,7 @@ function ClassPeriodCreatePage() {
               components={["TimePicker", "TimePicker", "TimePicker"]} >
               <Box sx={containerInput}>
                 <Box>
-                  <Typography>End time</Typography>
+                  <Typography>Start time</Typography>
                   <TimePicker sx={timeInput} label="select" />
                 </Box>
                 <Box>
