@@ -1,18 +1,15 @@
 import AuthContainerCard from "../../../components/auth/AuthContainerCard";
 import {
   Box,
-  Typography,
-  Paper,
   Container,
   Button,
   Step,
   Stepper,
   StepLabel,
-  TextField,
-  Checkbox
 } from "@mui/material";
 
 import GetStartSignUpForm from "../../../components/auth/GetStartSignUpForm";
+import PersonalInformationForm from "../../../components/auth/PersonalInformationForm";
 function SignupPage() {
 
   return (
@@ -31,7 +28,8 @@ function SignupPage() {
           </Stepper>
         </Box>
         <AuthContainerCard sideCard="left" >
-            <GetStartSignUpForm/>
+            {/* <GetStartSignUpForm/> */}
+            <PersonalInformationForm/>
         </AuthContainerCard>
       </Container>
       <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
