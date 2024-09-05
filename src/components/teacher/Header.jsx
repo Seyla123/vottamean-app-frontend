@@ -7,17 +7,18 @@ import {
 
 const Header = ({ header, subheader }) => {
     const theme = useTheme();
+    const mobile = theme.breakpoints
     const subHeader = {
         mt: "10px",
-        [theme.breakpoints.down("sm")]: {
+        [mobile.down("sm")]: {
             fontSize: "14px",
         },
-        [theme.breakpoints.up("sm")]: {
+        [mobile.up("sm")]: {
             fontSize: "16px",
         },
     }
     return (
-        <Box sx={{ marginBottom: "24px", marginTop: "32px" }}>
+        <Box marginBottom={3} marginTop={4}>
             <Typography fontWeight="bold" variant="h4">
                 {header}
             </Typography>

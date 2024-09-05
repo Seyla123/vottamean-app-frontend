@@ -54,11 +54,9 @@ const textFieldGap = {
 const gender = [
   {
     value: "Male",
-    label: "Male",
   },
   {
     value: "Female",
-    label: "Female",
   },
 ];
 
@@ -145,14 +143,15 @@ function TeacherCreatePage() {
             {/* Gender */}
             <Box sx={textFieldGap}>
               <Typography>Gender</Typography>
-              <TextField id="gender" select defaultValue={gender[0].value} fullWidth>
+              <TextField id="gender" select fullWidth>
                 {gender.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                    {option.value}
                   </MenuItem>
                 ))}
               </TextField>
             </Box>
+            
             {/* Phone Number */}
             <TextFieldBox text={"Phone Number"} id="phone-number" placeholder={"phone number"} />
 
@@ -163,7 +162,7 @@ function TeacherCreatePage() {
             <Box display={"flex"} justifyContent={"flex-end"}>
               <Button
                 variant="contained"
-                sx={{ width: { xs: "350px", sm: "180px" } }}
+                sx={{ width: { xs: "100%", sm: "15%" } }}
                 gap={1}
                 onClick={handleNext}
               >
@@ -177,7 +176,7 @@ function TeacherCreatePage() {
       {/* Account Information */}
       {value === "2" && (
         <Box sx={profileBox}>
-          <Box component="form" noValidate autoComplete="off" width={"100%"} display={"flex"} flexDirection={"column"} sx={{
+          <Box component="form" width={"100%"} display={"flex"} flexDirection={"column"} sx={{
             gap: {
               xs: '12px',
               sm: 3
@@ -196,19 +195,17 @@ function TeacherCreatePage() {
             <TextFieldBox text={"Confirm Password"} id="confirm-password" placeholder={"confirm password"} />
 
             {/* Buttons */}
-            <Box display={"flex"} justifyContent={"flex-end"} gap={2}>
+            <Box display={"flex"} flexGrow={1} justifyContent={"flex-end"} gap={2}>
               <Button
                 variant="outlined"
-                gap={1}
-                sx={{ width: { xs: "160px", sm: "180px" }, borderColor: "inherit", color: "inherit" }}
+                sx={{ maxWidth: { xs: "100%", sm: "15%" }, width:"100%" , borderColor: "inherit", color: "inherit" }}
                 onClick={handleBack}
               >
                 Back
               </Button>
               <Button
                 variant="contained"
-                gap={1}
-                sx={{ width: { xs: "160px", sm: "180px" } }}
+                sx={{ maxWidth: { xs: "100%", sm: "15%" } ,  width:"100%"}}
               >
                 Add Teacher
               </Button>

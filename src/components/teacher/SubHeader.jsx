@@ -3,7 +3,7 @@ import React from 'react'
 
 const SubHeader = ({ title }) => {
     return (
-        <Box display={"flex"} flexDirection={"column"} alignContent={"start"} width={"100%"}>
+        <Box sx={subHeader}>
             <Typography fontSize={16} fontWeight={"bold"} marginBottom={2}>
                 {title}
             </Typography>
@@ -13,3 +13,9 @@ const SubHeader = ({ title }) => {
 }
 
 export default SubHeader;
+const subHeader = {
+    display: "flex",
+    flexDirection: "column",
+    alignContent: "start",
+    width: "100%",
+}
