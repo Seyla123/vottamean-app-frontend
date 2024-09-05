@@ -1,52 +1,30 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Container,
-  useTheme,
-} from "@mui/material";
-import FormInfo from '../../../components/teacher/formInfo'
+import Box from "@mui/material/Box";
+import FormInfo from '../../../components/teacher/FormInfo'
+import Header from "../../../components/teacher/Header";
+
 function TeacherCreatePage() {
-  const theme = useTheme();
-
- 
-  const containerBox = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignContent: "center",
-    bgcolor: "#F9FAFB",
-    maxWidth: "lg",
-    width: "100%",
-    padding: "16px",
-  };
-
-
   return (
-    <Container sx={containerBox}>
-      <Box sx={{ marginBottom: "24px", marginTop: "32px" }}>
-        <Typography fontWeight="bold" variant="h4">
-          TEACHER LIST
-        </Typography>
-        <Typography
-          color="text.secondary"
-          sx={{
-            mt: "10px",
-            [theme.breakpoints.down("sm")]: {
-              fontSize: "14px",
-            },
-            [theme.breakpoints.up("sm")]: {
-              fontSize: "16px",
-            },
-          }}
-        >
-          Please Fill Teacher Information
-        </Typography>
+    <Box sx={{ display: "flex", alignContent: "center", justifyContent: "center" }}>
+      <Box sx={containerBox}>
+        {/* Header */}
+        <Header header="TEACHER LIST" subheader=" Please Fill Teacher Information" />
+        {/* Tabs */}
+        <FormInfo />
       </Box>
-      {/* Tabs */}
-      <FormInfo />
-    </Container>
+    </Box>
   );
 }
 
 export default TeacherCreatePage;
+
+const containerBox = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignContent: "center",
+  bgcolor: "#F9FAFB",
+  maxWidth: "lg",
+  width: "100%",
+  padding: "16px",
+};
