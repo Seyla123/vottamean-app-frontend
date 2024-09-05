@@ -219,7 +219,6 @@ const ClassDetailPage = () => {
     margin: "0 auto",
     alignItems: "end",
     flexWrap: "wrap",
-    backgroundColor: "#F9FAFB",
     border: "1px solid",
     borderColor: "divider",
   };
@@ -317,7 +316,7 @@ const ClassDetailPage = () => {
           </Box>
         </Card>
 
-        <Box sx={{ backgroundColor: "#FFFFFF" , padding:"32px"}}>
+        <Box sx={{ backgroundColor: "#FFFFFF" }}>
           <Typography
             variant="h6"
             gutterBottom
@@ -325,6 +324,7 @@ const ClassDetailPage = () => {
               fontFamily: "Roboto",
               fontSize: "16px",
               fontWeight: "bold",
+              paddingLeft:"32px"
 
             }}
           >
