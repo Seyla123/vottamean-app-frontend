@@ -8,6 +8,7 @@ import {
   IconButton,
   Typography,
   useMediaQuery,
+  Card,
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { DataGrid } from "@mui/x-data-grid";
@@ -186,6 +187,17 @@ const ClassDetailPage = () => {
             anchorEl={menuClick}
             open={Boolean(menuClick)}
             onClose={handleMenuClose}
+            elevation={0}
+            PaperProps={{ sx: { width: isMoble ? "82px" : "110px" } }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+              height: isMoble ? "25px" : "35px",
+            }}
           >
             <MenuItem onClick={() => handleUpdate(params.row.id)}>
               Edit
@@ -232,103 +244,106 @@ const ClassDetailPage = () => {
       >
         There are class's information
       </Typography>
-
-      <Box
-        sx={{
-          backgroundColor: "#FFFFFF",
-          padding: "32px",
-          marginBottom: "32px",
-        }}
-      >
-        <Box
+      <Box sx={{gap:4}}>
+      <Box sx={{ backgroundColor: "#FFFFFF",}}>
+        <Card
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            padding: "32px",
+            paddingBottom: "16px",
+            gap:4
           }}
         >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontSize: "16px", fontWeight: "bold" }}
+            >
+              Class Information
+            </Typography>
+            <Box>
+              <EditIcon
+                sx={{ mr: 1, color: "blue" }}
+                onClick={handleUpdateClass}
+              />
+              <DeleteIcon sx={{ color: "red" }} />
+            </Box>
+          </Box>
+          <Divider />
+          <Box
+            sx={{ marginTop: "16px", display: "flex", flexDirection: "column" }}
+          >
+            <Typography
+              variant="body3"
+              gutterBottom
+              sx={{ fontFamily: "Roboto" }}
+            >
+              Class ID: 0001
+            </Typography>
+            <Typography
+              variant="body3"
+              gutterBottom
+              sx={{ fontFamily: "Roboto" }}
+            >
+              Class Name: AnB
+            </Typography>
+            <Typography
+              variant="body3"
+              gutterBottom
+              sx={{ fontFamily: "Roboto" }}
+            >
+              Total Student: 40 Students
+            </Typography>
+            <Typography
+              variant="body3"
+              gutterBottom
+              sx={{ fontFamily: "Roboto" }}
+            >
+              Female: 20 Students
+            </Typography>
+            <Typography
+              variant="body3"
+              gutterBottom
+              sx={{ fontFamily: "Roboto" }}
+            >
+              Description: The total amount one class
+            </Typography>
+          </Box>
+        </Card>
+
+        <Box sx={{ backgroundColor: "#FFFFFF" , padding:"32px"}}>
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ fontSize: "16px", fontWeight: "bold" }}
+            sx={{
+              fontFamily: "Roboto",
+              fontSize: "16px",
+              fontWeight: "bold",
+
+            }}
           >
-            Class Information
+            Total 40 Student
           </Typography>
-          <Box>
-            <EditIcon
-              sx={{ mr: 1, color: "blue" }}
-              onClick={handleUpdateClass}
+          <Divider />
+          <Paper sx={tableContainerStyles}>
+            <DataGrid
+              rows={filteredPosts}
+              columns={columns}
+              initialState={{ pagination: { paginationModel } }}
+              pageSizeOptions={[5, 10, 15]}
+              checkboxSelection
+              sx={{ border: 0 }}
+              disableRowSelectionOnClick
             />
-            <DeleteIcon sx={{ color: "red" }} />
-          </Box>
-        </Box>
-        <Divider />
-        <Box
-          sx={{ marginTop: "16px", display: "flex", flexDirection: "column" }}
-        >
-          <Typography
-            variant="body3"
-            gutterBottom
-            sx={{ fontFamily: "Roboto" }}
-          >
-            Class ID: 0001
-          </Typography>
-          <Typography
-            variant="body3"
-            gutterBottom
-            sx={{ fontFamily: "Roboto" }}
-          >
-            Class Name: AnB
-          </Typography>
-          <Typography
-            variant="body3"
-            gutterBottom
-            sx={{ fontFamily: "Roboto" }}
-          >
-            Total Student: 40 Students
-          </Typography>
-          <Typography
-            variant="body3"
-            gutterBottom
-            sx={{ fontFamily: "Roboto" }}
-          >
-            Female: 20 Students
-          </Typography>
-          <Typography
-            variant="body3"
-            gutterBottom
-            sx={{ fontFamily: "Roboto" }}
-          >
-            Description: The total amount one class
-          </Typography>
+          </Paper>
         </Box>
       </Box>
-
-      <Box sx={{ backgroundColor: "#FFFFFF", padding: "32px" }}>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
-            fontFamily: "Roboto",
-            fontSize: "16px",
-            marginBottom: "24px",
-            fontWeight: "bold",
-          }}
-        >
-          Total 40 Student
-        </Typography>
-        <Divider />
-        <Paper sx={tableContainerStyles}>
-          <DataGrid
-            rows={filteredPosts}
-            columns={columns}
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10, 15]}
-            checkboxSelection
-            sx={{ border: 0 }}
-            disableRowSelectionOnClick
-          />
-        </Paper>
       </Box>
     </Box>
   );
