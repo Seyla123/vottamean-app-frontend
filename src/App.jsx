@@ -23,6 +23,11 @@ const SubjectListPage = lazy(() => import('./pages/admin/subject/SubjectListPage
 const SubjectDetailPage = lazy(() => import('./pages/admin/subject/SubjectDetailPage'));
 const SubjectCreatePage = lazy(() => import('./pages/admin/subject/SubjectCreatePage'));
 const SubjectUpdatePage = lazy(() => import('./pages/admin/subject/SubjectUpdatePage'));
+// Class Period Page
+const ClassPeriodCreatePage = lazy(() => import('./pages/admin/class-period/ClassPeriodCreatePage'));
+const ClassPeriodDetailPage = lazy(() => import('./pages/admin/class-period/ClassPeriodDetailPage'));
+const ClassPeriodListPage = lazy(() => import('./pages/admin/class-period/ClassPeriodListPage'));
+const ClassPeriodUpdatePage = lazy(() => import('./pages/admin/class-period/ClassPeriodUpdatePage'));
 
 // Class Page
 const ClassListPage = lazy(() => import('./pages/admin/class/ClassListPage'));
@@ -67,12 +72,13 @@ const AppRoutes = () => (
           <Route path="create" element={<SubjectCreatePage />} /> 
           <Route path="update/:id" element={<SubjectUpdatePage />} />
         </Route>
-        {/* Subject */}
-        <Route path="/class">
-          <Route path=''  element={<ClassListPage />}/>
-          <Route path=":id" element={<ClassDetailPage />} /> 
-          <Route path="create" element={<ClassCreatePage />} /> 
-          <Route path="update/:id" element={<ClassUpdatePage />} />
+
+        {/* Class Period */}
+        <Route path="/class-period">
+          <Route path='' element={<ClassPeriodListPage/>} />
+          <Route path=':id' element={<ClassPeriodDetailPage/>} />
+          <Route path='create' element={<ClassPeriodCreatePage/>} />
+          <Route path='update/:id' element={<ClassPeriodUpdatePage/>} />
         </Route>
       {/* </Route> */}
 
