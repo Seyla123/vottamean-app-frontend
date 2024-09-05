@@ -66,8 +66,8 @@ const ClassCreatePage = () => {
   };
 
   const containerStyles = {
-    width: 1,
-    maxWidth: "lg",
+    width: '100%',
+    // maxWidth: "lg",
     margin: "0 auto",
     flexWrap: "wrap",
   };
@@ -122,7 +122,7 @@ const ClassCreatePage = () => {
         >
           Class Information
         </Typography>
-        <Divider sx={{ my: { xs: "12px", sm: "16px" }, border: 0.5 }} />
+        <Divider sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }} />
         {/* Form Class Name */}
         <Box sx={{ my: { xs: "12px", sm: "16px" } }}>
           <Typography sx={{ fontSize: "16px" }}>Class Name</Typography>
