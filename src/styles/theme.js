@@ -10,11 +10,14 @@ let theme = createTheme({
     secondary: {
       main: '#dc004e',
     },
+    text: {
+      disabled: '#9E9E9E',
+    },
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
     // Define other typography settings as needed
-  },
+  }
 });
 
 // Apply responsive font sizes

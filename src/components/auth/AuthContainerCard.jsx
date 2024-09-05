@@ -3,7 +3,6 @@ import { Container, Box } from "@mui/material";
 
 function AuthContainerCard({sideCard, children}) {
 const flexdirection = sideCard ==='right' ? 'row-reverse' : 'row';
-
 const gridContainer = {
     width: "100%",
     padding: { xs: 3, sm: 3 },
