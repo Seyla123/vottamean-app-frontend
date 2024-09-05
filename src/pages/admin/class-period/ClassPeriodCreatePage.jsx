@@ -6,10 +6,15 @@ import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
 
 function ClassPeriodCreatePage() {
   // style
-  const button = { width: "100%", height: { xs: 38, lg: 42 } };
+  const containerButton = { mt: {lg: 4, xs: 2}, maxWidth: "334px", width:"100%", display: "flex", gap: 4 };
+  const containerInput = {display: "flex", flexDirection: "column", gap: {xs: 1, lg: 3}};
   const form = { boxShadow: 2, Shadow: 1, padding: { lg: 4, xs: 4 } };
+  const button = { width: "100%", height: { xs: 38, lg: 42 } };
+  const section = { my: 0, fontSize: { lg: 32, xs: 20 } };
+  const title = { fontSize: { lg: 16, xs: 14 }};
+  const divider = { bgcolor: "black", my: 2 };
+  const timeInput = { width: "100%", my: 1 };
   const margin = { lg: 4, xs: 2 };
-  const containerButton = { mt: {lg: 4, xs: 2}, maxWidth: "334px", width:"100%", display: "flex", gap: 4 }
 
   return (
     <Box sx={{ mx: margin }}>
@@ -17,10 +22,10 @@ function ClassPeriodCreatePage() {
       <Box sx={{ my: margin }}>
         <Typography
           fontWeight="bold"
-          sx={{ my: 0, fontSize: { lg: 32, xs: 20 } }} >
+          sx={section} >
           ADD CLASS PERIOD
         </Typography>
-        <Typography color="textDisabled" sx={{ fontSize: { lg: 16, xs: 14 } }}>
+        <Typography color="textDisabled" sx={title}>
           Please Fill Class Period Information
         </Typography>
       </Box>
@@ -30,22 +35,21 @@ function ClassPeriodCreatePage() {
         <Typography sx={{ fontSize: 18 }} fontWeight="bold">
           Class Period Information
         </Typography>
-        <Divider sx={{ bgcolor: "black", my: 2 }} />
+        <Divider sx={divider} />
         {/* content field */}
         <Box>
           {/* time field */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
-              components={["TimePicker", "TimePicker", "TimePicker"]}
-            >
-              <Box sx={{display: "flex", flexDirection: "column", gap: {xs: 1, lg: 3}}}>
+              components={["TimePicker", "TimePicker", "TimePicker"]} >
+              <Box sx={containerInput}>
                 <Box>
                   <Typography>End time</Typography>
-                  <TimePicker sx={{ width: "100%", my: 1 }} label="select" />
+                  <TimePicker sx={timeInput} label="select" />
                 </Box>
                 <Box>
                   <Typography>End time</Typography>
-                  <TimePicker sx={{ width: "100%", my: 1 }} label="select" />
+                  <TimePicker sx={timeInput} label="select" />
                 </Box>
               </Box>
             </DemoContainer>
@@ -55,9 +59,7 @@ function ClassPeriodCreatePage() {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
+              justifyContent: "flex-end" }}>
             <Stack direction="row" sx={containerButton}>
               <Button sx={button} variant="outlined" color="black">
                 cancel
