@@ -6,6 +6,7 @@ import {
   Tabs,
   Tab,
   TextField,
+  Select,
   MenuItem,
 } from "@mui/material";
 import SubHeader from "./SubHeader";
@@ -17,7 +18,10 @@ const profileBox = {
   borderRadius: "8px",
   bgcolor: "#ffffff",
   marginTop: "32px",
-  padding: "32px",
+  padding: {
+    xs: 2,
+    sm: 3,
+  },
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -59,8 +63,13 @@ const gender = [
     value: "Female",
   },
 ];
-
 function TeacherCreatePage() {
+  const [gender, setGender] = useState('');
+
+  const handleChangeGender = (e) => {
+      setGender(e.target.value);
+  };
+
   const [value, setValue] = useState("1");
 
   const handleChange = (event, newValue) => {
@@ -117,14 +126,14 @@ function TeacherCreatePage() {
           {/* Subheader */}
           <SubHeader title={"Teacher Information"} />
           {/* Text fields */}
-          <Box component="form" noValidate autoComplete="off" width={"100%"} mt={2} display={"flex"} flexDirection={"column"} sx={{
+          <Box component="form" width={"100%"} mt={2} display={"flex"} flexDirection={"column"} sx={{
             gap: {
               xs: '12px',
               sm: 3
             }
           }}>
             {/* Name */}
-            <Box display={"flex"} flexDirection={{ xs: "column", sm: "row" }} sx={{
+            <Box display={"flex"} flexDirection={ "row"} sx={{
               gap: {
                 xs: '12px',
                 sm: 3
@@ -142,13 +151,21 @@ function TeacherCreatePage() {
             {/* Gender */}
             <Box sx={textFieldGap}>
               <Typography>Gender</Typography>
-              <TextField id="gender" select fullWidth>
-                {gender.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <Select fullWidth
+                        value={gender}
+                        onChange={handleChangeGender}
+                        displayEmpty
+                        renderValue={(selected) => {
+                            if (!selected) {
+                                return <Box component="p" variant="body2" sx={{ color: '#B5B5B5' }}>gender</Box>;
+                            }
+                            return selected;
+                        }}
+                    >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                    </Select>
+
             </Box>
             
             {/* Phone Number */}
@@ -161,7 +178,10 @@ function TeacherCreatePage() {
             <Box display={"flex"} justifyContent={"flex-end"}>
               <Button
                 variant="contained"
-                sx={{ width: { xs: "100%", sm: "15%" } }}
+                sx={{ width: {
+                  xs: '100%',
+                  sm:"170px"
+                }}}
                 gap={1}
                 onClick={handleNext}
               >
@@ -194,17 +214,18 @@ function TeacherCreatePage() {
             <TextFieldBox text={"Confirm Password"} id="confirm-password" placeholder={"confirm password"} />
 
             {/* Buttons */}
-            <Box display={"flex"} flexGrow={1} justifyContent={"flex-end"} gap={2}>
+            <Box display={"flex"} alignSelf={"flex-end"} width={"100%"} sx={{maxWidth: {xs: "100%", sm: '340px'}}}  justifyContent={"flex-end"} gap={2}>
               <Button
                 variant="outlined"
-                sx={{ maxWidth: { xs: "100%", sm: "15%" }, width:"100%" , borderColor: "inherit", color: "inherit" }}
+                sx={{borderColor: "inherit", color: "inherit" }}
                 onClick={handleBack}
+                fullWidth
               >
                 Back
               </Button>
               <Button
+              fullWidth
                 variant="contained"
-                sx={{ maxWidth: { xs: "100%", sm: "15%" } ,  width:"100%"}}
               >
                 Add Teacher
               </Button>

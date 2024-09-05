@@ -5,26 +5,14 @@ import Header from "../../../components/teacher/Header";
 
 function TeacherCreatePage() {
   return (
-    <Box sx={{ display: "flex", alignContent: "center", justifyContent: "center" }}>
-      <Box sx={containerBox}>
+      <Box>
         {/* Header */}
         <Header header="TEACHER LIST" subheader=" Please Fill Teacher Information" />
         {/* Tabs */}
         <FormInfo />
       </Box>
-    </Box>
   );
 }
 
 export default TeacherCreatePage;
 
-const containerBox = {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignContent: "center",
-  bgcolor: "#F9FAFB",
-  maxWidth: "lg",
-  width: "100%",
-  padding: "16px",
-};
