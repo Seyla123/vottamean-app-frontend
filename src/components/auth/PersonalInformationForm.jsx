@@ -34,8 +34,7 @@ function PersonalInformationForm({onClickBack}) {
         <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
             {/* header title */}
             
-            <GoBackButton onClick={console.log('clicked');
-            }/>
+            <GoBackButton handleOnClick={onClickBack}/>
             <HeaderTitle
                 title={"Personal information"}
                 subTitle={"Input your information"}
