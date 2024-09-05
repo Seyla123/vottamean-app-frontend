@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import WestIcon from "@mui/icons-material/West";
-function GoBackButton() {
+function GoBackButton({handleOnClick}) {
   return (
     <Box
       component={"div"}
@@ -11,7 +11,8 @@ function GoBackButton() {
         color: "text.disabled",
         cursor: "pointer",
         ":hover": { color: "black" },
-      }}>
+      }}
+      onClick={handleOnClick}>
       <WestIcon fontSize="small" sx={{ alignSelf: "center" }} />
       <Typography variant="body1" fontWeight={600} lineHeight={"24px"}>
         Back
