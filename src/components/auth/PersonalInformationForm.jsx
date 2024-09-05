@@ -1,31 +1,84 @@
+import { useState } from 'react';
 import HeaderTitle from './HeaderTitle'
-import { Box, TextField, Typography, } from '@mui/material'
-function PersonalInformationForm() {
+import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
+import GoBackButton from '../common/GoBackButton';
+
+function PersonalInformationForm({onClickBack}) {
+    const [gender, setGender] = useState('');
+
+    const handleChange = (e) => {
+        setGender(e.target.value);
+    };
     return (
-        <Box>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
             {/* header title */}
-            <HeaderTitle 
-                title={"Personal information"} 
+            
+            <GoBackButton onClick={console.log('clicked');
+            }/>
+            <HeaderTitle
+                title={"Personal information"}
                 subTitle={"Input your information"}
             />
 
-             {/* form container */}
-             <Box >
+            {/* form container */}
+            <Box
+                sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}
+            >
                 {/* name input container */}
-                <Box sx={{display: "flex", gap: 1, width: "100%", bgcolor: "green"}}>
+                <Box sx={{ display: "flex", gap: 1.5 }}>
 
                     {/* first name input */}
-                    <Box sx={{width: "100%"}}>
+                    <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1} >
                         <Typography variant="body1">First name</Typography>
-                        <TextField placeholder="first name" fullWidth/>
+                        <TextField placeholder="first name" fullWidth />
                     </Box>
                     {/* last name input */}
-                    <Box>
+                    <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1}>
                         <Typography variant="body1">Last name</Typography>
-                        <TextField placeholder="last name" fullWidth/>
+                        <TextField placeholder="last name" fullWidth />
                     </Box>
                 </Box>
-             </Box>
+
+                {/* Gender selector */}
+                <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+                    <Typography>Gender</Typography>
+                    <Select fullWidth
+                        value={gender}
+                        onChange={handleChange}
+                        displayEmpty
+                        renderValue={(selected) => {
+                            if (!selected) {
+                                return <Box component="p" variant="body2" sx={{ color: '#B5B5B5' }}>gender</Box>;
+                            }
+                            return selected;
+                        }}
+                    >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                    </Select>
+                </Box>
+                {/* Date picker */}
+                <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+                    <Typography>Date</Typography>
+                    <Select fullWidth
+                        value={gender}
+                        onChange={handleChange}
+                        displayEmpty
+                        renderValue={(selected) => {
+                            if (!selected) {
+                                return <Box component="p" variant="body2" sx={{ color: '#B5B5B5' }}>gender</Box>;
+                            }
+                            return selected;
+                        }}
+                    >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                    </Select>
+                </Box>
+                <Button sx={{ padding: { xs: 1.8, md: 2 } }} variant="contained">
+                    NEXT
+                </Button>
+            </Box>
 
         </Box>
     )
