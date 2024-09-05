@@ -37,6 +37,12 @@ const TeacherUpdatePage = lazy(() => import('./pages/admin/teacher/TeacherUpdate
 // Error Page
 
 
+// Class Page
+const ClassListPage = lazy(() => import('./pages/admin/class/ClassListPage'));
+const ClassDetailPage = lazy(() => import('./pages/admin/class/ClassDetailPage'));
+const ClassCreatePage = lazy(() => import('./pages/admin/class/ClassCreatePage'));
+const ClassUpdatePage = lazy(() => import('./pages/admin/class/ClassUpdatePage'));
+
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
@@ -88,6 +94,14 @@ const AppRoutes = () => (
           <Route path=":id" element={<TeacherDetailPage />} /> 
           <Route path="create" element={<TeacherCreatePage />} /> 
           <Route path="update/:id" element={<TeacherUpdatePage />} />
+        </Route>
+
+         {/* Class */}
+         <Route path="/class">
+          <Route path=''  element={<ClassListPage />}/>
+          <Route path=":id" element={<ClassDetailPage />} /> 
+          <Route path="create" element={<ClassCreatePage />} /> 
+          <Route path="update/:id" element={<ClassUpdatePage />} />
         </Route>
       
       {/* </Route> */}
