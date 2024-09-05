@@ -76,12 +76,16 @@ const ClassCreatePage = () => {
 
   return (
     <Box sx={containerStyles}>
-        {/* Card Title*/}
+      {/* Card Title*/}
       <Box>
         <Typography
-          sx={{ fontFamily: "Roboto", fontSize: { xs: "20px", sm: "32px" } }}
+          sx={{
+            fontFamily: "Roboto",
+            fontWeight: 600,
+            fontSize: { xs: "20px", sm: "32px" },
+          }}
         >
-          CLASS ADD
+          ADD CLASS
         </Typography>
         <Typography
           sx={{
@@ -90,7 +94,7 @@ const ClassCreatePage = () => {
             marginBottom: "24px",
           }}
         >
-          Please fill in the Information about the Class
+          Please fill class Information
         </Typography>
       </Box>
       {/* Input Form */}
@@ -98,12 +102,11 @@ const ClassCreatePage = () => {
         component="form"
         onSubmit={handleCreate}
         sx={{
-          backgroundColor: "#ffffff",
-          padding: { xs: 2, sm: 3 },
+          backgroundColor: "#FFFFFF",
+          padding: { xs: 3, sm: 4 },
           borderRadius: "4px",
         }}
       >
-  
         {error && (
           <Alert severity="error" sx={{ marginBottom: "16px" }}>
             {error}
@@ -119,9 +122,9 @@ const ClassCreatePage = () => {
         >
           Class Information
         </Typography>
-        <Divider sx={{ my: { xs: "12px", sm: "16px" } }} />
+        <Divider sx={{ my: { xs: "12px", sm: "16px" }, border: 0.5 }} />
         {/* Form Class Name */}
-        <Box>
+        <Box sx={{ my: { xs: "12px", sm: "16px" } }}>
           <Typography sx={{ fontSize: "16px" }}>Class Name</Typography>
           <TextField
             placeholder="Class name"
@@ -129,7 +132,7 @@ const ClassCreatePage = () => {
             value={newPost.title}
             onChange={handleTitleChange}
             fullWidth
-            margin="normal"
+            margin="dense"
             error={titleError}
           />
           {titleError && (
@@ -140,9 +143,7 @@ const ClassCreatePage = () => {
         </Box>
         {/* Form Class Description */}
         <Box>
-          <Typography sx={{ fontSize: "16px", pt: "16px" }}>
-            Description
-          </Typography>
+          <Typography sx={{ fontSize: "16px" }}>Description</Typography>
           <TextField
             placeholder="Description"
             variant="outlined"
@@ -151,10 +152,10 @@ const ClassCreatePage = () => {
               setNewPost({ ...newPost, content: event.target.value })
             }
             fullWidth
-            margin="normal"
+            margin="dense"
             error={contentError}
+            rows={8}
             multiline
-            rows={4}
           />
           {contentError && (
             <FormHelperText sx={{ fontSize: "14px" }} error>
@@ -165,35 +166,42 @@ const ClassCreatePage = () => {
         {/* Button cancel and Add*/}
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "right",
-            gap: isMobile ? "16px" : "24px",
-            alignItems: "center",
-            pt: { xs: 1, sm: 2 },
-            backgroundColor: "#ffffff",
+            width: "100%",
+            alignItems: "flex-end",
+            pt: { xs: 2, sm: 3 },
+            backgroundColor: "white",
           }}
         >
-          <Button
-            onClick={handleCancel}
-            variant="outlined"
-            color="black"
+          <Box
             sx={{
-              backgroundColor: "#ffffff",
-              color: "black",
-              width: { xs: 1, sm: "140px" },
-              height: "42px",
+              maxwidth: "340px",
+              display: "flex",
+              justifyContent: "right",
+              gap: isMobile ? "16px" : "24px",
             }}
           >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
-          >
-            Add Class
-          </Button>
+            <Button
+              onClick={handleCancel}
+              variant="outlined"
+              color="black"
+              sx={{
+                backgroundColor: "#ffffff",
+                color: "black",
+                width: { xs: 1, sm: "140px" },
+                height: "42px",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
+            >
+              Add Class
+            </Button>
+          </Box>
         </Box>
       </Card>
     </Box>
