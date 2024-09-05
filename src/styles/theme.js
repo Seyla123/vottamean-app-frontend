@@ -14,6 +14,9 @@ let theme = createTheme({
   typography: {
     fontFamily: 'Roboto, sans-serif',
     // Define other typography settings as needed
+    h4:{
+      fontSize: '32px',
+    }
   },
 });
 
