@@ -72,7 +72,6 @@ function TeacherCreatePage() {
       setValue("2");
     }
   };
-
   const handleBack = () => {
     if (value === "2") {
       setValue("1");
