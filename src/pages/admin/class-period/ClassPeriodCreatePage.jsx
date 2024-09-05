@@ -1,4 +1,4 @@
-import { DemoItem, DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -6,9 +6,10 @@ import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
 
 function ClassPeriodCreatePage() {
   // style
-  const button = { width: "100%", height: { sm: 38, lg: 42 } };
+  const button = { width: "100%", height: { xs: 38, lg: 42 } };
   const form = { boxShadow: 2, Shadow: 1, padding: { lg: 4, xs: 4 } };
   const margin = { lg: 4, xs: 2 };
+  const containerButton = { mt: {lg: 4, xs: 2}, maxWidth: "334px", width:"100%", display: "flex", gap: 4 }
 
   return (
     <Box sx={{ mx: margin }}>
@@ -16,8 +17,7 @@ function ClassPeriodCreatePage() {
       <Box sx={{ my: margin }}>
         <Typography
           fontWeight="bold"
-          sx={{ my: 0, fontSize: { lg: 32, xs: 20 } }}
-        >
+          sx={{ my: 0, fontSize: { lg: 32, xs: 20 } }} >
           ADD CLASS PERIOD
         </Typography>
         <Typography color="textDisabled" sx={{ fontSize: { lg: 16, xs: 14 } }}>
@@ -58,16 +58,11 @@ function ClassPeriodCreatePage() {
               justifyContent: "flex-end",
             }}
           >
-            <Stack spacing={3} direction="row" sx={{ mt: 4, width: "318px" }}>
-              <Button
-                variant="outlined"
-                size="medium"
-                sx={button}
-                color="black"
-              >
+            <Stack direction="row" sx={containerButton}>
+              <Button sx={button} variant="outlined" color="black">
                 cancel
               </Button>
-              <Button variant="contained" size="medium" sx={button}>
+              <Button sx={button} variant="contained">
                 add period
               </Button>
             </Stack>
@@ -76,6 +71,6 @@ function ClassPeriodCreatePage() {
       </Card>
     </Box>
   );
-}
+};
 
 export default ClassPeriodCreatePage;
