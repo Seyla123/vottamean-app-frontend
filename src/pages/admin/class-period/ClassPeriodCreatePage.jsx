@@ -62,11 +62,11 @@ function ClassPeriodCreatePage() {
                   </Typography>
                   <TimePicker
                     sx={timeInput}
-                    placeholder="select"
                     value={startTime}
                     onChange={(newValue) => setStartTime(newValue)}
                     slotProps={{
                       textField: {
+                        placeholder: "select",
                         helperText: !startTime && error ? 'Start time is required' : '',
                         error: !startTime && error,
                       },
@@ -79,13 +79,20 @@ function ClassPeriodCreatePage() {
                   </Typography>
                   <TimePicker
                     sx={timeInput}
-                    placeholder="select"
                     value={endTime}
                     onChange={(newValue) => setEndTime(newValue)}
                     slotProps={{
                       textField: {
+                        placeholder: "select",
                         helperText: !endTime && error ? 'End time is required' : '',
                         error: !endTime && error,
+                        margin: "none",
+                        FormHelperTextProps: {
+                          sx: {
+                            mx: 0,  // Remove horizontal margin
+                            px: 0,  // Remove horizontal padding
+                          },
+                        },
                       },
                     }}
                   />
