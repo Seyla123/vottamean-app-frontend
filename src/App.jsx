@@ -95,6 +95,14 @@ const AppRoutes = () => (
           <Route path="create" element={<TeacherCreatePage />} /> 
           <Route path="update/:id" element={<TeacherUpdatePage />} />
         </Route>
+
+         {/* Class */}
+         <Route path="/class">
+          <Route path=''  element={<ClassListPage />}/>
+          <Route path=":id" element={<ClassDetailPage />} /> 
+          <Route path="create" element={<ClassCreatePage />} /> 
+          <Route path="update/:id" element={<ClassUpdatePage />} />
+        </Route>
       
       {/* </Route> */}
 
