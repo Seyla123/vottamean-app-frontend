@@ -27,147 +27,6 @@ function SessionCreatePage() {
     }
   };
 
-  // MUI
-  const teachers = [
-    {
-      value: "teacher1",
-      label: "Smey",
-    },
-    {
-      value: "teacher2",
-      label: "Mary",
-    },
-    {
-      value: "teacher3",
-      label: "Berry",
-    },
-  ];
-
-  const period = [
-    {
-      value: "period1",
-      label: "7:00 - 8:00",
-    },
-    {
-      value: "period2",
-      label: "8:10 - 9:00",
-    },
-    {
-      value: "period3",
-      label: "9:10 - 10:00",
-    },
-  ];
-
-  const classes = [
-    {
-      value: "class1",
-      label: "12A",
-    },
-    {
-      value: "class2",
-      label: "12B",
-    },
-    {
-      value: "class3",
-      label: "12C",
-    },
-  ];
-
-  const subject = [
-    {
-      value: "math",
-      label: "Math",
-    },
-    {
-      value: "khmer",
-      label: "Khmer",
-    },
-    {
-      value: "english",
-      label: "English",
-    },
-  ];
-  const dow = [
-    {
-      value: "mon",
-      label: "Monday",
-    },
-    {
-      value: "tues",
-      label: "Tuesday",
-    },
-    {
-      value: "wed",
-      label: "Wednesday",
-    },
-  ];
-
-  const content = {
-    maxWidth: 1200,
-    mx: "auto",
-    my: "16px",
-    px: {
-      xs: "24px",
-      md: "32px",
-    },
-    display: "flex",
-    flexDirection: "column",
-    gap: {
-      xs : "12px", 
-      md : "24px",
-    }
-  };
-
-  const form = {
-    maxWidth: "1064px",
-    p: {
-      xs: "24px",
-      md: "32px",
-    },
-    borderRadius: "8px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-    boxShadow : 2
-  };
-
-  const container = {
-    "& .MuiTextField-root": { width: 1 },
-    width: "100%",
-    display: "grid",
-    gap: {
-      xs : "12px", 
-      md : "24px"
-    },
-    margin: "0 auto",
-    gridTemplateColumns: {
-      xs: "repeat(1, 1fr)",
-      md: "repeat(2, 1fr)",
-    },
-  };
-
-  const textInput = {
-    width: 1,
-    display: "flex ",
-    flexDirection: "column",
-    gap: "4px",
-  };
-
-  const buttonContainer = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: "16px",
-    width: 1,
-    my : "16px"
-  };
-
-  const button = {
-    width: {
-      md: "170px",
-      xs: "100%",
-    },
-  };
   return (
     <Box sx={content}>
       {/* Header */}
@@ -274,3 +133,141 @@ function SessionCreatePage() {
 }
 
 export default SessionCreatePage;
+
+  // MUI
+  const teachers = [
+    {
+      value: "teacher1",
+      label: "Smey",
+    },
+    {
+      value: "teacher2",
+      label: "Mary",
+    },
+    {
+      value: "teacher3",
+      label: "Berry",
+    },
+  ];
+
+  const period = [
+    {
+      value: "period1",
+      label: "7:00 - 8:00",
+    },
+    {
+      value: "period2",
+      label: "8:10 - 9:00",
+    },
+    {
+      value: "period3",
+      label: "9:10 - 10:00",
+    },
+  ];
+
+  const classes = [
+    {
+      value: "class1",
+      label: "12A",
+    },
+    {
+      value: "class2",
+      label: "12B",
+    },
+    {
+      value: "class3",
+      label: "12C",
+    },
+  ];
+
+  const subject = [
+    {
+      value: "math",
+      label: "Math",
+    },
+    {
+      value: "khmer",
+      label: "Khmer",
+    },
+    {
+      value: "english",
+      label: "English",
+    },
+  ];
+  const dow = [
+    {
+      value: "mon",
+      label: "Monday",
+    },
+    {
+      value: "tues",
+      label: "Tuesday",
+    },
+    {
+      value: "wed",
+      label: "Wednesday",
+    },
+  ];
+
+  const content = {
+    maxWidth: 1200,
+    mx: "auto",
+    my: "16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: {
+      xs : "12px", 
+      md : "24px",
+    }
+  };
+
+  const form = {
+    maxWidth: "1064px",
+    p: {
+      xs: "24px",
+      md: "32px",
+    },
+    borderRadius: "8px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    boxShadow : 2
+  };
+
+  const container = {
+    "& .MuiTextField-root": { width: 1 },
+    width: "100%",
+    display: "grid",
+    gap: {
+      xs : "12px", 
+      md : "24px"
+    },
+    margin: "0 auto",
+    gridTemplateColumns: {
+      xs: "repeat(1, 1fr)",
+      md: "repeat(2, 1fr)",
+    },
+  };
+
+  const textInput = {
+    width: 1,
+    display: "flex ",
+    flexDirection: "column",
+    gap: "4px",
+  };
+
+  const buttonContainer = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: "16px",
+    width: 1,
+    my : "16px"
+  };
+
+  const button = {
+    width: {
+      md: "170px",
+      xs: "100%",
+    },
+  };
