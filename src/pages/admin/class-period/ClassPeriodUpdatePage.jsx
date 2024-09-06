@@ -110,7 +110,7 @@ function ClassPeriodUpdatePage() {
                 cancel
               </Button>
               <Button sx={button} variant="contained" onClick={handleSubmit}>
-                add period
+                update period
               </Button>
             </Stack>
           </Box>
