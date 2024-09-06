@@ -1,50 +1,10 @@
-
 import React, { useState } from 'react';
 import { Box, Button, Typography, TextField, Select, MenuItem } from '@mui/material';
 import SubHeader from './SubHeader';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DatePickerComponent from './DatePickerComponent';
 
-const profileBox = {
-  border: "1px solid",
-  borderColor: "#E0E0E0",
-  borderRadius: "8px",
-  bgcolor: "#ffffff",
-  marginTop: "32px",
-  padding: {
-    xs: 2,
-    sm: 3,
-  },
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexDirection: "column",
-  position: "relative",
-};
-
-const valueBoxOne = {
-  width: 100,
-  height: 100,
-  borderRadius: "50%",
-  overflow: "hidden",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  mb: 2,
-  position: "relative",
-};
-
-const textFieldGap = {
-  display: "flex",
-  gap: 0.5,
-  flexDirection: "column",
-};
-
-
-
-const TeacherInfo = ({ handleNext }) => {
+const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
   const [gender, setGender] = useState('');
-  const [value, setValue] = useState(null);
 
   const handleChangeGender = (e) => {
     setGender(e.target.value);
@@ -58,20 +18,6 @@ const TeacherInfo = ({ handleNext }) => {
           alt="Profile"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
-        <Button
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            bgcolor: "#ffffff",
-            borderRadius: "50%",
-            p: 1,
-            "&:hover": {
-              bgcolor: "#f0f0f0",
-            },
-          }}
-        >
-        </Button>
       </Box>
 
       <SubHeader title={"Teacher Information"} />
@@ -135,9 +81,9 @@ const TeacherInfo = ({ handleNext }) => {
         {/* date of birth */}
         <Box sx={textFieldGap}>
           <Typography>Date of Birth</Typography>
-          <DatePickerComponent/>
+          <DatePickerComponent />
         </Box>
-           {/* phone number */}
+        {/* phone number */}
         <Box sx={textFieldGap}>
           <Typography>Phone Number</Typography>
           <TextField
@@ -157,15 +103,36 @@ const TeacherInfo = ({ handleNext }) => {
             fullWidth
           />
         </Box>
-        {/* next button */}
-        <Box display={"flex"} justifyContent={"flex-end"}>
-          <Button
-            variant="contained"
-            sx={{ width: { xs: '100%', sm: "170px" } }}
-            onClick={handleNext}
-          >
-            Next
-          </Button>
+        
+        {/* buttons */}
+        <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"} gap={2} mt={2}>
+          {mode === "update" && (
+            <>
+              <Button
+                variant="outlined"
+                onClick={handleCancel}
+                sx={buttonCancel}
+
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                sx={buttonStyle}
+              >
+                Update
+              </Button>
+            </>
+          )}
+          {mode === "create" && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              sx={buttonStyle}
+            >
+              Next
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>
@@ -173,3 +140,46 @@ const TeacherInfo = ({ handleNext }) => {
 };
 
 export default TeacherInfo;
+
+const profileBox = {
+  border: "1px solid",
+  borderColor: "#E0E0E0",
+  borderRadius: "8px",
+  bgcolor: "#ffffff",
+  marginTop: "32px",
+  padding: {
+    xs: 2,
+    sm: 3,
+  },
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "column",
+  position: "relative",
+};
+
+const valueBoxOne = {
+  width: 100,
+  height: 100,
+  borderRadius: "50%",
+  overflow: "hidden",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  mb: 2,
+  position: "relative",
+};
+
+const textFieldGap = {
+  display: "flex",
+  gap: 0.5,
+  flexDirection: "column",
+};
+
+const buttonStyle = {
+  width: { xs: '100%', sm: "170px" },
+};
+const buttonCancel = {
+  width: { xs: '100%', sm: "170px" },
+  borderColor: "inherit", color: "inherit" 
+};
