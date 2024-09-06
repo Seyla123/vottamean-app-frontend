@@ -35,7 +35,7 @@ function AccountVerifyPage() {
         <Button
           fullWidth
           variant="contained"
-          sx={{ padding: { xs: 1.5, md: 2} }}
+          sx={{ padding: { xs: 1, md: 2} }}
         >
           RESENT TOKEN
         </Button>
