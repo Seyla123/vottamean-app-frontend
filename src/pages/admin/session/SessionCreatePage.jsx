@@ -30,7 +30,7 @@ function SessionCreatePage() {
   return (
     <Box sx={content}>
       {/* Header */}
-      <Box sx={{ maxWidth: 1064 }}>
+      <Box>
         <Typography variant="h4">ADD SESSION</Typography>
         <Typography sx={{ color: "#666666", fontSize: "16px" }}>
           Please Fill Session information
@@ -210,7 +210,6 @@ export default SessionCreatePage;
   ];
 
   const content = {
-    maxWidth: 1200,
     mx: "auto",
     my: "16px",
     display: "flex",
@@ -222,7 +221,6 @@ export default SessionCreatePage;
   };
 
   const form = {
-    maxWidth: "1064px",
     p: {
       xs: "24px",
       md: "32px",

@@ -11,6 +11,8 @@ const SignupPage = lazy(() => import('./pages/auth/signup/SignupPage'));
 const PasswordForgotPage = lazy(() => import('./pages/auth/PasswordForgotPage'));
 const PasswordResetPage = lazy(() => import('./pages/auth/PasswordResetPage'));
 const PasswordChangePage = lazy(() => import('./pages/auth/PasswordChangePage'));
+const AccountVerifyPage = lazy(() => import('./pages/auth/AccountVerifyPage'));
+const AccountSuccessPage = lazy(() => import('./pages/auth/AccountSuccessPage'));
 
 // Protected Pages
 const DashboardPage = lazy(
@@ -100,16 +102,16 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
     <Layout>
-        <CssBaseline />
         <DashboardLayout>
+            <CssBaseline />
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
-                    <Route path='/login' element={<LoginPage />} />
-                    <Route path='/signup' element={<SignupPage />} />
-                    <Route
-                        path='/forgot-password'
-                        element={<PasswordForgotPage />}
-                    />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/forgot-password" element={<PasswordForgotPage />} />
+                    <Route path='/reset-password' element={<PasswordResetPage />} />
+                    <Route path='/change-password' element={<PasswordChangePage />} />
+                    <Route path='/verify-account' element={<AccountVerifyPage />} />
 
                     {/* Protected Routes */}
                     {/* <Route element={<ProtectedRoutes />}> */}
