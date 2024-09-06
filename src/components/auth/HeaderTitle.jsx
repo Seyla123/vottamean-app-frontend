@@ -1,8 +1,10 @@
 import { Box, Typography } from '@mui/material'
 
-function HeaderTitle({title , subTitle}) {
+function HeaderTitle({title , subTitle, center, children}) {
+    const container = { display: "flex", flexDirection: "column", gap: 1, textAlign: center ? "center" : "left" }
     return (
-        <Box>
+        <Box sx={container}>
+            {children}
             <Typography variant="h4" fontWeight={"bold"} padding={0}>
                 {title}
             </Typography>

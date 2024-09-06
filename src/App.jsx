@@ -6,8 +6,8 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import Layout from './components/layout/Layout';
 
 // Authentication Pages
-const LoginPage = lazy(() => import('./pages/auth/login/LoginPage'));
-const SignupPage = lazy(() => import('./pages/auth/signup/SignupPage'));
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const PasswordForgotPage = lazy(() => import('./pages/auth/PasswordForgotPage'));
 const PasswordResetPage = lazy(() => import('./pages/auth/PasswordResetPage'));
 const PasswordChangePage = lazy(() => import('./pages/auth/PasswordChangePage'));
@@ -174,11 +174,15 @@ const AppRoutes = () => (
                         />
                     </Route>
 
-                    {/* Class */}
-                    <Route path='/class'>
-                        <Route path='' element={<ClassListPage />} />
-                        <Route path='create' element={<ClassCreatePage />} />
-                    </Route>
+         {/* Class */}
+         <Route path="/class">
+          <Route path=''  element={<ClassListPage />}/>
+          <Route path=":id" element={<ClassDetailPage />} /> 
+          <Route path="create" element={<ClassCreatePage />} /> 
+          <Route path="update/:id" element={<ClassUpdatePage />} />
+        </Route>
+      
+      {/* </Route> */}
 
                     {/* </Route> */}
 
