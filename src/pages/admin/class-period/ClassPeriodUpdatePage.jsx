@@ -4,10 +4,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
+import dayjs from 'dayjs';
 
 function ClassPeriodUpdatePage() {
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [startTime, setStartTime] = useState(dayjs('2024-04-17T8:00'));
+  const [endTime, setEndTime] = useState(dayjs('2024-04-17T17:00'));
   const [error, setError] = useState(false);
 
   // style
