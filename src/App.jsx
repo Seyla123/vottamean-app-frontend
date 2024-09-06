@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoutes from './routes/ProtectedRoutes';
 import { CssBaseline } from '@mui/material';
+import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 // Authentication Pages
 const LoginPage = lazy(() => import('./pages/auth/login/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/signup/SignupPage'));
