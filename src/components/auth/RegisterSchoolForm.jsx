@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import HeaderTitle from "./HeaderTitle";
 import GoBackButton from "../common/GoBackButton";
 import schoolIcon from "../../assets/icon/schoolIcon.png";
@@ -46,11 +46,17 @@ function RegisterSchoolForm({ onClickBack, children }) {
 
             {/* form container */}
             <Box sx={container} >
+                 {/* school name input container */}
+                 <Box sx={fieldContainer}>
+                    <Typography variant="body1">School&apos;s Name</Typography>
+                    <TextField placeholder="school&apos;s name" />
+                </Box>
                 {/* phone number input container */}
                 <Box sx={fieldContainer}>
                     <Typography variant="body1">Phone Number</Typography>
                     <TextField placeholder="phone number" />
                 </Box>
+                {/* address input container */}
                 <Box sx={fieldContainer}>
                     <Typography variant="body1">Address</Typography>
                     <TextField
