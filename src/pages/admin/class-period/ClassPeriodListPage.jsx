@@ -5,3 +5,4 @@ function ClassPeriodListPage() {
 }
 
 export default ClassPeriodListPage
+
