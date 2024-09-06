@@ -10,6 +10,40 @@ import {
 } from '@mui/material';
 import DeleteIcon from '../../assets/icon/delete-icon.png';
 
+/**
+ * DeleteConfirmationModal - A reusable Material-UI based modal for confirming delete actions.
+ *
+ * Usage:
+ * import DeleteConfirmationModal from './path/to/DeleteConfirmationModal';
+ *
+ * function YourComponent() {
+ *   const [isOpen, setIsOpen] = useState(false);
+ *
+ *   const handleDelete = () => {
+ *     // Perform delete action
+ *     setIsOpen(false);
+ *   };
+ *
+ *   return (
+ *     <>
+ *       <Button onClick={() => setIsOpen(true)}>Delete Item</Button>
+ *       <DeleteConfirmationModal
+ *         open={isOpen}
+ *         onClose={() => setIsOpen(false)}
+ *         onConfirm={handleDelete}
+ *         itemName="Example Item"
+ *       />
+ *     </>
+ *   );
+ * }
+ *
+ * Props:
+ * @param {boolean} open - Controls the visibility of the modal
+ * @param {function} onClose - Function to call when the modal should be closed
+ * @param {function} onConfirm - Function to call when the delete action is confirmed
+ * @param {string} itemName - Name of the item to be deleted
+ */
+
 const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
     return (
         <Dialog
