@@ -18,12 +18,14 @@ function ClassPeriodDetailPage() {
       </Box>
 
       <Card sx={infoArea}>
-        <Box sx={{display: "flex"}}>
-          <Typography sx={{ fontSize: 18 }} fontWeight="bold">
+        <Box sx={{display: "flex", justifyContent:"space-between"}}>
+          <Typography sx={{ fontSize: "18px" }} fontWeight="bold">
             Class Period Information
           </Typography>
-          <ModeEditIcon/>
-          <DeleteForeverIcon/>
+          <Box>
+            <ModeEditIcon sx={{color: "#007EF2", fontSize: "24px"}}/>
+            <DeleteForeverIcon sx={{color: "red", fontSize: "24px"}}/>
+          </Box>
         </Box>
         <Divider sx={divider} />
         <Box>
