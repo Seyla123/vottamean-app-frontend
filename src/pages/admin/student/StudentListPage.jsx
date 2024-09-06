@@ -48,12 +48,12 @@ const StudentListPage = () => {
 
   //Navigate to create page
   const handleCreate = () => {
-    navigate(`/class/create`);
+    navigate(`/student/create`);
   };
 
   //Click to View Detail
   const handleTitleClick = (postId) => {
-    navigate(`/class/${postId}`);
+    navigate(`/student/${postId}`);
   };
 
   //Click to Drop Menu Click
@@ -70,7 +70,7 @@ const StudentListPage = () => {
 
   //navigate to Update Page
   const handleUpdate = () => {
-    navigate(`/class/update/${selectedPostId}`, { state: { posts } });
+    navigate(`/student/update/${selectedPostId}`, { state: { posts } });
     handleMenuClose();
   };
 
