@@ -7,7 +7,8 @@ const SubHeader = ({ title }) => {
             <Typography fontSize={16} fontWeight={"bold"} marginBottom={2}>
                 {title}
             </Typography>
-            <Divider sx={{ width: "100%" }} />
+            <Divider color="#797979"  sx={{ width: "100%" ,borderBottomWidth: 1, color: "black"}} 
+            />
         </Box>
     )
 }
