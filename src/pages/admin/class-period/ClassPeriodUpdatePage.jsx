@@ -1,11 +1,3 @@
-// function ClassPeriodUpdatePage() {
-//   return (
-//     <div>ClassPeriodUpdatePage</div>
-//   )
-// }
-
-// export default ClassPeriodUpdatePage
-
 import { useState } from "react";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
