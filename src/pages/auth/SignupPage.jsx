@@ -18,26 +18,29 @@ function SignupPage() {
     setStepActive(stepActive - 1)
   }
   const handleNext = () => {
-    setStepActive(stepActive + 1)
+      setStepActive(stepActive + 1)
   }
   // button continue next step
-  const btn = () => {
+  const btn = (btnName) => {
+    const sumbit =()=>{
+      console.log('submit');
+      
+    }
     return (
-      <Button onClick={handleNext} sx={{ padding: { xs: 1, md: 2 } }} variant="contained">
-        CONTINUE
+      <Button onClick={btnName ? sumbit : handleNext} sx={{ padding: { xs: 1, md: 2 } }} variant="contained">
+        {btnName ? btnName : 'CONTINUE'} 
       </Button>
     )
   }
 
-
+// form sign step list
   const stepFrom = {
-    0: <GetStartSignUpForm onClickBack={handleBack} >
-      {btn()}
-    </GetStartSignUpForm>,
+    0: <GetStartSignUpForm onClickBack={handleBack} >  {btn()} </GetStartSignUpForm>,
     1: <PersonalInformationForm onClickBack={handleBack} > {btn()}</PersonalInformationForm>,
     2: <ContactInformationForm onClickBack={handleBack} > {btn()}</ContactInformationForm>,
-    3: <RegisterSchoolForm onClickBack={handleBack} > {btn()}</RegisterSchoolForm>
+    3: <RegisterSchoolForm onClickBack={handleBack} > {btn('Start Now')}</RegisterSchoolForm>
   }
+
   return (
     <>
       <Container
