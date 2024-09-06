@@ -68,6 +68,9 @@ const navigation = [
             },
         ],
     },
+
+    { kind: 'divider' },
+
     { kind: 'header', title: 'General' },
 
     {
