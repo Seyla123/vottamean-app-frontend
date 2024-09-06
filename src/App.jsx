@@ -12,6 +12,7 @@ const PasswordForgotPage = lazy(() => import('./pages/auth/PasswordForgotPage'))
 const PasswordResetPage = lazy(() => import('./pages/auth/PasswordResetPage'));
 const PasswordChangePage = lazy(() => import('./pages/auth/PasswordChangePage'));
 const AccountVerifyPage = lazy(() => import('./pages/auth/AccountVerifyPage'));
+const AccountSuccessPage = lazy(() => import('./pages/auth/AccountSuccessPage'));
 
 // Protected Pages
 const DashboardPage = lazy(
