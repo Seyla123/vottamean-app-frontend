@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import FormInfo from '../../../components/teacher/FormInfo'
+import FormInfo from '../../../components/teacher/FormInfo';
 import Header from "../../../components/teacher/Header";
 
 function TeacherCreatePage() {
