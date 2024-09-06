@@ -118,7 +118,6 @@ const ClassDetailPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     {
       field: "gender",
@@ -152,7 +151,6 @@ const ClassDetailPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     !isMoble && {
       field: "phone",
@@ -163,7 +161,6 @@ const ClassDetailPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     !isMoble && {
       field: "address",
@@ -174,7 +171,6 @@ const ClassDetailPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     {
       field: "action",
