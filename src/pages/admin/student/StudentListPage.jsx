@@ -12,7 +12,6 @@ import {
   Hidden,
   InputAdornment,
   useMediaQuery,
-  InputLabel,
   Select,
   FormControl,
 } from "@mui/material";
@@ -273,7 +272,6 @@ const StudentListPage = () => {
         </Typography>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
-        {" "}
         <Button
           variant="contained"
           color="primary"
