@@ -85,8 +85,6 @@ function SessionDetailPage() {
 export default SessionDetailPage;
 
 const content = {
-  bgcolor: "#F9FAFB",
-  maxWidth: 1200,
   mx: "auto",
   my: "16px",
   display: "flex",

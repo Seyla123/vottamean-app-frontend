@@ -17,7 +17,7 @@ function SessionListPage() {
   ].filter(Boolean);
 
   return (
-    <Box sx={content}>
+    <Box >
       {/* head */}
       <Box sx={{ my: "16px" }}>
         <Box sx={{ my: "24px" }}>
@@ -191,15 +191,3 @@ const rows = [
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-const content = { 
-  maxWidth: 1200, 
-  mx: "auto", 
-  py: {
-    xs: "24px",
-    md: "32px"
-  },  
-  px: {
-    xs : "24px",
-    md : "32px"
-  },
-  bgcolor: "#F9FAFB"}

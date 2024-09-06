@@ -14,7 +14,7 @@ import {
 function SessionUpdatePage() {
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", my: "32px" }}>
+    <Box sx={{ mx: "auto", my: "32px" }}>
       {/* Header */}
       <Box sx={{ maxWidth: 1064, my: "32px" }}>
         <Typography sx={{ fontSize: "32px", fontWeight: "semibold" }}>
@@ -200,7 +200,6 @@ const dow = [
 ];
 
 const form = {
-  maxWidth: "1064px",
   padding: "32px",
   borderRadius: "8px",
   display: "flex",
