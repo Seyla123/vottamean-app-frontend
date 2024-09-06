@@ -16,150 +16,6 @@ function SessionListPage() {
     { field: "action", headerName: (<DeleteForeverIcon sx={{ color: "red" }}/>) , flex: 0.5,  },
   ].filter(Boolean);
 
-  const rows = [
-    {
-      id: 1,
-      time: "7:00 - 8:00",
-      day: "Monday",
-      subject: "Math",
-      class: "12A",
-      teacher: "Smey",
-      action : "..."
-    },
-    {
-      id: 2,
-      time: "8:10 - 9:00",
-      day: "Tuesday",
-      subject: "Khmer",
-      class: "12B",
-      teacher: "Mary",
-      action : "..."
-    },
-    {
-      id: 3,
-      time: "9:10 - 10:00",
-      day: "Wednesday",
-      subject: "English",
-      class: "12C",
-      teacher: "Jonh",
-      action : "..."
-    },
-    {
-      id: 4,
-      time: "10:10 - 11:00",
-      day: "Thursday",
-      subject: "History",
-      class: "12D",
-      teacher: "Berry",
-      action : "..."
-    },
-    {
-      id: 5,
-      time: "7:10 - 8:00",
-      day: "Friday",
-      subject: "Geography",
-      class: "12D",
-      teacher: "SoaPhorn",
-      action : "..."
-    },
-    {
-      id: 6,
-      time: "9:10 - 10:00",
-      day: "Saturday",
-      subject: "Biology",
-      class: "12D",
-      teacher: "Tomas",
-      action : "..."
-    },
-    {
-      id: 7,
-      time: "11:10 - 12:00",
-      day: "Sunday",
-      subject: "Chemistry",
-      class: "12D",
-      teacher: "Jerry",
-      action : "..."
-    },
-    {
-      id: 8,
-      time: "7:00 - 8:00",
-      day: "Monday",
-      subject: "Math",
-      class: "12A",
-      teacher: "Smey",
-      action : "..."
-    },
-    {
-      id: 9,
-      time: "8:10 - 9:00",
-      day: "Tuesday",
-      subject: "Khmer",
-      class: "12B",
-      teacher: "Mary",
-      action : "..."
-    },
-    {
-      id: 10,
-      time: "9:10 - 10:00",
-      day: "Wednesday",
-      subject: "English",
-      class: "12C",
-      teacher: "Jonh",
-      action : "..."
-    },
-    {
-      id: 11,
-      time: "10:10 - 11:00",
-      day: "Thursday",
-      subject: "History",
-      class: "12D",
-      teacher: "Berry",
-      action : "..."
-    },
-    {
-      id: 12,
-      time: "7:10 - 8:00",
-      day: "Friday",
-      subject: "Geography",
-      class: "12D",
-      teacher: "SoaPhorn",
-      action : "..."
-    },
-    {
-      id: 13,
-      time: "9:10 - 10:00",
-      day: "Saturday",
-      subject: "Biology",
-      class: "12D",
-      teacher: "Tomas",
-      action : "..."
-    },
-    {
-      id: 14,
-      time: "11:10 - 12:00",
-      day: "Sunday",
-      subject: "Chemistry",
-      class: "12D",
-      teacher: "Jerry",
-      action : "..."
-    },
-  ];
-
-  const paginationModel = { page: 0, pageSize: 10 };
-
-  const content = { 
-    maxWidth: 1200, 
-    mx: "auto", 
-    py: {
-      xs: "24px",
-      md: "32px"
-    },  
-    px: {
-      xs : "24px",
-      md : "32px"
-    },
-    bgcolor: "#F9FAFB"}
-
   return (
     <Box sx={content}>
       {/* head */}
@@ -203,3 +59,147 @@ function SessionListPage() {
 }
 
 export default SessionListPage;
+
+const rows = [
+  {
+    id: 1,
+    time: "7:00 - 8:00",
+    day: "Monday",
+    subject: "Math",
+    class: "12A",
+    teacher: "Smey",
+    action : "..."
+  },
+  {
+    id: 2,
+    time: "8:10 - 9:00",
+    day: "Tuesday",
+    subject: "Khmer",
+    class: "12B",
+    teacher: "Mary",
+    action : "..."
+  },
+  {
+    id: 3,
+    time: "9:10 - 10:00",
+    day: "Wednesday",
+    subject: "English",
+    class: "12C",
+    teacher: "Jonh",
+    action : "..."
+  },
+  {
+    id: 4,
+    time: "10:10 - 11:00",
+    day: "Thursday",
+    subject: "History",
+    class: "12D",
+    teacher: "Berry",
+    action : "..."
+  },
+  {
+    id: 5,
+    time: "7:10 - 8:00",
+    day: "Friday",
+    subject: "Geography",
+    class: "12D",
+    teacher: "SoaPhorn",
+    action : "..."
+  },
+  {
+    id: 6,
+    time: "9:10 - 10:00",
+    day: "Saturday",
+    subject: "Biology",
+    class: "12D",
+    teacher: "Tomas",
+    action : "..."
+  },
+  {
+    id: 7,
+    time: "11:10 - 12:00",
+    day: "Sunday",
+    subject: "Chemistry",
+    class: "12D",
+    teacher: "Jerry",
+    action : "..."
+  },
+  {
+    id: 8,
+    time: "7:00 - 8:00",
+    day: "Monday",
+    subject: "Math",
+    class: "12A",
+    teacher: "Smey",
+    action : "..."
+  },
+  {
+    id: 9,
+    time: "8:10 - 9:00",
+    day: "Tuesday",
+    subject: "Khmer",
+    class: "12B",
+    teacher: "Mary",
+    action : "..."
+  },
+  {
+    id: 10,
+    time: "9:10 - 10:00",
+    day: "Wednesday",
+    subject: "English",
+    class: "12C",
+    teacher: "Jonh",
+    action : "..."
+  },
+  {
+    id: 11,
+    time: "10:10 - 11:00",
+    day: "Thursday",
+    subject: "History",
+    class: "12D",
+    teacher: "Berry",
+    action : "..."
+  },
+  {
+    id: 12,
+    time: "7:10 - 8:00",
+    day: "Friday",
+    subject: "Geography",
+    class: "12D",
+    teacher: "SoaPhorn",
+    action : "..."
+  },
+  {
+    id: 13,
+    time: "9:10 - 10:00",
+    day: "Saturday",
+    subject: "Biology",
+    class: "12D",
+    teacher: "Tomas",
+    action : "..."
+  },
+  {
+    id: 14,
+    time: "11:10 - 12:00",
+    day: "Sunday",
+    subject: "Chemistry",
+    class: "12D",
+    teacher: "Jerry",
+    action : "..."
+  },
+];
+
+const paginationModel = { page: 0, pageSize: 10 };
+
+const content = { 
+  maxWidth: 1200, 
+  mx: "auto", 
+  py: {
+    xs: "24px",
+    md: "32px"
+  },  
+  px: {
+    xs : "24px",
+    md : "32px"
+  },
+  bgcolor: "#F9FAFB"}
