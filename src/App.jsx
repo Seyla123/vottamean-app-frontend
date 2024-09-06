@@ -8,6 +8,7 @@ const SignupPage = lazy(() => import('./pages/auth/signup/SignupPage'));
 const PasswordForgotPage = lazy(() => import('./pages/auth/PasswordForgotPage'));
 const PasswordResetPage = lazy(() => import('./pages/auth/PasswordResetPage'));
 const PasswordChangePage = lazy(() => import('./pages/auth/PasswordChangePage'));
+const AccountVerifyPage = lazy(() => import('./pages/auth/AccountVerifyPage'));
 
 // Protected Pages
 const DashboardPage = lazy(() => import('./pages/admin/dashboard/DashboardPage'));
@@ -58,6 +59,7 @@ const AppRoutes = () => (
       <Route path="/forgot-password" element={<PasswordForgotPage />} />
       <Route path='/reset-password' element={<PasswordResetPage />} />
       <Route path='/change-password' element={<PasswordChangePage />} />
+      <Route path='/verify-account' element={<AccountVerifyPage />} />
 
       {/* Protected Routes */}
       {/* <Route element={<ProtectedRoutes />}> */}
