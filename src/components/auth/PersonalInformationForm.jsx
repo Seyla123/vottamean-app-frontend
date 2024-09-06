@@ -3,7 +3,7 @@ import HeaderTitle from './HeaderTitle'
 import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
 import GoBackButton from '../common/GoBackButton';
 
-function PersonalInformationForm({ onClickBack }) {
+function PersonalInformationForm({ onClickBack, children }) {
     const [gender, setGender] = useState('');
 
     const handleChange = (e) => {
@@ -76,9 +76,7 @@ function PersonalInformationForm({ onClickBack }) {
                         <MenuItem value="Female">Female</MenuItem>
                     </Select>
                 </Box>
-                <Button sx={{ padding: { xs: 1.8, md: 2 } }} variant="contained">
-                    NEXT
-                </Button>
+                {children}
             </Box>
 
         </Box>

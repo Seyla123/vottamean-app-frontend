@@ -1,6 +1,6 @@
 import { Box, Typography, TextField, Button, Checkbox } from "@mui/material";
 import HeaderTitle from "./HeaderTitle";
-function GetStartSignUp({ onClickNext}) {
+function GetStartSignUp({ onClickNext, children}) {
   return (
     <Box
       sx={{
@@ -63,9 +63,7 @@ function GetStartSignUp({ onClickNext}) {
           textAlign: "center",
         }}
       >
-        <Button onClick={onClickNext} sx={{ padding: { xs: 1, md: 2 } }} variant="contained">
-          Continue
-        </Button>
+        {children}
         <Typography variant="body1">
           Already have an account?
           <Typography variant="body1" component={"span"} color={"primary"}>

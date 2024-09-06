@@ -1,9 +1,49 @@
-import React from 'react'
+import HeaderTitle from "./HeaderTitle";
+import { Box, TextField, Typography } from "@mui/material";
+import GoBackButton from "../common/GoBackButton";
 
-function ContactInformationForm() {
+function ContactInformationForm({ onClickBack, children }) {
   return (
-    <div>ContactInformationForm</div>
-  )
+    <Box
+      sx={container}
+    >
+      {/* header title */}
+      <Box component={'div'}
+        sx={container}
+      >
+        <GoBackButton handleOnClick={onClickBack} />
+        <HeaderTitle
+          title={"Personal information"}
+          subTitle={"Input your information"}
+        />
+      </Box>
+
+      {/* form container */}
+      <Box
+        sx={container}
+      >
+        {/*phone number input container */}
+        <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+          <Typography variant="body1">Phone Number</Typography>
+          <TextField placeholder="phone number" />
+        </Box>
+        <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+          <Typography variant="body1">Address</Typography>
+          <TextField
+            multiline
+            minRows={5}
+            placeholder="Phnom Penh, Street 210, ..."
+          />
+        </Box>
+
+        {children}
+      </Box>
+    </Box>
+  );
 }
 
-export default ContactInformationForm
+export default ContactInformationForm;
+
+const container = {
+  display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }
+}

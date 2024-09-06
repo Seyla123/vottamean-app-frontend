@@ -1,6 +1,7 @@
 import AuthContainerCard from "../../components/auth/AuthContainerCard";
 import GetStartSignUpForm from "../../components/auth/GetStartSignUpForm";
 import PersonalInformationForm from "../../components/auth/PersonalInformationForm";
+import ContactInformationForm from "../../components/auth/ContactInformationForm";
 import {
   Box,
   Container,
@@ -18,9 +19,21 @@ const handleBack = () => {
 const handleNext = () => {
   setStepActive(stepActive + 1)
 }
+const btn = ()=>{
+  return (
+  <Button onClick={handleNext} sx={{ padding: { xs: 1.8, md: 2 } }} variant="contained">
+  CONTINUE
+</Button>
+  )
+}
+
+
 const stepFrom = {
-  0: <GetStartSignUpForm onClickNext={handleNext}/>,
-  1: <PersonalInformationForm onClickBack={handleBack}/>
+  0: <GetStartSignUpForm >
+    {btn()}
+  </GetStartSignUpForm>,
+  1: <PersonalInformationForm > {btn()}</PersonalInformationForm>,
+  2: <ContactInformationForm > {btn()}</ContactInformationForm>,
 }
   return (
     <>

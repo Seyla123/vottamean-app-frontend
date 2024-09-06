@@ -21,13 +21,12 @@ const gridContainer = {
             sx={{
               display: { xs: "none", md: "flex" },
               width: "100%",
-              height: '100',
               bgcolor: "#90CAF9",
               borderRadius: "18px",
             }}
           >
           </Box>
-          <Box sx={{ width: "100%", height: "100%", paddingTop:3, paddingBottom:3}}>
+          <Box sx={{ width: "100%", paddingTop:3, paddingBottom:3}}>
             {children}
           </Box>
         </Container>
