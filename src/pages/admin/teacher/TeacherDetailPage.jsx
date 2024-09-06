@@ -13,8 +13,8 @@ function TeacherDetailPage() {
     fontWeight: "bold",
     display: "flex",
     gap: 0.5,
-    overflowWrap: "break-word", 
-    textOverflow: "ellipsis", 
+    overflowWrap: "break-word",
+    textOverflow: "ellipsis",
     [mobile.down("sm")]: {
       fontSize: "14px",
     },
@@ -25,12 +25,13 @@ function TeacherDetailPage() {
 
   const textInput = {
     [mobile.down("sm")]: {
-        fontSize: "14px",
-      },
-      [mobile.up("sm")]: {
-        fontSize: "16px",
-      }
-  }
+      fontSize: "14px",
+    },
+    [mobile.up("sm")]: {
+      fontSize: "16px",
+    },
+  };
+
   return (
     <Box>
       {/* header */}
@@ -40,7 +41,7 @@ function TeacherDetailPage() {
       />
 
       {/* card */}
-      <Box sx={profileBox}>
+      <Box sx={cardBox}>
         <Box sx={{ position: "relative" }}>
           <Box
             sx={{
@@ -56,20 +57,38 @@ function TeacherDetailPage() {
             </Button>
           </Box>
         </Box>
-        {/* card detail */}
-        <Box sx={cardDetail}>
-          <Box sx={valueBoxOne}>
+
+        {/* container for profile and information */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: {
+              xs: "column",
+              sm: "row",
+            },
+            width: "100%",
+            alignItems: "center",
+            gap: {
+              xs:3,
+              sm:5,
+            },
+            mt: 2,
+          }}
+        >
+          <Box sx={profile}>
             <img
               src="https://via.placeholder.com/100"
               alt="Profile"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </Box>
-          <Box>
+          <Box sx={{ display: "flex", flexDirection: "column", gap:{
+            xs:'10px',
+            sm:'12px'
+          } , width: "100%"}}>
             <Typography sx={textStyles}>
               Teacher ID: <Typography sx={textInput}>ANB1000</Typography>
             </Typography>
-
             <Typography sx={textStyles}>
               Full Name: <Typography sx={textInput}>Potato Fried</Typography>
             </Typography>
@@ -86,29 +105,44 @@ function TeacherDetailPage() {
               Phone Number: <Typography sx={textInput}>01234567</Typography>
             </Typography>
             <Typography sx={textStyles}>
-              Email: <Typography sx={textInput}>mrpotato@123gmail.com</Typography>
+              Email:{" "}
+              <Typography sx={textInput}>mrpotato@123gmail.com</Typography>
             </Typography>
             <Typography sx={textStyles}>
-              Address:<Typography sx={textInput}>Potatoes village, french fried city</Typography>
+              Address:
+              <Typography sx={textInput}>
+                Potatoes village, french fried city
+              </Typography>
             </Typography>
           </Box>
         </Box>
       </Box>
+
     </Box>
   );
 }
 
 export default TeacherDetailPage;
 
-const valueBoxOne = {
+const profile = {
   width: 100,
   height: 100,
   borderRadius: "50%",
   overflow: "hidden",
-  position: "relative",
+  display: "flex",
+  justifyContent: "center",
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  alignItems: {
+    xs: "center",
+    sm: "flex-start",
+  },
 };
 
-const profileBox = {
+const cardBox = {
   border: "1px solid",
   borderColor: "#E0E0E0",
   borderRadius: "8px",
@@ -119,14 +153,6 @@ const profileBox = {
   },
   display: "flex",
   flexDirection: "column",
-};
-
-const cardDetail = {
-  display: "flex",
-  flexDirection: "row",
-  gap: 4,
-  mt: 2,
-  position: "relative",
 };
 
 const buttonCard = {
