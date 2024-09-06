@@ -17,7 +17,7 @@ import { LocalizationProvider, DesktopDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-
+import StudentInfo from "../../../components/student/StudentInfo";
 const StudentCreatePage = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -28,7 +28,6 @@ const StudentCreatePage = () => {
   const [error, setError] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
-  const [filter, setFilter] = useState("");
 
 
   const handleCreate = async (e) => {
