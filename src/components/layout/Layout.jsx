@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppProvider } from '@toolpad/core/AppProvider';
-
+import Logo from '../../assets/images/Logo.png';
 import theme from '../../styles/theme';
 import {
     Home as HomeIcon,
@@ -122,7 +122,10 @@ const Layout = ({ children }) => {
     }, [location, navigate]);
     return (
         <AppProvider
-            branding={{ title: 'WaveTrack' }}
+            branding={{
+                title: '',
+                logo: <img src={Logo} alt='WaveTrack' />,
+            }}
             navigation={navigation}
             router={router}
             theme={theme}
