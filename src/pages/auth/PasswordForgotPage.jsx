@@ -73,7 +73,6 @@ const screen = {
     alignItems : "center",
     mx: "auto",
     bgcolor: "#F9FAFB",
-    px: "32px",
   };
 
   const content = {
