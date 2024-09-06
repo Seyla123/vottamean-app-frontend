@@ -8,8 +8,11 @@ import dayjs from 'dayjs';
 
 function ClassPeriodUpdatePage() {
   const [startTime, setStartTime] = useState(dayjs('2024-04-17T8:00'));
-  const [endTime, setEndTime] = useState(dayjs('2024-04-17T17:00'));
+  const [endTime, setEndTime] = useState(dayjs('2024-04-17T8:00'));
   const [error, setError] = useState(false);
+
+  const unique = startTime === endTime;
+  
 
   // style
   const containerButton = {
@@ -31,14 +34,6 @@ function ClassPeriodUpdatePage() {
   const divider = { bgcolor: "black" };
   const timeInput = { width: "100%", mt: "4px" };
   const content = { lg: "32px", xs: "24px" };
-
-  const handleSubmit = () => {
-    if (!startTime || !endTime) {
-      setError(true);
-    } else {
-      setError(false);
-    }
-  };
 
   return (
     <Box>
@@ -63,7 +58,7 @@ function ClassPeriodUpdatePage() {
             >
               <Box sx={containerInput}>
                 <Box>
-                  <Typography color={!startTime && error ? "red" : "inherit"}>
+                  <Typography >
                     Start time
                   </Typography>
                   <TimePicker
@@ -72,16 +67,14 @@ function ClassPeriodUpdatePage() {
                     onChange={(newValue) => setStartTime(newValue)}
                     slotProps={{
                       textField: {
-                        placeholder: "select",
-                        helperText:
-                          !startTime && error ? "Start time is required" : "",
-                        error: !startTime && error,
+                        error: unique, // Trigger error when times are equal
+                        helperText: unique ? "Start time and end time cannot be the same" : "",
                       },
                     }}
                   />
                 </Box>
                 <Box>
-                  <Typography color={!endTime && error ? "red" : "inherit"}>
+                  <Typography>
                     End time
                   </Typography>
                   <TimePicker
@@ -90,13 +83,12 @@ function ClassPeriodUpdatePage() {
                     onChange={(newValue) => setEndTime(newValue)}
                     slotProps={{
                       textField: {
-                        placeholder: "select",
-                        helperText:
-                          !endTime && error ? "End time is required" : "",
-                        error: !endTime && error,
-                        margin: "none",
-                        FormHelperTextProps: {},
-                      },
+                        // placeholder: "select",
+                        // helperText:
+                          // !startTime && error ? "Start time is required" : "",
+                        error: unique,
+                        px: "none",
+                      }
                     }}
                   />
                 </Box>
@@ -109,7 +101,7 @@ function ClassPeriodUpdatePage() {
               <Button sx={button} variant="outlined" color="black">
                 cancel
               </Button>
-              <Button sx={button} variant="contained" onClick={handleSubmit}>
+              <Button sx={button} variant="contained">
                 update period
               </Button>
             </Stack>
