@@ -1,4 +1,6 @@
-import AuthContainerCard from "../../../components/auth/AuthContainerCard";
+import AuthContainerCard from "../../components/auth/AuthContainerCard";
+import GetStartSignUpForm from "../../components/auth/GetStartSignUpForm";
+import PersonalInformationForm from "../../components/auth/PersonalInformationForm";
 import {
   Box,
   Container,
@@ -7,8 +9,6 @@ import {
   Stepper,
   StepLabel,
 } from "@mui/material";
-import GetStartSignUpForm from "../../../components/auth/GetStartSignUpForm";
-import PersonalInformationForm from "../../../components/auth/PersonalInformationForm";
 import { useState } from "react";
 function SignupPage() {
 const [stepActive ,setStepActive] = useState(0);
