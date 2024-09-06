@@ -121,7 +121,6 @@ const ClassListPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     {
       field: "description",
@@ -132,7 +131,6 @@ const ClassListPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     {
       field: "action",
@@ -147,7 +145,7 @@ const ClassListPage = () => {
       renderCell: (params) => (
         <Box>
           <IconButton
-            onMouseEnter={(event) => handleMenuClick(event, params.row.id)}
+            onClick={(event) => handleMenuClick(event, params.row.id)}
           >
             ...
           </IconButton>
@@ -201,7 +199,6 @@ const ClassListPage = () => {
     marginBottom: "24px",
     alignItems: "center",
     width: "100%",
-    maxWidth: "100%",
     "& .MuiInputBase-root": {
       height: "42px",
     },
@@ -216,19 +213,15 @@ const ClassListPage = () => {
     },
   };
   const textFieldStyles = {
-    width: "508px",
-    width: isMobile ? "366px" : "508px",
-
+    width: "100%",
+    width: {xs: 1,sm:'540px'}
   };
 
-  const tableContainerStyles = (theme) => ({
+  const tableContainerStyles = {
     width: "100%",
     overflowX: "auto",
     backgroundColor: "#FFFFFF",
-    [theme.breakpoints.down("sm")]: {
-      height: "100%",
-    },
-  });
+  };
 
   const paginationModel = { page: 0, pageSize: 5 };
 
@@ -248,10 +241,10 @@ const ClassListPage = () => {
           There are total classes
         </Typography>
         <Button
+          variant="contained"
+          color="primary"
           onClick={handleCreate}
           sx={{
-            backgroundColor: "#1976d2",
-            color: "#fff",
             width: isMobile ? "110px" : "140px",
             height: { xs: "38px", sm: "46px" },
             fontSize: isMobile ? "14px" : "16px",
@@ -269,6 +262,7 @@ const ClassListPage = () => {
             justifyContent: "end",
             alignItems: "center",
             gap: "24px",
+            width: {xs: 1,sm:'540px'}
           }}
         >
           <TextField
@@ -297,7 +291,7 @@ const ClassListPage = () => {
           </Hidden>
         </Box>
       </Box>
-      <Paper sx={tableContainerStyles(theme)}>
+      <Paper sx={tableContainerStyles}>
         <DataGrid
           rows={filteredPosts}
           columns={columns}
@@ -307,8 +301,8 @@ const ClassListPage = () => {
           sx={{
             border: 0,
             "& .MuiDataGrid-columnHeader": {
-                    backgroundColor: "#F3F3F5",
-                  },
+              backgroundColor: "#F3F3F5",
+            },
           }}
           disableRowSelectionOnClick
         />
