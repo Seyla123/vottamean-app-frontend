@@ -6,6 +6,7 @@ import { CssBaseline } from '@mui/material';
 const LoginPage = lazy(() => import('./pages/auth/login/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/signup/SignupPage'));
 const PasswordForgotPage = lazy(() => import('./pages/auth/PasswordForgotPage'));
+const PasswordResetPage = lazy(() => import('./pages/auth/PasswordResetPage'));
 
 // Protected Pages
 const DashboardPage = lazy(() => import('./pages/admin/dashboard/DashboardPage'));
@@ -54,6 +55,7 @@ const AppRoutes = () => (
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<PasswordForgotPage />} />
+      <Route path='/reset-password' element={<PasswordResetPage />} />
 
       {/* Protected Routes */}
       {/* <Route element={<ProtectedRoutes />}> */}
