@@ -26,7 +26,7 @@ const gridContainer = {
             }}
           >
           </Box>
-          <Box sx={{ width: "100%", paddingTop:3, paddingBottom:3}}>
+          <Box sx={{ width: "100%", paddingTop:2, paddingBottom:2}}>
             {children}
           </Box>
         </Container>

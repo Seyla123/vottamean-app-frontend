@@ -13,7 +13,7 @@ function PersonalInformationForm({ onClickBack, children }) {
         <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
             {/* header title */}
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 1, md: 3 } }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }}}>
                 <GoBackButton handleOnClick={onClickBack} />
                 <HeaderTitle
                     title={"Personal information"}

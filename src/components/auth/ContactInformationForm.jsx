@@ -1,16 +1,12 @@
 import HeaderTitle from "./HeaderTitle";
-import { Box, TextField, Typography } from "@mui/material";
 import GoBackButton from "../common/GoBackButton";
+import { Box, TextField, Typography } from "@mui/material";
 
 function ContactInformationForm({ onClickBack, children }) {
   return (
-    <Box
-      sx={container}
-    >
+    <Box sx={container}>
       {/* header title */}
-      <Box component={'div'}
-        sx={container}
-      >
+      <Box component={'div'}  sx={container} >
         <GoBackButton handleOnClick={onClickBack} />
         <HeaderTitle
           title={"Contact information"}
@@ -19,15 +15,13 @@ function ContactInformationForm({ onClickBack, children }) {
       </Box>
 
       {/* form container */}
-      <Box
-        sx={container}
-      >
+      <Box  sx={container} > 
         {/*phone number input container */}
-        <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+        <Box sx={fieldContainer}>
           <Typography variant="body1">Phone Number</Typography>
           <TextField placeholder="phone number" />
         </Box>
-        <Box display={"flex"} flexDirection={"column"} gap={0.5}>
+        <Box sx={fieldContainer}>
           <Typography variant="body1">Address</Typography>
           <TextField
             multiline
@@ -37,12 +31,12 @@ function ContactInformationForm({ onClickBack, children }) {
         </Box>
         {children}
       </Box>
+
     </Box>
   );
 }
 
 export default ContactInformationForm;
 
-const container = {
-  display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }
-}
+const container = { display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }}
+const fieldContainer = { display: "flex", flexDirection: "column", gap: 0.5 }
