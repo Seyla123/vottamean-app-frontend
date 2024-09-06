@@ -3,7 +3,7 @@ import HeaderTitle from "./HeaderTitle";
 import GoBackButton from "../common/GoBackButton";
 import schoolIcon from "../../assets/icon/schoolIcon.png";
 import { Box, TextField, Typography, Skeleton } from "@mui/material";
-import { container, fieldContainer } from "./authStyle";
+import { container, fieldContainer } from "../../styles/authStyle";
 
 function RegisterSchoolForm({ onClickBack, children }) {
     // State to manage image loading
