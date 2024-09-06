@@ -1,8 +1,8 @@
 import { Divider, Card, Typography, Box } from "@mui/material";
 import List from "@mui/material/List";
-// import ListItem from '@mui/material/ListItem';
-// import ListItemText from '@mui/material/ListItemText';
-// import {ModeEditIcon, DeleteForeverIcon} from "@mui/icons-material"
+
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 function ClassPeriodDetailPage() {
 
@@ -39,9 +39,14 @@ function ClassPeriodDetailPage() {
       </Box>
 
       <Card sx={infoArea}>
-        <Typography sx={{ fontSize: 18 }} fontWeight="bold">
-          Class Period Information
-        </Typography>
+        <Box>
+          <Typography sx={{ fontSize: 18 }} fontWeight="bold">
+            Class Period Information
+          </Typography>
+          <ModeEditIcon/>
+          <DeleteForeverIcon/>
+
+        </Box>
         <Divider sx={divider} />
         <Box>
           <List sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
