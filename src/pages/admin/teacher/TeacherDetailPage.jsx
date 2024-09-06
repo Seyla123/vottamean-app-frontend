@@ -13,8 +13,8 @@ function TeacherDetailPage() {
     fontWeight: "bold",
     display: "flex",
     gap: 0.5,
-    overflowWrap: "break-word", // Breaks long words and wrap text
-    textOverflow: "ellipsis", // Adds ellipsis for overflowed text, optional
+    overflowWrap: "break-word", 
+    textOverflow: "ellipsis", 
     [mobile.down("sm")]: {
       fontSize: "14px",
     },
