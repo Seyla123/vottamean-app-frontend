@@ -121,7 +121,6 @@ const ClassListPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     {
       field: "description",
@@ -132,7 +131,6 @@ const ClassListPage = () => {
       flex: 1,
       headerAlign: "center",
       align: "center",
-
     },
     {
       field: "action",
@@ -147,7 +145,7 @@ const ClassListPage = () => {
       renderCell: (params) => (
         <Box>
           <IconButton
-            onMouseEnter={(event) => handleMenuClick(event, params.row.id)}
+            onClick={(event) => handleMenuClick(event, params.row.id)}
           >
             ...
           </IconButton>
@@ -182,14 +180,10 @@ const ClassListPage = () => {
   //Add Style
 
   const containerStyles = {
-    width: "Auto",
-    maxWidth: "lg",
-    minWidth: "300px",
+    width: "100%",
     margin: "0 auto",
-    padding: "32px",
     alignItems: "end",
     flexWrap: "wrap",
-    backgroundColor: "#F9FAFB",
   };
   const flexBoxStyles = {
     display: "flex",
@@ -205,7 +199,6 @@ const ClassListPage = () => {
     marginBottom: "24px",
     alignItems: "center",
     width: "100%",
-    maxWidth: "100%",
     "& .MuiInputBase-root": {
       height: "42px",
     },
@@ -220,26 +213,26 @@ const ClassListPage = () => {
     },
   };
   const textFieldStyles = {
-    width: "508px",
-    width: isMobile ? "366px" : "508px",
-
+    width: "100%",
+    width: {xs: 1,sm:'540px'}
   };
 
-  const tableContainerStyles = (theme) => ({
+  const tableContainerStyles = {
     width: "100%",
     overflowX: "auto",
     backgroundColor: "#FFFFFF",
-    [theme.breakpoints.down("sm")]: {
-      height: "100%",
-    },
-  });
+  };
 
   const paginationModel = { page: 0, pageSize: 5 };
 
   return (
     <Box sx={containerStyles}>
       <Typography
-        sx={{ fontFamily: "Roboto", fontSize: isMobile ? "20px" : "32px" }}
+        sx={{
+          fontFamily: "Roboto",
+          fontWeight: 600,
+          fontSize: { xs: "20px", sm: "32px" },
+        }}
       >
         CLASS LISTS
       </Typography>
@@ -248,13 +241,12 @@ const ClassListPage = () => {
           There are total classes
         </Typography>
         <Button
+          variant="contained"
+          color="primary"
           onClick={handleCreate}
           sx={{
-            backgroundColor: "#1976d2",
-            color: "#fff",
-            height: "46px",
             width: isMobile ? "110px" : "140px",
-            height: "46px",
+            height: { xs: "38px", sm: "46px" },
             fontSize: isMobile ? "14px" : "16px",
             padding: isMobile ? "8px" : "10px",
           }}
@@ -270,6 +262,7 @@ const ClassListPage = () => {
             justifyContent: "end",
             alignItems: "center",
             gap: "24px",
+            width: {xs: 1,sm:'540px'}
           }}
         >
           <TextField
@@ -298,7 +291,7 @@ const ClassListPage = () => {
           </Hidden>
         </Box>
       </Box>
-      <Paper sx={tableContainerStyles(theme)}>
+      <Paper sx={tableContainerStyles}>
         <DataGrid
           rows={filteredPosts}
           columns={columns}
@@ -307,10 +300,8 @@ const ClassListPage = () => {
           checkboxSelection
           sx={{
             border: 0,
-            "& .MuiDataGrid-columnSeparator": {
-              "&:hover": {
-                backgroundColor: theme.palette.action.hover,
-              },
+            "& .MuiDataGrid-columnHeader": {
+              backgroundColor: "#F3F3F5",
             },
           }}
           disableRowSelectionOnClick
