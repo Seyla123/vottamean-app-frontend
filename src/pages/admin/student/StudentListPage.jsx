@@ -234,7 +234,6 @@ const StudentListPage = () => {
     margin: "0 auto",
     alignItems: "end",
     flexWrap: "wrap",
-    padding: "24px",
   };
   const inputBoxStyles = {
     display: "flex",
