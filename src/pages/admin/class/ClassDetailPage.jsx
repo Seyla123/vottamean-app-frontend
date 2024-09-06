@@ -110,7 +110,7 @@ const ClassDetailPage = () => {
     },
     {
       field: "content",
-      headerName: "Full Name",
+      headerName: "Full name",
       disableColumnMenu: true,
       sortable: false,
       resizable: false,
@@ -170,7 +170,7 @@ const ClassDetailPage = () => {
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: "",
       disableColumnMenu: true,
       sortable: false,
       resizable: false,
@@ -179,7 +179,7 @@ const ClassDetailPage = () => {
       renderCell: (params) => (
         <Box sx={{ boxShadow: "none" }}>
           <IconButton
-            onMouseEnter={(event) => handleMenuClick(event, params.row.id)}
+            onClick={(event) => handleMenuClick(event, params.row.id)}
           >
             ...
           </IconButton>
@@ -187,7 +187,7 @@ const ClassDetailPage = () => {
             anchorEl={menuClick}
             open={Boolean(menuClick)}
             onClose={handleMenuClose}
-            elevation={0}
+            elevation={1}
             PaperProps={{ sx: { width: isMoble ? "82px" : "110px" } }}
             anchorOrigin={{
               vertical: "bottom",
@@ -198,6 +198,7 @@ const ClassDetailPage = () => {
               horizontal: "right",
               height: isMoble ? "25px" : "35px",
             }}
+
           >
             <MenuItem onClick={() => handleUpdate(params.row.id)}>
               Edit
@@ -219,14 +220,12 @@ const ClassDetailPage = () => {
     margin: "0 auto",
     alignItems: "end",
     flexWrap: "wrap",
-    border: "1px solid",
     borderColor: "divider",
   };
   const tableContainerStyles = {
     width: "100%",
     overflowX: "auto",
     backgroundColor: "#FFFFFF",
-    marginTop: "24px",
   };
 
   const paginationModel = { page: 0, pageSize: 5 };
@@ -234,21 +233,24 @@ const ClassDetailPage = () => {
   return (
     <Box sx={containerStyles}>
       <Typography
-        sx={{ fontFamily: "Roboto", fontSize: isMoble ? "20px" : "32px" }}
+        sx={{
+          fontFamily: "Roboto",
+          fontWeight: 600,
+          fontSize: { xs: "20px", sm: "32px" },
+        }}
       >
-        {posts.title} Class Detail
+        {posts.title} AnB's CLASS DETAIL
       </Typography>
       <Typography
-        sx={{ fontFamily: "Roboto", fontSize: "16px", marginBottom: "32px" }}
+        sx={{ fontFamily: "Roboto", fontSize: "16px", pb: { xs: "12px", sm: "24px" } }}
       >
         There are class's information
       </Typography>
       <Box sx={{gap:4}}>
-      <Box sx={{ backgroundColor: "#FFFFFF",}}>
+      <Box sx={{ backgroundColor: "#FFFFFF",display:"flex", flexDirection:'column',gap:3}}>
         <Card
           sx={{
-            padding: "32px",
-            paddingBottom: "16px",
+            padding: { xs: "24px", sm: "32px" },
             gap:4
           }}
         >
@@ -262,7 +264,12 @@ const ClassDetailPage = () => {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ fontSize: "16px", fontWeight: "bold" }}
+              sx={{
+                backgroundColor: "#ffffff",
+                // pb: "16px",
+                fontWeight: 600,
+                fontSize: "18px",
+              }}
             >
               Class Information
             </Typography>
@@ -274,7 +281,7 @@ const ClassDetailPage = () => {
               <DeleteIcon sx={{ color: "red" }} />
             </Box>
           </Box>
-          <Divider />
+          <Divider sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }} />
           <Box
             sx={{ marginTop: "16px", display: "flex", flexDirection: "column" }}
           >
@@ -316,7 +323,7 @@ const ClassDetailPage = () => {
           </Box>
         </Card>
 
-        <Box sx={{ backgroundColor: "#FFFFFF" }}>
+        <Card sx={{ backgroundColor: "#FFFFFF",padding: { xs: "24px", sm: "32px" },}}>
           <Typography
             variant="h6"
             gutterBottom
@@ -324,13 +331,13 @@ const ClassDetailPage = () => {
               fontFamily: "Roboto",
               fontSize: "16px",
               fontWeight: "bold",
-              paddingLeft:"32px"
+
 
             }}
           >
             Total 40 Student
           </Typography>
-          <Divider />
+          <Divider sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }} />
           <Paper sx={tableContainerStyles}>
             <DataGrid
               rows={filteredPosts}
@@ -342,7 +349,7 @@ const ClassDetailPage = () => {
               disableRowSelectionOnClick
             />
           </Paper>
-        </Box>
+        </Card>
       </Box>
       </Box>
     </Box>
