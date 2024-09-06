@@ -42,7 +42,7 @@ const navigation = [
         icon: <SubjectIcon />,
     },
     {
-        segment: 'students',
+        segment: 'student',
         title: 'Students',
         icon: <StudentIcon />,
     },
@@ -52,7 +52,7 @@ const navigation = [
         icon: <TeacherIcon />,
     },
     {
-        segment: 'class-periods',
+        segment: 'class-period',
         title: 'Class Periods',
         icon: <ClassPeriodIcon />,
     },
