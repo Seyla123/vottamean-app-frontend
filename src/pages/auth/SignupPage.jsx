@@ -56,7 +56,7 @@ function SignupPage() {
             ))}
           </Stepper>
         </Box>
-        <AuthContainerCard sideCard="left" >
+        <AuthContainerCard sideCard={stepActive==3 ? 'right' : 'left'} >
           {/* <GetStartSignUpForm/> */}
           {stepFrom[stepActive]}
         </AuthContainerCard>

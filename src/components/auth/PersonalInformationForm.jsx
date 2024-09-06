@@ -2,9 +2,15 @@ import { useState } from 'react';
 import HeaderTitle from './HeaderTitle'
 import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
 import GoBackButton from '../common/GoBackButton';
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 function PersonalInformationForm({ onClickBack, children }) {
     const [gender, setGender] = useState('');
+    const [value, setValue] = useState(null);
 
     const handleChange = (e) => {
         setGender(e.target.value);
@@ -13,7 +19,7 @@ function PersonalInformationForm({ onClickBack, children }) {
         <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
             {/* header title */}
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }}}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
                 <GoBackButton handleOnClick={onClickBack} />
                 <HeaderTitle
                     title={"Personal information"}
@@ -59,23 +65,20 @@ function PersonalInformationForm({ onClickBack, children }) {
                     </Select>
                 </Box>
                 {/* Date picker */}
-                <Box display={"flex"} flexDirection={"column"} gap={0.5}>
-                    <Typography>Date</Typography>
-                    <Select fullWidth
-                        value={gender}
-                        onChange={handleChange}
-                        displayEmpty
-                        renderValue={(selected) => {
-                            if (!selected) {
-                                return <Box component="p" variant="body2" sx={{ color: '#B5B5B5' }}>gender</Box>;
-                            }
-                            return selected;
-                        }}
-                    >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                    </Select>
-                </Box>
+                <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1} sx={{ width: '100%' }}>
+            <Typography>Date</Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']} sx={{ width: '100%' }}>
+                    <DatePicker
+                        fullWidth
+                        placeholder="Date of Birth"
+                        value={value}
+                        onChange={(newValue) => setValue(newValue)}
+                        sx={{ width: '100%' }} // Ensure the DatePicker also has full width
+                    />
+                </DemoContainer>
+            </LocalizationProvider>
+        </Box>
                 {children}
             </Box>
 
