@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import React from "react";
 import Header from "../../../components/teacher/Header";
 import SubHeader from "../../../components/teacher/SubHeader";
@@ -6,6 +6,31 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 function TeacherDetailPage() {
+  const theme = useTheme();
+  const mobile = theme.breakpoints;
+
+  const textStyles = {
+    fontWeight: "bold",
+    display: "flex",
+    gap: 0.5,
+    overflowWrap: "break-word", // Breaks long words and wrap text
+    textOverflow: "ellipsis", // Adds ellipsis for overflowed text, optional
+    [mobile.down("sm")]: {
+      fontSize: "14px",
+    },
+    [mobile.up("sm")]: {
+      fontSize: "16px",
+    },
+  };
+
+  const textInput = {
+    [mobile.down("sm")]: {
+        fontSize: "14px",
+      },
+      [mobile.up("sm")]: {
+        fontSize: "16px",
+      }
+  }
   return (
     <Box>
       {/* header */}
@@ -41,15 +66,31 @@ function TeacherDetailPage() {
             />
           </Box>
           <Box>
-            <Typography sx={{ fontWeight: "bold",fontSize: { xs: "14px", sm: 2 }, display: "flex", gap:0.5}}>Teacher ID : <Typography>
-                Name
+            <Typography sx={textStyles}>
+              Teacher ID: <Typography sx={textInput}>ANB1000</Typography>
             </Typography>
 
+            <Typography sx={textStyles}>
+              Full Name: <Typography sx={textInput}>Potato Fried</Typography>
             </Typography>
-            <Typography>Hii</Typography>
-            <Typography>Hii</Typography>
-            <Typography>Hii</Typography>
-            <Typography>Hii</Typography>
+            <Typography sx={textStyles}>
+              Age: <Typography sx={textInput}>18</Typography>
+            </Typography>
+            <Typography sx={textStyles}>
+              Gender: <Typography sx={textInput}>Female</Typography>
+            </Typography>
+            <Typography sx={textStyles}>
+              Date of Birth: <Typography sx={textInput}>01/01/2000</Typography>
+            </Typography>
+            <Typography sx={textStyles}>
+              Phone Number: <Typography sx={textInput}>01234567</Typography>
+            </Typography>
+            <Typography sx={textStyles}>
+              Email: <Typography sx={textInput}>mrpotato@123gmail.com</Typography>
+            </Typography>
+            <Typography sx={textStyles}>
+              Address:<Typography sx={textInput}>Potatoes village, french fried city</Typography>
+            </Typography>
           </Box>
         </Box>
       </Box>
@@ -58,6 +99,7 @@ function TeacherDetailPage() {
 }
 
 export default TeacherDetailPage;
+
 const valueBoxOne = {
   width: 100,
   height: 100,
@@ -65,6 +107,7 @@ const valueBoxOne = {
   overflow: "hidden",
   position: "relative",
 };
+
 const profileBox = {
   border: "1px solid",
   borderColor: "#E0E0E0",
@@ -75,17 +118,17 @@ const profileBox = {
     sm: 3,
   },
   display: "flex",
-
   flexDirection: "column",
 };
 
 const cardDetail = {
   display: "flex",
   flexDirection: "row",
-  gap: 2,
+  gap: 4,
   mt: 2,
   position: "relative",
 };
+
 const buttonCard = {
   position: "absolute",
   bottom: "10px",
@@ -94,5 +137,3 @@ const buttonCard = {
   alignItems: "center",
   gap: "10px",
 };
-
-const text = { fontWeight: "bold",fontSize: { xs: "14px", sm: 2 }, display: "flex", gap:0.5}
