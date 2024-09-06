@@ -182,14 +182,10 @@ const ClassListPage = () => {
   //Add Style
 
   const containerStyles = {
-    width: "Auto",
-    maxWidth: "lg",
-    minWidth: "300px",
+    width: "100%",
     margin: "0 auto",
-    padding: "32px",
     alignItems: "end",
     flexWrap: "wrap",
-    backgroundColor: "#F9FAFB",
   };
   const flexBoxStyles = {
     display: "flex",
@@ -239,7 +235,11 @@ const ClassListPage = () => {
   return (
     <Box sx={containerStyles}>
       <Typography
-        sx={{ fontFamily: "Roboto", fontSize: isMobile ? "20px" : "32px" }}
+        sx={{
+          fontFamily: "Roboto",
+          fontWeight: 600,
+          fontSize: { xs: "20px", sm: "32px" },
+        }}
       >
         CLASS LISTS
       </Typography>
@@ -252,9 +252,8 @@ const ClassListPage = () => {
           sx={{
             backgroundColor: "#1976d2",
             color: "#fff",
-            height: "46px",
             width: isMobile ? "110px" : "140px",
-            height: "46px",
+            height: { xs: "38px", sm: "46px" },
             fontSize: isMobile ? "14px" : "16px",
             padding: isMobile ? "8px" : "10px",
           }}
@@ -307,11 +306,9 @@ const ClassListPage = () => {
           checkboxSelection
           sx={{
             border: 0,
-            "& .MuiDataGrid-columnSeparator": {
-              "&:hover": {
-                backgroundColor: theme.palette.action.hover,
-              },
-            },
+            "& .MuiDataGrid-columnHeader": {
+                    backgroundColor: "#F3F3F5",
+                  },
           }}
           disableRowSelectionOnClick
         />
