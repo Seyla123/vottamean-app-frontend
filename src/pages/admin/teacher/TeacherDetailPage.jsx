@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Button, Typography, useTheme } from "@mui/material";
 import React from "react";
 import Header from "../../../components/teacher/Header";
 import SubHeader from "../../../components/teacher/SubHeader";
@@ -67,21 +67,29 @@ function TeacherDetailPage() {
               sm: "row",
             },
             width: "100%",
-            alignItems: "center",
+            alignItems: {
+              xs: "center",
+              sm: "start",
+            },
             gap: {
               xs:3,
               sm:5,
             },
-            mt: 2,
+            mt: 4,
           }}
         >
-          <Box sx={profile}>
+          {/* <Box sx={profile}>
             <img
               src="https://via.placeholder.com/100"
               alt="Profile"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-          </Box>
+          </Box> */}
+        <Avatar sx={{ width: {
+          xs:120, sm:160
+        }, height:  {
+          xs:120, sm:160
+        } , display: "flex"}} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
           <Box sx={{ display: "flex", flexDirection: "column", gap:{
             xs:'10px',
             sm:'12px'
@@ -131,11 +139,8 @@ const profile = {
   overflow: "hidden",
   display: "flex",
   justifyContent: "center",
-  "& img": {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
+  
+  
   alignItems: {
     xs: "center",
     sm: "flex-start",
