@@ -4,65 +4,6 @@ import GoBackButton from "../../components/common/GoBackButton";
 import reset from "../../assets/icon/reset.png";
 
 function PasswordResetPage() {
-    const screen = {
-        width: "100%",
-        height: "100vh",
-        display : "flex",
-        justifyContent : "center",
-        alignItems : "center",
-        mx: "auto",
-        bgcolor: "#F9FAFB",
-        px: "32px",
-      };
-    
-    const content = {
-        bgcolor : "#FFFFFF",
-        maxWidth: "550px",
-        width : "100%",
-        maxHeight: "602px",
-        mx: "auto",
-        my: "auto",
-        borderRadius: "16px",
-        py: "32px",
-        px: {
-          xs: "24px",
-          md: "32px",
-        },
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-      };
-    
-  const textInputContainer = {
-    display: "flex",
-    flexDirection: "column",
-    gap: {
-      xs: "24px",
-      md: "32px",
-    },
-    width: "100%",
-  };
-
-  const textfield = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px",
-    width: "100%",
-  };
-
-  const img = {
-    mx: "auto",
-    width: {
-      xs: "90px",
-      md: "100px",
-    },
-  };
-
-  const resetTitle = {
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-  };
   return (
     <Box sx={screen}>
       <Card sx={content}>
@@ -119,3 +60,63 @@ function PasswordResetPage() {
 }
 
 export default PasswordResetPage;
+
+const screen = {
+    width: "100%",
+    height: "100vh",
+    display : "flex",
+    justifyContent : "center",
+    alignItems : "center",
+    mx: "auto",
+    bgcolor: "#F9FAFB",
+    px: "32px",
+  };
+
+const content = {
+    bgcolor : "#FFFFFF",
+    maxWidth: "550px",
+    width : "100%",
+    maxHeight: "602px",
+    mx: "auto",
+    my: "auto",
+    borderRadius: "16px",
+    py: "32px",
+    px: {
+      xs: "24px",
+      md: "32px",
+    },
+    display: "flex",
+    flexDirection: "column",
+    gap: "24px",
+  };
+
+const textInputContainer = {
+display: "flex",
+flexDirection: "column",
+gap: {
+  xs: "24px",
+  md: "32px",
+},
+width: "100%",
+};
+
+const textfield = {
+display: "flex",
+flexDirection: "column",
+gap: "4px",
+width: "100%",
+};
+
+const img = {
+mx: "auto",
+width: {
+  xs: "90px",
+  md: "100px",
+},
+};
+
+const resetTitle = {
+textAlign: "center",
+display: "flex",
+flexDirection: "column",
+};
