@@ -6,7 +6,6 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
 
 function ClassPeriodCreatePage() {
-  // States for time values and validation errors
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [error, setError] = useState(false);
@@ -37,8 +36,6 @@ function ClassPeriodCreatePage() {
       setError(true);
     } else {
       setError(false);
-      // Proceed with form submission logic here
-      console.log("Form submitted with:", { startTime, endTime });
     }
   };
 
@@ -53,16 +50,12 @@ function ClassPeriodCreatePage() {
           Please Fill Class Period Information
         </Typography>
       </Box>
-      {/* Form */}
       <Card sx={form}>
-        {/* title field */}
         <Typography sx={{ fontSize: 18 }} fontWeight="bold">
           Class Period Information
         </Typography>
         <Divider sx={divider} />
-        {/* content field */}
         <Box>
-          {/* time field */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
               components={["TimePicker", "TimePicker", "TimePicker"]}
@@ -110,7 +103,6 @@ function ClassPeriodCreatePage() {
             </DemoContainer>
           </LocalizationProvider>
 
-          {/* button field */}
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Stack direction="row" sx={containerButton}>
               <Button sx={button} variant="outlined" color="black">
