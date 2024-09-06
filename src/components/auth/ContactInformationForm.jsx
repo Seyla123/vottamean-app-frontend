@@ -13,7 +13,7 @@ function ContactInformationForm({ onClickBack, children }) {
       >
         <GoBackButton handleOnClick={onClickBack} />
         <HeaderTitle
-          title={"Personal information"}
+          title={"Contact information"}
           subTitle={"Input your information"}
         />
       </Box>
@@ -35,7 +35,6 @@ function ContactInformationForm({ onClickBack, children }) {
             placeholder="Phnom Penh, Street 210, ..."
           />
         </Box>
-
         {children}
       </Box>
     </Box>
