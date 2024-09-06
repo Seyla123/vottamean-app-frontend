@@ -12,15 +12,25 @@ function ClassPeriodCreatePage() {
   const [error, setError] = useState(false);
 
   // style
-  const containerButton = { mt: { lg: 4, xs: 2 }, maxWidth: "334px", width: "100%", display: "flex", gap: 4 };
-  const containerInput = { display: "flex", flexDirection: "column", gap: { xs: 1, lg: 3 } };
-  const form = { boxShadow: 2, Shadow: 1, padding: { lg: 4, xs: 4 } };
-  const button = { width: "100%", height: { xs: 38, lg: 42 } };
+  const containerButton = {
+    maxWidth: {lg: "364px", sm: " 350px"},
+    mt: "24px",
+    width: "100%",
+    display: "flex",
+    gap: { lg: "24px", xs: "16px" },
+  };
+  const containerInput = {
+    display: "flex",
+    flexDirection: "column",
+    gap: { xs: "16px", lg: "24px" },
+  };
+  const form = { boxShadow: 1, p: {lg: "24px", xs: "16px"}, display: "flex", flexDirection: "column", gap: "24px"};
+  const button = { width: "100%", height: { lg: "42px", sm: "38px" } };
   const section = { my: 0, fontSize: { lg: 32, xs: 20 } };
   const title = { fontSize: { lg: 16, xs: 14 } };
-  const divider = { bgcolor: "black", my: 2 };
-  const timeInput = { width: "100%", my: 1 };
-  const margin = { lg: 4, xs: 2 };
+  const divider = { bgcolor: "black" };
+  const timeInput = { width: "100%", mt: "4px" };
+  const content = { lg: "32px", xs: "24px" };
 
   const handleSubmit = () => {
     if (!startTime || !endTime) {
@@ -33,9 +43,9 @@ function ClassPeriodCreatePage() {
   };
 
   return (
-    <Box sx={{ mx: margin }}>
+    <Box>
       {/* Title */}
-      <Box sx={{ my: margin }}>
+      <Box sx={{ my: content }}>
         <Typography fontWeight="bold" sx={section}>
           ADD CLASS PERIOD
         </Typography>
@@ -54,10 +64,12 @@ function ClassPeriodCreatePage() {
         <Box>
           {/* time field */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["TimePicker", "TimePicker", "TimePicker"]}>
+            <DemoContainer
+              components={["TimePicker", "TimePicker", "TimePicker"]}
+            >
               <Box sx={containerInput}>
                 <Box>
-                  <Typography color={!startTime && error ? 'red' : 'inherit'}>
+                  <Typography color={!startTime && error ? "red" : "inherit"}>
                     Start time
                   </Typography>
                   <TimePicker
@@ -67,14 +79,15 @@ function ClassPeriodCreatePage() {
                     slotProps={{
                       textField: {
                         placeholder: "select",
-                        helperText: !startTime && error ? 'Start time is required' : '',
+                        helperText:
+                          !startTime && error ? "Start time is required" : "",
                         error: !startTime && error,
                       },
                     }}
                   />
                 </Box>
                 <Box>
-                  <Typography color={!endTime && error ? 'red' : 'inherit'}>
+                  <Typography color={!endTime && error ? "red" : "inherit"}>
                     End time
                   </Typography>
                   <TimePicker
@@ -84,15 +97,11 @@ function ClassPeriodCreatePage() {
                     slotProps={{
                       textField: {
                         placeholder: "select",
-                        helperText: !endTime && error ? 'End time is required' : '',
+                        helperText:
+                          !endTime && error ? "End time is required" : "",
                         error: !endTime && error,
                         margin: "none",
-                        FormHelperTextProps: {
-                          sx: {
-                            mx: 0,  // Remove horizontal margin
-                            px: 0,  // Remove horizontal padding
-                          },
-                        },
+                        FormHelperTextProps: {},
                       },
                     }}
                   />
