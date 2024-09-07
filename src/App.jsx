@@ -98,12 +98,14 @@ const ClassUpdatePage = lazy(
     () => import('./pages/admin/class/ClassUpdatePage')
 );
 
+// school 
+const SchoolUpdatePage = lazy(() => import('./pages/admin/school/SchoolUpdatePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
     <Layout>
         <DashboardLayout>
-            <CssBaseline />
+        <CssBaseline />
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
@@ -182,6 +184,13 @@ const AppRoutes = () => (
           <Route path="create" element={<ClassCreatePage />} /> 
           <Route path="update/:id" element={<ClassUpdatePage />} />
         </Route>
+
+        {/* school */}
+        <Route path="/school">
+          <Route path="update/:id" element={<SchoolUpdatePage />} />
+        </Route>
+      
+      {/* </Route> */}
 
                     {/* </Route> */}
 
