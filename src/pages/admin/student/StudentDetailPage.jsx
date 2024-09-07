@@ -1,17 +1,9 @@
-import {
-  Box,
-  Typography,
-  useTheme,
-  useMediaQuery,
-  Divider,
-  Card,
-  Tabs,
-  Tab,
-} from "@mui/material";
+import {Box,Typography,useTheme,useMediaQuery,Divider,Card, Tabs,Tab,} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const StudentDetailPage = () => {
   const theme = useTheme();
@@ -21,6 +13,8 @@ const StudentDetailPage = () => {
   const handleUpdateStudent = (selectedPostId) => {
     navigate(`/student/update/${selectedPostId}`);
   };
+    // State to track the active tab
+    const [activeTab, setActiveTab] = useState(0);
 
   const textStyles = {
     fontWeight: "bold",
@@ -58,9 +52,6 @@ const StudentDetailPage = () => {
       objectFit: "cover",
     },
   };
-
-  // State to track the active tab
-  const [activeTab, setActiveTab] = React.useState(0);
 
   const containerStyles = {
     width: "100%",
@@ -129,21 +120,7 @@ const StudentDetailPage = () => {
           />
           {/* Student details go here */}
           <Box
-            sx={{
-              display: "flex",
-              flexDirection: {
-              xs: "column",
-              sm: "row",
-              },
-              width: "100%",
-              alignItems: "center",
-              gap: {
-              xs: 3,
-              sm: 5,
-              },
-              mt: 2,
-              }}
-          >
+            sx={{display: "flex",flexDirection: {xs: "column",sm: "row",},width: "100%",alignItems: "center",gap: {s: 3,sm: 5,},mt: 2,}}>
             <Box sx={profile}>
               <img
                 src="https://via.placeholder.com/100"
