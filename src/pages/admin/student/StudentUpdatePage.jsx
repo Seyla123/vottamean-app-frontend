@@ -527,7 +527,7 @@ const StudentUpdatePage = () => {
               color="primary"
               sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
             >
-              Next
+              UPDATE
             </Button>
           </Box>
         </Card>

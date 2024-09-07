@@ -525,7 +525,7 @@ const StudentCreatePage = () => {
               color="primary"
               sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
             >
-              Next
+              CREATE
             </Button>
           </Box>
         </Card>
