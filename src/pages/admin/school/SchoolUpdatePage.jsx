@@ -1,17 +1,18 @@
 import TitleHeader from "../../../components/common/TitleHeader"
-import { Box, Typography, Divider, Stack, TextField, Card } from "@mui/material"
+import { Box, Typography, Button, Stack, TextField } from "@mui/material"
 import { fieldContainer } from "../../../styles/authStyle";
+import { cardContainer } from "../../../styles/global";
+import CardHeader from "../../../components/common/CardHeader";
 function SchoolUpdatePage() {
-  return (
-    <>
-      <TitleHeader title="Update School" subTitle={"Update School Information"} />
-        <Box component={'form'} direction="column" sx={{...CardContainer, boxShadow: "0px 5px 10px rgba(0,0,0,0.08)"}}>
-            <Stack component={'div'} direction="column" gap={1}>
-            <Typography variant="formTitle" >School Information</Typography>
-            <Divider sx={{  borderWidth: 1 , borderColor: "text.secondary"}} />
-            </Stack>
-             {/* school name input container */}
-             <Stack sx={fieldContainer} >
+    return (
+        <>
+            
+            <TitleHeader title="Update School" subTitle={"Update School Information"} />
+            <Box component={'form'} direction="column" sx={{ ...cardContainer }}>
+                {/* Card Title */}
+                <CardHeader title="School Information" />
+                {/* school name input container */}
+                <Stack sx={fieldContainer} >
                     <Typography variant="body1">School&apos;s Name</Typography>
                     <TextField placeholder="school&apos;s name" />
                 </Stack>
@@ -29,20 +30,18 @@ function SchoolUpdatePage() {
                         placeholder="Phnom Penh, Street 210, ..."
                     />
                 </Stack>
-
-      </Box>
-    </>
-  )
+                {/* Button Container  */}
+                <Stack direction={'row'} alignSelf={'flex-end'} width={{xs:'100%',sm:'340px'}} gap={{xs:1,sm:2}}>
+                    <Button fullWidth variant="outlined"color="white">
+                        Cancel
+                    </Button>
+                    <Button fullWidth variant="contained" >
+                        ADD SESSION
+                    </Button>
+                </Stack>
+            </Box>
+        </>
+    )
 }
 
 export default SchoolUpdatePage;
-const CardContainer = {
-    width: "100%",
-    padding: { xs: 3, sm: 4 },
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-    borderRadius: "8px",
-    border: "0.3px solid rgba(0, 0, 0, 0.05)",
-    boxShadow: "0px 0px 24px rgba(0, 0, 0, 0.05)",
-  };
