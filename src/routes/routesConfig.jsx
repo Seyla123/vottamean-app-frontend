@@ -10,7 +10,10 @@ const PasswordChangePage = lazy(() => import('../pages/auth/PasswordChangePage')
 const AccountVerifyPage = lazy(() => import('../pages/auth/AccountVerifyPage'));
 const AccountSuccessPage = lazy(() => import('../pages/auth/AccountSuccessPage'));
 
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+
 const DashboardPage = lazy(() => import('../pages/admin/dashboard/DashboardPage'));
+
 const SessionListPage = lazy(() => import('../pages/admin/session/SessionListPage'));
 const SessionDetailPage = lazy(() => import('../pages/admin/session/SessionDetailPage'));
 const SessionCreatePage = lazy(() => import('../pages/admin/session/SessionCreatePage'));
@@ -42,7 +45,6 @@ const ClassCreatePage = lazy(() => import('../pages/admin/class/ClassCreatePage'
 const ClassUpdatePage = lazy(() => import('../pages/admin/class/ClassUpdatePage'));
 
 const SchoolUpdatePage = lazy(() => import('../pages/admin/school/SchoolUpdatePage'));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 // Routes configuration
 const routesConfig = [
