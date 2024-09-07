@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 const HeaderTitle = ({ title, subTitle, center, children }) => {
 
   return (
-    <Box sx={containerStyles}>
+    <Box sx={{...containerStyles,textAlign: center ? "center" : "left"}}>
     {/* Render any additional content passed as children */}
       {children}
       <Typography variant="h4" fontWeight={"bold"} padding={0}>
@@ -20,5 +20,4 @@ const containerStyles = {
     display: "flex",
     flexDirection: "column",
     gap: 1,
-    textAlign: center ? "center" : "left",
   };
