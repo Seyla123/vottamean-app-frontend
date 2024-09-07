@@ -4,24 +4,13 @@ import TestimonialCard from "./TestimonialCard";
 import LogoWaveTrack from '../../assets/images/logoWaveTrack.png'
 function AuthContainerCard({ sideCard, children }) {
   const flexdirection = sideCard === 'right' ? 'row-reverse' : 'row';
-  const gridContainer = {
-    width: "100%",
-    padding: { xs: 3, sm: 3 },
-    display: "flex",
-    gap: 3,
-    flexDirection: flexdirection,
-    justifyContent: "center",
-    borderRadius: "24px",
-    border: "0.3px solid #E0E0E0",
-    boxShadow: "0px 0px 24px rgba(0, 0, 0, 0.08)",
-  };
-  const flexDir = sideCard ? 'flex-end' : 'flex-start';
+  console.log(sideCard);
+  
+  const flexDir = sideCard === 'right' ? 'flex-end' : 'flex-start';
   return (
     <>
-      <Container component="form" sx={gridContainer}>
-        <Box
-          sx={sideCardContainer}
-        >
+      <Container component="form" sx={gridContainer} flexDirection={flexdirection}>
+        <Box  sx={sideCardContainer} >
           <Box display={"flex"} justifyContent={flexDir} sx={{ padding: 2 }}>
             <Box component={'img'} src={LogoWaveTrack} sx={{ maxWidth: "60px" }} />
           </Box>
@@ -44,7 +33,16 @@ function AuthContainerCard({ sideCard, children }) {
 
 }
 export default AuthContainerCard;
-
+const gridContainer = {
+  width: "100%",
+  padding: { xs: 3, sm: 3 },
+  display: "flex",
+  gap: 3,
+  justifyContent: "center",
+  borderRadius: "24px",
+  border: "0.3px solid #E0E0E0",
+  boxShadow: "0px 0px 24px rgba(0, 0, 0, 0.08)",
+};
 
 const sideCardContainer = {
   display: { xs: "none", md: "flex" },

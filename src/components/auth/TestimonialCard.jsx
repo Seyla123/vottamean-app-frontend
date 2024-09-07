@@ -15,15 +15,7 @@ const TestimonialCard = () => {
                 <Box
                 component={'img'}
                 src={googleLogo}
-                    sx={{
-                        width: "100px",
-                        height: "40px",
-                        padding:"4px 24px",
-                        borderRadius: '50px',
-                        bgcolor:"#F3F3F5",
-                        objectFit: "contain",
-                        objectPosition: "center",
-                    }}
+                sx={imgStyle}
                 >
                 </Box>
                 <Typography
@@ -50,3 +42,13 @@ const TestimonialCard = () => {
 };
 
 export default TestimonialCard;
+
+const imgStyle = {
+    width: "100px",
+    height: "40px",
+    padding:"4px 24px",
+    borderRadius: '50px',
+    bgcolor:"#F3F3F5",
+    objectFit: "contain",
+    objectPosition: "center",
+}
