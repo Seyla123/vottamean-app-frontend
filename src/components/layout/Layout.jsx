@@ -124,6 +124,7 @@ const Layout = ({ children }) => {
         };
     }, [location, navigate]);
     return (
+       <>
         <AppProvider
             branding={{
                 title: '',
@@ -134,9 +135,15 @@ const Layout = ({ children }) => {
             theme={theme}
             session={session}
             authentication={authentication}
+            
         >
-            <Box padding={2}>{children}</Box>
+
+            <Box padding={2}>
+                {children}
+                
+            </Box>
         </AppProvider>
+       </>
     );
 };
 
