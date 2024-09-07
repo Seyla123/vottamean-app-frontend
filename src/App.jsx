@@ -85,7 +85,6 @@ const TeacherUpdatePage = lazy(
 );
 
 // Error Page
-const GuardianCreatePage = lazy(() => import('./components/student/GuardianInfo'));
 
 // Class Page
 const ClassListPage = lazy(() => import('./pages/admin/class/ClassListPage'));
@@ -183,10 +182,6 @@ const AppRoutes = () => (
           <Route path="create" element={<ClassCreatePage />} /> 
           <Route path="update/:id" element={<ClassUpdatePage />} />
         </Route>
-        {/* Guardian Routes */}
-        <Route path="/guardian">
-          <Route path="create" element={<GuardianCreatePage />} /> 
-       </Route>
 
                     {/* </Route> */}
 

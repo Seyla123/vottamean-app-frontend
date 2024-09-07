@@ -5,19 +5,18 @@ import {
   Button,
   Box,
   Typography,
-  Alert,
   FormHelperText,
   Divider,
   useMediaQuery,
   Card,
-  Hidden,
   MenuItem,
+  Hidden,
 } from "@mui/material";
 import { LocalizationProvider, DesktopDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import StudentInfo from "../../../components/student/StudentInfo";
+
 const StudentCreatePage = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -29,6 +28,8 @@ const StudentCreatePage = () => {
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
 
+  // State to track the active tab
+  const [activeTab, setActiveTab] = useState("student");
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -69,6 +70,14 @@ const StudentCreatePage = () => {
     navigate("/student");
   };
 
+  const handleNext = () => {
+    if (activeTab === "student") {
+      setActiveTab("guardian");
+    } else if (activeTab === "guardian") {
+      handleCreate(); // This will submit the form when on the last tab
+    }
+  };
+
   const containerStyles = {
     width: "100%",
     margin: "0 auto",
@@ -104,136 +113,118 @@ const StudentCreatePage = () => {
           Please fill student Information
         </Typography>
       </Box>
-
       <Hidden smDown>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center", padding: "16px" }}>
           <Box
+            onClick={() => setActiveTab("student")}
             sx={{
-              my: { xs: "12px", sm: "16px" },
-              width: "197px",
-              padding: "16px",
+              cursor: "pointer",
+              width: "206px",
+               borderBottom: activeTab === "student" ? "2px solid #1976d2" : "none", 
             }}
           >
-            <Typography
-              color="primary"
+            <Button
+   
               sx={{
+                color: activeTab === "student" ? '#2196F3':"rgba(0, 0, 0, 0.6)",
                 fontFamily: "Roboto",
                 fontSize: "14px",
                 fontWeight: "medium",
               }}
             >
               STUDENT INFORMATION
-            </Typography>
+            </Button>
           </Box>
-          <Box sx={{ my: { xs: "12px", sm: "16px" }, padding: "16px" }}>
-            <Typography
+          <Box
+            onClick={() => setActiveTab("guardian")}
+            sx={{
+              cursor: "pointer",
+              width: "206px",
+              borderBottom: activeTab === "guardian" ? "2px solid #1976d2" : "none", 
+             
+            }}
+          >
+            <Button
               sx={{
+                color: activeTab === "guardian" ?'#2196F3':"rgba(0, 0, 0, 0.6)",
                 fontFamily: "Roboto",
                 fontSize: "14px",
-                color: "rgba(0, 0, 0, 0.6)",
                 fontWeight: "medium",
               }}
             >
               GUARDIAN INFORMATION
-            </Typography>
+            </Button>
           </Box>
         </Box>
       </Hidden>
-
-      <Card
-        component="form"
-        onSubmit={handleCreate}
-        sx={{
-          backgroundColor: "#FFFFFF",
-          padding: { xs: 3, sm: 4 },
-          borderRadius: "4px",
-        }}
-      >
-        {error && (
-          <Alert severity="error" sx={{ margin: "16px" }}>
-            {error}
-          </Alert>
-        )}
-
-        <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
-          Student Information
-        </Typography>
-        <Divider
-          sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
-        />
-
-        <Box
+      {/* Conditionally render Student or Guardian information */}
+      {activeTab === "student" && (
+        <Card
+          component="form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleNext(); // Call handleNext to switch to the next tab
+          }}
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            gap: "12px",
+            backgroundColor: "#FFFFFF",
+            padding: { xs: 3, sm: 4 },
+            borderRadius: "4px",
           }}
         >
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={{ fontSize: "16px" }}>First Name</Typography>
-            <TextField
-              placeholder="First name"
-              variant="outlined"
-              value={newPost.title}
-              onChange={handleTitleChange}
-              fullWidth
-              margin="dense"
-              error={titleError}
-            />
-            {titleError && (
-              <FormHelperText sx={{ fontSize: "14px" }} error>
-                First name is required.
-              </FormHelperText>
-            )}
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={{ fontSize: "16px" }}>Last Name</Typography>
-            <TextField
-              placeholder="Last name"
-              variant="outlined"
-              value={newPost.content}
-              onChange={handleContentChange}
-              fullWidth
-              margin="dense"
-              error={contentError}
-            />
-            {contentError && (
-              <FormHelperText sx={{ fontSize: "14px" }} error>
-                Last name is required.
-              </FormHelperText>
-            )}
-          </Box>
-        </Box>
+          <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
+            Student Information
+          </Typography>
+          {/* Student form content */}
+          <Divider
+            sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
+          />
 
-        <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
-          <Typography sx={{ fontSize: "16px" }}>Class name</Typography>
-          <TextField
-            select
-            placeholder="Select"
-            variant="outlined"
-            defaultValue="Select"
-            fullWidth
-            margin="dense"
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: "12px",
+            }}
           >
-            {selectType.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontSize: "16px" }}>First Name</Typography>
+              <TextField
+                placeholder="First name"
+                variant="outlined"
+                value={newPost.title}
+                onChange={handleTitleChange}
+                fullWidth
+                margin="dense"
+                error={titleError}
+              />
+              {titleError && (
+                <FormHelperText sx={{ fontSize: "14px" }} error>
+                  First name is required.
+                </FormHelperText>
+              )}
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontSize: "16px" }}>Last Name</Typography>
+              <TextField
+                placeholder="Last name"
+                variant="outlined"
+                value={newPost.content}
+                onChange={handleContentChange}
+                fullWidth
+                margin="dense"
+                error={contentError}
+              />
+              {contentError && (
+                <FormHelperText sx={{ fontSize: "14px" }} error>
+                  Last name is required.
+                </FormHelperText>
+              )}
+            </Box>
+          </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "12px",
-            my: { xs: "12px", sm: "16px" },
-          }}
-        >
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={{ fontSize: "16px" }}>Gender</Typography>
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>Class name</Typography>
             <TextField
               select
               placeholder="Select"
@@ -249,111 +240,291 @@ const StudentCreatePage = () => {
               ))}
             </TextField>
           </Box>
-          {/* Form Date of birth*/}
-          <Box sx={{ width: "100%", flex: 1, marginTop: "2px" }}>
-            <Typography gutterBottom>Date of Birth</Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Box sx={{ width: "100%" }}>
-                <DesktopDatePicker
-                  defaultValue={dayjs("2022-04-17T15:30")}
-                  sx={{
-                    width: "100%",
-                    "@media (max-width:600px)": { width: "100%" },
-                  }}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
-                />
-              </Box>
-            </LocalizationProvider>
-          </Box>
-        </Box>
 
-        <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
-          <Typography sx={{ fontSize: "16px" }}>Phone Number</Typography>
-          <TextField
-            placeholder="Phone number"
-            variant="outlined"
-            value={newPost.content}
-            onChange={handleContentChange}
-            fullWidth
-            margin="dense"
-            error={contentError}
-          />
-          {contentError && (
-            <FormHelperText sx={{ fontSize: "14px" }} error>
-              Phone number is required.
-            </FormHelperText>
-          )}
-        </Box>
-
-        <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
-          <Typography sx={{ fontSize: "16px" }}>Email</Typography>
-          <TextField
-            placeholder="Email"
-            variant="outlined"
-            value={newPost.content}
-            onChange={handleContentChange}
-            fullWidth
-            margin="dense"
-            error={contentError}
-          />
-          {contentError && (
-            <FormHelperText sx={{ fontSize: "14px" }} error>
-              Email is required.
-            </FormHelperText>
-          )}
-        </Box>
-
-        <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
-          <Typography sx={{ fontSize: "16px" }}>Address</Typography>
-          <TextField
-            placeholder="Address"
-            variant="outlined"
-            value={newPost.content}
-            onChange={handleContentChange}
-            fullWidth
-            margin="dense"
-            multiline
-            rows={5}
-            error={contentError}
-          />
-          {contentError && (
-            <FormHelperText sx={{ fontSize: "14px" }} error>
-              Address is required.
-            </FormHelperText>
-          )}
-        </Box>
-
-        <Box
-          sx={{
-            maxwidth: "340px",
-            display: "flex",
-            justifyContent: "right",
-            gap: isMobile ? "16px" : "24px",
-          }}
-        >
-          <Button
-            onClick={handleCancel}
-            variant="outlined"
-            color="black"
+          <Box
             sx={{
-              backgroundColor: "#ffffff",
-              color: "black",
-              width: { xs: 1, sm: "140px" },
-              height: "42px",
+              display: "flex",
+              flexDirection: "row",
+              gap: "12px",
+              my: { xs: "12px", sm: "16px" },
             }}
           >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontSize: "16px" }}>Gender</Typography>
+              <TextField
+                select
+                placeholder="Select"
+                variant="outlined"
+                defaultValue="Select"
+                fullWidth
+                margin="dense"
+              >
+                {selectType.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+            {/* Form Date of birth*/}
+            <Box sx={{ width: "100%", flex: 1, marginTop: "2px" }}>
+              <Typography gutterBottom>Date of Birth</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Box sx={{ width: "100%" }}>
+                  <DesktopDatePicker
+                    defaultValue={dayjs("2022-04-17T15:30")}
+                    sx={{
+                      width: "100%",
+                      "@media (max-width:600px)": { width: "100%" },
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth />
+                    )}
+                  />
+                </Box>
+              </LocalizationProvider>
+            </Box>
+          </Box>
+
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>Phone Number</Typography>
+            <TextField
+              placeholder="Phone number"
+              variant="outlined"
+              value={newPost.content}
+              onChange={handleContentChange}
+              fullWidth
+              margin="dense"
+              error={contentError}
+            />
+            {contentError && (
+              <FormHelperText sx={{ fontSize: "14px" }} error>
+                Phone number is required.
+              </FormHelperText>
+            )}
+          </Box>
+
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>Email</Typography>
+            <TextField
+              placeholder="Email"
+              variant="outlined"
+              value={newPost.content}
+              onChange={handleContentChange}
+              fullWidth
+              margin="dense"
+              error={contentError}
+            />
+            {contentError && (
+              <FormHelperText sx={{ fontSize: "14px" }} error>
+                Email is required.
+              </FormHelperText>
+            )}
+          </Box>
+
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>Address</Typography>
+            <TextField
+              placeholder="Address"
+              variant="outlined"
+              value={newPost.content}
+              onChange={handleContentChange}
+              fullWidth
+              margin="dense"
+              multiline
+              rows={5}
+              error={contentError}
+            />
+            {contentError && (
+              <FormHelperText sx={{ fontSize: "14px" }} error>
+                Address is required.
+              </FormHelperText>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              maxwidth: "340px",
+              display: "flex",
+              justifyContent: "right",
+              gap: isMobile ? "16px" : "24px",
+            }}
           >
-            Next
-          </Button>
-        </Box>
-      </Card>
+            <Button
+              onClick={handleCancel}
+              variant="outlined"
+              color="black"
+              sx={{
+                backgroundColor: "#ffffff",
+                color: "black",
+                width: { xs: 1, sm: "140px" },
+                height: "42px",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
+            >
+              Next
+            </Button>
+          </Box>
+        </Card>
+      )}
+
+      {activeTab === "guardian" && (
+        <Card
+          component="form"
+          onSubmit={handleCreate}
+          sx={{
+            backgroundColor: "#FFFFFF",
+            padding: { xs: 3, sm: 4 },
+            borderRadius: "4px",
+          }}
+        >
+          <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
+            Guardian Information
+          </Typography>
+          {/* Guardian form content */}
+          <Divider
+            sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
+          />
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: "12px",
+            }}
+          >
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontSize: "16px" }}>First Name</Typography>
+              <TextField
+                placeholder="First name"
+                variant="outlined"
+                value={newPost.title}
+                onChange={handleTitleChange}
+                fullWidth
+                margin="dense"
+                error={titleError}
+              />
+              {titleError && (
+                <FormHelperText sx={{ fontSize: "14px" }} error>
+                  First name is required.
+                </FormHelperText>
+              )}
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontSize: "16px" }}>Last Name</Typography>
+              <TextField
+                placeholder="Last name"
+                variant="outlined"
+                value={newPost.content}
+                onChange={handleContentChange}
+                fullWidth
+                margin="dense"
+                error={contentError}
+              />
+              {contentError && (
+                <FormHelperText sx={{ fontSize: "14px" }} error>
+                  Last name is required.
+                </FormHelperText>
+              )}
+            </Box>
+          </Box>
+
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>
+              Guardian's Relationship
+            </Typography>
+            <TextField
+              placeholder="Relationship"
+              variant="outlined"
+              value={newPost.content}
+              onChange={handleContentChange}
+              fullWidth
+              margin="dense"
+              error={contentError}
+            />
+            {contentError && (
+              <FormHelperText sx={{ fontSize: "14px" }} error>
+                Email is required.
+              </FormHelperText>
+            )}
+          </Box>
+
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>Email</Typography>
+            <TextField
+              placeholder="Email"
+              variant="outlined"
+              value={newPost.content}
+              onChange={handleContentChange}
+              fullWidth
+              margin="dense"
+              error={contentError}
+            />
+            {contentError && (
+              <FormHelperText sx={{ fontSize: "14px" }} error>
+                Email is required.
+              </FormHelperText>
+            )}
+          </Box>
+
+          <Box sx={{ width: "100%", my: { xs: "12px", sm: "16px" } }}>
+            <Typography sx={{ fontSize: "16px" }}>Phone Number</Typography>
+            <TextField
+              placeholder="Phone number"
+              variant="outlined"
+              value={newPost.content}
+              onChange={handleContentChange}
+              fullWidth
+              margin="dense"
+              error={contentError}
+            />
+            {contentError && (
+              <FormHelperText sx={{ fontSize: "14px" }} error>
+                Phone number is required.
+              </FormHelperText>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              maxwidth: "340px",
+              display: "flex",
+              justifyContent: "right",
+              gap: isMobile ? "16px" : "24px",
+            }}
+          >
+            <Button
+              onClick={handleCancel}
+              variant="outlined"
+              color="black"
+              sx={{
+                backgroundColor: "#ffffff",
+                color: "black",
+                width: { xs: 1, sm: "140px" },
+                height: "42px",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
+            >
+              Next
+            </Button>
+          </Box>
+        </Card>
+      )}
     </Box>
   );
 };
