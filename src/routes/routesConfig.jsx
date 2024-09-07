@@ -83,13 +83,20 @@ const routesConfig = [
     },
     {
         path: '/dashboard',
-        element: <DashboardPage />,
         showSidebar: true,
         children: [
             {
+                path: '',
+                element: <DashboardPage />,
+                children: [],
+            },
+            {
                 path: 'sessions',
-                element: <SessionListPage />,
                 children: [
+                    {
+                        path: '',
+                        element: <SessionListPage />,
+                    },
                     {
                         path: ':id',
                         element: <SessionDetailPage />,
@@ -106,8 +113,11 @@ const routesConfig = [
             },
             {
                 path: 'students',
-                element: <StudentListPage />,
                 children: [
+                    {
+                        path: '',
+                        element: <StudentListPage />,
+                    },
                     {
                         path: ':id',
                         element: <StudentDetailPage />,
@@ -124,8 +134,11 @@ const routesConfig = [
             },
             {
                 path: 'subjects',
-                element: <SubjectListPage />,
                 children: [
+                    {
+                        path: '',
+                        element: <SubjectListPage />,
+                    },
                     {
                         path: ':id',
                         element: <SubjectDetailPage />,
@@ -142,8 +155,11 @@ const routesConfig = [
             },
             {
                 path: 'class-periods',
-                element: <ClassPeriodListPage />,
                 children: [
+                    {
+                        path: '',
+                        element: <ClassPeriodListPage />,
+                    },
                     {
                         path: ':id',
                         element: <ClassPeriodDetailPage />,
@@ -160,8 +176,11 @@ const routesConfig = [
             },
             {
                 path: 'teachers',
-                element: <TeacherListPage />,
                 children: [
+                    {
+                        path: '',
+                        element: <TeacherListPage />,
+                    },
                     {
                         path: ':id',
                         element: <TeacherDetailPage />,
@@ -180,6 +199,10 @@ const routesConfig = [
                 path: 'classes',
                 element: <ClassListPage />,
                 children: [
+                    {
+                        path: '',
+                        element: <ClassListPage />,
+                    },
                     {
                         path: ':id',
                         element: <ClassDetailPage />,
