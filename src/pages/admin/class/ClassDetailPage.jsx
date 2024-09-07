@@ -218,20 +218,6 @@ const ClassDetailPage = () => {
   ].filter(Boolean);
   //Add Style
 
-  const containerStyles = {
-    width: "100%",
-    minWidth: "300px",
-    margin: "0 auto",
-    alignItems: "end",
-    flexWrap: "wrap",
-    borderColor: "divider",
-  };
-  const tableContainerStyles = {
-    width: "100%",
-    overflowX: "auto",
-    backgroundColor: "#FFFFFF",
-  };
-
   const paginationModel = { page: 0, pageSize: 5 };
 
   return (
@@ -388,3 +374,17 @@ const ClassDetailPage = () => {
 };
 
 export default ClassDetailPage;
+
+const containerStyles = {
+  width: "100%",
+  minWidth: "300px",
+  margin: "0 auto",
+  alignItems: "end",
+  flexWrap: "wrap",
+  borderColor: "divider",
+};
+const tableContainerStyles = {
+  width: "100%",
+  overflowX: "auto",
+  backgroundColor: "#FFFFFF",
+};

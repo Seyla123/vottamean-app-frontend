@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const ClassListPage = () => {
   const [posts, setPosts] = useState([]);
@@ -88,7 +88,6 @@ const ClassListPage = () => {
       post.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const theme = useTheme();
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -134,7 +133,7 @@ const ClassListPage = () => {
     },
     {
       field: "action",
-      headerName: "",
+      headerName: (<DeleteForeverIcon sx={{ color: "red" }}/>) ,
       disableColumnMenu: true,
       sortable: false,
       resizable: false,
@@ -177,69 +176,26 @@ const ClassListPage = () => {
     },
   ];
 
-  //Add Style
-
-  const containerStyles = {
-    width: "100%",
-    margin: "0 auto",
-    alignItems: "end",
-    flexWrap: "wrap",
-  };
-  const flexBoxStyles = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "16px",
-  };
-  const inputBoxStyles = {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "right",
-    marginBottom: "24px",
-    alignItems: "center",
-    width: "100%",
-    "& .MuiInputBase-root": {
-      height: "42px",
-    },
-    "& .MuiInputBase-input": {
-      padding: "8px 14px",
-      fontSize: "14px",
-    },
-    "& .MuiInputLabel-root": {
-      top: "-4px",
-      fontSize: "14px",
-      lineHeight: "1",
-    },
-  };
-  const textFieldStyles = {
-    width: "100%",
-    width: {xs: 1,sm:'540px'}
-  };
-
-  const tableContainerStyles = {
-    width: "100%",
-    overflowX: "auto",
-    backgroundColor: "#FFFFFF",
-  };
 
   const paginationModel = { page: 0, pageSize: 5 };
 
   return (
     <Box sx={containerStyles}>
-      <Typography
-        sx={{
-          fontFamily: "Roboto",
-          fontWeight: 600,
-          fontSize: { xs: "20px", sm: "32px" },
-        }}
-      >
-        CLASS LISTS
-      </Typography>
-      <Box sx={flexBoxStyles}>
-        <Typography sx={{ fontFamily: "Roboto", fontSize: "16px" }}>
-          There are total classes
+      <Box>
+        <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontWeight: 600,
+            fontSize: { xs: "20px", sm: "32px" },
+          }}
+        >
+          CLASS LISTS
         </Typography>
+        <Typography sx={{ fontFamily: "Roboto", fontSize: "16px" }}>
+          There are total students
+        </Typography>
+      </Box >
+      <Box sx={flexBoxStyles}>
         <Button
           variant="contained"
           color="primary"
@@ -312,3 +268,49 @@ const ClassListPage = () => {
 };
 
 export default ClassListPage;
+
+  //Add Style
+
+  const containerStyles = {
+    width: "100%",
+    margin: "0 auto",
+    alignItems: "end",
+    flexWrap: "wrap",
+  };
+  const flexBoxStyles = {
+    display: "flex",
+    justifyContent: "end",
+    alignItems: "center",
+    marginBottom: "16px",
+  };
+  const inputBoxStyles = {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "right",
+    marginBottom: "24px",
+    alignItems: "center",
+    width: "100%",
+    "& .MuiInputBase-root": {
+      height: "42px",
+    },
+    "& .MuiInputBase-input": {
+      padding: "8px 14px",
+      fontSize: "14px",
+    },
+    "& .MuiInputLabel-root": {
+      top: "-4px",
+      fontSize: "14px",
+      lineHeight: "1",
+    },
+  };
+  const textFieldStyles = {
+    width: "100%",
+    width: {xs: 1,sm:'540px'}
+  };
+
+  const tableContainerStyles = {
+    width: "100%",
+    overflowX: "auto",
+    backgroundColor: "#FFFFFF",
+  };
