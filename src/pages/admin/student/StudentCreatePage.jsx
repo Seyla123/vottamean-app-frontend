@@ -67,8 +67,13 @@ const StudentCreatePage = () => {
   };
 
   const handleCancel = () => {
-    navigate("/student");
+    if (activeTab==='student'){
+      navigate("/student");
+    }
+    else if (activeTab === "guardian") {
+      setActiveTab("student");
   };
+}
 
   const handleNext = () => {
     if (activeTab === "student") {
