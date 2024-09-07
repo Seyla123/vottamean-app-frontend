@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoutes from './routes/ProtectedRoutes';
 import { CssBaseline } from '@mui/material';
-import { DashboardLayout } from '@toolpad/core/DashboardLayout';
+
 import Layout from './components/layout/Layout';
 
 // Authentication Pages
@@ -104,7 +104,6 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const AppRoutes = () => (
     <Layout>
-        <DashboardLayout>
         <CssBaseline />
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
@@ -197,7 +196,6 @@ const AppRoutes = () => (
                     <Route path='*' element={<NotFoundPage />} />
                 </Routes>
             </Suspense>
-        </DashboardLayout>
     </Layout>
 );
 
