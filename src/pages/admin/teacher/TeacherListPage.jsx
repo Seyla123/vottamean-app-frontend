@@ -3,6 +3,7 @@ import Header from '../../../components/teacher/Header';
 import { Box, Button, TextField, InputAdornment, Paper, IconButton, Menu, MenuItem } from '@mui/material';
 import { Search as SearchIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 function TeacherListPage() {
@@ -22,10 +23,7 @@ function TeacherListPage() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
 
-  const handleDeleteSelected = () => {
-    setRows(rows.filter(row => !selectionModel.includes(row.id)));
-    setSelectionModel([]); // Clear selection after deletion
-  };
+
 
   const handleMenuOpen = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -106,8 +104,8 @@ function TeacherListPage() {
       disableColumnMenu: true,
       sortable: false,
       renderCell: (params) => (
-        <IconButton onClick={(event) => handleMenuOpen(event, params.id)} size="small" align="horizontal" >
-          <MoreVertIcon />
+        <IconButton onClick={(event) => handleMenuOpen(event, params.id)} size="small">
+          <MoreHorizIcon />
         </IconButton>
       ),
     },
@@ -117,17 +115,6 @@ function TeacherListPage() {
     <Box>
       {/* Header */}
       <Header header="TEACHER LIST" subheader="There are 24 teachers" />
-
-      {/* Button to Delete Selected Rows */}
-      <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mb: 2 }}>
-        <Button 
-          variant="contained" 
-          onClick={handleDeleteSelected}
-          disabled={selectionModel.length === 0}
-        >
-          DELETE SELECTED
-        </Button>
-      </Box>
 
       {/* Button to Add Teacher */}
       <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mb: 2 }}>
@@ -198,7 +185,7 @@ function TeacherListPage() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        PaperProps={{ sx: { width: '200px' } }}
+        PaperProps={{ sx: { width: '104px' } }}
       >
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDeleteSingle}>Delete</MenuItem>
