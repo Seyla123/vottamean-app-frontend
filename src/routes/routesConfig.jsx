@@ -2,47 +2,47 @@ import React from 'react';
 import { lazy } from 'react';
 
 // Lazy-loaded Pages
-const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
-const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
-const PasswordForgotPage = lazy(() => import('./pages/auth/PasswordForgotPage'));
-const PasswordResetPage = lazy(() => import('./pages/auth/PasswordResetPage'));
-const PasswordChangePage = lazy(() => import('./pages/auth/PasswordChangePage'));
-const AccountVerifyPage = lazy(() => import('./pages/auth/AccountVerifyPage'));
-const AccountSuccessPage = lazy(() => import('./pages/auth/AccountSuccessPage'));
+const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
+const SignupPage = lazy(() => import('../pages/auth/SignupPage'));
+const PasswordForgotPage = lazy(() => import('../pages/auth/PasswordForgotPage'));
+const PasswordResetPage = lazy(() => import('../pages/auth/PasswordResetPage'));
+const PasswordChangePage = lazy(() => import('../pages/auth/PasswordChangePage'));
+const AccountVerifyPage = lazy(() => import('../pages/auth/AccountVerifyPage'));
+const AccountSuccessPage = lazy(() => import('../pages/auth/AccountSuccessPage'));
 
-const DashboardPage = lazy(() => import('./pages/admin/dashboard/DashboardPage'));
-const SessionListPage = lazy(() => import('./pages/admin/session/SessionListPage'));
-const SessionDetailPage = lazy(() => import('./pages/admin/session/SessionDetailPage'));
-const SessionCreatePage = lazy(() => import('./pages/admin/session/SessionCreatePage'));
-const SessionUpdatePage = lazy(() => import('./pages/admin/session/SessionUpdatePage'));
+const DashboardPage = lazy(() => import('../pages/admin/dashboard/DashboardPage'));
+const SessionListPage = lazy(() => import('../pages/admin/session/SessionListPage'));
+const SessionDetailPage = lazy(() => import('../pages/admin/session/SessionDetailPage'));
+const SessionCreatePage = lazy(() => import('../pages/admin/session/SessionCreatePage'));
+const SessionUpdatePage = lazy(() => import('../pages/admin/session/SessionUpdatePage'));
 
-const StudentListPage = lazy(() => import('./pages/admin/student/StudentListPage'));
-const StudentDetailPage = lazy(() => import('./pages/admin/student/StudentDetailPage'));
-const StudentCreatePage = lazy(() => import('./pages/admin/student/StudentCreatePage'));
-const StudentUpdatePage = lazy(() => import('./pages/admin/student/StudentUpdatePage'));
+const StudentListPage = lazy(() => import('../pages/admin/student/StudentListPage'));
+const StudentDetailPage = lazy(() => import('../pages/admin/student/StudentDetailPage'));
+const StudentCreatePage = lazy(() => import('../pages/admin/student/StudentCreatePage'));
+const StudentUpdatePage = lazy(() => import('../pages/admin/student/StudentUpdatePage'));
 
-const SubjectListPage = lazy(() => import('./pages/admin/subject/SubjectListPage'));
-const SubjectDetailPage = lazy(() => import('./pages/admin/subject/SubjectDetailPage'));
-const SubjectCreatePage = lazy(() => import('./pages/admin/subject/SubjectCreatePage'));
-const SubjectUpdatePage = lazy(() => import('./pages/admin/subject/SubjectUpdatePage'));
+const SubjectListPage = lazy(() => import('../pages/admin/subject/SubjectListPage'));
+const SubjectDetailPage = lazy(() => import('../pages/admin/subject/SubjectDetailPage'));
+const SubjectCreatePage = lazy(() => import('../pages/admin/subject/SubjectCreatePage'));
+const SubjectUpdatePage = lazy(() => import('../pages/admin/subject/SubjectUpdatePage'));
 
-const ClassPeriodListPage = lazy(() => import('./pages/admin/class-period/ClassPeriodListPage'));
-const ClassPeriodDetailPage = lazy(() => import('./pages/admin/class-period/ClassPeriodDetailPage'));
-const ClassPeriodCreatePage = lazy(() => import('./pages/admin/class-period/ClassPeriodCreatePage'));
-const ClassPeriodUpdatePage = lazy(() => import('./pages/admin/class-period/ClassPeriodUpdatePage'));
+const ClassPeriodListPage = lazy(() => import('../pages/admin/class-period/ClassPeriodListPage'));
+const ClassPeriodDetailPage = lazy(() => import('../pages/admin/class-period/ClassPeriodDetailPage'));
+const ClassPeriodCreatePage = lazy(() => import('../pages/admin/class-period/ClassPeriodCreatePage'));
+const ClassPeriodUpdatePage = lazy(() => import('../pages/admin/class-period/ClassPeriodUpdatePage'));
 
-const TeacherListPage = lazy(() => import('./pages/admin/teacher/TeacherListPage'));
-const TeacherDetailPage = lazy(() => import('./pages/admin/teacher/TeacherDetailPage'));
-const TeacherCreatePage = lazy(() => import('./pages/admin/teacher/TeacherCreatePage'));
-const TeacherUpdatePage = lazy(() => import('./pages/admin/teacher/TeacherUpdatePage'));
+const TeacherListPage = lazy(() => import('../pages/admin/teacher/TeacherListPage'));
+const TeacherDetailPage = lazy(() => import('../pages/admin/teacher/TeacherDetailPage'));
+const TeacherCreatePage = lazy(() => import('../pages/admin/teacher/TeacherCreatePage'));
+const TeacherUpdatePage = lazy(() => import('../pages/admin/teacher/TeacherUpdatePage'));
 
-const ClassListPage = lazy(() => import('./pages/admin/class/ClassListPage'));
-const ClassDetailPage = lazy(() => import('./pages/admin/class/ClassDetailPage'));
-const ClassCreatePage = lazy(() => import('./pages/admin/class/ClassCreatePage'));
-const ClassUpdatePage = lazy(() => import('./pages/admin/class/ClassUpdatePage'));
+const ClassListPage = lazy(() => import('../pages/admin/class/ClassListPage'));
+const ClassDetailPage = lazy(() => import('../pages/admin/class/ClassDetailPage'));
+const ClassCreatePage = lazy(() => import('../pages/admin/class/ClassCreatePage'));
+const ClassUpdatePage = lazy(() => import('../pages/admin/class/ClassUpdatePage'));
 
-const SchoolUpdatePage = lazy(() => import('./pages/admin/school/SchoolUpdatePage'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const SchoolUpdatePage = lazy(() => import('../pages/admin/school/SchoolUpdatePage'));
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 // Routes configuration
 const routesConfig = [
