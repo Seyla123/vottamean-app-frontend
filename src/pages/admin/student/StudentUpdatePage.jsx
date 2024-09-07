@@ -67,14 +67,19 @@ const StudentUpdatePage = () => {
   };
 
   const handleCancel = () => {
-    navigate("/student");
+    if (activeTab==='student'){
+      navigate("/student");
+    }
+    else if (activeTab === "guardian") {
+      setActiveTab("student");
   };
+}
 
   const handleNext = () => {
     if (activeTab === "student") {
       setActiveTab("guardian");
     } else if (activeTab === "guardian") {
-      handleCreate(); // This will submit the form when on the last tab
+      handleCreate(); 
     }
   };
 
