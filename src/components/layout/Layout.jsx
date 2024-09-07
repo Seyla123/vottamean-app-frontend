@@ -18,6 +18,7 @@ import {
 import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import { Box } from '@mui/system';
+import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 
 const navigation = [
     { kind: 'header', title: 'Menu' },
@@ -123,6 +124,9 @@ const Layout = ({ children }) => {
             navigate: path => navigate(path),
         };
     }, [location, navigate]);
+    // Determine if the dashboard should be shown
+    const showDashboard = !['/login', '/signup', '/forgot-password', '/reset-password', '/change-password'].includes(location.pathname);
+
     return (
         <AppProvider
             branding={{
@@ -135,7 +139,16 @@ const Layout = ({ children }) => {
             session={session}
             authentication={authentication}
         >
-            <Box padding={2}>{children}</Box>
+            <Box padding={2}>
+                {showDashboard ? (
+                    // Render the dashboard or other components here
+                    <DashboardLayout>{children}</DashboardLayout>
+                ) : (
+                    // Render other components or nothing based on your requirements
+                    children
+                )}
+                
+            </Box>
         </AppProvider>
     );
 };
