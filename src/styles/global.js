@@ -2,7 +2,7 @@
 export const shadow = {
     borderRadius: "8px",
     border: "0.3px solid rgba(0, 0, 0, 0.05)",
-    boxShadow: "cardShadow",
+    boxShadow: '0px 5px 10px rgba(0,0,0,0.08)',
 }
 // card card container 
 export const cardContainer = {

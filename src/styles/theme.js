@@ -28,9 +28,6 @@ let theme = createTheme({
       fontFamily: 'Roboto, sans-serif',
       fontWeight: 500,
     },
-  },
-  shadows:{
-    'cardShadow': "0px 5px 10px rgba(0,0,0,0.08)"
   }
 });
 

@@ -22,16 +22,16 @@
  */
 import {Stack, Button} from '@mui/material'
 
-function ButtonContainer({rightBtn, leftBtn}) {
+function ButtonContainer({rightBtn, leftBtn, rightBtnTitle , leftBtnTitle}) {
     return (
         <>
             {/* Button Container  */}
             <Stack direction={'row'} alignSelf={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
                 <Button fullWidth variant="outlined" color="white" onClick={leftBtn}>
-                    Cancel
+                    {leftBtnTitle}
                 </Button>
                 <Button fullWidth variant="contained" onClick={rightBtn}>
-                    ADD SESSION
+                    {rightBtnTitle}
                 </Button>
             </Stack>
         </>

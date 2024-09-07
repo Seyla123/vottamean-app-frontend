@@ -1,16 +1,16 @@
 import CardComponent from "../../../components/common/CardComponent";
-import {Typography, Button, Stack, TextField } from "@mui/material"
+import { Typography, Button, Stack, TextField } from "@mui/material"
 import { fieldContainer } from "../../../styles/authStyle";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 function SchoolUpdatePage() {
     const onClickBack = () => {
         console.log('back');
-        
+
     }
-    const onClickNext = ()=>{
+    const onClickNext = () => {
         console.log('next');
-        
+
     }
     return (
         <>
@@ -36,7 +36,12 @@ function SchoolUpdatePage() {
                         />
                     </Stack>
                     {/* Button Container  */}
-                    <ButtonContainer leftBtn={onClickBack} rightBtn={onClickNext}  />
+                    <ButtonContainer 
+                        leftBtn={onClickBack} 
+                        rightBtn={onClickNext} 
+                        leftBtnTitle={'Cancel'} 
+                        rightBtnTitle={'Update'} 
+                    />
                 </CardComponent>
             </FormComponent>
         </>
