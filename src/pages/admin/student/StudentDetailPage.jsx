@@ -4,6 +4,7 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
+  Hidden,
   Divider,
   Card,
 } from "@mui/material";
@@ -21,6 +22,47 @@ const StudentDetailPage = () => {
 
   const handleUpdateStudent = () => {
     navigate(`/student/update/${selectedPostId}`);
+  };
+
+  const textStyles = {
+    fontWeight: "bold",
+    display: "flex",
+    gap: 0.5,
+    overflowWrap: "break-word",
+    textOverflow: "ellipsis",
+    [mobile.down("sm")]: {
+      fontSize: "14px",
+    },
+    [mobile.up("sm")]: {
+      fontSize: "16px",
+    },
+  };
+
+  const textInput = {
+    [mobile.down("sm")]: {
+      fontSize: "14px",
+    },
+    [mobile.up("sm")]: {
+      fontSize: "16px",
+    },
+  };
+
+  const profile = {
+    width: 100,
+    height: 100,
+    borderRadius: "50%",
+    overflow: "hidden",
+    display: "flex",
+    justifyContent: "center",
+    "& img": {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+    },
+    alignItems: {
+      xs: "center",
+      sm: "flex-start",
+    },
   };
 
   // State to track the active tab
@@ -281,45 +323,3 @@ const StudentDetailPage = () => {
 };
 
 export default StudentDetailPage;
-
-
-const textStyles = {
-  fontWeight: "bold",
-  display: "flex",
-  gap: 0.5,
-  overflowWrap: "break-word",
-  textOverflow: "ellipsis",
-  [mobile.down("sm")]: {
-    fontSize: "14px",
-  },
-  [mobile.up("sm")]: {
-    fontSize: "16px",
-  },
-};
-
-const textInput = {
-  [mobile.down("sm")]: {
-    fontSize: "14px",
-  },
-  [mobile.up("sm")]: {
-    fontSize: "16px",
-  },
-};
-
-const profile = {
-  width: 100,
-  height: 100,
-  borderRadius: "50%",
-  overflow: "hidden",
-  display: "flex",
-  justifyContent: "center",
-  "& img": {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  alignItems: {
-    xs: "center",
-    sm: "flex-start",
-  },
-};
