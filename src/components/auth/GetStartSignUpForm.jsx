@@ -1,57 +1,52 @@
-import { Box, Typography, TextField, Checkbox } from "@mui/material";
+import { Box, Typography, TextField, Button, Checkbox } from "@mui/material";
 import HeaderTitle from "./HeaderTitle";
 
 const GetStartSignUp = ({ children }) => {
 
   return (
     <Box sx={containerStyles}>
-      {/* header title */}
-      <HeaderTitle title={"Get started"} subTitle={"Create an account"} />
+      {/* Header Title */}
+      <HeaderTitle title="Get started" subTitle="Create an account" />
 
-      {/* form container */}
+      {/* Form Container */}
       <Box sx={formContainerStyles}>
-        {/* email input container */}
+        {/* Email Input Container */}
         <Box sx={inputContainerStyles}>
           <Typography variant="body1">Email</Typography>
           <TextField placeholder="email" />
         </Box>
 
-        {/* Password input container */}
+        {/* Password Input Container */}
         <Box sx={inputContainerStyles}>
           <Typography variant="body1">Password</Typography>
           <TextField placeholder="password" />
         </Box>
 
-        {/* Confirm password input container */}
+        {/* Confirm Password Input Container */}
         <Box sx={inputContainerStyles}>
-          <Typography variant="body1">Confirm Password </Typography>
+          <Typography variant="body1">Confirm Password</Typography>
           <TextField placeholder="confirm password" />
         </Box>
       </Box>
 
-      {/* check box */}
+      {/* Checkbox */}
       <Box sx={checkboxContainerStyles}>
-        <Checkbox
-          color="default"
-          inputProps={{ "aria-label": "primary checkbox" }}
-        />
+        <Checkbox color="default" inputProps={{ "aria-label": "primary checkbox" }} />
         <Typography variant="body2">
-          By signing up i agree with
-          <Typography variant="body2" component={"span"} color={"primary"}>
-            {" "}
-            terms and conditions
+          By signing up, I agree with
+          <Typography variant="body2" component="span" color="primary">
+            {" "}terms and conditions
           </Typography>
         </Typography>
       </Box>
 
-      {/* container button continue and already ahve an account login link */}
+      {/* Button Container */}
       <Box sx={buttonContainerStyles}>
         {children}
         <Typography variant="body1">
           Already have an account?
-          <Typography variant="body1" component={"span"} color={"primary"}>
-            {" "}
-            Login
+          <Typography variant="body1" component="span" color="primary">
+            {" "}Login
           </Typography>
         </Typography>
       </Box>
@@ -62,6 +57,7 @@ const GetStartSignUp = ({ children }) => {
 export default GetStartSignUp;
 
 const containerStyles = {
+  gap: 3,
   justifyContent: "center",
   display: "flex",
   flexDirection: "column",
