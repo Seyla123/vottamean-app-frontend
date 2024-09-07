@@ -1,6 +1,7 @@
 import HeaderTitle from "./HeaderTitle";
 import GoBackButton from "../common/GoBackButton";
 import { Box, TextField, Typography } from "@mui/material";
+import { fieldContainer, container } from "../../styles/authStyle";
 
 function ContactInformationForm({ onClickBack, children }) {
   return (
@@ -13,7 +14,6 @@ function ContactInformationForm({ onClickBack, children }) {
           subTitle={"Input your information"}
         />
       </Box>
-
       {/* form container */}
       <Box  sx={container} > 
         {/*phone number input container */}
@@ -35,8 +35,4 @@ function ContactInformationForm({ onClickBack, children }) {
     </Box>
   );
 }
-
 export default ContactInformationForm;
-
-const container = { display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }}
-const fieldContainer = { display: "flex", flexDirection: "column", gap: 0.5 }
