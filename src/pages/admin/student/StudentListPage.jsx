@@ -21,7 +21,10 @@ const handleMenuClick = (event, postId) => {
 const handleCreate = () => {
   navigate(`/student/create`);
   };
-  
+  //navigate to upfdate
+  const handleUpdate = () => {
+    navigate(`/student/update/${selectedPostId}`);
+    };
 
 const handleChange = (event) => {
 setFilter(event.target.value);
