@@ -13,7 +13,7 @@
  * @returns JSX.Element
 */
 
-import { Container, Box, Typography } from "@mui/material";
+import { Container,Stack, Box, Typography } from "@mui/material";
 import TestimonialCard from "./TestimonialCard";
 import LogoWaveTrack from '../../assets/images/logoWaveTrack.png';
 
@@ -49,9 +49,9 @@ function AuthContainerCard({ sideCard, children }) {
           </Box>
         </Box>
         {/* Main content area for the authentication form */}
-        <Box sx={{ width: "100%", paddingTop: 2, paddingBottom: 2 }}>
+        <Stack sx={{ width: "100%", paddingTop: 2, paddingBottom: 2 ,display:'flex', height: '100%', alignContent: 'center', justifyContent: 'center'}}>
           {children} {/* Render any children passed to the component */}
-        </Box>
+        </Stack>
       </Container>
     </>
   );

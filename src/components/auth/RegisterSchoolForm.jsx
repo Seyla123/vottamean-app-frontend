@@ -1,13 +1,11 @@
-import { useState } from 'react';
-import HeaderTitle from "./HeaderTitle";
+import HeaderTitle from "./HeaderTitle"
 import GoBackButton from "../common/GoBackButton";
 import schoolIcon from "../../assets/icon/schoolIcon.png";
 import { Box, TextField, Typography, Skeleton } from "@mui/material";
 import { container, fieldContainer } from "../../styles/authStyle";
 
 function RegisterSchoolForm({ onClickBack, children }) {
-    // State to manage image loading
-    const [isLoading, setIsLoading] = useState(true);
+
 
     return (
         <Box sx={container}>
@@ -21,24 +19,10 @@ function RegisterSchoolForm({ onClickBack, children }) {
                 >
 
                     {/* image container  */}
-                    {/* Stack for image loading skeleton */}
-                    {isLoading && (
-                        <Box sx={{ display: "flex", width: "100%", justifyContent: "center" }}>
-                            <Skeleton variant="circular" width={100} height={100} />
-                        </Box>
-                    )}
-
-                    {/* Image box */}
                     <Box
-                        maxWidth={{ xs: "100px", sm: "100px" }}
                         component={'img'}
                         src={schoolIcon}
-                        sx={{
-                            display: isLoading ? "none" : "flex",
-                            alignSelf: "center"
-                        }}
-                        onLoad={() => setIsLoading(false)}
-                        onError={() => setIsLoading(false)} // in case of error, hide Skeleton
+                        sx={{ display: "flex", alignSelf: "center", maxWidth:'100px' }}
                     />
 
                 </HeaderTitle>
@@ -46,8 +30,8 @@ function RegisterSchoolForm({ onClickBack, children }) {
 
             {/* form container */}
             <Box sx={container} >
-                 {/* school name input container */}
-                 <Box sx={fieldContainer}>
+                {/* school name input container */}
+                <Box sx={fieldContainer}>
                     <Typography variant="body1">School&apos;s Name</Typography>
                     <TextField placeholder="school&apos;s name" />
                 </Box>
