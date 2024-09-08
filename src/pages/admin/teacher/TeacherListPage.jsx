@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, InputAdornment, Paper, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
-import { Search as SearchIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
-import { DataGrid } from '@mui/x-data-grid';
+import FormComponent from '../../../components/common/FormComponent';
+import SimpleTable from '../../../components/table/SimpleTable';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import Header from '../../../components/teacher/Header';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 function TeacherListPage() {
   const [rows, setRows] = useState([
@@ -19,99 +17,24 @@ function TeacherListPage() {
     { id: 9, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
   ]);
 
-  const [selectionModel, setSelectionModel] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedRowId, setSelectedRowId] = useState(null);
-  
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const handleMenuOpen = (event, id) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRowId(id);
+  const handleEdit = (row) => {
+    console.log("Edit row:", row);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedRowId(null);
-  };
-
-  const handleEdit = () => {
-    console.log("Edit row:", selectedRowId);
-    handleMenuClose();
-  };
-
-  const handleDeleteSingle = () => {
-    setRows(rows.filter(row => row.id !== selectedRowId));
-    handleMenuClose();
+  const handleDelete = (row) => {
+    setRows(rows.filter(item => item.id !== row.id));
   };
 
   const columns = [
-    {
-      field: 'fullName',
-      headerName: 'Full Name',
-      description: 'This column has a value getter and is not sortable.',
-      disableColumnMenu: true,
-      sortable: false,
-      resizable: false,
-      width: 260,
-      headerAlign: 'center',
-      flex: 1,
-      align: 'center',
-      valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-      headerClassName: 'header-class',
-    },
-    ...(isMobile ? [] : [
-      {
-        field: 'gender',
-        headerName: 'Gender',
-        description: 'This column is not sortable.',
-        type: 'string',
-        disableColumnMenu: true,
-        sortable: false,
-        resizable: false,
-        width: 260,
-        headerAlign: 'center',
-        flex: 1,
-        align: 'center',
-        headerClassName: 'header-class',
-      },
-      {
-        field: 'phoneNumber',
-        headerName: 'Phone Number',
-        type: 'number',
-        disableColumnMenu: true,
-        sortable: false,
-        resizable: false,
-        width: 260,
-        headerAlign: 'center',
-        flex: 1,
-        align: 'center',
-        headerClassName: 'header-class',
-      }
-    ]),
-    {
-      field: 'email',
-      headerName: 'Email',
-      description: 'This column is not sortable.',
-      type: 'string',
-      disableColumnMenu: true,
-      sortable: false,
-      resizable: false,
-      width: 260,
-      headerAlign: 'center',
-      flex: 1,
-      align: 'center',
-      headerClassName: 'header-class',
-    },
+    { field: 'fullName', headerName: 'Full Name', valueGetter: (params) => `${params.row.firstName || ''} ${params.row.lastName || ''}` },
+    { field: 'gender', headerName: 'Gender' },
+    { field: 'phoneNumber', headerName: 'Phone Number' },
+    { field: 'email', headerName: 'Email' },
     {
       field: 'actions',
-      headerName: <DeleteForeverIcon sx={{ color: 'red'}} />,
-      width: 55,
-      disableColumnMenu: true,
-      sortable: false,
+      headerName: 'Actions',
       renderCell: (params) => (
-        <IconButton onClick={(event) => handleMenuOpen(event, params.id)} size="small">
+        <IconButton size="small" onClick={(e) => handleActionClick(e, params.row)}>
           <MoreHorizIcon />
         </IconButton>
       ),
@@ -119,93 +42,16 @@ function TeacherListPage() {
   ];
 
   return (
-    <Box>
-      {/* Header */}
-      <Header header="TEACHER LIST" subheader="There are 24 teachers" />
-
-      {/* Button to Add Teacher */}
-      <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mb: 2 }}>
-        <Button variant="contained" sx={{ width: { xs: '130px', sm: '170px' } }}>
-          ADD TEACHER
-        </Button>
-      </Box>
-
-      {/* Search Bar */}
-      <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', gap: 2, mb: 3 }}>
-        <TextField
-          id="search"
-          placeholder="Search"
-          variant="outlined"
-          sx={{
-            flexGrow: 1,
-            maxWidth: { xs: '100%', sm: '510px' },
-            '& .MuiInputBase-root': {
-              height: '40px',
-            },
-            '& .MuiInputBase-input': {
-              padding: '8px 14px',
-              fontSize: '14px',
-            },
-            '& .MuiInputAdornment-root': {
-              display: { xs: 'flex', sm: 'none' },
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon sx={{ display: { xs: 'flex', sm: 'none' } }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          variant="contained"
-          sx={{
-            height: '40px',
-            fontSize: '14px',
-            bgcolor: '#2196F3',
-            width: '88px',
-            display: { xs: 'none', sm: 'flex' },
-          }}
-        >
-          Search
-        </Button>
-      </Box>
-
-      {/* Table */}
-      <Box sx={{ width: '100%', mx: 'auto' }}>
-        <Paper>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{ pagination: { paginationModel: { page: 0, pageSize: 5 } } }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection
-            onSelectionModelChange={setSelectionModel}
-            sx={{
-              border: 0.5,
-              borderColor: '#E0E0E0',
-              '& .header-class': {
-                backgroundColor: '#f3f5f5', // Header background color
-                color: 'black', // Header text color
-                fontWeight: 'bold', // Header text weight
-              },
-            }}
-          />
-        </Paper>
-      </Box>
-
-      {/* Menu for Edit/Delete Options */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        PaperProps={{ sx: { width: '104px' } }}
-      >
-        <MenuItem onClick={handleEdit}>Edit</MenuItem>
-        <MenuItem onClick={handleDeleteSingle}>Delete</MenuItem>
-      </Menu>
-    </Box>
+    <FormComponent title="Teacher List" subTitle="There are 9 Teachers">
+      <SimpleTable
+        columns={columns}
+        data={rows}
+        pagination={true}
+        hiddenColumns={[]}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    </FormComponent>
   );
 }
 
