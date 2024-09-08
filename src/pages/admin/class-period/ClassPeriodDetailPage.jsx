@@ -1,38 +1,25 @@
-import { Typography, Box } from "@mui/material";
-import List from "@mui/material/List";
+import FormComponent from "../../../components/common/FormComponent"
+import CardComponent from "../../../components/common/CardComponent"
+import CardInformation from "../../../components/common/CardInformation"
 
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import CardComponent from "../../../components/common/CardComponent";
-import FormComponent from "../../../components/common/FormComponent";
+const clickEdit = () => {
+  console.log('edit')
+}
+const clickDetele = ()=>{
+  console.log('delete');
+  
+}
 
 function ClassPeriodDetailPage() {
   return (
-    <>
-      <FormComponent
-        title={"Class Period Detail"}
-        subTitle={"These are Class Period’s information"}>
-        <CardComponent title={"Class Period Information"}>
-          <Box>
-            <List
-              sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {Object.entries(info).map(([subject, value], index) => (
-                <Box key={index} sx={list}>
-                  <Typography
-                    sx={details}
-                    fontWeight="medium">
-                    {subject} :
-                  </Typography>
-                  <Typography sx={details}>
-                    {value}
-                  </Typography>
-                </Box>
-              ))}
-            </List>
-          </Box>
-        </CardComponent>
-      </FormComponent>
-    </>
+<FormComponent title={'Class Period Detail'} subTitle={'These are Class Period’s information'}>
+  <CardComponent 
+    title={"Class Period Information"} 
+    handleEdit={clickEdit} 
+    handleDelete={clickDetele}>
+    <CardInformation  data={info} />
+  </CardComponent>
+</FormComponent>
   );
 }
 
@@ -44,6 +31,3 @@ const info = {
   "End Time": "8:30 AM",
   Period: "1h 30mn",
 };
-
-const details = { fontSize: { lg: "16px", xs: "14px" } };
-const list = { display: "flex", gap: 1 };
