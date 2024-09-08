@@ -45,15 +45,13 @@ const LoginForm = () => {
     </Button>
         <Typography variant="body1">
         Don't you have an account?
-            <Link component={RouterLink} to="/signup">
+            <Link  to="/signup">
           <Typography onClick={() => {}} sx={{ cursor: "pointer" }} variant="body1" component="span" color="primary">
               Sign Up
           </Typography>
             </Link>
-            {" "}Sign Up
-          </Typography>
         </Typography>
-      </Box>
+        </Box>
     </Box>
   );
 };
