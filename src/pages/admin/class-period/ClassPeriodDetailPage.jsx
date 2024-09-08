@@ -17,7 +17,7 @@ function ClassPeriodDetailPage() {
             <List
               sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {Object.entries(info).map(([subject, value], index) => (
-                <Box key={index} sx={{ display: "flex", gap: 1 }}>
+                <Box key={index} sx={list}>
                   <Typography
                     sx={details}
                     fontWeight="medium">
@@ -45,4 +45,5 @@ const info = {
   Period: "1h 30mn",
 };
 
-const details = { fontSize: { lg: "16px", xs: "14px" } }
+const details = { fontSize: { lg: "16px", xs: "14px" } };
+const list = { display: "flex", gap: 1 };
