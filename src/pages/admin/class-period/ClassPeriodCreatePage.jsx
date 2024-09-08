@@ -4,6 +4,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
+import CardComponent from "../../../components/common/CardComponent";
+import FormComponent from "../../../components/common/FormComponent";
+import ButtonContainer from "../../../components/common/ButtonContainer";
 
 function ClassPeriodCreatePage() {
   const [startTime, setStartTime] = useState(null);
@@ -40,7 +43,13 @@ function ClassPeriodCreatePage() {
   };
 
   return (
-    <Box>
+    <div></div>
+  );
+}
+
+export default ClassPeriodCreatePage;
+
+const save = <Box>
       {/* Title */}
       <Box sx={{ my: content }}>
         <Typography fontWeight="bold" sx={section}>
@@ -116,7 +125,3 @@ function ClassPeriodCreatePage() {
         </Box>
       </Card>
     </Box>
-  );
-}
-
-export default ClassPeriodCreatePage;
