@@ -28,37 +28,37 @@ const navigation = [
         icon: <HomeIcon />,
     },
     {
-        segment: 'session',
-        title: 'Sessions',
+        segment: 'dashboard/sessions',
+        title: 'Session',
         icon: <CalendarMonthIcon />,
     },
     {
-        segment: 'class',
+        segment: 'dashboard/classes',
         title: 'Class',
         icon: <ClassIcon />,
     },
     {
-        segment: 'subject',
+        segment: 'dashboard/subjects',
         title: 'Subject',
         icon: <SubjectIcon />,
     },
     {
-        segment: 'student',
-        title: 'Students',
+        segment: 'dashboard/students',
+        title: 'Student',
         icon: <StudentIcon />,
     },
     {
-        segment: 'teacher',
+        segment: 'dashboard/teachers',
         title: 'Teacher',
         icon: <TeacherIcon />,
     },
     {
-        segment: 'class-period',
-        title: 'Class Periods',
+        segment: 'dashboard/class-periods',
+        title: 'Class Period',
         icon: <ClassPeriodIcon />,
     },
     {
-        segment: 'report',
+        segment: 'dashboard/reports',
         title: 'Report',
         icon: <ReportGmailerrorredIcon />,
         children: [
@@ -75,7 +75,7 @@ const navigation = [
     { kind: 'header', title: 'General' },
 
     {
-        segment: 'setting',
+        segment: 'dashboard/settings',
         title: 'Settings',
         icon: <SettingsIcon />,
         children: [

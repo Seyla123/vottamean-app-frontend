@@ -46,6 +46,9 @@ const ClassUpdatePage = lazy(() => import('../pages/admin/class/ClassUpdatePage'
 
 const SchoolUpdatePage = lazy(() => import('../pages/admin/school/SchoolUpdatePage'));
 
+const AccountProfilePage = lazy(() => import('../pages/admin/setting/account/AccountProfilePage'));
+
+const AttendanceReportPage = lazy(() => import('../pages/admin/report/attendance/AttendanceReportPage'));
 // Routes configuration
 const routesConfig = [
     {
@@ -229,6 +232,24 @@ const routesConfig = [
                     },
                 ],
             },
+            {
+                path: 'settings',
+                children: [
+                    {
+                        path: 'account',
+                        element: <AccountProfilePage />,
+                    },
+                ],
+            },
+            {
+                path: 'reports',
+                children: [
+                    {
+                        path: 'attendance',
+                        element: <AttendanceReportPage />,
+                    },
+                ],
+            }
         ],
     },
     {
