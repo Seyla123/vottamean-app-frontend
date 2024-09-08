@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Header from '../../../components/teacher/Header';
-import { Box, Button, TextField, InputAdornment, Paper, IconButton, Menu, MenuItem } from '@mui/material';
+import { Box, Button, TextField, InputAdornment, Paper, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import { Search as SearchIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Header from '../../../components/teacher/Header';
 
 function TeacherListPage() {
   const [rows, setRows] = useState([
@@ -14,7 +14,7 @@ function TeacherListPage() {
     { id: 4, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
     { id: 5, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'msspotato123@gmail.com', phoneNumber: '01234567' },
     { id: 6, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
-    { id: 7, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'msspotato123@gmail.com', phoneNumber: '01234567' },
+    { id: 7, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'mssFried123@gmail.com', phoneNumber: '01234567' },
     { id: 8, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'msspotato123@gmail.com', phoneNumber: '01234567' },
     { id: 9, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
   ]);
@@ -22,8 +22,9 @@ function TeacherListPage() {
   const [selectionModel, setSelectionModel] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-
-
+  
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleMenuOpen = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -58,20 +59,37 @@ function TeacherListPage() {
       flex: 1,
       align: 'center',
       valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+      headerClassName: 'header-class',
     },
-    {
-      field: 'gender',
-      headerName: 'Gender',
-      description: 'This column is not sortable.',
-      type: 'string',
-      disableColumnMenu: true,
-      sortable: false,
-      resizable: false,
-      width: 260,
-      headerAlign: 'center',
-      flex: 1,
-      align: 'center',
-    },
+    ...(isMobile ? [] : [
+      {
+        field: 'gender',
+        headerName: 'Gender',
+        description: 'This column is not sortable.',
+        type: 'string',
+        disableColumnMenu: true,
+        sortable: false,
+        resizable: false,
+        width: 260,
+        headerAlign: 'center',
+        flex: 1,
+        align: 'center',
+        headerClassName: 'header-class',
+      },
+      {
+        field: 'phoneNumber',
+        headerName: 'Phone Number',
+        type: 'number',
+        disableColumnMenu: true,
+        sortable: false,
+        resizable: false,
+        width: 260,
+        headerAlign: 'center',
+        flex: 1,
+        align: 'center',
+        headerClassName: 'header-class',
+      }
+    ]),
     {
       field: 'email',
       headerName: 'Email',
@@ -84,22 +102,11 @@ function TeacherListPage() {
       headerAlign: 'center',
       flex: 1,
       align: 'center',
-    },
-    {
-      field: 'phoneNumber',
-      headerName: 'Phone Number',
-      type: 'number',
-      disableColumnMenu: true,
-      sortable: false,
-      resizable: false,
-      width: 260,
-      headerAlign: 'center',
-      flex: 1,
-      align: 'center',
+      headerClassName: 'header-class',
     },
     {
       field: 'actions',
-      headerName: <DeleteForeverIcon sx={{ color: 'red' }}/>,
+      headerName: <DeleteForeverIcon sx={{ color: 'red'}} />,
       width: 55,
       disableColumnMenu: true,
       sortable: false,
@@ -175,7 +182,15 @@ function TeacherListPage() {
             pageSizeOptions={[5, 10]}
             checkboxSelection
             onSelectionModelChange={setSelectionModel}
-            sx={{ border: 0.5, borderColor: '#E0E0E0' }}
+            sx={{
+              border: 0.5,
+              borderColor: '#E0E0E0',
+              '& .header-class': {
+                backgroundColor: '#f3f5f5', // Header background color
+                color: 'black', // Header text color
+                fontWeight: 'bold', // Header text weight
+              },
+            }}
           />
         </Paper>
       </Box>

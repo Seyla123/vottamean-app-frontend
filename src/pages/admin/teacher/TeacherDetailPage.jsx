@@ -11,25 +11,21 @@ const clickDetele = ()=>{
 }
 
 const teacher = {
-  "Full Name ": "John Doe",
-  "Email": "johndoe@example.com",
-  "Phone Number": "0923456789",
-  "Address": "123 Street, ABC City, ABC Country",
-  "Date of Birth": "1990-01-01",
+  "TeacherID" : "ANB00101",
+  "Full Name ": "Potato Fried",
+  "Age": 18,
   "Gender": "Male",
-  "Degree": "Bachelor of Science in Computer Engineering",
-  "University": "University of Technology",
-  "Graduation Date": "2010-01-01",
-  "Marital Status": "Single",
-  "Religion": "Buddhist",
-  "Nationality": "Myanmar",
+  "Date of Birth": "01/01/2001",
+  "Phone": "01234567",
+  "Email": "mrpotato123gmail.com",
+  "Address": "Potato Chip City, FrenchFried Country",
 }
 function TeacherDetailPage() {
   return (
 <FormComponent title={'Teacher Detail'} subTitle={'These are Teacher’s information'}>
   <CardComponent 
     title={"Teacher Information"} 
-    imgUrl='ddddd' 
+    imgUrl='r' 
     handleEdit={clickEdit} 
     handleDelete={clickDetele}>
     <CardInformation  data={teacher} />

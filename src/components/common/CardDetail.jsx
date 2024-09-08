@@ -1,110 +1,208 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    Card,
-    CardHeader,
-    CardContent,
-    Typography,
-    IconButton,
-    Divider,
     Box,
+    Button,
+    TextField,
+    InputAdornment,
+    Paper,
+    IconButton,
+    Menu,
+    MenuItem,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Search as SearchIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { DataGrid } from '@mui/x-data-grid';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Header from '../../../components/teacher/Header';
+import './TeacherListPage.css'; // Ensure your CSS file is imported
 
-/**
- * CardDetail Component
- *
- * This component renders a detailed card layout with dynamic content based on the props provided.
- * It includes a title, action buttons for editing and deleting, and a list of key-value pairs
- * displayed in a user-friendly format.
- *
- * Props:
- * - title (string): The title of the card, displayed at the top.
- * - description (string): Optional description that can be displayed below the title.
- * - onEdit (function): Function to be called when the edit button is clicked.
- * - onDelete (function): Function to be called when the delete button is clicked.
- * - ...otherProps (object): Any other props passed to the component will be displayed as key-value pairs.
- *
- * Example Usage:
- * ```
- * <CardDetail
- *   title="Class Period Information"
- *   classPeriodId="001"
- *   startTime="8:00 AM"
- *   endTime="9:30 AM"
- *   period="1h30min"
- *   onEdit={() => handleEdit()}
- *   onDelete={() => handleDelete()}
- * />
- * ```
- */
+function TeacherListPage() {
+    const [rows, setRows] = useState([
+        { id: 1, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrFried123@gmail.com', phoneNumber: '01234567' },
+        { id: 2, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'mssFried123@gmail.com', phoneNumber: '01234567' },
+        { id: 3, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
+        { id: 4, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
+        { id: 5, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'msspotato123@gmail.com', phoneNumber: '01234567' },
+        { id: 6, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
+        { id: 7, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'mssFried123@gmail.com', phoneNumber: '01234567' },
+        { id: 8, lastName: 'Fried', firstName: 'Potato', gender: 'Female', email: 'msspotato123@gmail.com', phoneNumber: '01234567' },
+        { id: 9, lastName: 'Fried', firstName: 'Potato', gender: 'Male', email: 'mrpotato123@gmail.com', phoneNumber: '01234567' },
+    ]);
 
-const customLabels = {
-    classPeriodId: 'Class Period ID',
-    startTime: 'Start Time',
-    endTime: 'End Time',
-    period: 'Period',
-    subjectId: 'Subject ID',
-    subjectName: 'Subject Name',
-    description: 'Description',
-};
+    const [selectionModel, setSelectionModel] = useState([]);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedRowId, setSelectedRowId] = useState(null);
 
-const getLabel = key => {
-    return customLabels[key] || key;
-};
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-const CardDetail = ({
-    title,
-    description,
-    onEdit,
-    onDelete,
-    ...otherProps
-}) => {
+    const handleMenuOpen = (event, id) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedRowId(id);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setSelectedRowId(null);
+    };
+
+    const handleEdit = () => {
+        console.log("Edit row:", selectedRowId);
+        handleMenuClose();
+    };
+
+    const handleDeleteSingle = () => {
+        setRows(rows.filter(row => row.id !== selectedRowId));
+        handleMenuClose();
+    };
+
+    const columns = [
+        {
+            field: 'fullName',
+            headerName: 'Full Name',
+            disableColumnMenu: true,
+            sortable: false,
+            resizable: false,
+            width: 260,
+            headerAlign: 'center',
+            flex: 1,
+            align: 'center',
+            valueGetter: (params) => `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        },
+        ...(isMobile ? [] : [
+            {
+                field: 'gender',
+                headerName: 'Gender',
+                disableColumnMenu: true,
+                sortable: false,
+                resizable: false,
+                width: 260,
+                headerAlign: 'center',
+                flex: 1,
+                align: 'center',
+            },
+            {
+                field: 'phoneNumber',
+                headerName: 'Phone Number',
+                disableColumnMenu: true,
+                sortable: false,
+                resizable: false,
+                width: 260,
+                headerAlign: 'center',
+                flex: 1,
+                align: 'center',
+            }
+        ]),
+        {
+            field: 'email',
+            headerName: 'Email',
+            disableColumnMenu: true,
+            sortable: false,
+            resizable: false,
+            width: 260,
+            headerAlign: 'center',
+            flex: 1,
+            align: 'center',
+        },
+        {
+            field: 'actions',
+            headerName: '',
+            width: 70,
+            disableColumnMenu: true,
+            sortable: false,
+            renderCell: (params) => (
+                <IconButton onClick={(event) => handleMenuOpen(event, params.id)} size="small">
+                    <MoreHorizIcon />
+                </IconButton>
+            ),
+        },
+    ];
+
     return (
-        <Card>
-            <CardHeader
-                title={
-                    <Box
-                        display='flex'
-                        justifyContent='space-between'
-                        alignItems='center'
-                    >
-                        <Typography variant='h6' fontWeight={600}>
-                            {title}
-                        </Typography>
-                        <Box>
-                            <IconButton
-                                onClick={onEdit}
-                                size='small'
-                                color='primary'
-                            >
-                                <BorderColorIcon />
-                            </IconButton>
-                            <IconButton
-                                onClick={onDelete}
-                                size='small'
-                                color='error'
-                            >
-                                <DeleteForeverIcon />
-                            </IconButton>
-                        </Box>
-                    </Box>
-                }
-            />
-            <Divider />
-            <CardContent>
-                {Object.entries(otherProps).map(([key, value]) => (
-                    <Typography
-                        key={key}
-                        variant='body1'
-                        color='text.secondary'
-                    >
-                        <strong>{getLabel(key)} :</strong> {value}
-                    </Typography>
-                ))}
-            </CardContent>
-        </Card>
+        <Box>
+            <Header header="TEACHER LIST" subheader="There are 24 teachers" />
+            <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mb: 2 }}>
+                <Button variant="contained" sx={{ width: { xs: '130px', sm: '170px' } }}>
+                    ADD TEACHER
+                </Button>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', gap: 2, mb: 3 }}>
+                <TextField
+                    id="search"
+                    placeholder="Search"
+                    variant="outlined"
+                    sx={{
+                        flexGrow: 1,
+                        maxWidth: { xs: '100%', sm: '510px' },
+                        '& .MuiInputBase-root': {
+                            height: '40px',
+                        },
+                        '& .MuiInputBase-input': {
+                            padding: '8px 14px',
+                            fontSize: '14px',
+                        },
+                    }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <Button
+                    variant="contained"
+                    sx={{
+                        height: '40px',
+                        fontSize: '14px',
+                        bgcolor: '#2196F3',
+                        width: '88px',
+                    }}
+                >
+                    Search
+                </Button>
+            </Box>
+            <Box sx={{ width: '100%', mx: 'auto' }}>
+                <Paper>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        initialState={{ pagination: { paginationModel: { page: 0, pageSize: 5 } } }}
+                        pageSizeOptions={[5, 10]}
+                        checkboxSelection
+                        onSelectionModelChange={setSelectionModel}
+                        sx={{
+                            border: 0.5,
+                            borderColor: '#E0E0E0',
+                            '& .MuiDataGrid-columnHeaders': {
+                                backgroundColor: '#f0f4f8', // Ensure this is the desired color
+                            },
+                            '& .MuiDataGrid-columnHeaderTitle': {
+                                textAlign: 'center', // Center align the header title
+                            },
+                        }}
+                    />
+                </Paper>
+            </Box>
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                PaperProps={{ sx: { width: '150px' } }}
+            >
+                <MenuItem onClick={handleEdit}>
+                    <MoreVertIcon sx={{ mr: 1 }} />
+                    Edit
+                </MenuItem>
+                <MenuItem onClick={handleDeleteSingle} sx={{ color: 'red' }}>
+                    <DeleteForeverIcon sx={{ mr: 1 }} />
+                    Delete
+                </MenuItem>
+            </Menu>
+        </Box>
     );
-};
+}
 
-export default CardDetail;
+export default TeacherListPage;
