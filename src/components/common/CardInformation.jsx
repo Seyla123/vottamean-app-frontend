@@ -2,8 +2,6 @@ import { Avatar, Box, Button, Typography, useTheme } from "@mui/material";
 import React from "react";
 import Header from "../teacher/Header";
 import SubHeader from "../teacher/SubHeader";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import CardComponent from "./CardComponent"
 import { cardContainer } from "../../styles/global";
