@@ -15,7 +15,8 @@
  * }
  * 
  * <ButtonContainer rightBtn={rightBtn} leftBtn={leftBtn} />
- * 
+ * @param {string} rightBtnTitle - The title to be displayed in right button,
+ * @param {string} leftBtnTitle - The title to be displayed in left button,
  * @param {function} rightBtn - function to be called when the right button is clicked
  * @param {function} leftBtn - function to be called when the left button is clicked
  * @returns JSX.Element

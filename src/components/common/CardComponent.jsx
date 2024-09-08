@@ -18,8 +18,8 @@
  *   );
  * }
  * 
- * In this example, the Card component will display the title "School Information" in the header, followed by the content provided as children.
- * 
+ * In this example, the Card component will display the title in the header, followed by the content provided as children.
+ * @param {string} title - The title to be displayed in the card header,
  * @param {React.ReactNode} children - The content to be displayed inside the card.
  * @returns JSX.Element
  */
