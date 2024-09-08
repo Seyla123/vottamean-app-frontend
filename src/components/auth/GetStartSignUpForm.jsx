@@ -29,7 +29,11 @@ const GetStartSignUp = ({ children }) => {
         </Box>
       </Box>
 
-      {/* Checkbox */}
+
+
+      {/* Button Container */}
+      <Box sx={buttonContainerStyles}>
+              {/* Checkbox */}
       <Box sx={checkboxContainerStyles}>
         <Checkbox color="default" inputProps={{ "aria-label": "primary checkbox" }} />
         <Typography variant="body2">
@@ -39,9 +43,6 @@ const GetStartSignUp = ({ children }) => {
           </Typography>
         </Typography>
       </Box>
-
-      {/* Button Container */}
-      <Box sx={buttonContainerStyles}>
         {children}
         <Typography variant="body1">
           Already have an account?

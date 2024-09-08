@@ -139,7 +139,7 @@ const Layout = ({ children }) => {
             session={session}
             authentication={authentication}
         >
-            <Box padding={2}>
+            <Box padding={showDashboard? 2 : 0}>
                 {showDashboard ? (
                     // Render the dashboard or other components here
                     <DashboardLayout>{children}</DashboardLayout>
