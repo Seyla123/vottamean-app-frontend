@@ -3,59 +3,36 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { Button, Stack, Divider, Card, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
+import CardComponent from "../../../components/common/CardComponent";
+import FormComponent from "../../../components/common/FormComponent";
+import ButtonContainer from "../../../components/common/ButtonContainer";
+import { containerInput, timeInput } from "../../../styles/classPeriod";
 
 function ClassPeriodCreatePage() {
+  // form valiadation
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [error, setError] = useState(false);
 
-  // style
-  const containerButton = {
-    maxWidth: {lg: "364px", sm: " 350px"},
-    mt: "24px",
-    width: "100%",
-    display: "flex",
-    gap: { lg: "24px", xs: "16px" },
-  };
-  const containerInput = {
-    display: "flex",
-    flexDirection: "column",
-    gap: { xs: "16px", lg: "24px" },
-  };
-  const form = { boxShadow: 1, p: {lg: "24px", xs: "16px"}, display: "flex", flexDirection: "column", gap: "24px"};
-  const button = { width: "100%", height: { lg: "42px", sm: "38px" } };
-  const section = { my: 0, fontSize: { lg: 32, xs: 20 } };
-  const title = { fontSize: { lg: 16, xs: 14 } };
-  const divider = { bgcolor: "black" };
-  const timeInput = { width: "100%", mt: "4px" };
-  const content = { lg: "32px", xs: "24px" };
-
-  const handleSubmit = () => {
+  const onClickNext = () => {
     if (!startTime || !endTime) {
       setError(true);
     } else {
       setError(false);
     }
   };
+  const onClickBack = () => {
+    console.log("back");
+  };
 
   return (
-    <Box>
-      {/* Title */}
-      <Box sx={{ my: content }}>
-        <Typography fontWeight="bold" sx={section}>
-          ADD CLASS PERIOD
-        </Typography>
-        <Typography color="textDisabled" sx={title}>
-          Please Fill Class Period Information
-        </Typography>
-      </Box>
-      <Card sx={form}>
-        <Typography sx={{ fontSize: 18 }} fontWeight="bold">
-          Class Period Information
-        </Typography>
-        <Divider sx={divider} />
-        <Box>
+    <>
+      <FormComponent
+        title={"Add Class Period"}
+        subTitle={"Please Fill Class Period Information"}
+      >
+        <CardComponent title={"Class Period Information"}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
               components={["TimePicker", "TimePicker", "TimePicker"]}
@@ -102,20 +79,16 @@ function ClassPeriodCreatePage() {
               </Box>
             </DemoContainer>
           </LocalizationProvider>
-
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Stack direction="row" sx={containerButton}>
-              <Button sx={button} variant="outlined" color="black">
-                cancel
-              </Button>
-              <Button sx={button} variant="contained" onClick={handleSubmit}>
-                add period
-              </Button>
-            </Stack>
-          </Box>
-        </Box>
-      </Card>
-    </Box>
+          {/* Button Container  */}
+          <ButtonContainer
+            leftBtn={onClickBack}
+            rightBtn={onClickNext}
+            leftBtnTitle={"Cancel"}
+            rightBtnTitle={"Add Period"}
+          />
+        </CardComponent>
+      </FormComponent>
+    </>
   );
 }
 
