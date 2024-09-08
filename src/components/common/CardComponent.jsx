@@ -28,11 +28,11 @@ import { Box } from "@mui/material"
 import { cardContainer } from "../../styles/global";
 import CardHeader from "./CardHeader";
 
-function Card({ children }) {
+function Card({ title ,children}) {
   return (
     <Box component={'form'} direction="column" sx={{ ...cardContainer }}>
       {/* Card Title */}
-      <CardHeader title="School Information" />
+      <CardHeader title={title} />
       {children}
     </Box>
   )
