@@ -72,7 +72,7 @@ const ClassUpdatePage = () => {
     flexWrap: "wrap",
   };
   // Set size for mobile devices
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMobile = useMediaQuery("(max-width:sm)");
 
   return (
     <Box sx={containerStyles}>
@@ -187,7 +187,7 @@ const ClassUpdatePage = () => {
               sx={{
                 backgroundColor: "#ffffff",
                 color: "black",
-                width: { xs: 1, sm: "140px" },
+                width: { xs: 1, sm: "170px" },
                 height: "42px",
               }}
             >
@@ -197,7 +197,7 @@ const ClassUpdatePage = () => {
               type="submit"
               variant="contained"
               color="primary"
-              sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
+              sx={{ width: { xs: 1, sm: "170px" }, height: "42px" }}
             >
               UPDATE
             </Button>
