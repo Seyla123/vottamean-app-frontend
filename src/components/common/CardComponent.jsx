@@ -34,18 +34,42 @@
  * @returns {JSX.Element} The rendered Card component.
  */
 
-import { Box } from "@mui/material"
+import { Box ,Stack, Avatar} from "@mui/material"
 import { cardContainer } from "../../styles/global";
 import CardHeader from "./CardHeader";
 
-function Card({title ,children, handleEdit, handleDelete}) {
+function Card({title,imgUrl,imgTitle ,children, handleEdit, handleDelete}) {
   console.log('this is other :', handleEdit , handleDelete);
   
   return (
     <Box component={'form'} direction="column" sx={{ ...cardContainer }}>
       {/* Card Title */}
       <CardHeader title={title} handleEdit={handleEdit} handleDelete={handleDelete}/>
+      <Stack component={'div'} direction="column" gap={1} sx={{
+            display: "flex",
+            flexDirection: {
+              xs: "column",
+              sm: "row",
+            },
+            width: "100%",
+            alignItems: {
+              xs: "center",
+              sm: "start",
+            },
+            gap: {
+              xs:3,
+              sm:5,
+            },
+            mt: imgUrl ? { xs: 2, sm: 4 } : 0,
+          }}>
+     {imgUrl &&  <Avatar sx={{ width: {
+          xs:120, sm:160
+        }, height:  {
+          xs:120, sm:160
+        } , display: "flex"}} alt={imgTitle} src={imgUrl} />}
+
       {children}
+      </Stack>
     </Box>
   )
 }
