@@ -110,15 +110,8 @@ const AttendanceReportPage = lazy(
     () => import('../pages/admin/report/attendance/AttendanceReportPage')
 );
 
-const TestPage = lazy(() => import('../pages/TestPage'));
-
 // Routes configuration
 const routesConfig = [
-    {
-        path: '/test',
-        element: <TestPage />,
-        showSidebar: false,
-    },
     {
         path: '/login',
         element: <LoginPage />,
