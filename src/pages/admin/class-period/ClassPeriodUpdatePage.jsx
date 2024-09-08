@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import CardComponent from "../../../components/common/CardComponent";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
+import { containerInput, timeInput } from "../../../styles/classPeriod";
 
 function ClassPeriodUpdatePage() {
   const [startTime, setStartTime] = useState(dayjs("2024-04-17T8:00"));
@@ -68,11 +69,3 @@ function ClassPeriodUpdatePage() {
 }
 
 export default ClassPeriodUpdatePage;
-
-// style
-const containerInput = {
-  display: "flex",
-  flexDirection: "column",
-  gap: { xs: "16px", lg: "24px" },
-};
-const timeInput = { width: "100%", mt: "4px" };

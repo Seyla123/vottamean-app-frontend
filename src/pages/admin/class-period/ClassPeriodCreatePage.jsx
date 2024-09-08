@@ -7,6 +7,7 @@ import { Typography, Box } from "@mui/material";
 import CardComponent from "../../../components/common/CardComponent";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
+import { containerInput, timeInput } from "../../../styles/classPeriod";
 
 function ClassPeriodCreatePage() {
   // form valiadation
@@ -92,11 +93,3 @@ function ClassPeriodCreatePage() {
 }
 
 export default ClassPeriodCreatePage;
-
-// style
-const containerInput = {
-  display: "flex",
-  flexDirection: "column",
-  gap: { xs: "16px", lg: "24px" },
-};
-const timeInput = { width: "100%", mt: "4px" };
