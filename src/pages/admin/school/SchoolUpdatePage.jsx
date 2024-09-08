@@ -15,7 +15,7 @@ function SchoolUpdatePage() {
     return (
         <>
             <FormComponent title={"Update School"} subTitle={"Update school information"}>
-                <CardComponent>
+                <CardComponent title={"School Information"}>
                     {/* school name input container */}
                     <Stack sx={fieldContainer} >
                         <Typography variant="body1">School&apos;s Name</Typography>
