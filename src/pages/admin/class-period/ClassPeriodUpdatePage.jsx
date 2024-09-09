@@ -9,20 +9,23 @@ import CardComponent from "../../../components/common/CardComponent";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 import { containerInput, timeInput } from "../../../styles/classPeriod";
+import { useNavigate } from "react-router-dom";
 
 function ClassPeriodUpdatePage() {
   const [startTime, setStartTime] = useState(dayjs("2024-04-17T8:00"));
   const [endTime, setEndTime] = useState(dayjs("2024-04-17T8:00"));
+  const navigate = useNavigate();
+ 
 
   const onClickNext = () => {
     if (!startTime || !endTime) {
-      setError(true);
+      navigate(`/dashboard/class-periods`);
     } else {
-      setError(false);
+      navigate(`/dashboard/class-periods`);
     }
   };
   const onClickBack = () => {
-    console.log("back");
+    navigate(`/dashboard/class-periods`);
   };
 
   return (
