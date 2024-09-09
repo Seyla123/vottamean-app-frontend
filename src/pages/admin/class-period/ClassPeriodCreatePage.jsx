@@ -21,7 +21,7 @@ function ClassPeriodCreatePage() {
 
   const onClickNext = () => {
     if (!startTime || !endTime) {
-      navigate(`/dashboard/class-periods`);
+      setError(true)
     } else {
       navigate(`/dashboard/class-periods`);
     }
