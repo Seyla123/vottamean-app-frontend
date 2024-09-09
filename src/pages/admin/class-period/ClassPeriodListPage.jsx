@@ -23,7 +23,6 @@ function ClassPeriodListPage() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-end",
-            my: "24px",
           }}>
           <Button variant="contained" sx={{ width: "170px" }}>
             ADD SESSION
