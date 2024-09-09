@@ -26,32 +26,27 @@ function TeacherListPage() {
   };
 
   const columns = [
-    { field: 'fullName', headerName: 'Full Name', valueGetter: (params) => `${params.row.firstName || ''} ${params.row.lastName || ''}` },
+    { field: 'lastName', headerName: 'Full Name', valueGetter: (params) => `${params.row.firstName || ''} ${params.row.lastName || ''}` },
     { field: 'gender', headerName: 'Gender' },
     { field: 'phoneNumber', headerName: 'Phone Number' },
-    { field: 'email', headerName: 'Email' },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      renderCell: (params) => (
-        <IconButton size="small" onClick={(e) => handleActionClick(e, params.row)}>
-          <MoreHorizIcon />
-        </IconButton>
-      ),
-    },
+    { field: 'email', headerName: 'Email' }
   ];
 
   return (
-    <FormComponent title="Teacher List" subTitle="There are 9 Teachers">
-      <SimpleTable
-        columns={columns}
-        data={rows}
-        pagination={true}
-        hiddenColumns={[]}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-    </FormComponent>
+    <>
+      {/* Header */}
+      <FormComponent title="Teacher List" subTitle="There are 9 Teachers">
+        {/* Table */}
+        <SimpleTable
+          columns={columns}
+          data={rows}
+          pagination={true}
+          hiddenColumns={[]}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      </FormComponent>
+    </>
   );
 }
 

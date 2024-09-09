@@ -1,16 +1,16 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import FormInfo from '../../../components/teacher/FormInfo';
-import Header from "../../../components/teacher/Header";
+import FormComponent from "../../../components/common/FormComponent";
 
 function TeacherCreatePage() {
   return (
-      <Box>
+      <>
         {/* Header */}
-        <Header header="TEACHER LIST" subheader=" Please Fill Teacher Information" />
+        <FormComponent title={"Teacher Create"} subTitle={"Please Fill Teacher Information"}>
         {/* Tabs */}
         <FormInfo />
-      </Box>
+      </FormComponent>
+      </>
   );
 }
 
