@@ -307,7 +307,6 @@ const routesConfig = [
             },
             {
                 path: "classes",
-                element: <ClassListPage />,
                 children: [
                     {
                         path: "",
