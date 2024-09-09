@@ -30,9 +30,9 @@
  * @returns JSX.Element
  */
 import {Box, MenuItem, Select, Typography} from "@mui/material";
-function SelectField({ label, name, value, onChange, options ,placeholder}) {
+function SelectField({ label, name, value, onChange, options ,placeholder, customStyle}) {
   return (
-    <Box display="flex" flexDirection="column" gap="4px">
+    <Box display="flex" flexDirection="column" gap="4px" sx={customStyle}>
       <Typography sx={{ fontSize: "16px" }}>{label}</Typography>
       <Select
         value={value}

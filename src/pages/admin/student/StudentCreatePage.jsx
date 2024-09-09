@@ -49,11 +49,8 @@ const StudentCreatePage = () => {
             <Tab label="Student Information" />
             <Tab label="Guardian Information" />
           </Tabs>
-      <CardComponent title="Student Information">
-        <Box
-          component="form"
-          sx={containerStyle}
-        >
+      <CardComponent title={activeTab===0 ? "Student Information" : "Guardian Information"}>
+        
           {/* stundet tab */}
           {activeTab === 0 && (
            <StudentFrom/>
@@ -62,13 +59,13 @@ const StudentCreatePage = () => {
           {activeTab === 1 && (
             <GardianForm/>
           )}
-        </Box>
+      
         {/* buttons container */}
         <ButtonContainer
           leftBtn={handleCancel}
           rightBtn={handleNext}
           leftBtnTitle="Cancel"
-          rightBtnTitle={activeTab === 0 ? "Next" : "Add Student"}
+          rightBtnTitle={activeTab === 0 ? "Next" : "Submit"}
         />
       </CardComponent>
     </FormComponent>
@@ -76,21 +73,3 @@ const StudentCreatePage = () => {
 };
 
 export default StudentCreatePage;
-const containerStyle = {
-  display: "grid",
-  gap: { xs: "12px", md: "24px" },
-  gridTemplateColumns: {
-    xs: "repeat(1, 1fr)",
-    md: "repeat(2, 1fr)",
-  },
-}
-const genderOptions = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "other", label: "Other" },
-];
-
-const classOptions = [
-  { value: "Class A", label: "Class A" },
-  { value: "Class B", label: "Class B" },
-];
