@@ -14,11 +14,49 @@ import {
     Tooltip,
     TablePagination,
     Box,
+    Typography,
 } from '@mui/material';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
-import NotFoundIcon from '../../assets/icon/not-found.png';
+import NotFoundIcon from '../../assets/images/not-found.jpg';
+
+/**
+ * DataTable Component
+ *
+ * A reusable and feature-rich table component built with React and Material-UI.
+ *
+ * Features:
+ * - Sortable columns
+ * - Pagination
+ * - Row selection (single and multi-select)
+ * - Responsive design with column hiding for mobile views
+ * - Action menu for each row (edit and delete)
+ * - Bulk delete functionality
+ * - Empty state handling
+ *
+ * Props:
+ * @param {Object[]} rows - Array of data objects to display in the table
+ * @param {Object[]} columns - Array of column definitions (id, label, align)
+ * @param {Function} onEdit - Callback function for row edit action
+ * @param {Function} onDelete - Callback function for row delete action
+ * @param {Function} onSelectedDelete - Callback function for bulk delete action
+ * @param {string[]} hideColumns - Array of column ids to hide on mobile views
+ * @param {string} emptyTitle - Title to display when the table is empty
+ * @param {string} emptySubTitle - Subtitle to display when the table is empty
+ *
+ * Usage:
+ * <DataTable
+ *   rows={dataArray}
+ *   columns={columnDefinitions}
+ *   onEdit={handleEdit}
+ *   onDelete={handleDelete}
+ *   onSelectedDelete={handleBulkDelete}
+ *   hideColumns={['columnToHide']}
+ *   emptyTitle="No data available"
+ *   emptySubTitle="Add some data to see it in the table"
+ * />
+ */
 
 const DataTable = ({
     rows,
@@ -28,7 +66,7 @@ const DataTable = ({
     onSelectedDelete,
     hideColumns,
     emptyTitle,
-    emptyDescription,
+    emptySubTitle,
 }) => {
     const [selected, setSelected] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -150,8 +188,9 @@ const DataTable = ({
                 <TableBody>
                     {rows.length === 0 ? (
                         <EmptyTable
+                            columns={columns}
                             emptyTitle={emptyTitle}
-                            emptyDescription={emptyDescription}
+                            emptySubTitle={emptySubTitle}
                         />
                     ) : (
                         paginatedRows.map(row => {
@@ -223,24 +262,21 @@ const DataTable = ({
     );
 };
 
-const EmptyTable = () => {
+const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
     return (
-        <TableRow>
-            <TableCell colSpan={columns.length + 1} align='center'>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100%',
-                    }}
-                >
-                    <img src={NotFoundIcon} alt='not found' />
-                    <Typography variant='h6' sx={{ mt: 2 }}>
-                        No data available
-                    </Typography>
-                </Box>
+        <TableRow sx={{ width: 1, height: '500px' }}>
+            <TableCell colSpan={columns.length + 1} align='center' width={1}>
+                <img
+                    src={NotFoundIcon}
+                    alt='not found'
+                    style={{ width: '400px' }}
+                />
+                <Typography variant='h6' sx={{ mt: 2 }}>
+                    {emptyTitle}
+                </Typography>
+                <Typography variant='body1' sx={{ mt: 2 }}>
+                    {emptySubTitle}
+                </Typography>
             </TableCell>
         </TableRow>
     );
