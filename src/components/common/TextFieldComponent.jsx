@@ -7,9 +7,10 @@ const TextFieldComponent = ({
   onChange,
   type = "text",
   placeholder,
+  customStyle
 }) => {
   return (
-    <Box display="flex" flexDirection="column" gap="4px">
+    <Box display="flex" flexDirection="column" gap="4px" sx={customStyle}>
       <Typography sx={{ fontSize: "16px" }}>{label}</Typography>
       <TextField
         type={type}

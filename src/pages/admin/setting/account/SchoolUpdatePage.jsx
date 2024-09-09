@@ -1,8 +1,8 @@
-import CardComponent from "../../../components/common/CardComponent";
-import { Typography, Stack, TextField } from "@mui/material"
-import { fieldContainer } from "../../../styles/authStyle";
-import FormComponent from "../../../components/common/FormComponent";
-import ButtonContainer from "../../../components/common/ButtonContainer";
+import CardComponent from "../../../../components/common/CardComponent";
+import { Typography, Box, Stack, TextField } from "@mui/material"
+import { fieldContainer } from "../../../../styles/authStyle";
+import FormComponent from "../../../../components/common/FormComponent";
+import ButtonContainer from "../../../../components/common/ButtonContainer";
 function SchoolUpdatePage() {
     const onClickBack = () => {
         console.log('back');
@@ -36,11 +36,11 @@ function SchoolUpdatePage() {
                         />
                     </Stack>
                     {/* Button Container  */}
-                    <ButtonContainer 
-                        leftBtn={onClickBack} 
-                        rightBtn={onClickNext} 
-                        leftBtnTitle={'Cancel'} 
-                        rightBtnTitle={'Update'} 
+                    <ButtonContainer
+                        leftBtn={onClickBack}
+                        rightBtn={onClickNext}
+                        leftBtnTitle={'Cancel'}
+                        rightBtnTitle={'Update'}
                     />
                 </CardComponent>
             </FormComponent>

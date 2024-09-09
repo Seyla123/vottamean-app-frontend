@@ -19,6 +19,7 @@ import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import { Box } from '@mui/system';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
+import { Container } from '@mui/material';
 
 const navigation = [
     { kind: 'header', title: 'Menu' },
@@ -139,10 +140,14 @@ const Layout = ({ children }) => {
             session={session}
             authentication={authentication}
         >
-            <Box padding={showDashboard? 2 : 0}>
+            <Box paddingTop={showDashboard? 2 : 0}>
                 {showDashboard ? (
                     // Render the dashboard or other components here
-                    <DashboardLayout>{children}</DashboardLayout>
+                    <DashboardLayout>
+                        <Container padding={0} maxWidth="xl">
+                         {children}
+                        </Container>
+                    </DashboardLayout>
                 ) : (
                     // Render other components or nothing based on your requirements
                     children

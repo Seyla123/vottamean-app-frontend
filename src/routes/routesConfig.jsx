@@ -100,7 +100,7 @@ const ClassUpdatePage = lazy(
 );
 
 const SchoolUpdatePage = lazy(
-    () => import("../pages/admin/school/SchoolUpdatePage")
+    () => import("../pages/admin/setting/account/SchoolUpdatePage")
 );
 
 const AccountProfilePage = lazy(
@@ -110,6 +110,7 @@ const AccountProfilePage = lazy(
 const AttendanceReportPage = lazy(
     () => import("../pages/admin/report/attendance/AttendanceReportPage")
 );
+const UserUpdatePage = lazy(() => import("../pages/admin/setting/account/UserUpdatePage"));
 
 // Teacher site 
 
@@ -181,7 +182,7 @@ const routesConfig = [
                 element: <TeacherSessionPage />,
             },
             {
-                path:'settings',
+                path: 'settings',
                 children: [
                     {
                         path: 'account',
@@ -327,21 +328,28 @@ const routesConfig = [
                 ],
             },
             {
-                path: "school",
-                element: <SchoolUpdatePage />,
-                children: [
-                    {
-                        path: "update/:id",
-                        element: <SchoolUpdatePage />,
-                    },
-                ],
-            },
-            {
                 path: "settings",
                 children: [
                     {
                         path: "account",
-                        element: <AccountProfilePage />,
+                        children: [
+                            {
+                                path: "",
+                                element: <AccountProfilePage />,
+                            },
+                            {
+                                path: "user/update/:id",
+                                element: <UserUpdatePage />,
+                            },
+                            {
+                                path: "school/:id",
+                                element: <SchoolUpdatePage />,
+                            },
+                            {
+                                path: "school/update/:id",
+                                element: <SchoolUpdatePage />,
+                            }
+                        ],
                     },
                 ],
             },
