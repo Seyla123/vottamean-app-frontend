@@ -1,49 +1,11 @@
 import React from 'react';
 import { CardContent, Avatar, Box, Typography } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { useTheme } from '@emotion/react';
 import { cardContainer } from '../../styles/global';
 
 const CardDetail = ({ className, day, subject, students, time, classIcon, randomColor }) => {
-  const theme = useTheme();
-  const mobile = theme.breakpoints;
 
-  // styles for mobile
   
-  const subjectSize = {
-    [mobile.down("sm")]: { fontSize: "24px" },
-    [mobile.up("sm")]: { fontSize: "32px" },
-    fontWeight: "medium",
-    letterSpacing: 0.5,
-  };
-
-  const daySize = {
-    [mobile.down("sm")]: { fontSize: "16px" },
-    [mobile.up("sm")]: { fontSize: "18px" },
-    fontWeight: "medium"
-  };
-
-  const timeSize = {
-    [mobile.down("sm")]: { fontSize: "14px" },
-    [mobile.up("sm")]: { fontSize: "16px" },
-    fontWeight: "medium"
-  };
-
-  const classSize = {
-    [mobile.down("sm")]: { fontSize: "18px" },
-    [mobile.up("sm")]: { fontSize: "20px" },
-    fontWeight: "medium"
-  };
-
-  const cardStyle = {
-    ...cardContainer,
-    bgcolor: randomColor,
-    borderRadius: '16px',
-    height: { xs: '200px', sm: '250px' }, 
-    display: 'flex', flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-
   return (
     <CardContent sx={cardStyle}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -91,3 +53,34 @@ const boxStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '8px' }
+
+  // styles for mobile
+  const subjectSize = {
+    fontSize: { xs: "24px", sm: "32px" },
+    fontWeight: "medium",
+    letterSpacing: 0.5,
+  };
+
+  const daySize = {
+    fontSize: { xs: "16px", sm: "18px" },
+    fontWeight: "medium"
+  };
+
+  const timeSize = {
+    fontSize: { xs: "14px", sm: "16px" },
+    fontWeight: "medium"
+  };
+
+  const classSize = {
+    fontSize: { xs: "18px", sm: "20px" },
+    fontWeight: "medium"
+  };
+
+  const cardStyle = {
+    ...cardContainer,
+    bgcolor: randomColor,
+    borderRadius: '16px',
+    height: { xs: '200px', sm: '250px' }, 
+    display: 'flex', flexDirection: 'column',
+    justifyContent: 'space-between'
+  }
