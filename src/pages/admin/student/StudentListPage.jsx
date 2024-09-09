@@ -19,11 +19,11 @@ const handleMenuClick = (event, postId) => {
   };
   //Navigate to create page
 const handleCreate = () => {
-  navigate(`/student/create`);
+  navigate(`/dashboard/students/create`);
   };
   //navigate to upfdate
   const handleUpdate = () => {
-    navigate(`/student/update/${selectedPostId}`);
+    navigate(`/dashboard/students/update/${selectedPostId}`);
     };
 
 const handleChange = (event) => {

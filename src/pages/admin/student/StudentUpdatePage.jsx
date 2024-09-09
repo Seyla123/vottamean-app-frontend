@@ -25,7 +25,7 @@ const StudentUpdatePage = () => {
 
   const handleCancel = () => {
     if (activeTab === 0) {
-      navigate("/student");
+      navigate("/dashboard/students");
     } else if (activeTab === 1) {
       setActiveTab(0);
     }
