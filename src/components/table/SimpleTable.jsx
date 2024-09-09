@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
     Table,
     TableBody,
@@ -14,8 +14,10 @@ import {
     IconButton,
     Menu,
     MenuItem,
-} from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+    Button,
+    Box,
+} from "@mui/material";
+import { MoreVert, DeleteForever } from "@mui/icons-material";
 
 /**
  * SimpleTable Component
@@ -53,7 +55,7 @@ const SimpleTable = ({
     onDelete,
 }) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -65,15 +67,17 @@ const SimpleTable = ({
         setPage(newPage);
     };
 
-    const handleRowsPerPageChange = event => {
+    const handleRowsPerPageChange = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
 
-    const handleCheckboxChange = row => {
-        setSelectedRows(prevSelectedRows =>
+    const handleCheckboxChange = (row, event) => {
+        event.preventDefault();
+
+        setSelectedRows((prevSelectedRows) =>
             prevSelectedRows.includes(row)
-                ? prevSelectedRows.filter(item => item !== row)
+                ? prevSelectedRows.filter((item) => item !== row)
                 : [...prevSelectedRows, row]
         );
     };
@@ -102,6 +106,13 @@ const SimpleTable = ({
         handleMenuClose();
     };
 
+    const handleDeleteAll = () => {
+        if (onDelete) {
+            selectedRows.forEach(row => onDelete(row));
+            setSelectedRows([]);
+        }
+    };
+
     const paginatedData = () => {
         return pagination
             ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -111,11 +122,14 @@ const SimpleTable = ({
     return (
         <TableContainer component={Paper}>
             <Table>
-                <TableHead>
+                <TableHead sx={{ bgcolor: "#F3F3F5" }}>
                     <TableRow>
-                        <TableCell padding='checkbox'>
+                        <TableCell padding="checkbox">
                             <Checkbox
-                                indeterminate={selectedRows.length > 0 && selectedRows.length < data.length}
+                                indeterminate={
+                                    selectedRows.length > 0 &&
+                                    selectedRows.length < data.length
+                                }
                                 checked={selectedRows.length === data.length}
                                 onChange={() => {
                                     if (selectedRows.length === data.length) {
@@ -127,7 +141,7 @@ const SimpleTable = ({
                             />
                         </TableCell>
                         {columns.map(
-                            column =>
+                            (column) =>
                                 !hiddenColumns.includes(column.field) && (
                                     <TableCell
                                         key={column.field}
@@ -137,15 +151,19 @@ const SimpleTable = ({
                                                 hiddenColumns.includes(
                                                     column.field
                                                 )
-                                                    ? 'none'
-                                                    : 'table-cell',
+                                                    ? "none"
+                                                    : "table-cell",
                                         }}
                                     >
                                         {column.headerName}
                                     </TableCell>
                                 )
                         )}
-                        <TableCell style={{ width: '100px' }}>Actions</TableCell>
+                        <TableCell sx={{ width: "100px" }} align="center">
+                            <IconButton color="error">
+                                <DeleteForever />
+                            </IconButton>
+                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -155,14 +173,14 @@ const SimpleTable = ({
                             hover
                             onClick={() => onRowClick && onRowClick(row)}
                         >
-                            <TableCell padding='checkbox'>
+                            <TableCell padding="checkbox">
                                 <Checkbox
                                     checked={selectedRows.includes(row)}
                                     onChange={() => handleCheckboxChange(row)}
                                 />
                             </TableCell>
                             {columns.map(
-                                column =>
+                                (column) =>
                                     !hiddenColumns.includes(column.field) && (
                                         <TableCell
                                             key={column.field}
@@ -172,15 +190,21 @@ const SimpleTable = ({
                                                     hiddenColumns.includes(
                                                         column.field
                                                     )
-                                                        ? 'none'
-                                                        : 'table-cell',
+                                                        ? "none"
+                                                        : "table-cell",
                                             }}
                                         >
                                             {row[column.field]}
                                         </TableCell>
                                     )
                             )}
-                            <TableCell style={{ width: '48px', padding: '0 8px', textAlign: 'center' }}>
+                            <TableCell
+                                style={{
+                                    width: "48px",
+                                    padding: "0 8px",
+                                    textAlign: "center",
+                                }}
+                            >
                                 <IconButton
                                     size="small"
                                     onClick={(e) => {
@@ -188,7 +212,7 @@ const SimpleTable = ({
                                         handleActionClick(e, row);
                                     }}
                                 >
-                                    <MoreVertIcon fontSize="small" />
+                                    <MoreVert fontSize="small" />
                                 </IconButton>
                             </TableCell>
                         </TableRow>
@@ -197,7 +221,7 @@ const SimpleTable = ({
             </Table>
             {pagination && (
                 <TablePagination
-                    component='div'
+                    component="div"
                     count={data.length}
                     page={page}
                     onPageChange={handlePageChange}
