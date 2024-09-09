@@ -36,7 +36,7 @@ const LoginForm = () => {
       <Box sx={buttonContainerStyles}>
         {/* forgot password */}
         <Stack alignSelf={"flex-end"} >
-          <Link style={{ textDecoration: 'none' }} to="/forgot-password">
+          <Link  to="/forgot-password">
             <Typography variant="body2" component="span" color="primary">
               {" "}Forgot Password?
             </Typography>
