@@ -2,9 +2,13 @@ import { Stack, Button } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { Link } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
+import { useNavigate } from 'react-router-dom';
+
 function SubjectListPage() {
+    const navigate = useNavigate();
+
     const handleEdit = row => {
-        console.log('Edit row:', row);
+        navigate(`/dashboard/subjects/update/${row.id}`);
     };
 
     const handleDelete = row => {
