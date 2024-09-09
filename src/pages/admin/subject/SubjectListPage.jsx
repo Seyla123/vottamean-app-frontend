@@ -14,7 +14,7 @@ function SubjectListPage() {
       {/* Subject Create Button */}
       <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
         <Link to={'/dashboard/subjects/create'} style={{ textDecoration: 'none' }}>
-          <Button variant="contained" sx={{textTransform: 'capitalize'}}>add subject</Button>
+          <Button variant="contained" textTransform={'capitalize'} sx={{fontSize:{xs:'14px',md:'16px'}}}>add subject</Button>
         </Link>
       </Stack>
       {/* List Subject */}
