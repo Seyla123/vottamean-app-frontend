@@ -1,271 +1,138 @@
-import React from "react";
-import axios from "axios";
 import { useState } from "react";
-import {
-  Box,
-  TextField,
-  MenuItem,
-  Button,
-  Stack,
-  Typography,
-  Divider,
-} from "@mui/material";
+import {Box} from "@mui/material";
+import FormComponent from "../../../components/common/FormComponent";
+import CardComponent from "../../../components/common/CardComponent";
+import ButtonContainer from "../../../components/common/ButtonContainer";
+import SelectField from "../../../components/common/SelectField";
 
-function SessionCreatePage() {
-  const [session, setSession] = useState({
+
+// Main Component
+const SessionCreatePage = () => {
+  const [form, setForm] = useState({
     teacher: "",
-    period: "",
-    class: "",
+    classPeriod: "",
+    classes: "",
     subject: "",
-    dow: "",
+    dayOfWeek: "",
   });
-  const createSession = async () => {
-    try {
-      const response = await axios.post("http://localhost:3000/session");
-    } catch (error) {
-      console.log(error);
-    }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBackClick = () => {
+    console.log("cancel");
+  };
+
+  const handleNextClick = () => {
+    console.log("add");
   };
 
   return (
-    <Box sx={content}>
-      {/* Header */}
-      <Box>
-        <Typography variant="h4">ADD SESSION</Typography>
-        <Typography sx={{ color: "#666666", fontSize: "16px" }}>
-          Please Fill Session information
-        </Typography>
-      </Box>
-
-      {/* Form */}
-      <Box sx={form}>
-        <Typography sx={{ fontSize: "18px", fontWeight: "bold" }}>
-          Session Information
-        </Typography>
-        <Divider sx={{color : "#797979"}}/>
-        <Box component="form" sx={container} noValidate autoComplete="off">
-          {/* Teacher */}
-          <Box sx={textInput}>
-            <Typography sx={{ fontSize: "16px" }}>Teacher</Typography>
-            <TextField
-              id="outlined-select-currency"
-              select
-              defaultValue="teacher1"
-            >
-              {teachers.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          {/* Period */}
-          <Box sx={textInput}>
-            <Typography sx={{ fontSize: "16px" }}>Class Period</Typography>
-            <TextField
-              id="outlined-select-currency"
-              select
-              defaultValue="period1"
-            >
-              {period.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-
+    <FormComponent title="Add session" subTitle="Please Fill session information">
+      <CardComponent title="Session Information">
+        <Box
+          component="form"
+          sx={containerStyle}
+        >
+          {/* Teacher field */}
+          <SelectField
+            label="Teacher"
+            name="teacher"
+            placeholder="Teacher"
+            value={form.teacher}
+            onChange={handleChange}
+            options={teachersData}
+          />
+          {/* Class Period */}
+          <SelectField
+            label="Class Period"
+            name="classPeriod"
+            placeholder="class Period"
+            value={form.classPeriod}
+            onChange={handleChange}
+            options={periodsData}
+          />
           {/* Classes */}
-          <Box sx={textInput}>
-            <Typography sx={{ fontSize: "16px" }}>Class</Typography>
-            <TextField
-              id="outlined-select-currency"
-              select
-              defaultValue={"class1"}
-            >
-              {classes.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
+          <SelectField
+            label="Class"
+            name="classes"
+            placeholder="Class"
+            value={form.classes}
+            onChange={handleChange}
+            options={classesData}
+          />
           {/* Subject */}
-          <Box sx={textInput}>
-            <Typography sx={{ fontSize: "16px" }}>Subject</Typography>
-            <TextField
-              id="outlined-select-currency"
-              select
-              defaultValue={"math"}
-            >
-              {subject.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-
-          {/* Dow */}
-          <Box sx={textInput}>
-            <Typography sx={{ fontSize: "16px" }}>Day of Week</Typography>
-            <TextField id="outlined-select-currency" select defaultValue="mon">
-              {dow.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
+          <SelectField
+            label="Subject"
+            name="subject"
+            placeholder="Subject"
+            value={form.subject}
+            onChange={handleChange}
+            options={subjectsData}
+          />
+          {/* Day of Week */}
+          <SelectField
+            label="Day of Week"
+            name="dayOfWeek"
+            placeholder={"Day of Week"}
+            value={form.dayOfWeek}
+            onChange={handleChange}
+            options={dowData}
+          />
         </Box>
-        {/* Button  */}
-        <Stack sx={buttonContainer}>
-          <Button variant="outlined" sx={button} color="white">
-            Cancel
-          </Button>
-          <Button variant="contained" sx={button}>
-            ADD SESSION
-          </Button>
-        </Stack>
-      </Box>
-    </Box>
+        {/* Button Container */}
+        <ButtonContainer
+          leftBtn={handleBackClick}
+          rightBtn={handleNextClick}
+          leftBtnTitle="Cancel"
+          rightBtnTitle="Add Subject"
+        />
+      </CardComponent>
+    </FormComponent>
   );
-}
+};
 
 export default SessionCreatePage;
+const containerStyle = {
+  "& .MuiTextField-root": { width: 1 },
+  width: "100%",
+  display: "grid",
+  gap: { xs: "12px", md: "24px" },
+  margin: "0 auto",
+  gridTemplateColumns: {
+    xs: "repeat(1, 1fr)",
+    md: "repeat(2, 1fr)",
+  },
+}
+// Data for the select options
+const teachersData = [
+  { value: "Smey", label: "Smey" },
+  { value: "Mary", label: "Mary" },
+  { value: "Berry", label: "Berry" },
+];
 
-  // MUI
-  const teachers = [
-    {
-      value: "teacher1",
-      label: "Smey",
-    },
-    {
-      value: "teacher2",
-      label: "Mary",
-    },
-    {
-      value: "teacher3",
-      label: "Berry",
-    },
-  ];
+const periodsData = [
+  { value: "7:00 - 8:00", label: "7:00 - 8:00" },
+  { value: "8:10 - 9:00", label: "8:10 - 9:00" },
+  { value: "9:10 - 10:00", label: "9:10 - 10:00" },
+];
 
-  const period = [
-    {
-      value: "period1",
-      label: "7:00 - 8:00",
-    },
-    {
-      value: "period2",
-      label: "8:10 - 9:00",
-    },
-    {
-      value: "period3",
-      label: "9:10 - 10:00",
-    },
-  ];
+const classesData = [
+  { value: "12A", label: "12A" },
+  { value: "12B", label: "12B" },
+  { value: "12C", label: "12C" },
+];
 
-  const classes = [
-    {
-      value: "class1",
-      label: "12A",
-    },
-    {
-      value: "class2",
-      label: "12B",
-    },
-    {
-      value: "class3",
-      label: "12C",
-    },
-  ];
+const subjectsData = [
+  { value: "Math", label: "Math" },
+  { value: "Khmer", label: "Khmer" },
+  { value: "English", label: "English" },
+];
 
-  const subject = [
-    {
-      value: "math",
-      label: "Math",
-    },
-    {
-      value: "khmer",
-      label: "Khmer",
-    },
-    {
-      value: "english",
-      label: "English",
-    },
-  ];
-  const dow = [
-    {
-      value: "mon",
-      label: "Monday",
-    },
-    {
-      value: "tues",
-      label: "Tuesday",
-    },
-    {
-      value: "wed",
-      label: "Wednesday",
-    },
-  ];
-
-  const content = {
-    mx: "auto",
-    my: "16px",
-    display: "flex",
-    flexDirection: "column",
-    gap: {
-      xs : "12px", 
-      md : "24px",
-    }
-  };
-
-  const form = {
-    p: {
-      xs: "24px",
-      md: "32px",
-    },
-    borderRadius: "8px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-    boxShadow : 2
-  };
-
-  const container = {
-    "& .MuiTextField-root": { width: 1 },
-    width: "100%",
-    display: "grid",
-    gap: {
-      xs : "12px", 
-      md : "24px"
-    },
-    margin: "0 auto",
-    gridTemplateColumns: {
-      xs: "repeat(1, 1fr)",
-      md: "repeat(2, 1fr)",
-    },
-  };
-
-  const textInput = {
-    width: 1,
-    display: "flex ",
-    flexDirection: "column",
-    gap: "4px",
-  };
-
-  const buttonContainer = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: "16px",
-    width: 1,
-    my : "16px"
-  };
-
-  const button = {
-    width: {
-      md: "170px",
-      xs: "100%",
-    },
-  };
+const dowData = [
+  { value: "Monday", label: "Monday" },
+  { value: "Tuesday", label: "Tuesday" },
+  { value: "Wednesday", label: "Wednesday" },
+];
