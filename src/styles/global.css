@@ -8,3 +8,6 @@
 .app-component {
   margin: 16px;
 }
+a {
+  text-decoration: none;
+}
