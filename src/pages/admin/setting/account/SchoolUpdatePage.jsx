@@ -1,8 +1,8 @@
-import CardComponent from "../../../components/common/CardComponent";
-import { Typography, Stack, TextField } from "@mui/material"
-import { fieldContainer } from "../../../styles/authStyle";
-import FormComponent from "../../../components/common/FormComponent";
-import ButtonContainer from "../../../components/common/ButtonContainer";
+import CardComponent from "../../../../components/common/CardComponent";
+import { Typography, Box, Stack, TextField } from "@mui/material"
+import { fieldContainer } from "../../../../styles/authStyle";
+import FormComponent from "../../../../components/common/FormComponent";
+import ButtonContainer from "../../../../components/common/ButtonContainer";
 function SchoolUpdatePage() {
     const onClickBack = () => {
         console.log('back');
@@ -16,6 +16,10 @@ function SchoolUpdatePage() {
         <>
             <FormComponent title={"Update School"} subTitle={"Update school information"}>
                 <CardComponent title={"School Information"}>
+                    {/* container img */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <img src="https://cdn-icons-png.flaticon.com/512/147/147144.png" alt="school logo" width="100px" height="100px" />
+                    </Box>
                     {/* school name input container */}
                     <Stack sx={fieldContainer} >
                         <Typography variant="body1">School&apos;s Name</Typography>
@@ -36,11 +40,11 @@ function SchoolUpdatePage() {
                         />
                     </Stack>
                     {/* Button Container  */}
-                    <ButtonContainer 
-                        leftBtn={onClickBack} 
-                        rightBtn={onClickNext} 
-                        leftBtnTitle={'Cancel'} 
-                        rightBtnTitle={'Update'} 
+                    <ButtonContainer
+                        leftBtn={onClickBack}
+                        rightBtn={onClickNext}
+                        leftBtnTitle={'Cancel'}
+                        rightBtnTitle={'Update'}
                     />
                 </CardComponent>
             </FormComponent>
