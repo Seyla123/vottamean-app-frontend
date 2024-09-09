@@ -13,3 +13,7 @@ export const cardContainer = {
     gap: 2,
    ...shadow
 }
+export const tableShadow = {
+    borderRadius: "4px",
+    boxShadow: '0px 5px 10px rgba(0,0,0,0.08)',
+}
