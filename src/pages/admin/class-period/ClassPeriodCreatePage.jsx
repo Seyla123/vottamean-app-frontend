@@ -8,22 +8,26 @@ import CardComponent from "../../../components/common/CardComponent";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 import { containerInput, timeInput } from "../../../styles/classPeriod";
+import { useNavigate } from "react-router-dom";
+
 
 function ClassPeriodCreatePage() {
   // form valiadation
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
+
 
   const onClickNext = () => {
     if (!startTime || !endTime) {
-      setError(true);
+      setError(true)
     } else {
-      setError(false);
+      navigate(`/dashboard/class-periods`);
     }
   };
   const onClickBack = () => {
-    console.log("back");
+    navigate(`/dashboard/class-periods`);
   };
 
   return (

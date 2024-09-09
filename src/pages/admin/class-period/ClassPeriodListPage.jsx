@@ -3,14 +3,29 @@ import {
 } from "@mui/material";
 import SimpleTable from "../../../components/table/SimpleTable";
 import FormComponent from "../../../components/common/FormComponent";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { useNavigate } from "react-router-dom";
+
 function ClassPeriodListPage() {
   const isMobile = useMediaQuery("(max-width: 600px)");
+  const navigate = useNavigate();
   const header = [
     !isMobile && { field: "id", headerName: "ID", flex: 1 },
     { field: "start", headerName: "Start Time", flex: 2 },
     { field: "end", headerName: "End Time", flex: 2 },
     { field: "period", headerName: "Period", flex: 1 },
   ].filter(Boolean);
+  const handleCreate = () => {
+    navigate(`/dashboard/class-periods/create`);
+    };
+
+  const handleEdit = (row) => {
+    navigate(`/dashboard/class-periods/update/1`);
+  };
+
+  const handleDelete = (row) => {
+    setRows(rows.filter(item => item.id !== row.id));
+  };
 
   return (
     <Box>
@@ -23,22 +38,20 @@ function ClassPeriodListPage() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-end",
-            my: "24px",
           }}>
-          <Button variant="contained" sx={{ width: "170px" }}>
+          <Button variant="contained" sx={{ width: "170px" }} onClick={handleCreate}>
             ADD SESSION
           </Button>
         </Stack>
 
         {/* List Session */}
     <SimpleTable
-      columns={header
-      }
+      columns={header}
       data={rows}
       pagination={true}
       hiddenColumns={["id"]}
-      onEdit={(row) => console.log("Edit", row)}
-      onDelete={(row) => console.log("Delete", row)}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
       </FormComponent>
     </Box>
