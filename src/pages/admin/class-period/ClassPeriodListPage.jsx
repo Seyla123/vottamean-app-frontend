@@ -4,17 +4,23 @@ import {
 import SimpleTable from "../../../components/table/SimpleTable";
 import FormComponent from "../../../components/common/FormComponent";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { useNavigate } from "react-router-dom";
+
 function ClassPeriodListPage() {
   const isMobile = useMediaQuery("(max-width: 600px)");
+  const navigate = useNavigate();
   const header = [
     !isMobile && { field: "id", headerName: "ID", flex: 1 },
     { field: "start", headerName: "Start Time", flex: 2 },
     { field: "end", headerName: "End Time", flex: 2 },
     { field: "period", headerName: "Period", flex: 1 },
   ].filter(Boolean);
+  const handleCreate = () => {
+    navigate(`/dashboard/class-periods/create`);
+    };
 
   const handleEdit = (row) => {
-    console.log("Edit row:", row);
+    navigate(`/dashboard/class-periods/update/1`);
   };
 
   const handleDelete = (row) => {
@@ -33,7 +39,7 @@ function ClassPeriodListPage() {
             flexDirection: "row",
             justifyContent: "flex-end",
           }}>
-          <Button variant="contained" sx={{ width: "170px" }}>
+          <Button variant="contained" sx={{ width: "170px" }} onClick={handleCreate}>
             ADD SESSION
           </Button>
         </Stack>
