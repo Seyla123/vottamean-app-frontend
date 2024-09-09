@@ -18,6 +18,7 @@ const AccountSuccessPage = lazy(
 );
 
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const LoadingPage = lazy(() => import("../pages/LoadingPage"));
 
 const DashboardPage = lazy(
     () => import("../pages/admin/dashboard/DashboardPage")
@@ -122,7 +123,7 @@ const TeacherSessionPage = lazy(() => import('../pages/teacherSite/session/Teach
 const routesConfig = [
     {
         path: "/test",
-        element: <TestPage />,
+        element: <LoadingPage />,
         showSidebar: false,
     },
     {
