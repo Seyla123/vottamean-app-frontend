@@ -44,7 +44,7 @@ function Card({title,imgUrl,imgTitle ,children, handleEdit, handleDelete}) {
     <Box component={'form'} direction="column" sx={cardContainer }>
       {/* Card Title */}
       <CardHeader title={title} handleEdit={handleEdit} handleDelete={handleDelete}/>
-      <Stack component={'div'} sx={imgUrl ? containerStyle : containerStyleImg}>
+      <Stack component={'div'} sx={imgUrl ? containerStyle : containerStyleNoImg}>
      {imgUrl &&  <Avatar sx={imgStyle} alt={imgTitle} src={imgUrl} />}
 
       {children}
@@ -74,7 +74,7 @@ const containerStyle = {
     xs:2, sm:4
   }
 }
-const containerStyleImg = {
+const containerStyleNoImg = {
   mt:0,
   gap: 2,
   display: "flex",
