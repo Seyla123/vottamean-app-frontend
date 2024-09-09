@@ -70,7 +70,7 @@ const CardDetail = ({ className, day, subject, students, time, classIcon, random
           {students} <span style={{ color: theme.palette.secondary.main }}>Students</span>
         </Typography>
         {/* time */}
-        <Box sx={{ backgroundColor: '#387F39', color: 'white', padding: '3px 8px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Box sx={boxStyle}>
           <AccessTimeIcon sx={{ padding: '2px', borderRadius: '50%' }} />
           <Typography sx={timeSize}>
             {time}
@@ -82,7 +82,12 @@ const CardDetail = ({ className, day, subject, students, time, classIcon, random
 };
 
 export default CardDetail;
-// #34cf4c
 
-// 35bd68
-
+const boxStyle = { 
+  backgroundColor: '#387F39', 
+  color: 'white',
+  padding: '3px 8px', 
+  borderRadius: '16px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px' }
