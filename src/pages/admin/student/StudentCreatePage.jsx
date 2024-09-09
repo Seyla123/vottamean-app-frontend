@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import FormComponent from "../../../components/common/FormComponent";
 import CardComponent from "../../../components/common/CardComponent";
-import CardInformation from "../../../components/common/CardInformation";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 
 const StudentCreatePage = () => {
@@ -15,23 +14,11 @@ const StudentCreatePage = () => {
   const [newGuardian, setNewGuardian] = useState({firstName: "",lastName: "",relationship: "",email: "",phoneNumber: "",});
   const [activeTab, setActiveTab] = useState(0);
 
-  const isMobile = useMediaQuery("(max-width:600px)");
-
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "other", label: "Other" },
-  ];
-  const selectType = [
-    { value: "Class A", label: "Class A" },
-    { value: "Class B", label: "Class B" },
-  ];
-
   const handleCancel = () => {
     if (activeTab === 0) {
-      navigate("dashboard/students");
+      navigate("/dashboard/students");
     } else if (activeTab === 1) {
-      setActiveTab("student");
+      setActiveTab(0);
     }
   };
 
@@ -39,7 +26,7 @@ const StudentCreatePage = () => {
     if (activeTab === 0) {
       setActiveTab(1);
     } else {
-      navigate("/student"); 
+      navigate("/dashboard/students"); 
     }
   };
 
@@ -52,19 +39,6 @@ const StudentCreatePage = () => {
     }
   };
 
-  const profile = {
-    width: 100,
-    height: 100,
-    borderRadius: "50%",
-    overflow: "hidden",
-    display: "flex",
-    justifyContent: "center",
-    "& img": {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    },
-  };
 
   return (
     <>
@@ -84,8 +58,18 @@ const StudentCreatePage = () => {
         </Tabs>
         
         {activeTab === 0  && (
-        <CardComponent title={"Student Information"} imgUrl="r">
-               
+      //  <Card>
+         
+        <CardComponent title={"Student Information"}>        
+        <Box sx={{display:'flex', justifyContent:'center'}}>
+            <Box sx={profile}>
+              <img
+                src="https://via.placeholder.com/100"
+                alt="Profile"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </Box>
+          </Box> 
           <Box
             sx={{display: "flex",flexDirection: "row",justifyContent: "space-between", gap: "12px", }}>
             <Box sx={{ flex: 1 }}>
@@ -223,14 +207,16 @@ const StudentCreatePage = () => {
             leftBtn={handleCancel}
             rightBtn={handleNext}
             leftBtnTitle={"Cancel"}
-            rightBtnTitle={"Add Period"}
+            rightBtnTitle={"Add Student"}
           />
+
         </CardComponent>
+        //  </Card>
       )}
 
       {/* Gurdian INformation */}
       {activeTab === 1 && (
-        <CardComponent title={"Guardian Information"} >
+        <CardComponent title={"Guardian Information"}>
           <Box
             sx={{
               display: "flex",
@@ -304,7 +290,6 @@ const StudentCreatePage = () => {
             leftBtnTitle={"Cancel"}
             rightBtnTitle={"Add Guardian"}
           />
-       
         </CardComponent>
       )}
       </FormComponent>
@@ -313,3 +298,27 @@ const StudentCreatePage = () => {
 };
 
 export default StudentCreatePage;
+
+const genderOptions = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "other", label: "Other" },
+];
+const selectType = [
+  { value: "Class A", label: "Class A" },
+  { value: "Class B", label: "Class B" },
+];
+
+const profile = {
+  width: 100,
+  height: 100,
+  borderRadius: "50%",
+  overflow: "hidden",
+  display: "flex",
+  justifyContent: "center",
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+};
