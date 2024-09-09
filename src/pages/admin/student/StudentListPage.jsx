@@ -40,27 +40,27 @@ const StudentListPage = () => {
     ];
 
     const rows = [
-        {
-            id: 1,
-            name: 'Srey Mey',
-            gender: 'Female',
-            email: 'sreymey@example.com',
-            phoneNumber: '1234567890',
-        },
-        {
-            id: 2,
-            name: 'Sok Vanna',
-            gender: 'Male',
-            email: 'sokvanna@example.com',
-            phoneNumber: '0987654321',
-        },
-        {
-            id: 3,
-            name: 'Chenda Daro',
-            gender: 'Male',
-            email: 'chendadaro@example.com',
-            phoneNumber: '0123456789',
-        },
+        // {
+        //     id: 1,
+        //     name: 'Srey Mey',
+        //     gender: 'Female',
+        //     email: 'sreymey@example.com',
+        //     phoneNumber: '1234567890',
+        // },
+        // {
+        //     id: 2,
+        //     name: 'Sok Vanna',
+        //     gender: 'Male',
+        //     email: 'sokvanna@example.com',
+        //     phoneNumber: '0987654321',
+        // },
+        // {
+        //     id: 3,
+        //     name: 'Chenda Daro',
+        //     gender: 'Male',
+        //     email: 'chendadaro@example.com',
+        //     phoneNumber: '0123456789',
+        // },
     ];
 
     const handleEdit = row => {
