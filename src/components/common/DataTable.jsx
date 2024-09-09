@@ -16,13 +16,22 @@ import {
 } from "@mui/material";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useMediaQuery } from "@mui/material"; // Ensure this import is present
 
-const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
+const DataTable = ({
+    rows,
+    columns,
+    onEdit,
+    onDelete,
+    onSelectedDelete,
+    hideColumns,
+}) => {
     const [selected, setSelected] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuRow, setMenuRow] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const isMobile = useMediaQuery("(max-width:600px)"); 
 
     const handleSelectAllClick = (event) => {
         const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
@@ -81,10 +90,23 @@ const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
         setPage(0);
     };
 
+    const paginatedRows = rows.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+    );
+
     return (
-        <TableContainer component={Paper} sx={{ boxShadow: 1 }}>
+        <TableContainer
+            component={Paper}
+            sx={{ boxShadow: "0px 5px 10px rgba(0,0,0,0.05)" }}
+        >
             <Table className="min-w-full" aria-label="reusable table">
-                <TableHead sx={{ bgcolor: "#F3F3F5", height: "80px" }}>
+                <TableHead
+                    sx={{
+                        bgcolor: "#F3F3F5",
+                        height: "80px",
+                    }}
+                >
                     <TableRow>
                         <TableCell padding="checkbox">
                             <Checkbox
@@ -100,12 +122,15 @@ const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
                             />
                         </TableCell>
                         {columns.map((column) => (
-                            <TableCell
-                                key={column.id}
-                                align={column.align || "left"}
-                            >
-                                {column.label}
-                            </TableCell>
+                            // Show all columns in desktop view, hide specified columns in mobile view
+                            !isMobile || !hideColumns.includes(column.id) ? (
+                                <TableCell
+                                    key={column.id}
+                                    align={column.align || "left"}
+                                >
+                                    {column.label}
+                                </TableCell>
+                            ) : null
                         ))}
                         <TableCell align="right">
                             {selected.length > 0 && (
@@ -122,7 +147,7 @@ const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => {
+                    {paginatedRows.map((row) => {
                         const isItemSelected = isSelected(row.id);
                         return (
                             <TableRow key={row.id} selected={isItemSelected}>
@@ -135,12 +160,15 @@ const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
                                     />
                                 </TableCell>
                                 {columns.map((column) => (
-                                    <TableCell
-                                        key={column.id}
-                                        align={column.align || "left"}
-                                    >
-                                        {row[column.id]}
-                                    </TableCell>
+                                    // Show all columns in desktop view, hide specified columns in mobile view
+                                    !isMobile || !hideColumns.includes(column.id) ? (
+                                        <TableCell
+                                            key={column.id}
+                                            align={column.align || "left"}
+                                        >
+                                            {row[column.id]}
+                                        </TableCell>
+                                    ) : null
                                 ))}
                                 <TableCell align="right">
                                     <IconButton
@@ -156,18 +184,22 @@ const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
                     })}
                 </TableBody>
             </Table>
-            <TablePagination // Added pagination component
-                rowsPerPageOptions={[5, 10, 25]} // Options for rows per page
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length} // Total number of rows
-                rowsPerPage={rowsPerPage} // Current rows per page
-                page={page} // Current page
-                onPageChange={handleChangePage} // Page change handler
-                onRowsPerPageChange={handleChangeRowsPerPage} // Rows per page change handler
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <Menu
-                anchorEl={anchorEl}
+                id="basic-menu"
                 open={Boolean(anchorEl)}
+                MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                }}
+                anchorEl={anchorEl}
                 onClose={handleMenuClose}
             >
                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
