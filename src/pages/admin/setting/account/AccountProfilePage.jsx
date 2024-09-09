@@ -5,6 +5,8 @@ import CardComponent from '../../../../components/common/CardComponent';
 import CardInformation from '../../../../components/common/CardInformation';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import profile from '../../../../assets/images/default-profile.png'
+
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
   const clickEdit = () => {
@@ -46,7 +48,7 @@ function AccountProfilePage() {
               {/* user profile information */}
               <CardComponent
                 title={"User Information"}
-                imgUrl='r'
+                imgUrl={profile}
                 handleEdit={clickEdit}>
                 <CardInformation data={teacher} />
               </CardComponent>

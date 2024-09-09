@@ -1,8 +1,9 @@
 import CardComponent from "../../../../components/common/CardComponent";
-import { Typography, Box, Stack, TextField } from "@mui/material"
+import { Typography, Stack, Avatar, TextField } from "@mui/material"
 import { fieldContainer } from "../../../../styles/authStyle";
 import FormComponent from "../../../../components/common/FormComponent";
 import ButtonContainer from "../../../../components/common/ButtonContainer";
+import userProfile from "../../../../assets/images/default-profile.png";
 function SchoolUpdatePage() {
     const onClickBack = () => {
         console.log('back');
@@ -14,8 +15,12 @@ function SchoolUpdatePage() {
     }
     return (
         <>
-            <FormComponent title={"Update School"} subTitle={"Update school information"}>
-                <CardComponent title={"School Information"}>
+            <FormComponent title={"Update User"} subTitle={"Update user information"}>
+                <CardComponent title={"User Information"}>
+                    {/* container img */}
+                    <Stack component={'div'} alignSelf={"center"} >
+                       <Avatar sx={imgStyle} alt="user profile" src={userProfile} />
+                    </Stack>
                     {/* school name input container */}
                     <Stack sx={fieldContainer} >
                         <Typography variant="body1">School&apos;s Name</Typography>
@@ -49,3 +54,21 @@ function SchoolUpdatePage() {
 }
 
 export default SchoolUpdatePage;
+
+
+const containerStyle = {
+    display: "flex",
+    width: "100%",
+    mt: {
+        xs: 2, sm: 4
+    },
+    justinfyContent: "center",
+    alignContent : 'center'
+}
+const imgStyle = {
+    width: {
+        xs: 120, sm: 160
+    }, height: {
+        xs: 120, sm: 160
+    }, display: "flex"
+}
