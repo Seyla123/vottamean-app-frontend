@@ -3,7 +3,7 @@ import { Typography, Stack, TextField } from "@mui/material"
 import { fieldContainer } from "../../../styles/authStyle";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
-function SchoolUpdatePage() {
+function SubjectCreatePage() {
     const onClickBack = () => {
         console.log('cancel');
 
@@ -43,4 +43,4 @@ function SchoolUpdatePage() {
     )
 }
 
-export default SchoolUpdatePage;
+export default SubjectCreatePage;
