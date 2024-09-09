@@ -3,6 +3,7 @@ import {
 } from "@mui/material";
 import SimpleTable from "../../../components/table/SimpleTable";
 import FormComponent from "../../../components/common/FormComponent";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 function ClassPeriodListPage() {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const header = [
