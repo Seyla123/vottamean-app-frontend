@@ -4,6 +4,10 @@ import { LocalizationProvider, DesktopDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import FormComponent from "../../../components/common/FormComponent";
+import CardComponent from "../../../components/common/CardComponent";
+import CardInformation from "../../../components/common/CardInformation";
+import ButtonContainer from "../../../components/common/ButtonContainer";
 
 const StudentCreatePage = () => {
   const navigate = useNavigate();
@@ -63,29 +67,13 @@ const StudentCreatePage = () => {
   };
 
   return (
-    <Box sx={{ width: "100%", margin: "0 auto", flexWrap: "wrap" }}>
-      <Box>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontWeight: 600,
-            fontSize: { xs: "20px", sm: "32px" },
-          }}
-        >
-          ADD STUDENT
-        </Typography>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontSize: isMobile ? "14px" : "16px",
-            paddingBottom: "24px",
-          }}
-        >
-          Please fill student Information
-        </Typography>
-      </Box >
-      <Box>
-        <Tabs
+    <>
+
+      <FormComponent
+        title={"Add Student"}
+        subTitle={"Please fill Students Indformation"}
+      >
+         <Tabs
           value={activeTab}
           onChange={(event, newValue) => setActiveTab(newValue)}
           textColor="primary"
@@ -94,38 +82,10 @@ const StudentCreatePage = () => {
           <Tab label="STUDENT INFORMATION" />
           <Tab label="GUARDIAN INFORMATION" />
         </Tabs>
-      </Box>
         
-
- 
-      {activeTab === 0  && (
-        <Card
-          component="form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleNext();
-          }}
-          sx={{
-            backgroundColor: "#FFFFFF",
-            padding: { xs: 3, sm: 4 },
-            borderRadius: "4px",
-          }}
-        >
-          <Box sx={{display:'flex', justifyContent:'center'}}>
-            <Box sx={profile}>
-              <img
-                src="https://via.placeholder.com/100"
-                alt="Profile"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </Box>
-          </Box>
-          <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
-            Student Information
-          </Typography>
-          <Divider
-            sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
-          />
+        {activeTab === 0  && (
+        <CardComponent title={"Student Information"} imgUrl="r">
+               
           <Box
             sx={{display: "flex",flexDirection: "row",justifyContent: "space-between", gap: "12px", }}>
             <Box sx={{ flex: 1 }}>
@@ -259,54 +219,18 @@ const StudentCreatePage = () => {
             />
           </Box>
           {/* Button cancel and Add*/}
-          <Box
-            sx={{width: "100%", alignItems: "flex-end", pt: { xs: 2, sm: 3 },backgroundColor: "white",}}
-          >
-            <Box
-              sx={{
-                maxwidth: "340px",
-                display: "flex",
-                justifyContent: "right",
-                gap: isMobile ? "16px" : "24px",
-              }}
-            >
-              <Button onClick={handleCancel} variant="outlined"color="black"
-                sx={{
-                  backgroundColor: "#ffffff",
-                  color: "black",
-                  width: { xs: 1, sm: "170px" },
-                  height: "42px",
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" variant="contained" color="primary"
-                sx={{ width: { xs: 1, sm: "170px" }, height: "42px" }}
-              >
-                Add Class
-              </Button>
-            </Box>
-          </Box>
-        </Card>
+          <ButtonContainer
+            leftBtn={handleCancel}
+            rightBtn={handleNext}
+            leftBtnTitle={"Cancel"}
+            rightBtnTitle={"Add Period"}
+          />
+        </CardComponent>
       )}
 
       {/* Gurdian INformation */}
       {activeTab === 1 && (
-        <Card
-          component="form"
-          onSubmit={handleNext}
-          sx={{
-            backgroundColor: "#FFFFFF",
-            padding: { xs: 3, sm: 4 },
-            borderRadius: "4px",
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
-            Guardian Information
-          </Typography>
-          <Divider
-            sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
-          />
+        <CardComponent title={"Guardian Information"} >
           <Box
             sx={{
               display: "flex",
@@ -374,48 +298,17 @@ const StudentCreatePage = () => {
             />
           </Box>
           {/* Button cancel and Add*/}
-          <Box
-            sx={{
-              width: "100%",
-              alignItems: "flex-end",
-              pt: { xs: 2, sm: 3 },
-              backgroundColor: "white",
-            }}
-          >
-            <Box
-              sx={{
-                maxwidth: "340px",
-                display: "flex",
-                justifyContent: "right",
-                gap: isMobile ? "16px" : "24px",
-              }}
-            >
-              <Button
-                onClick={handleCancel}
-                variant="outlined"
-                color="black"
-                sx={{
-                  backgroundColor: "#ffffff",
-                  color: "black",
-                  width: { xs: 1, sm: "140px" },
-                  height: "42px",
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
-              >
-                Add Class
-              </Button>
-            </Box>
-          </Box>
-        </Card>
+          <ButtonContainer
+            leftBtn={handleCancel}
+            rightBtn={handleNext}
+            leftBtnTitle={"Cancel"}
+            rightBtnTitle={"Add Guardian"}
+          />
+       
+        </CardComponent>
       )}
-    </Box>
+      </FormComponent>
+       </>
   );
 };
 
