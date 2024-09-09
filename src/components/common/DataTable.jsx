@@ -13,10 +13,12 @@ import {
     MenuItem,
     Tooltip,
     TablePagination,
+    Box,
 } from "@mui/material";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useMediaQuery } from "@mui/material"; // Ensure this import is present
+import { useMediaQuery } from "@mui/material";
+import NotFoundIcon from "../../assets/icon/not-found.png";
 
 const DataTable = ({
     rows,
@@ -25,13 +27,15 @@ const DataTable = ({
     onDelete,
     onSelectedDelete,
     hideColumns,
+    emptyTitle,
+    emptyDescription,
 }) => {
     const [selected, setSelected] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuRow, setMenuRow] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const isMobile = useMediaQuery("(max-width:600px)"); 
+    const isMobile = useMediaQuery("(max-width:600px)");
 
     const handleSelectAllClick = (event) => {
         const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
@@ -121,8 +125,7 @@ const DataTable = ({
                                 onChange={handleSelectAllClick}
                             />
                         </TableCell>
-                        {columns.map((column) => (
-                            // Show all columns in desktop view, hide specified columns in mobile view
+                        {columns.map((column) =>
                             !isMobile || !hideColumns.includes(column.id) ? (
                                 <TableCell
                                     key={column.id}
@@ -131,7 +134,7 @@ const DataTable = ({
                                     {column.label}
                                 </TableCell>
                             ) : null
-                        ))}
+                        )}
                         <TableCell align="right">
                             {selected.length > 0 && (
                                 <Tooltip title="Delete selected">
@@ -147,41 +150,51 @@ const DataTable = ({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {paginatedRows.map((row) => {
-                        const isItemSelected = isSelected(row.id);
-                        return (
-                            <TableRow key={row.id} selected={isItemSelected}>
-                                <TableCell padding="checkbox">
-                                    <Checkbox
-                                        checked={isItemSelected}
-                                        onClick={(event) =>
-                                            handleCheckboxClick(event, row.id)
-                                        }
-                                    />
-                                </TableCell>
-                                {columns.map((column) => (
-                                    // Show all columns in desktop view, hide specified columns in mobile view
-                                    !isMobile || !hideColumns.includes(column.id) ? (
-                                        <TableCell
-                                            key={column.id}
-                                            align={column.align || "left"}
+                    {rows.length === 0 ? (
+                        <EmptyTable emptyTitle={emptyTitle} emptyDescription={emptyDescription}/>
+                    ) : (
+                        paginatedRows.map((row) => {
+                            const isItemSelected = isSelected(row.id);
+                            return (
+                                <TableRow
+                                    key={row.id}
+                                    selected={isItemSelected}
+                                >
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            checked={isItemSelected}
+                                            onClick={(event) =>
+                                                handleCheckboxClick(
+                                                    event,
+                                                    row.id
+                                                )
+                                            }
+                                        />
+                                    </TableCell>
+                                    {columns.map((column) =>
+                                        !isMobile ||
+                                        !hideColumns.includes(column.id) ? (
+                                            <TableCell
+                                                key={column.id}
+                                                align={column.align || "left"}
+                                            >
+                                                {row[column.id]}
+                                            </TableCell>
+                                        ) : null
+                                    )}
+                                    <TableCell align="right">
+                                        <IconButton
+                                            onClick={(event) =>
+                                                handleMenuOpen(event, row)
+                                            }
                                         >
-                                            {row[column.id]}
-                                        </TableCell>
-                                    ) : null
-                                ))}
-                                <TableCell align="right">
-                                    <IconButton
-                                        onClick={(event) =>
-                                            handleMenuOpen(event, row)
-                                        }
-                                    >
-                                        <MoreHoriz />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        );
-                    })}
+                                            <MoreHoriz />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
+                    )}
                 </TableBody>
             </Table>
             <TablePagination
@@ -206,6 +219,29 @@ const DataTable = ({
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
             </Menu>
         </TableContainer>
+    );
+};
+
+const EmptyTable = () => {
+    return (
+        <TableRow>
+            <TableCell colSpan={columns.length + 1} align="center">
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "100%",
+                    }}
+                >
+                    <img src={NotFoundIcon} alt="not found" />
+                    <Typography variant="h6" sx={{ mt: 2 }}>
+                        No data available
+                    </Typography>
+                </Box>
+            </TableCell>
+        </TableRow>
     );
 };
 
