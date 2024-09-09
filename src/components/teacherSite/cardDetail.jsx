@@ -2,12 +2,11 @@ import React from 'react';
 import { CardContent, Avatar, Box, Typography } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { cardContainer } from '../../styles/global';
-
+import theme from '../../styles/theme';
 const CardDetail = ({ className, day, subject, students, time, classIcon, randomColor }) => {
 
-  
   return (
-    <CardContent sx={cardStyle}>
+    <CardContent sx={{...cardStyle, bgcolor: randomColor,}}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* class icon */}
@@ -78,7 +77,6 @@ const boxStyle = {
 
   const cardStyle = {
     ...cardContainer,
-    bgcolor: randomColor,
     borderRadius: '16px',
     height: { xs: '200px', sm: '250px' }, 
     display: 'flex', flexDirection: 'column',
