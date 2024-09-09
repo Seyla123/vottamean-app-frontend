@@ -3,14 +3,6 @@ import { Box, Tabs, Tab } from "@mui/material";
 import TeacherInfo from "./TeacherInfo";
 import AccountInfo from "./AccountInfo";
 
-const tabSize = {
-  fontWeight: "medium",
-  fontSize: {
-    xs: "12px",
-    sm: "14px",
-  },
-};
-
 function FormInfo() {
   const [value, setValue] = useState("1");
 
@@ -31,7 +23,7 @@ function FormInfo() {
   };
 
   return (
-    <Box>
+    <>
       <Box>
         <Tabs value={value} onChange={handleChange} aria-label="tabs information">
           <Tab label="TEACHER INFORMATION" value="1" sx={tabSize} />
@@ -41,8 +33,15 @@ function FormInfo() {
 
       {value === "1" && <TeacherInfo handleNext={handleNext} />}
       {value === "2" && <AccountInfo handleBack={handleBack} />}
-    </Box>
+    </>
   );
 }
 
 export default FormInfo;
+const tabSize = {
+  fontWeight: "medium",
+  fontSize: {
+    xs: "12px",
+    sm: "14px",
+  },
+};
