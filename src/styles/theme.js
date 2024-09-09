@@ -29,12 +29,6 @@ let theme = createTheme({
             fontWeight: 500,
         },
     },
-    shadows: [
-        "none", // elevation 0
-        "0px 5px 10px rgba(0,0,0,0.05)", // elevation 1
-        // Add other shadows as needed, or keep them as "none"
-        ...Array(23).fill("none"), // Fill remaining elevations with "none"
-    ],
 });
 
 // Apply responsive font sizes
