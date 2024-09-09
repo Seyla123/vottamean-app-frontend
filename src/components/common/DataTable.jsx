@@ -103,7 +103,7 @@ const DataTable = ({
     };
 
     const handleEdit = () => {
-        if (onEdit) onEdit(menuRow);
+        if (onEdit && menuRow) onEdit(menuRow);
         handleMenuClose();
     };
 
@@ -278,9 +278,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
                 <Typography variant='h6' sx={{ mt: 2 }}>
                     {emptyTitle}
                 </Typography>
-                <Typography variant='body2'>
-                    {emptySubTitle}
-                </Typography>
+                <Typography variant='body2'>{emptySubTitle}</Typography>
             </TableCell>
         </TableRow>
     );
