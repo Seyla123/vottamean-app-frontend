@@ -13,12 +13,19 @@ import {
     MenuItem,
     Tooltip,
     TablePagination,
+<<<<<<< HEAD
     Box,
 } from "@mui/material";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useMediaQuery } from "@mui/material";
 import NotFoundIcon from "../../assets/icon/not-found.png";
+=======
+} from "@mui/material";
+import MoreHoriz from "@mui/icons-material/MoreHoriz";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useMediaQuery } from "@mui/material"; // Ensure this import is present
+>>>>>>> 7815303 (Feature : Hide columns by props)
 
 const DataTable = ({
     rows,
@@ -125,7 +132,12 @@ const DataTable = ({
                                 onChange={handleSelectAllClick}
                             />
                         </TableCell>
+<<<<<<< HEAD
                         {columns.map((column) =>
+=======
+                        {columns.map((column) => (
+                            // Show all columns in desktop view, hide specified columns in mobile view
+>>>>>>> 7815303 (Feature : Hide columns by props)
                             !isMobile || !hideColumns.includes(column.id) ? (
                                 <TableCell
                                     key={column.id}
@@ -134,7 +146,11 @@ const DataTable = ({
                                     {column.label}
                                 </TableCell>
                             ) : null
+<<<<<<< HEAD
                         )}
+=======
+                        ))}
+>>>>>>> 7815303 (Feature : Hide columns by props)
                         <TableCell align="right">
                             {selected.length > 0 && (
                                 <Tooltip title="Delete selected">
@@ -150,6 +166,7 @@ const DataTable = ({
                     </TableRow>
                 </TableHead>
                 <TableBody>
+<<<<<<< HEAD
                     {rows.length === 0 ? (
                         <EmptyTable emptyTitle={emptyTitle} emptyDescription={emptyDescription}/>
                     ) : (
@@ -195,6 +212,43 @@ const DataTable = ({
                             );
                         })
                     )}
+=======
+                    {paginatedRows.map((row) => {
+                        const isItemSelected = isSelected(row.id);
+                        return (
+                            <TableRow key={row.id} selected={isItemSelected}>
+                                <TableCell padding="checkbox">
+                                    <Checkbox
+                                        checked={isItemSelected}
+                                        onClick={(event) =>
+                                            handleCheckboxClick(event, row.id)
+                                        }
+                                    />
+                                </TableCell>
+                                {columns.map((column) => (
+                                    // Show all columns in desktop view, hide specified columns in mobile view
+                                    !isMobile || !hideColumns.includes(column.id) ? (
+                                        <TableCell
+                                            key={column.id}
+                                            align={column.align || "left"}
+                                        >
+                                            {row[column.id]}
+                                        </TableCell>
+                                    ) : null
+                                ))}
+                                <TableCell align="right">
+                                    <IconButton
+                                        onClick={(event) =>
+                                            handleMenuOpen(event, row)
+                                        }
+                                    >
+                                        <MoreHoriz />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+>>>>>>> 7815303 (Feature : Hide columns by props)
                 </TableBody>
             </Table>
             <TablePagination
@@ -222,6 +276,7 @@ const DataTable = ({
     );
 };
 
+<<<<<<< HEAD
 const EmptyTable = () => {
     return (
         <TableRow>
@@ -245,4 +300,6 @@ const EmptyTable = () => {
     );
 };
 
+=======
+>>>>>>> 7815303 (Feature : Hide columns by props)
 export default DataTable;
