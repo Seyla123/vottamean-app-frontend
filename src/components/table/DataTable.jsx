@@ -12,7 +12,7 @@ import {
     Menu,
     MenuItem,
     Tooltip,
-    TablePagination, 
+    TablePagination,
 } from "@mui/material";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -82,7 +82,7 @@ const DataTable = ({ rows, columns, onEdit, onDelete, onSelectedDelete }) => {
     };
 
     return (
-        <TableContainer component={Paper} sx={{boxShadow: 1}}>
+        <TableContainer component={Paper} sx={{ boxShadow: 1 }}>
             <Table className="min-w-full" aria-label="reusable table">
                 <TableHead sx={{ bgcolor: "#F3F3F5", height: "80px" }}>
                     <TableRow>
