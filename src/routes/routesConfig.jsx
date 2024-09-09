@@ -338,7 +338,7 @@ const routesConfig = [
                                 element: <AccountProfilePage />,
                             },
                             {
-                                path: "user/:id",
+                                path: "user/update/:id",
                                 element: <UserUpdatePage />,
                             },
                             {

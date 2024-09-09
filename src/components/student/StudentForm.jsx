@@ -59,7 +59,7 @@ function StudentFrom() {
             <Stack direction={"row"} gap={1}>
             {/* gender */}
             <SelectField
-                customStyle={{ flexGrow: 1 }}
+                customStyle={{width: "100%"}}
                 label="Gender"
                 name="gender"
                 value={newStudent.gender}
@@ -68,7 +68,7 @@ function StudentFrom() {
                 placeholder={"select gender"}
             />
             {/* dob */}
-            <Box display="flex" flexDirection="column" gap="4px" flexGrow={1}>
+            <Box display="flex" flexDirection="column" gap="4px" width={"100%"}>
                 <Typography sx={{ fontSize: "16px" }}>Date of birth</Typography>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
