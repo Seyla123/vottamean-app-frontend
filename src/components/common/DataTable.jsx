@@ -269,12 +269,16 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
                 <img
                     src={NotFoundIcon}
                     alt='not found'
-                    style={{ width: '400px' }}
+                    style={{
+                        width: '100%',
+                        maxWidth: '400px',
+                        objectFit: 'contain',
+                    }}
                 />
                 <Typography variant='h6' sx={{ mt: 2 }}>
                     {emptyTitle}
                 </Typography>
-                <Typography variant='body1' sx={{ mt: 2 }}>
+                <Typography variant='body2'>
                     {emptySubTitle}
                 </Typography>
             </TableCell>
