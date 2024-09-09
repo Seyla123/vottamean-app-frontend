@@ -39,7 +39,6 @@ import { cardContainer } from "../../styles/global";
 import CardHeader from "./CardHeader";
 
 function Card({title,imgUrl,imgTitle ,children, handleEdit, handleDelete}) {
-  console.log('this is other :', handleEdit , handleDelete);
   
   return (
     <Box component={'form'} direction="column" sx={cardContainer }>
