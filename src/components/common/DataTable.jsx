@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -13,19 +13,12 @@ import {
     MenuItem,
     Tooltip,
     TablePagination,
-<<<<<<< HEAD
     Box,
-} from "@mui/material";
-import MoreHoriz from "@mui/icons-material/MoreHoriz";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useMediaQuery } from "@mui/material";
-import NotFoundIcon from "../../assets/icon/not-found.png";
-=======
-} from "@mui/material";
-import MoreHoriz from "@mui/icons-material/MoreHoriz";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useMediaQuery } from "@mui/material"; // Ensure this import is present
->>>>>>> 7815303 (Feature : Hide columns by props)
+} from '@mui/material';
+import MoreHoriz from '@mui/icons-material/MoreHoriz';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { useMediaQuery } from '@mui/material';
+import NotFoundIcon from '../../assets/icon/not-found.png';
 
 const DataTable = ({
     rows,
@@ -42,23 +35,23 @@ const DataTable = ({
     const [menuRow, setMenuRow] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const isMobile = useMediaQuery("(max-width:600px)");
+    const isMobile = useMediaQuery('(max-width:600px)');
 
-    const handleSelectAllClick = (event) => {
-        const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
+    const handleSelectAllClick = event => {
+        const newSelected = event.target.checked ? rows.map(n => n.id) : [];
         setSelected(newSelected);
     };
 
     const handleCheckboxClick = (event, id) => {
         event.stopPropagation();
-        setSelected((prevSelected) =>
+        setSelected(prevSelected =>
             prevSelected.includes(id)
-                ? prevSelected.filter((item) => item !== id)
+                ? prevSelected.filter(item => item !== id)
                 : [...prevSelected, id]
         );
     };
 
-    const isSelected = (id) => selected.indexOf(id) !== -1;
+    const isSelected = id => selected.indexOf(id) !== -1;
 
     const handleMenuOpen = (event, row) => {
         event.stopPropagation();
@@ -83,10 +76,8 @@ const DataTable = ({
 
     const handleSelectedDelete = () => {
         if (onSelectedDelete) {
-            const selectedData = rows.filter((row) =>
-                selected.includes(row.id)
-            );
-            console.log("Selected data to delete:", selectedData);
+            const selectedData = rows.filter(row => selected.includes(row.id));
+            console.log('Selected data to delete:', selectedData);
             onSelectedDelete(selected);
         }
         setSelected([]);
@@ -96,7 +87,7 @@ const DataTable = ({
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = event => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
@@ -109,17 +100,17 @@ const DataTable = ({
     return (
         <TableContainer
             component={Paper}
-            sx={{ boxShadow: "0px 5px 10px rgba(0,0,0,0.05)" }}
+            sx={{ boxShadow: '0px 5px 10px rgba(0,0,0,0.05)' }}
         >
-            <Table className="min-w-full" aria-label="reusable table">
+            <Table className='min-w-full' aria-label='reusable table'>
                 <TableHead
                     sx={{
-                        bgcolor: "#F3F3F5",
-                        height: "80px",
+                        bgcolor: '#F3F3F5',
+                        height: '80px',
                     }}
                 >
                     <TableRow>
-                        <TableCell padding="checkbox">
+                        <TableCell padding='checkbox'>
                             <Checkbox
                                 indeterminate={
                                     selected.length > 0 &&
@@ -132,31 +123,22 @@ const DataTable = ({
                                 onChange={handleSelectAllClick}
                             />
                         </TableCell>
-<<<<<<< HEAD
-                        {columns.map((column) =>
-=======
-                        {columns.map((column) => (
-                            // Show all columns in desktop view, hide specified columns in mobile view
->>>>>>> 7815303 (Feature : Hide columns by props)
+                        {columns.map(column =>
                             !isMobile || !hideColumns.includes(column.id) ? (
                                 <TableCell
                                     key={column.id}
-                                    align={column.align || "left"}
+                                    align={column.align || 'left'}
                                 >
                                     {column.label}
                                 </TableCell>
                             ) : null
-<<<<<<< HEAD
                         )}
-=======
-                        ))}
->>>>>>> 7815303 (Feature : Hide columns by props)
-                        <TableCell align="right">
+                        <TableCell align='right'>
                             {selected.length > 0 && (
-                                <Tooltip title="Delete selected">
+                                <Tooltip title='Delete selected'>
                                     <IconButton
                                         onClick={handleSelectedDelete}
-                                        color="error"
+                                        color='error'
                                     >
                                         <DeleteForeverIcon />
                                     </IconButton>
@@ -166,21 +148,23 @@ const DataTable = ({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-<<<<<<< HEAD
                     {rows.length === 0 ? (
-                        <EmptyTable emptyTitle={emptyTitle} emptyDescription={emptyDescription}/>
+                        <EmptyTable
+                            emptyTitle={emptyTitle}
+                            emptyDescription={emptyDescription}
+                        />
                     ) : (
-                        paginatedRows.map((row) => {
+                        paginatedRows.map(row => {
                             const isItemSelected = isSelected(row.id);
                             return (
                                 <TableRow
                                     key={row.id}
                                     selected={isItemSelected}
                                 >
-                                    <TableCell padding="checkbox">
+                                    <TableCell padding='checkbox'>
                                         <Checkbox
                                             checked={isItemSelected}
-                                            onClick={(event) =>
+                                            onClick={event =>
                                                 handleCheckboxClick(
                                                     event,
                                                     row.id
@@ -188,20 +172,20 @@ const DataTable = ({
                                             }
                                         />
                                     </TableCell>
-                                    {columns.map((column) =>
+                                    {columns.map(column =>
                                         !isMobile ||
                                         !hideColumns.includes(column.id) ? (
                                             <TableCell
                                                 key={column.id}
-                                                align={column.align || "left"}
+                                                align={column.align || 'left'}
                                             >
                                                 {row[column.id]}
                                             </TableCell>
                                         ) : null
                                     )}
-                                    <TableCell align="right">
+                                    <TableCell align='right'>
                                         <IconButton
-                                            onClick={(event) =>
+                                            onClick={event =>
                                                 handleMenuOpen(event, row)
                                             }
                                         >
@@ -212,48 +196,11 @@ const DataTable = ({
                             );
                         })
                     )}
-=======
-                    {paginatedRows.map((row) => {
-                        const isItemSelected = isSelected(row.id);
-                        return (
-                            <TableRow key={row.id} selected={isItemSelected}>
-                                <TableCell padding="checkbox">
-                                    <Checkbox
-                                        checked={isItemSelected}
-                                        onClick={(event) =>
-                                            handleCheckboxClick(event, row.id)
-                                        }
-                                    />
-                                </TableCell>
-                                {columns.map((column) => (
-                                    // Show all columns in desktop view, hide specified columns in mobile view
-                                    !isMobile || !hideColumns.includes(column.id) ? (
-                                        <TableCell
-                                            key={column.id}
-                                            align={column.align || "left"}
-                                        >
-                                            {row[column.id]}
-                                        </TableCell>
-                                    ) : null
-                                ))}
-                                <TableCell align="right">
-                                    <IconButton
-                                        onClick={(event) =>
-                                            handleMenuOpen(event, row)
-                                        }
-                                    >
-                                        <MoreHoriz />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        );
-                    })}
->>>>>>> 7815303 (Feature : Hide columns by props)
                 </TableBody>
             </Table>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
-                component="div"
+                component='div'
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
@@ -261,10 +208,10 @@ const DataTable = ({
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <Menu
-                id="basic-menu"
+                id='basic-menu'
                 open={Boolean(anchorEl)}
                 MenuListProps={{
-                    "aria-labelledby": "basic-button",
+                    'aria-labelledby': 'basic-button',
                 }}
                 anchorEl={anchorEl}
                 onClose={handleMenuClose}
@@ -276,22 +223,21 @@ const DataTable = ({
     );
 };
 
-<<<<<<< HEAD
 const EmptyTable = () => {
     return (
         <TableRow>
-            <TableCell colSpan={columns.length + 1} align="center">
+            <TableCell colSpan={columns.length + 1} align='center'>
                 <Box
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "100%",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%',
                     }}
                 >
-                    <img src={NotFoundIcon} alt="not found" />
-                    <Typography variant="h6" sx={{ mt: 2 }}>
+                    <img src={NotFoundIcon} alt='not found' />
+                    <Typography variant='h6' sx={{ mt: 2 }}>
                         No data available
                     </Typography>
                 </Box>
@@ -300,6 +246,4 @@ const EmptyTable = () => {
     );
 };
 
-=======
->>>>>>> 7815303 (Feature : Hide columns by props)
 export default DataTable;
