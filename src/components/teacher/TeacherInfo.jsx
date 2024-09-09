@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, TextField, Select, MenuItem } from '@mui/material';
+import { Box, Button, Typography, TextField, Select, MenuItem, Avatar } from '@mui/material';
 import SubHeader from './SubHeader';
 import DatePickerComponent from './DatePickerComponent';
 
@@ -13,11 +13,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
   return (
     <Box sx={profileBox}>
       <Box sx={valueBoxOne}>
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Profile"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+      <Avatar sx={imgStyle} alt='profile picture'src='r'/>
+       
       </Box>
 
       <SubHeader title={"Teacher Information"} />
@@ -183,3 +180,11 @@ const buttonCancel = {
   width: { xs: '100%', sm: "170px" },
   borderColor: "inherit", color: "inherit" 
 };
+
+
+const imgStyle ={ 
+  width: {
+  xs:120, sm:160
+}, height:  {
+  xs:120, sm:160
+}}

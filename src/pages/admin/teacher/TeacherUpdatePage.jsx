@@ -2,19 +2,20 @@ import { Box } from '@mui/material';
 import React from 'react';
 import Header from '../../../components/teacher/Header';
 import TeacherInfo from '../../../components/teacher/TeacherInfo';
-
+import FormComponent from '../../../components/common/FormComponent';
 function TeacherUpdatePage() {
   const handleCancel = () => {
     navigate("/teacher");
   };
 
   return (
-    <Box>
-      {/* Header */}
-      <Header header="UPDATE TEACHER" subheader=" Please Update Teacher Information" />
+   <>
+    {/* Header */}
+     <FormComponent title="UPDATE TEACHER" subTitle="Please Update Teacher Information">
       {/* Form edit */}
       <TeacherInfo mode="update" handleCancel={handleCancel} />
-    </Box>
+    </FormComponent>
+   </>
   );
 }
 
