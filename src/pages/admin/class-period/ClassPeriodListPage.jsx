@@ -13,6 +13,14 @@ function ClassPeriodListPage() {
     { field: "period", headerName: "Period", flex: 1 },
   ].filter(Boolean);
 
+  const handleEdit = (row) => {
+    console.log("Edit row:", row);
+  };
+
+  const handleDelete = (row) => {
+    setRows(rows.filter(item => item.id !== row.id));
+  };
+
   return (
     <Box>
       <FormComponent
@@ -32,13 +40,12 @@ function ClassPeriodListPage() {
 
         {/* List Session */}
     <SimpleTable
-      columns={header
-      }
+      columns={header}
       data={rows}
       pagination={true}
       hiddenColumns={["id"]}
-      onEdit={(row) => console.log("Edit", row)}
-      onDelete={(row) => console.log("Delete", row)}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
       </FormComponent>
     </Box>
