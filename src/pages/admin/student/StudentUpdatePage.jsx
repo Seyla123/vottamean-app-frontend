@@ -4,28 +4,19 @@ import { LocalizationProvider, DesktopDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import FormComponent from "../../../components/common/FormComponent";
+import CardComponent from "../../../components/common/CardComponent";
+import ButtonContainer from "../../../components/common/ButtonContainer";
 
-const StudentUpdatePage = () => {
+const StudentCreatePage = () => {
   const navigate = useNavigate();
   const [newStudent, setNewStudent] = useState({firstName: "",lastName: "",className: "",gender: "",dob: dayjs(),phoneNumber: "",email: "",address: "",});
   const [newGuardian, setNewGuardian] = useState({firstName: "",lastName: "",relationship: "",email: "",phoneNumber: "",});
   const [activeTab, setActiveTab] = useState(0);
 
-  const isMobile = useMediaQuery("(max-width:600px)");
-
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "other", label: "Other" },
-  ];
-  const selectType = [
-    { value: "Class A", label: "Class A" },
-    { value: "Class B", label: "Class B" },
-  ];
-
   const handleCancel = () => {
     if (activeTab === 0) {
-      navigate("/student");
+      navigate("/dashboard/students");
     } else if (activeTab === 1) {
       setActiveTab(0);
     }
@@ -35,7 +26,7 @@ const StudentUpdatePage = () => {
     if (activeTab === 0) {
       setActiveTab(1);
     } else {
-      navigate("/student"); 
+      navigate("/dashboard/students"); 
     }
   };
 
@@ -48,44 +39,15 @@ const StudentUpdatePage = () => {
     }
   };
 
-  const profile = {
-    width: 100,
-    height: 100,
-    borderRadius: "50%",
-    overflow: "hidden",
-    display: "flex",
-    justifyContent: "center",
-    "& img": {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    },
-  };
 
   return (
-    <Box sx={{ width: "100%", margin: "0 auto", flexWrap: "wrap" }}>
-      <Box>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontWeight: 600,
-            fontSize: { xs: "20px", sm: "32px" },
-          }}
-        >
-          UPDATE STUDENT
-        </Typography>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontSize: isMobile ? "14px" : "16px",
-            paddingBottom: "24px",
-          }}
-        >
-          Please fill student Information
-        </Typography>
-      </Box >
-      <Box>
-        <Tabs
+    <>
+
+      <FormComponent
+        title={"Add Student"}
+        subTitle={"Please fill Students Indformation"}
+      >
+         <Tabs
           value={activeTab}
           onChange={(event, newValue) => setActiveTab(newValue)}
           textColor="primary"
@@ -94,24 +56,12 @@ const StudentUpdatePage = () => {
           <Tab label="STUDENT INFORMATION" />
           <Tab label="GUARDIAN INFORMATION" />
         </Tabs>
-      </Box>
         
-
- 
-      {activeTab === 0  && (
-        <Card
-          component="form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleNext();
-          }}
-          sx={{
-            backgroundColor: "#FFFFFF",
-            padding: { xs: 3, sm: 4 },
-            borderRadius: "4px",
-          }}
-        >
-          <Box sx={{display:'flex', justifyContent:'center'}}>
+        {activeTab === 0  && (
+      //  <Card>
+         
+        <CardComponent title={"Student Information"}>        
+        <Box sx={{display:'flex', justifyContent:'center'}}>
             <Box sx={profile}>
               <img
                 src="https://via.placeholder.com/100"
@@ -119,13 +69,7 @@ const StudentUpdatePage = () => {
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </Box>
-          </Box>
-          <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
-            Student Information
-          </Typography>
-          <Divider
-            sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
-          />
+          </Box> 
           <Box
             sx={{display: "flex",flexDirection: "row",justifyContent: "space-between", gap: "12px", }}>
             <Box sx={{ flex: 1 }}>
@@ -259,54 +203,20 @@ const StudentUpdatePage = () => {
             />
           </Box>
           {/* Button cancel and Add*/}
-          <Box
-            sx={{width: "100%", alignItems: "flex-end", pt: { xs: 2, sm: 3 },backgroundColor: "white",}}
-          >
-            <Box
-              sx={{
-                maxwidth: "340px",
-                display: "flex",
-                justifyContent: "right",
-                gap: isMobile ? "16px" : "24px",
-              }}
-            >
-              <Button onClick={handleCancel} variant="outlined"color="black"
-                sx={{
-                  backgroundColor: "#ffffff",
-                  color: "black",
-                  width: { xs: 1, sm: "170px" },
-                  height: "42px",
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" variant="contained" color="primary"
-                sx={{ width: { xs: 1, sm: "170px" }, height: "42px" }}
-              >
-                Add Student
-              </Button>
-            </Box>
-          </Box>
-        </Card>
+          <ButtonContainer
+            leftBtn={handleCancel}
+            rightBtn={handleNext}
+            leftBtnTitle={"Cancel"}
+            rightBtnTitle={"Update Student"}
+          />
+
+        </CardComponent>
+        //  </Card>
       )}
 
       {/* Gurdian INformation */}
       {activeTab === 1 && (
-        <Card
-          component="form"
-          onSubmit={handleNext}
-          sx={{
-            backgroundColor: "#FFFFFF",
-            padding: { xs: 3, sm: 4 },
-            borderRadius: "4px",
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, fontSize: "18px" }}>
-            Guardian Information
-          </Typography>
-          <Divider
-            sx={{ my: { xs: "12px", sm: "16px" }, borderBottomWidth: 3 }}
-          />
+        <CardComponent title={"Guardian Information"}>
           <Box
             sx={{
               display: "flex",
@@ -374,49 +284,41 @@ const StudentUpdatePage = () => {
             />
           </Box>
           {/* Button cancel and Add*/}
-          <Box
-            sx={{
-              width: "100%",
-              alignItems: "flex-end",
-              pt: { xs: 2, sm: 3 },
-              backgroundColor: "white",
-            }}
-          >
-            <Box
-              sx={{
-                maxwidth: "340px",
-                display: "flex",
-                justifyContent: "right",
-                gap: isMobile ? "16px" : "24px",
-              }}
-            >
-              <Button
-                onClick={handleCancel}
-                variant="outlined"
-                color="black"
-                sx={{
-                  backgroundColor: "#ffffff",
-                  color: "black",
-                  width: { xs: 1, sm: "140px" },
-                  height: "42px",
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ width: { xs: 1, sm: "140px" }, height: "42px" }}
-              >
-                Add Guardian
-              </Button>
-            </Box>
-          </Box>
-        </Card>
+          <ButtonContainer
+            leftBtn={handleCancel}
+            rightBtn={handleNext}
+            leftBtnTitle={"Cancel"}
+            rightBtnTitle={"Update Guardian"}
+          />
+        </CardComponent>
       )}
-    </Box>
+      </FormComponent>
+       </>
   );
 };
 
-export default StudentUpdatePage;
+export default StudentCreatePage;
+
+const genderOptions = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "other", label: "Other" },
+];
+const selectType = [
+  { value: "Class A", label: "Class A" },
+  { value: "Class B", label: "Class B" },
+];
+
+const profile = {
+  width: 100,
+  height: 100,
+  borderRadius: "50%",
+  overflow: "hidden",
+  display: "flex",
+  justifyContent: "center",
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+};
