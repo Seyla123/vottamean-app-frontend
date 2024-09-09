@@ -110,6 +110,12 @@ const AttendanceReportPage = lazy(
     () => import('../pages/admin/report/attendance/AttendanceReportPage')
 );
 
+// Teacher site 
+
+const TeacherAttendanceListPage = lazy(() => import('../pages/teacherSite/teacherClass/TeacherAttendanceListPage'));
+const TeacherClassPage = lazy(() => import('../pages/teacherSite/teacherClass/TeacherClassPage'));
+const TeacherAccountProfilePage = lazy(() => import('../pages/teacherSite/settings/TeacherAccountProfilePage'));
+const TeacherSessionPage = lazy(() => import('../pages/teacherSite/session/TeacherSessionPage'));
 // Routes configuration
 const routesConfig = [
     {
@@ -146,6 +152,38 @@ const routesConfig = [
         path: '/success',
         element: <AccountSuccessPage />,
         showSidebar: false,
+    },
+    {
+        path: '/teacher',
+        teacherSidebar: true,
+        children: [
+            {
+                path: 'classes',
+                children: [
+                    {
+                        path: '',
+                        element: <TeacherClassPage />,
+                    },
+                    {
+                        path: 'attendace/:id',
+                        element: <TeacherAttendanceListPage />,
+                    }
+                ]
+            },
+            {
+                path: 'sessions',
+                element: <TeacherSessionPage />,
+            },
+            {
+                path:'settings',
+                children: [
+                    {
+                        path: 'account',
+                        element: <TeacherAccountProfilePage />,
+                    }
+                ]
+            }
+        ],
     },
     {
         path: '/dashboard',
