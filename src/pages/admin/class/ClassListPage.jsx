@@ -22,13 +22,10 @@ const ClassListPage = () => {
         console.log('Delete row:', row);
     };
 
-    const handleSelectedDelete = () => {
-        console.log('Delete all');
-    };
-
-    const handleCreate = () => {
-        navigate(`/classes/create`);
-    };
+  //Navigate to create page
+  const handleCreate = () => {
+    navigate(`/dashboard/classes/create`);
+  };
 
     const columns = [
         { id: 'id', label: 'Class ID' },
