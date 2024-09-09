@@ -4,13 +4,14 @@ import FormComponent from '../../../../components/common/FormComponent';
 import CardComponent from '../../../../components/common/CardComponent';
 import CardInformation from '../../../../components/common/CardInformation';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
   const clickEdit = () => {
     console.log('edit')
   }
-  const clickDetele = () => {
-    console.log('delete');
+  const clickDeteleAccount = () => {
+    console.log('delete account');
 
   }
   const handleChange = (event, newValue) => {
@@ -62,19 +63,22 @@ function AccountProfilePage() {
               <CardComponent
                 title={"Login and security"}>
                 <Stack direction={'column'} gap={2}>
+                  {/* change password */}
                     <Stack direction={{xs:'column',md:'row'}} gap={1} justifyContent={{xs:'flex-start',md:'space-between'}} alignItems={{xs:'flex-start',md:'center'}} >
                         <Box display={'flex'} alignContent={'center'} justifyContent={'center'}>
                         <Typography variant="body1" fontWeight={600} textAlign='center'>Change Password</Typography>
                         </Box>
-                        <Button variant="contained" onClick={clickDetele} sx={{width:'170px'}}>Change Password</Button>
+                        <Link to='/change-password' style={{textDecoration:'none'}}>
+                          <Button variant="contained" sx={{width:'170px'}}>Change Password</Button>
+                        </Link>
                     </Stack>
+                    {/* delete account */}
                     <Stack direction={{xs:'column',md:'row'}} gap={1} justifyContent={{xs:'flex-start',md:'space-between'}} alignItems={{xs:'flex-start',md:'center'}} >
                         <Box display={'flex'} alignContent={'center'} justifyContent={'center'} flexDirection={'column'}>
-                        <Typography variant="body1" fontWeight={600} textAlign='start'>Account ownership</Typography>
-                        <Typography variant="subtitle1" textAlign='start'>Permanently delete your account from WaveTrack service</Typography>
-                        
+                          <Typography variant="body1" fontWeight={600} textAlign='start'>Account ownership</Typography>
+                          <Typography variant="subtitle1" textAlign='start' color='text.secondary'>Permanently delete your account from WaveTrack service</Typography>
                         </Box>
-                        <Button variant="contained" color='error' onClick={clickDetele} sx={{width:'170px'}}>Delete Account</Button>
+                        <Button variant="contained" color='error' onClick={clickDeteleAccount} sx={{minWidth:'170px'}}>Delete Account</Button>
                     </Stack>
                 </Stack>
               </CardComponent>
