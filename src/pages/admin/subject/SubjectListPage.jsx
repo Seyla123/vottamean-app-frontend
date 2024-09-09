@@ -13,7 +13,7 @@ function SubjectListPage() {
     <FormComponent title="Subject List" subTitle="There are total 12 Subjects">
       {/* Subject Create Button */}
       <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
-        <Link to={'/dashboard/subjects/create'} sx={{textDecoration: 'none', display: 'flex', alignItems: 'center'}}>
+        <Link to={'/dashboard/subjects/create'} underline="none">
           <Button variant="contained" sx={{textTransform: 'capitalize'}}>add subject</Button>
         </Link>
       </Stack>
