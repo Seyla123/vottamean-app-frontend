@@ -13,8 +13,8 @@ import {
     useMediaQuery,
     useTheme,
     Chip,
+    Avatar,
 } from '@mui/material';
-
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
     CheckCheckIcon,
@@ -54,7 +54,7 @@ const AttendanceTable = ({
     };
 
     const visibleColumns = columns.filter(col =>
-        isMobile ? !hideColumns.includes(col) : true
+        isMobile ? !hideColumns.includes(col.id) : true
     );
 
     const statusColor = {
@@ -88,7 +88,14 @@ const AttendanceTable = ({
                 <TableHead>
                     <TableRow>
                         {visibleColumns.map(column => (
-                            <TableCell key={column}>{column}</TableCell>
+                            <TableCell
+                                key={column.id}
+                                sx={{
+                                    width: column.id === 'id' ? '' : 'auto',
+                                }}
+                            >
+                                {column.label}
+                            </TableCell>
                         ))}
                         <TableCell align='right' style={{ width: '200px' }}>
                             Status / Action
@@ -99,8 +106,29 @@ const AttendanceTable = ({
                     {rows.map((row, index) => (
                         <TableRow key={index}>
                             {visibleColumns.map(column => (
-                                <TableCell key={column}>
-                                    {row[column]}
+                                <TableCell key={column.id}>
+                                    {column.id === 'name' ? (
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <Avatar
+                                                src={row.img}
+                                                alt={`Avatar ${row.name}`}
+                                                sx={{
+                                                    width: 32,
+                                                    height: 32,
+                                                    marginRight: '8px',
+                                                    objectFit: 'cover',
+                                                }}
+                                            />
+                                            {row[column.id]}
+                                        </div>
+                                    ) : (
+                                        row[column.id]
+                                    )}
                                 </TableCell>
                             ))}
                             <TableCell align='right' style={{ width: '140px' }}>
