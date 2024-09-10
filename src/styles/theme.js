@@ -11,7 +11,7 @@ let theme = createTheme({
       main: '#797979',
     },
     text: {
-      disabled: '#EEF7FE',
+      disabled: '#9E9E9E',
       secondary: '#797979',
     },
   },
