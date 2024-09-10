@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import FormComponent from "../../../components/common/FormComponent";
 // import ClassCard from "../../../components/teacherSite/ClassCard";
-import ClassCard from  "../../../components/teacherSite/ClassCard";
+import ClassCard from "../../../components/teacherSite/ClassCard";
 import ClassCardSkeleton from "../../../components/loading/ClassCardSkeleton"; // import skeleton component
-import { Grid2 } from "@mui/material";
+import { Grid2,Box } from "@mui/material";
 import teacher from "../../../assets/icon/teacher.png";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 // data
 const classesData = [
   { id: 1, className: "E.109", day: "Monday", subject: "Math", students: 52, time: "7:00 - 9:00" },
@@ -30,17 +30,18 @@ function TeacherClassPage() {
         <Grid2 container spacing={2}>
           {loading
             ? // Render skeleton while loading
-              Array.from({ length: classesData.length }).map((_, index) => (
-                <Grid2 xs={12} md={6} key={index}>
-                  <ClassCardSkeleton />
-                </Grid2>
-              ))
+            Array.from({ length: classesData.length }).map((_, index) => (
+              <Grid2 xs={12} md={6} key={index}>
+                <ClassCardSkeleton />
+              </Grid2>
+            ))
             : // Render actual class cards once loading is complete
-              classesData.map((classData, index) => {
-                const cardColor = colors[index % colors.length];
-                // const randomBorder = border[index % border.length];
-                return (
-                  <Grid2 size={{ xs: 12, md: 6 }} key={classData.id}>
+            classesData.map((classData, index) => {
+              const cardColor = colors[index % colors.length];
+              // const randomBorder = border[index % border.length];
+              return (
+                <Grid2 size={{ xs: 12, md: 6 }} key={classData.id}>
+                  <Box component={Link} to={`/teacher/classes/attendance/${classData.id}`}>
                     <ClassCard
                       className={classData.className}
                       day={classData.day}
@@ -50,9 +51,10 @@ function TeacherClassPage() {
                       classIcon={teacher}
                       randomColor={cardColor}
                     />
-                  </Grid2>
-                );
-              })}
+                  </Box>
+                </Grid2>
+              );
+            })}
         </Grid2>
       </FormComponent>
     </>
