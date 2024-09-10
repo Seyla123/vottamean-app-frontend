@@ -1,6 +1,6 @@
 import { Box, Typography, TextField, Button, Checkbox } from "@mui/material";
 import HeaderTitle from "./HeaderTitle";
-
+import { Link } from "react-router-dom";
 const GetStartSignUp = ({ children }) => {
 
   return (
@@ -13,19 +13,19 @@ const GetStartSignUp = ({ children }) => {
         {/* Email Input Container */}
         <Box sx={inputContainerStyles}>
           <Typography variant="body1">Email</Typography>
-          <TextField placeholder="email" />
+          <TextField placeholder="email" type="email"/>
         </Box>
 
         {/* Password Input Container */}
         <Box sx={inputContainerStyles}>
           <Typography variant="body1">Password</Typography>
-          <TextField placeholder="password" />
+          <TextField placeholder="password" type="password"/>
         </Box>
 
         {/* Confirm Password Input Container */}
         <Box sx={inputContainerStyles}>
           <Typography variant="body1">Confirm Password</Typography>
-          <TextField placeholder="confirm password" />
+          <TextField placeholder="confirm password" type="password"/>
         </Box>
       </Box>
 
@@ -46,9 +46,11 @@ const GetStartSignUp = ({ children }) => {
         {children}
         <Typography variant="body1">
           Already have an account?
+          <Link to={"/auth/login"}>
           <Typography variant="body1" component="span" color="primary">
             {" "}Login
           </Typography>
+          </Link>
         </Typography>
       </Box>
     </Box>

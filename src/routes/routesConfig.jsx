@@ -127,39 +127,45 @@ const routesConfig = [
         showSidebar: false,
     },
     {
-        path: "/login",
-        element: <LoginPage />,
+        path: "/auth",
         showSidebar: false,
-    },
-    {
-        path: "/signup",
-        element: <SignupPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/forgot-password",
-        element: <PasswordForgotPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/reset-password",
-        element: <PasswordResetPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/change-password",
-        element: <PasswordChangePage />,
-        showSidebar: false,
-    },
-    {
-        path: "/verify-account",
-        element: <AccountVerifyPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/success",
-        element: <AccountSuccessPage />,
-        showSidebar: false,
+        children: [
+            {
+                path: "login",
+                element: <LoginPage />,
+                showSidebar: false,
+            },
+            {
+                path: "signup",
+                element: <SignupPage />,
+                showSidebar: false,
+            },
+            {
+                path: "forgot-password",
+                element: <PasswordForgotPage />,
+                showSidebar: false,
+            },
+            {
+                path: "reset-password",
+                element: <PasswordResetPage />,
+                showSidebar: false,
+            },
+            {
+                path: "change-password",
+                element: <PasswordChangePage />,
+                showSidebar: false,
+            },
+            {
+                path: "verify-account",
+                element: <AccountVerifyPage />,
+                showSidebar: false,
+            },
+            {
+                path: "success",
+                element: <AccountSuccessPage />,
+                showSidebar: false,
+            },
+        ]
     },
     {
         path: '/teacher',

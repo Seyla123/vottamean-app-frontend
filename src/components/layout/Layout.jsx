@@ -126,7 +126,7 @@ const Layout = ({ children }) => {
         };
     }, [location, navigate]);
     // Determine if the dashboard should be shown
-    const showDashboard = !['/login', '/signup', '/forgot-password', '/reset-password', '/change-password'].includes(location.pathname);
+    const showDashboard = !['/auth/login', '/auth/signup', '/auth/forgot-password', '/auth/reset-password', '/auth/change-password'].includes(location.pathname);
 
     return (
         <AppProvider
