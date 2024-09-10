@@ -38,7 +38,9 @@ const AttendanceTable = ({
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'), {
+        defaultMatches: true,
+    });
 
     const handleClick = (event, row) => {
         setAnchorEl(event.currentTarget);
@@ -68,6 +70,13 @@ const AttendanceTable = ({
         Permission: '#D6EAF8',
     };
 
+    const mobileStatusColor = {
+        Present: '#A5D68E',
+        Absent: '#F1948A',
+        Late: '#F7DC6F',
+        Permission: '#85C1E9',
+    };
+
     const statusIcon = {
         Present: <CheckCheckIcon size={16} color='green' />,
         Absent: <CircleX size={16} color='red' />,
@@ -76,6 +85,7 @@ const AttendanceTable = ({
     };
 
     const getStatusColor = status => statusColor[status];
+    const getMobileStatusColor = status => mobileStatusColor[status];
     const getStatusIcon = status => statusIcon[status];
     const getStatusTextColor = status =>
         status === 'Present'
@@ -159,22 +169,42 @@ const AttendanceTable = ({
                                                 justifyContent: 'flex-end',
                                             }}
                                         >
-                                            <Chip
-                                                icon={getStatusIcon(row.status)}
-                                                label={row.status}
-                                                sx={{
-                                                    backgroundColor:
-                                                        getStatusColor(
+                                            {isMobile ? (
+                                                <span
+                                                    style={{
+                                                        width: '10px',
+                                                        height: '10px',
+                                                        borderRadius: '50%',
+                                                        display: 'inline-block',
+                                                        backgroundColor:
+                                                            getMobileStatusColor(
+                                                                row.status
+                                                            ),
+                                                        marginRight: '8px',
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Chip
+                                                    icon={getStatusIcon(
+                                                        row.status
+                                                    )}
+                                                    label={row.status}
+                                                    sx={{
+                                                        backgroundColor:
+                                                            getStatusColor(
+                                                                row.status
+                                                            ),
+                                                        px: '4px',
+                                                        color: getStatusTextColor(
                                                             row.status
                                                         ),
-                                                    px: '4px',
-                                                    color: getStatusTextColor(
-                                                        row.status
-                                                    ),
-                                                }}
-                                                size='small'
-                                                style={{ marginRight: '8px' }}
-                                            />
+                                                    }}
+                                                    size='small'
+                                                    style={{
+                                                        marginRight: '8px',
+                                                    }}
+                                                />
+                                            )}
                                             <IconButton
                                                 size='small'
                                                 onClick={e =>
