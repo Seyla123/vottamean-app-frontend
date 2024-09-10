@@ -27,7 +27,7 @@ const LoginForm = () => {
         {/* Password Input Container */}
         <Box sx={inputContainerStyles}>
           <Typography variant="body1">Password</Typography>
-          <TextField placeholder="password" />
+          <TextField placeholder="password" type="password"/>
         </Box>
       </Box>
 
@@ -36,7 +36,7 @@ const LoginForm = () => {
       <Box sx={buttonContainerStyles}>
         {/* forgot password */}
         <Stack alignSelf={"flex-end"} >
-          <Link  to="/forgot-password">
+          <Link  to="/auth/forgot-password">
             <Typography variant="body2" component="span" color="primary">
               {" "}Forgot Password?
             </Typography>
@@ -50,7 +50,7 @@ const LoginForm = () => {
         </Button>
         <Typography variant="body1">
           Don't you have an account?
-          <Link style={{ textDecoration: 'none' }} to="/signup">
+          <Link to="/auth/signup">
             <Typography variant="body1" component="span" color="primary">
               {' '}Sign Up
             </Typography>
