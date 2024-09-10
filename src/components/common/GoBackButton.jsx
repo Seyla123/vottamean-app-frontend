@@ -20,14 +20,20 @@
  * @returns JSX.Element
  */
 
-import { Box, Typography } from "@mui/material";
+import { Box, duration, Typography } from "@mui/material";
 import WestIcon from "@mui/icons-material/West";
+import { useNavigate } from 'react-router-dom';
 function GoBackButton({handleOnClick}) {
+  const navigate = useNavigate();
+  const goBackHistory = () => {
+   navigate(-1)
+    
+  }
   return (
     <Box
       component={"div"}
       sx={style}
-      onClick={handleOnClick}>
+      onClick={handleOnClick ? handleOnClick : goBackHistory}>
       <WestIcon fontSize="small" sx={{ alignSelf: "center" }} />
       <Typography variant="body1" fontWeight={600} lineHeight={"24px"}>
         Back
@@ -43,4 +49,5 @@ const style = {
   alignItems: "center",
   color: "text.disabled",
   cursor: "pointer",
-  ":hover": { color: "black" }}
+  transition: "all 150ms ease-in-out",
+  ":hover": { color: "black" },}

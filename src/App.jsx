@@ -1,9 +1,10 @@
 import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { lazy } from "react";
 import { CssBaseline, CircularProgress } from '@mui/material';
 import Layout from './components/layout/Layout';
 import routesConfig from './routes/routesConfig';
-
+const LoadingPage = lazy(() => import("./pages/LoadingPage"));
 const renderRoutes = (routes) => (
     routes.map(({ path, element, children }) => (
         <Route
@@ -21,7 +22,7 @@ const App = () => {
         <>
             <CssBaseline />
             <Layout>
-                <Suspense fallback={<CircularProgress />}>
+                <Suspense fallback={<LoadingPage />}>
                     <Routes>
                         {renderRoutes(routesConfig)}
                     </Routes>

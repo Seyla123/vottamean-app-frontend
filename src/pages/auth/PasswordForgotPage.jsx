@@ -10,7 +10,7 @@ function PasswordForgotPage() {
       <Card sx={content}>
         {/* back button and img  */}
         <Box>
-          <GoBackButton handleOnClick={() => {console.log('clicked');}} />
+          <GoBackButton />
           <Box sx={img}>
             <img src={forget} style={{ width: "100%" }}></img>
           </Box>

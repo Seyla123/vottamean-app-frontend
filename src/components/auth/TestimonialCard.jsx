@@ -2,9 +2,9 @@ import React from "react";
 import { Card, Box, CardContent, Typography, Avatar } from "@mui/material";
 import ceoGoogleProfile from "../../assets/images/ceo-google-profile.png";
 import googleLogo from "../../assets/images/Google_logo.svg.webp";
-
+import { cardContainer } from "../../styles/global";
 const TestimonialCard = () => (
-    <Card sx={{ padding: 1, borderRadius: "16px", height: "100%" }}>
+    <Card sx={{...cardContainer, padding: 1, borderRadius: "16px", height: "100%" }}>
         <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box component="img" src={googleLogo} sx={imgStyle} />
             <Typography variant="body1" color="text.secondary">
