@@ -4,7 +4,7 @@ import ClassCard from "../../../components/teacherSite/ClassCard";
 import ClassCardSkeleton from "../../../components/loading/ClassCardSkeleton"; // import skeleton component
 import { Grid2 } from "@mui/material";
 import teacher from "../../../assets/icon/teacher.png";
-
+import { useNavigate } from 'react-router-dom';
 // data
 const classesData = [
   { id: 1, className: "E.109", day: "Monday", subject: "Math", students: 52, time: "7:00 - 9:00" },
@@ -20,7 +20,12 @@ const classesData = [
 const colors = ["#e7f7ff", "#fffaeb", "#ffebcb", "#f1fcd9", "#ffece9", "#e7eaff"];
 
 function TeacherClassPage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleEdit = row => {
+    navigate(`/teacher/classes/attendance/${row.id}`);
+  }
 
   return (
     <>
@@ -29,7 +34,7 @@ function TeacherClassPage() {
           {loading
             ? // Render skeleton while loading
               Array.from({ length: classesData.length }).map((_, index) => (
-                <Grid2 item size={{ xs: 12, md: 6 }} key={index}>
+                <Grid2 xs={12} md={6} key={index}>
                   <ClassCardSkeleton />
                 </Grid2>
               ))
@@ -37,7 +42,7 @@ function TeacherClassPage() {
               classesData.map((classData, index) => {
                 const cardColor = colors[index % colors.length];
                 return (
-                  <Grid2 item size={{ xs: 12, md: 6 }} key={classData.id}>
+                  <Grid2 size={{ xs: 12, md: 6 }} key={classData.id}>
                     <ClassCard
                       className={classData.className}
                       day={classData.day}
@@ -46,6 +51,7 @@ function TeacherClassPage() {
                       time={classData.time}
                       classIcon={teacher}
                       randomColor={cardColor}
+                      onClick={() => handleEdit(classData)} 
                     />
                   </Grid2>
                 );

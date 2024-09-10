@@ -5,6 +5,7 @@ import { cardContainer } from "../../styles/global";
 import { styled } from "@mui/material/styles";
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import TodayIcon from '@mui/icons-material/Today';
+
 const IconContainer = styled(Box)({
   width: '60px',
   height: '60px',
@@ -24,9 +25,10 @@ const ClassCard = ({
   time,
   classIcon,
   randomColor,
+  onClick
 }) => {
   return (
-    <CardContent sx={{ ...cardStyle, bgcolor: randomColor }}>
+    <CardContent sx={{ ...cardStyle, bgcolor: randomColor }} onClick={onClick}>
       <Box
         sx={{
           display: "flex",
@@ -53,7 +55,7 @@ const ClassCard = ({
         {/* day */}
         <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Typography sx={daySize}>{day}</Typography>
-          <TodayIcon />
+          <TodayIcon sx={{ color: "#666666"}}/>
         </Box>
       </Box>
       {/* subject */}
@@ -68,11 +70,10 @@ const ClassCard = ({
         {/* total students */}
         <Stack sx={timeSize}>
           <Chip  
-          label={students}
-          color="black"
-          icon={<PermIdentityIcon/>}>
-          <span>Students</span>
-          </Chip>
+            label={`${students}`}
+            color="default"
+            icon={<PermIdentityIcon />}
+          />
         </Stack>
         {/* time */}
         <Stack direction="row" spacing={1}>
