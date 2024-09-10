@@ -51,13 +51,12 @@ function SubjectListPage() {
             <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
                 <Link
                     to={'/dashboard/subjects/create'}
-                    style={{ textDecoration: 'none' }}
                 >
-                    <Button
-                        variant='contained'
-                        
-                        sx={{ fontSize: { xs: '14px', md: '16px' } }}
-                    >
+                <Button
+                    size='large'
+                    variant='contained'
+                    color='primary'
+                >
                         Add subject
                     </Button>
                 </Link>
