@@ -16,6 +16,7 @@ import {
     Avatar,
     Box,
     TablePagination,
+    Typography,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
@@ -24,6 +25,7 @@ import {
     CircleX,
     PencilIcon,
 } from 'lucide-react';
+import NotFoundImage from '../../assets/images/not-found.jpg';
 import { tableShadow } from '../../styles/global';
 const AttendanceTable = ({
     rows,
@@ -207,6 +209,34 @@ const AttendanceTable = ({
                             ))}
                     </TableBody>
                 </Table>
+                {rows.length === 0 && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '500px',
+                            width: '100%',
+                        }}
+                    >
+                        <Box>
+                            <img
+                                src={NotFoundImage}
+                                alt='Not Found'
+                                width='400px'
+                                height='auto'
+                                style={{ objectFit: 'cover' }}
+                            />
+                            <Typography
+                                variant='h6'
+                                color='text.primary'
+                                textAlign='center'
+                            >
+                                No student
+                            </Typography>
+                        </Box>
+                    </Box>
+                )}
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
