@@ -21,9 +21,9 @@
  * @param {function} leftBtn - function to be called when the left button is clicked
  * @returns JSX.Element
  */
-import {Stack, Button} from '@mui/material'
+import {Stack, Button,Box,Typography,CircularProgress} from '@mui/material'
 
-function ButtonContainer({rightBtn, leftBtn, rightBtnTitle , leftBtnTitle}) {
+function ButtonContainer({rightBtn, leftBtn, rightBtnTitle , leftBtnTitle, isSubmit, isSubmittingTitle}) {
     return (
         <>
             {/* Button Container  */}
@@ -32,8 +32,15 @@ function ButtonContainer({rightBtn, leftBtn, rightBtnTitle , leftBtnTitle}) {
                     {leftBtnTitle}
                 </Button>
                 <Button fullWidth variant="contained" onClick={rightBtn}>
-                    {rightBtnTitle}
+               {isSubmit ? <> <Box display="flex" alignItems="center"> 
+                                    <CircularProgress size={24} color="inherit" />
+                                    <Typography variant="body2" style={{ marginLeft: '8px' }}>
+                                        {isSubmittingTitle}
+                                    </Typography>
+                                </Box> 
+                                    </> : rightBtnTitle}
                 </Button>
+                
             </Stack>
         </>
     )
