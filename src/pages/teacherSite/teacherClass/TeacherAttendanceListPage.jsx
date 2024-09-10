@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import AttendanceTable from '../../../components/teacherSite/AttendanceTable';
 import FormComponent from '../../../components/common/FormComponent';
+import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { SendIcon, DownloadIcon } from 'lucide-react';
+import { tableShadow } from '../../../styles/global';
 
 const data = [
     {
@@ -127,13 +130,42 @@ function TeacherAttendanceListPage() {
         console.log(`Changed ${updatedRow.name} to ${newStatus}`);
     };
 
+    const handleSend = () => {
+        console.log('Send');
+    };
+
+    const handleExport = () => {
+        console.log('Export');
+    };
+
     return (
         <FormComponent
             title='Attendance List'
-            subTitle={`Total Students: ${rows.length} ${
-                rows.length === 1 ? 'Student' : 'Students'
-            }`}
+            subTitle={`This is attendance list of ${rows.length} students`}
         >
+            <Box>
+                <Card sx={{ ...tableShadow }}>
+                    <CardContent>
+                        <Typography variant='h6'>Attendance List</Typography>
+                    </CardContent>
+                </Card>
+            </Box>
+            <Box display={'flex'} justifyContent={'end'} gap={2}>
+                <Button
+                    variant='outlined'
+                    endIcon={<SendIcon size={16} />}
+                    onClick={handleSend}
+                >
+                    Send List
+                </Button>
+                <Button
+                    variant='contained'
+                    endIcon={<DownloadIcon size={16} />}
+                    onClick={handleExport}
+                >
+                    Export List
+                </Button>
+            </Box>
             <AttendanceTable
                 rows={rows}
                 columns={columns}
