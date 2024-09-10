@@ -41,7 +41,7 @@ function TeacherClassPage() {
               // const randomBorder = border[index % border.length];
               return (
                 <Grid2 size={{ xs: 12, md: 6 }} key={classData.id}>
-                  <Box component={Link} to={`/teacher/classes/attendance/${classData.id}`}>
+                  <Box component={Link} to={`/teacher/classes/attendance/${classData.id}`} sx={{color:'black'}}>
                     <ClassCard
                       className={classData.className}
                       day={classData.day}
