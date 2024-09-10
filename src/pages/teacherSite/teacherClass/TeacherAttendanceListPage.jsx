@@ -1,32 +1,9 @@
 import React, { useState } from 'react';
 import AttendanceTable from '../../../components/teacherSite/AttendanceTable';
 import FormComponent from '../../../components/common/FormComponent';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { Box, Button, Grid2 } from '@mui/material';
 import { SendIcon, DownloadIcon } from 'lucide-react';
-import { tableShadow } from '../../../styles/global';
-
-const data = [
-    // {
-    //     id: 21,
-    //     img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //     name: 'Kunthea Chhum',
-    //     gender: 'F',
-    //     phone: '011223344',
-    //     address: 'Takeo',
-    //     dob: '2004-08-17',
-    //     status: 'Present',
-    // },
-    // {
-    //     id: 39,
-    //     img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //     name: 'Ratana Yim',
-    //     gender: 'M',
-    //     phone: '016789012',
-    //     address: 'Prey Veng',
-    //     dob: '2003-01-25',
-    //     status: 'Absent',
-    // },
-];
+import StatusCard from '../../../components/teacherSite/StatusCard';
 
 const columns = [
     {
@@ -53,6 +30,30 @@ const columns = [
     {
         id: 'address',
         label: 'Address',
+    },
+];
+
+const data = [
+    {
+        id: 21,
+        img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        name: 'Kunthea Chhum',
+        gender: 'F',
+        phone: '011223344',
+        address: 'Takeo',
+        dob: '2004-08-17',
+        status: 'Present',
+    },
+
+    {
+        id: 39,
+        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        name: 'Ratana Yim',
+        gender: 'M',
+        phone: '016789012',
+        address: 'Prey Veng',
+        dob: '2003-01-25',
+        status: 'Absent',
     },
 ];
 
@@ -83,13 +84,9 @@ function TeacherAttendanceListPage() {
             title='Attendance List'
             subTitle={`This is attendance list of ${rows.length} students`}
         >
-            <Box>
-                <Card sx={{ ...tableShadow }}>
-                    <CardContent>
-                        <Typography variant='h6'>Attendance List</Typography>
-                    </CardContent>
-                </Card>
-            </Box>
+            <Grid2 xs={12} container>
+                <StatusCard rows={rows} />
+            </Grid2>
             <Box display={'flex'} justifyContent={'end'} gap={2}>
                 <Button
                     variant='outlined'
