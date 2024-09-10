@@ -126,9 +126,7 @@ const AttendanceTable = ({
                                     {column.label}
                                 </TableCell>
                             ))}
-                            <TableCell align='right' style={{ width: '200px' }}>
-                                Status / Action
-                            </TableCell>
+                            <TableCell align='right'>Status / Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -176,42 +174,25 @@ const AttendanceTable = ({
                                                 justifyContent: 'flex-end',
                                             }}
                                         >
-                                            {isMobile ? (
-                                                <span
-                                                    style={{
-                                                        width: '10px',
-                                                        height: '10px',
-                                                        borderRadius: '50%',
-                                                        display: 'inline-block',
-                                                        backgroundColor:
-                                                            getMobileStatusColor(
-                                                                row.status
-                                                            ),
-                                                        marginRight: '8px',
-                                                    }}
-                                                />
-                                            ) : (
-                                                <Chip
-                                                    icon={getStatusIcon(
-                                                        row.status
-                                                    )}
-                                                    label={row.status}
-                                                    sx={{
-                                                        backgroundColor:
-                                                            getStatusColor(
-                                                                row.status
-                                                            ),
-                                                        px: '4px',
-                                                        color: getStatusTextColor(
+                                            <Chip
+                                                icon={getStatusIcon(row.status)}
+                                                label={row.status}
+                                                sx={{
+                                                    backgroundColor:
+                                                        getStatusColor(
                                                             row.status
                                                         ),
-                                                    }}
-                                                    size='small'
-                                                    style={{
-                                                        marginRight: '8px',
-                                                    }}
-                                                />
-                                            )}
+                                                    px: '4px',
+                                                    color: getStatusTextColor(
+                                                        row.status
+                                                    ),
+                                                }}
+                                                size='small'
+                                                style={{
+                                                    marginRight: '8px',
+                                                }}
+                                            />
+
                                             <IconButton
                                                 size='small'
                                                 onClick={e =>
