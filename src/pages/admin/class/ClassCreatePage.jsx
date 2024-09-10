@@ -4,10 +4,6 @@ import { fieldContainer } from "../../../styles/authStyle";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 function ClassCreatePage() {
-    const onClickBack = () => {
-        console.log('cancel');
-
-    }
     const onClickNext = () => {
         console.log('add');
 
@@ -32,7 +28,6 @@ function ClassCreatePage() {
                     </Stack>
                     {/* Button Container  */}
                     <ButtonContainer 
-                        leftBtn={onClickBack} 
                         rightBtn={onClickNext} 
                         leftBtnTitle={'Cancel'} 
                         rightBtnTitle={'Add Class'} 

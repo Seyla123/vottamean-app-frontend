@@ -1,18 +1,19 @@
-import React from 'react';
+import {useState} from 'react';
 import {
-    TextField,
+    Stack,
     Button,
     Box,
     Typography,
-    Hidden,
-    useMediaQuery,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
-
+import { Link } from 'react-router-dom';
+import SearchComponent from '../../../components/common/SearchComponent';
+import FormComponent from '../../../components/common/FormComponent';
 const ClassListPage = () => {
     const navigate = useNavigate();
-    const isMobile = useMediaQuery('(max-width:600px)');
+    const [searchTerm, setSearchTerm] = useState('');
+    console.log('searchTerm', searchTerm);
 
     const handleEdit = row => {
         navigate(`/dashboard/classes/update/${row.id}`);
@@ -22,14 +23,14 @@ const ClassListPage = () => {
         console.log('Delete row:', row);
     };
 
-  //Navigate to create page
-  const handleCreate = () => {
-    navigate(`/dashboard/classes/create`);
-  };
-const handleSelectedDelete = () => {
-    console.log('Delete all');
-    
-};
+    //Navigate to create page
+    const handleCreate = () => {
+        navigate(`/dashboard/classes/create`);
+    };
+    const handleSelectedDelete = () => {
+        console.log('Delete all');
+
+    };
     const columns = [
         { id: 'id', label: 'Class ID' },
         { id: 'name', label: 'Class Name' },
@@ -44,44 +45,36 @@ const handleSelectedDelete = () => {
     const hideColumns = ['description'];
 
     return (
-        <Box sx={containerStyles}>
-            <Box>
-                <Typography sx={titleStyles}>CLASS LISTS</Typography>
-                <Typography sx={subtitleStyles}>
-                    There are total students
-                </Typography>
-            </Box>
-            <Box sx={flexBoxStyles}>
-                <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleCreate}
-                    sx={addButtonStyles(isMobile)}
-                >
-                    ADD CLASS
-                </Button>
-            </Box>
+        <FormComponent title='Class List' subTitle='There are total 10 Classes'>
+        {/* button add class container */}
+        <Stack direction="row" justifyContent="flex-end">
+            {/* add class button */}
+            <Link to="/dashboard/classes/create">
+            <Button
+                size='large'
+                variant='contained'
+                color='primary'
+            >
+                ADD CLASS
+            </Button>
+            </Link>
+        </Stack>
 
-            <Box sx={inputBoxStyles}>
-                <Box sx={searchBoxStyles}>
-                    <TextField
-                        placeholder='Search'
-                        variant='outlined'
-                        margin='normal'
-                        sx={textFieldStyles}
-                    />
-                    <Hidden smDown>
-                        <Button
-                            variant='contained'
-                            color='primary'
-                            sx={searchButtonStyles}
-                        >
-                            Search
-                        </Button>
-                    </Hidden>
-                </Box>
-            </Box>
-            <DataTable
+        {/* Container  */}
+        <Box >
+            <Stack direction="row" justifyContent={'flex-end'} width={'100%'} gap={2} >
+
+                {/* Search class */}
+                <SearchComponent
+                    sx={{ width: '100%', maxWidth: '700px' }}
+                    placeholder='Search'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    onClickIcon={() => console.log('click search icon')}
+                />
+            </Stack>
+        </Box>
+        <DataTable
                 rows={rows}
                 columns={columns}
                 onEdit={handleEdit}
@@ -91,7 +84,7 @@ const handleSelectedDelete = () => {
                 emptyTitle={'No Class'}
                 emptySubTitle={'No Class Available'}
             />
-        </Box>
+    </FormComponent>
     );
 };
 

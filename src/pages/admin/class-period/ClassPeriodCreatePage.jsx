@@ -26,9 +26,6 @@ function ClassPeriodCreatePage() {
       navigate(`/dashboard/class-periods`);
     }
   };
-  const onClickBack = () => {
-    navigate(`/dashboard/class-periods`);
-  };
 
   return (
     <>
@@ -85,7 +82,6 @@ function ClassPeriodCreatePage() {
           </LocalizationProvider>
           {/* Button Container  */}
           <ButtonContainer
-            leftBtn={onClickBack}
             rightBtn={onClickNext}
             leftBtnTitle={"Cancel"}
             rightBtnTitle={"Add Period"}

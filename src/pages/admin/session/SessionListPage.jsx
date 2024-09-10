@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Button, Stack, Typography } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Button, Stack } from '@mui/material';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import { useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom'
 
 function SessionListPage() {
     const navigate = useNavigate();
@@ -16,9 +16,9 @@ function SessionListPage() {
         navigate(`/dashboard/sessions/update/${row.id}`);
     };
 
-    const handleDelete = row => {};
+    const handleDelete = row => { };
 
-    const handleSelectedDelete = () => {};
+    const handleSelectedDelete = () => { };
 
     const rows = [
         {
@@ -163,14 +163,19 @@ function SessionListPage() {
             title={'Session List'}
             subTitle={'There are 24 Sessions'}
         >
-            <Button
-                variant='contained'
-                sx={{ width: '170px', mb: 2, alignSelf: 'flex-end' }}
-                onClick={handleCreate}
-            >
-                ADD SESSION
-            </Button>
-
+            {/* button add session container */}
+            <Stack direction="row" justifyContent="flex-end">
+                {/* add session button */}
+                <Link to="/dashboard/sessions/create">
+                    <Button
+                        size='large'
+                        variant='contained'
+                        color='primary'
+                    >
+                        ADD SESSION
+                    </Button>
+                </Link>
+            </Stack>
             <DataTable
                 rows={rows}
                 columns={columns}

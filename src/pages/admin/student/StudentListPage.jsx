@@ -9,12 +9,13 @@ import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/filterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
+import { Link } from 'react-router-dom'
 const StudentListPage = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('');
     console.log('searchTerm', searchTerm);
-    
+
     //Navigate to create page
     const handleCreate = () => {
         navigate(`/dashboard/students/create`);
@@ -83,14 +84,15 @@ const StudentListPage = () => {
                 {/* button add student container */}
                 <Stack direction="row" justifyContent="flex-end">
                     {/* add student button */}
-                    <Button
-                        size='large'
-                        variant='contained'
-                        color='primary'
-                        onClick={handleCreate}
-                    >
-                        ADD STUDENT
-                    </Button>
+                    <Link to="/dashboard/classes/create">
+                        <Button
+                            size='large'
+                            variant='contained'
+                            color='primary'
+                        >
+                            ADD STUDENT
+                        </Button>
+                    </Link>
                 </Stack>
 
                 {/* Container  */}
