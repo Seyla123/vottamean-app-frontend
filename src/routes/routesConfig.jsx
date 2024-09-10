@@ -169,11 +169,11 @@ const routesConfig = [
                 path: 'classes',
                 children: [
                     {
-                        path: '',
+                        path: '',   
                         element: <TeacherClassPage />,
                     },
                     {
-                        path: 'attendace/:id',
+                        path: 'attendance/:id',
                         element: <TeacherAttendanceListPage />,
                     }
                 ]
