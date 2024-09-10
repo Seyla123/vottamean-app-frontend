@@ -176,7 +176,6 @@ function SessionListPage() {
                     </Button>
                 </Link>
             </Stack>
-
             <DataTable
                 rows={rows}
                 columns={columns}
