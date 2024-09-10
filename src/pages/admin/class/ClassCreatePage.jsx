@@ -4,7 +4,6 @@ import { fieldContainer } from "../../../styles/authStyle";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 function ClassCreatePage() {
-    }
     const onClickNext = () => {
         console.log('add');
 
