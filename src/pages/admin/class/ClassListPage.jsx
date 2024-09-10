@@ -26,7 +26,10 @@ const ClassListPage = () => {
   const handleCreate = () => {
     navigate(`/dashboard/classes/create`);
   };
-
+const handleSelectedDelete = () => {
+    console.log('Delete all');
+    
+};
     const columns = [
         { id: 'id', label: 'Class ID' },
         { id: 'name', label: 'Class Name' },
