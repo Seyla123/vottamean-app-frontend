@@ -24,7 +24,7 @@ import {
     CircleX,
     PencilIcon,
 } from 'lucide-react';
-
+import { tableShadow } from '../../styles/global';
 const AttendanceTable = ({
     rows,
     columns,
@@ -96,7 +96,7 @@ const AttendanceTable = ({
     };
 
     return (
-        <Paper>
+        <Paper sx={{ ...tableShadow }}>
             <TableContainer>
                 <Table>
                     <TableHead>
