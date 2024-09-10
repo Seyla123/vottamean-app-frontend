@@ -38,7 +38,7 @@ const AttendanceTable = ({
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'), {
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'), {
         defaultMatches: true,
     });
 
@@ -59,6 +59,11 @@ const AttendanceTable = ({
         handleClose();
     };
 
+    const truncate = (text, maxLength) => {
+        if (text.length <= maxLength) return text;
+        return text.slice(0, maxLength) + '...';
+    };
+
     const visibleColumns = columns.filter(col =>
         isMobile ? !hideColumns.includes(col.id) : true
     );
@@ -71,10 +76,10 @@ const AttendanceTable = ({
     };
 
     const mobileStatusColor = {
-        Present: '#A5D68E',
-        Absent: '#F1948A',
-        Late: '#F7DC6F',
-        Permission: '#85C1E9',
+        Present: '#7AC74F',
+        Absent: '#E74C3C',
+        Late: '#F4D03F',
+        Permission: '#3498DB',
     };
 
     const statusIcon = {
@@ -156,8 +161,10 @@ const AttendanceTable = ({
                                                     />
                                                     {row[column.id]}
                                                 </div>
-                                            ) : (
+                                            ) : column.id === 'id' ? (
                                                 row[column.id]
+                                            ) : (
+                                                truncate(row[column.id], 30)
                                             )}
                                         </TableCell>
                                     ))}
