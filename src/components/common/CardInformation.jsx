@@ -27,9 +27,9 @@ function CardInformation({ data }) {
     <>
       <Box sx={containerStyle}>
         {Object.entries(data).map(([key, value]) => (
-          <Typography sx={textStyles} key={key}>
+          <Box sx={textStyles} key={key}>
             {key}: <Typography sx={textInput}>{value}</Typography>
-          </Typography>
+          </Box>
         ))}
       </Box>
     </>

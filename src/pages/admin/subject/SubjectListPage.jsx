@@ -55,7 +55,7 @@ function SubjectListPage() {
                 >
                     <Button
                         variant='contained'
-                        textTransform={'capitalize'}
+                        
                         sx={{ fontSize: { xs: '14px', md: '16px' } }}
                     >
                         Add subject
