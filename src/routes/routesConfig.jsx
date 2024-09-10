@@ -123,7 +123,7 @@ const TeacherSessionPage = lazy(() => import('../pages/teacherSite/session/Teach
 const routesConfig = [
     {
         path: "/test",
-        element: <LoadingPage />,
+        element: <NotFoundPage />,
         showSidebar: false,
     },
     {
