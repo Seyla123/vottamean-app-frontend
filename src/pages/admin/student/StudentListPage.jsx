@@ -24,6 +24,13 @@ const StudentListPage = () => {
     const handleChange = event => {
         setFilter(event.target.value);
     };
+    const handleEdit = row => {
+        navigate(`/dashboard/students/update/${row.id}`);
+    };
+
+    const handleDelete = row => {
+        console.log('Delete row:', row);
+    };
     // Static student data
     const columns = [
         { id: 'name', label: 'Name' },
@@ -56,13 +63,6 @@ const StudentListPage = () => {
         // },
     ];
 
-    const handleEdit = row => {
-        navigate(`/dashboard/students/update/${row.id}`);
-    };
-
-    const handleDelete = row => {
-        console.log('Delete row:', row);
-    };
 
     const handleSelectedDelete = () => {
         console.log('Delete all');
