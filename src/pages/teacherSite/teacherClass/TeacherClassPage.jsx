@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FormComponent from "../../../components/common/FormComponent";
-import CardDetail from "../../../components/teacherSite/CardDetail"; // import your card component
+import ClassCard from "../../../components/teacherSite/ClassCard";
+import ClassCardSkeleton from "../../../components/loading/ClassCardSkeleton"; // import skeleton component
 import { Grid2 } from "@mui/material";
 import teacher from "../../../assets/icon/teacher.png";
 
@@ -13,39 +14,46 @@ const classesData = [
   { id: 5, className: "E.113", day: "Friday", subject: "Biology", students: 25, time: "1:00 - 3:00" },
   { id: 6, className: "E.109", day: "Monday", subject: "Math", students: 52, time: "7:00 - 9:00" },
   { id: 7, className: "E.122", day: "Tuesday", subject: "Science", students: 45, time: "9:00 - 11:00" },
-
 ];
 
-//colors for card
-const colors = ["#e7f7ff", "#fffaeb","#ffebcb", "#f1fcd9","#ffece9" ,"#e7eaff", ];
+// colors for card
+const colors = ["#e7f7ff", "#fffaeb", "#ffebcb", "#f1fcd9", "#ffece9", "#e7eaff"];
 
 function TeacherClassPage() {
+  const [loading, setLoading] = useState(true);
+
   return (
     <>
       <FormComponent title="Class Schedule" subTitle="These are 7 classes">
         <Grid2 container spacing={2}>
-          {classesData.map((classData, index) => {
-            // Random color
-            const cardColor = colors[index % colors.length];
-            // card
-            return (
-              <Grid2 item  size={{ xs: 12, md: 6 }} key={classData.id}>
-                <CardDetail
-                  className={classData.className}
-                  day={classData.day}
-                  subject={classData.subject}
-                  students={classData.students}
-                  time={classData.time}
-                  classIcon={teacher}
-                  randomColor={cardColor} // Pass the determined color
-                />
-              </Grid2>
-            );
-          })}
+          {loading
+            ? // Render skeleton while loading
+              Array.from({ length: classesData.length }).map((_, index) => (
+                <Grid2 item size={{ xs: 12, md: 6 }} key={index}>
+                  <ClassCardSkeleton />
+                </Grid2>
+              ))
+            : // Render actual class cards once loading is complete
+              classesData.map((classData, index) => {
+                const cardColor = colors[index % colors.length];
+                return (
+                  <Grid2 item size={{ xs: 12, md: 6 }} key={classData.id}>
+                    <ClassCard
+                      className={classData.className}
+                      day={classData.day}
+                      subject={classData.subject}
+                      students={classData.students}
+                      time={classData.time}
+                      classIcon={teacher}
+                      randomColor={cardColor}
+                    />
+                  </Grid2>
+                );
+              })}
         </Grid2>
       </FormComponent>
     </>
-  ); 
+  );
 }
 
 export default TeacherClassPage;

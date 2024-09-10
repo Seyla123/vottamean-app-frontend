@@ -16,7 +16,7 @@ const IconContainer = styled(Box)({
   alignItems: 'center',
 });
 
-const CardDetail = ({
+const ClassCard = ({
   className,
   day,
   subject,
@@ -89,7 +89,7 @@ const CardDetail = ({
   );
 };
 
-export default CardDetail;
+export default ClassCard;
 
 const cardStyle = {
   ...cardContainer,
@@ -97,6 +97,7 @@ const cardStyle = {
   height: { xs: "200px", sm: "250px" },
   display: "flex",
   flexDirection: "column",
+  justifyContent: "space-between",
 };
 
 // styles for mobile
