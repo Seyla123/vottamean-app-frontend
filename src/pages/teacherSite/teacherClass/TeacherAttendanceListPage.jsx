@@ -15,6 +15,28 @@ const data = [
         status: 'Present',
     },
     {
+        id: 8,
+        img: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2680&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        name: 'Sokha Chea',
+        class: '10A',
+        gender: 'Male',
+        phone: '012345678',
+        address: 'Phnom Penh, Cambodia',
+        dob: '2005-03-15',
+        status: 'Late',
+    },
+    {
+        id: 11,
+        img: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2680&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        name: 'Sokha Chea',
+        class: '10A',
+        gender: 'Male',
+        phone: '012345678',
+        address: 'Phnom Penh, Cambodia',
+        dob: '2005-03-15',
+        status: 'Permission',
+    },
+    {
         id: 2,
         img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         name: 'Bopha Seng',
@@ -46,6 +68,28 @@ const data = [
         address: 'Kampot, Cambodia',
         dob: '2005-09-10',
         status: 'Late',
+    },
+    {
+        id: 21,
+        img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        name: 'Bopha Seng',
+        class: '10B',
+        gender: 'Female',
+        phone: '098765432',
+        address: 'Siem Reap, Cambodia',
+        dob: '2005-03-15',
+        status: 'Present',
+    },
+    {
+        id: 39,
+        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        name: 'Dara Meas',
+        class: '10A',
+        gender: 'Male',
+        phone: '011223344',
+        address: 'Battambang, Cambodia',
+        dob: '2005-11-30',
+        status: 'Absent',
     },
 ];
 
@@ -103,7 +147,7 @@ function TeacherAttendanceListPage() {
                 rows={rows}
                 columns={columns}
                 status={status}
-                hideColumns={['id']}
+                hideColumns={['dob', 'address', 'phone', 'gender']}
                 onStatusChange={handleStatusChange}
             />
         </FormComponent>

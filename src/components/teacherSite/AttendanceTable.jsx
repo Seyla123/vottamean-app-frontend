@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -14,6 +14,8 @@ import {
     useTheme,
     Chip,
     Avatar,
+    Box,
+    TablePagination,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
@@ -32,9 +34,11 @@ const AttendanceTable = ({
 }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
     const handleClick = (event, row) => {
         setAnchorEl(event.currentTarget);
@@ -82,90 +86,119 @@ const AttendanceTable = ({
                 ? 'orange'
                 : 'blue';
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = event => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        {visibleColumns.map(column => (
-                            <TableCell
-                                key={column.id}
-                                sx={{
-                                    width: column.id === 'id' ? '' : 'auto',
-                                }}
-                            >
-                                {column.label}
-                            </TableCell>
-                        ))}
-                        <TableCell align='right' style={{ width: '200px' }}>
-                            Status / Action
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((row, index) => (
-                        <TableRow key={index}>
+        <Paper>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
                             {visibleColumns.map(column => (
-                                <TableCell key={column.id}>
-                                    {column.id === 'name' ? (
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <Avatar
-                                                src={row.img}
-                                                alt={`Avatar ${row.name}`}
-                                                sx={{
-                                                    width: 32,
-                                                    height: 32,
-                                                    marginRight: '8px',
-                                                    objectFit: 'cover',
-                                                }}
-                                            />
-                                            {row[column.id]}
-                                        </div>
-                                    ) : (
-                                        row[column.id]
-                                    )}
-                                </TableCell>
-                            ))}
-                            <TableCell align='right' style={{ width: '140px' }}>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'flex-end',
+                                <TableCell
+                                    key={column.id}
+                                    sx={{
+                                        width: column.id === 'id' ? '' : 'auto',
                                     }}
                                 >
-                                    <Chip
-                                        icon={getStatusIcon(row.status)}
-                                        label={row.status}
-                                        sx={{
-                                            backgroundColor: getStatusColor(
-                                                row.status
-                                            ),
-                                            px: '4px',
-                                            color: getStatusTextColor(
-                                                row.status
-                                            ),
-                                        }}
-                                        size='small'
-                                        style={{ marginRight: '8px' }}
-                                    />
-                                    <IconButton
-                                        size='small'
-                                        onClick={e => handleClick(e, row)}
-                                    >
-                                        <MoreVertIcon fontSize='small' />
-                                    </IconButton>
-                                </div>
+                                    {column.label}
+                                </TableCell>
+                            ))}
+                            <TableCell align='right' style={{ width: '200px' }}>
+                                Status / Action
                             </TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {rows
+                            .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
+                            )
+                            .map((row, index) => (
+                                <TableRow key={index}>
+                                    {visibleColumns.map(column => (
+                                        <TableCell key={column.id}>
+                                            {column.id === 'name' ? (
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        flexShrink: 1,
+                                                    }}
+                                                >
+                                                    <Avatar
+                                                        src={row.img}
+                                                        alt={`Avatar ${row.name}`}
+                                                        sx={{
+                                                            width: 32,
+                                                            height: 32,
+                                                            marginRight: '8px',
+                                                            objectFit: 'cover',
+                                                        }}
+                                                    />
+                                                    {row[column.id]}
+                                                </div>
+                                            ) : (
+                                                row[column.id]
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                    <TableCell sx={{ width: 'auto' }}>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'flex-end',
+                                            }}
+                                        >
+                                            <Chip
+                                                icon={getStatusIcon(row.status)}
+                                                label={row.status}
+                                                sx={{
+                                                    backgroundColor:
+                                                        getStatusColor(
+                                                            row.status
+                                                        ),
+                                                    px: '4px',
+                                                    color: getStatusTextColor(
+                                                        row.status
+                                                    ),
+                                                }}
+                                                size='small'
+                                                style={{ marginRight: '8px' }}
+                                            />
+                                            <IconButton
+                                                size='small'
+                                                onClick={e =>
+                                                    handleClick(e, row)
+                                                }
+                                            >
+                                                <MoreVertIcon fontSize='small' />
+                                            </IconButton>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component='div'
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -176,11 +209,16 @@ const AttendanceTable = ({
                         key={statusOption}
                         onClick={() => handleStatusChange(statusOption)}
                     >
-                        {statusOption}
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            {getStatusIcon(statusOption)}
+                            <Box component='span' sx={{ ml: 1 }}>
+                                {statusOption}
+                            </Box>
+                        </Box>
                     </MenuItem>
                 ))}
             </Menu>
-        </TableContainer>
+        </Paper>
     );
 };
 
