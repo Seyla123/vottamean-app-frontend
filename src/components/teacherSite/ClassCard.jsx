@@ -1,21 +1,19 @@
 import React from "react";
-import { CardContent, Box, Typography, Stack, Chip, Avatar } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import {
+  CardContent,
+  Box,
+  Typography,
+  Stack,
+  Chip,
+  Avatar,
+  Divider,
+  Card,
+} from "@mui/material";
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
+import Class from "../../assets/icon/classroom.png";
+import Pencil from "../../assets/icon/whiteboard.png";
 import { cardContainer } from "../../styles/global";
-import { styled } from "@mui/material/styles";
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import TodayIcon from '@mui/icons-material/Today';
-
-const IconContainer = styled(Box)({
-  width: '60px',
-  height: '60px',
-  backgroundColor: 'white',
-  padding: '10px',
-  borderRadius: '50%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
+import theme from "../../styles/theme";
 
 const ClassCard = ({
   className,
@@ -23,66 +21,83 @@ const ClassCard = ({
   subject,
   students,
   time,
-  classIcon,
   randomColor,
-  onClick
 }) => {
   return (
-    <CardContent sx={{ ...cardStyle, bgcolor: randomColor }} onClick={onClick}>
+    <CardContent sx={{ ...cardStyle, bgcolor: 'white' }}>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
+          justifyContent: "space-between",
+          gap: "8px",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {/* class icon */}
-          <IconContainer sx={{ display: "flex", alignItems: "center"}}>
-            <Avatar
-              variant="square"
-              src={classIcon}
-              alt="class list picture"
-              sx={{ width: 40, height: 40 }}
-            />
-          </IconContainer>
-          
-          {/* class */}
-          <Typography sx={classSize} fontWeight="medium">
-            {className}
-          </Typography>
-        </Box>
         {/* day */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Typography sx={daySize}>{day}</Typography>
-          <TodayIcon sx={{ color: "#666666"}}/>
+        <Stack sx={daySize}>
+          <Chip
+            label={day}
+            color="default"
+            sx={{  bgcolor: randomColor }}
+          />
+        </Stack>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            bgcolor: "white",
+          }}
+        >
+          {/* icon */}
+          <Avatar
+            variant="square"
+            src={Pencil}
+            alt="pencil icon"
+            sx={{ width: 24, height: 24}}
+          />
         </Box>
       </Box>
-      {/* subject */}
-      <Typography sx={subjectSize}>{subject}</Typography>
+        {/* subject and time */}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <Typography sx={subjectSize}>{subject}</Typography>
+        <Typography sx={timeSize}>{time}</Typography>
+      </Box>
+      <Divider color="#e3e3e3" sx={{ width: "100%", borderBottomWidth: 1 }} />
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "row",
+          gap: 1,
           alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
+        <Stack sx={{ display: "flex",flexDirection: "row", alignItems: "center", gap: 1 }}>
+          {/* class icon */}
+          <Box sx={{bgcolor: "#e3e3e3",padding: 0.5 , borderRadius: '50%'}}>
+            <Avatar
+              variant="square"
+              src={Class}
+              alt="class list picture"
+              sx={{ padding: 1, borderRadius: '50%', bgcolor: 'white'}}
+            />
+          </Box>
+          {/* class */}
+          <Box sx={{ display: "flex", flexDirection: "column"}}>
+            <Typography sx={{color: theme.palette.secondary.main}}>Class</Typography>
+            {/* class name */}
+            <Typography sx={daySize} fontWeight="medium">
+              {className}
+            </Typography>
+          </Box>
+        </Stack>
         {/* total students */}
         <Stack sx={timeSize}>
-          <Chip  
+          <Chip
             label={`${students}`}
             color="default"
             icon={<PermIdentityIcon />}
-          />
-        </Stack>
-        {/* time */}
-        <Stack direction="row" spacing={1}>
-          <Chip
-            label={time}
-            sx={{ bgcolor: "#7bba3b", color: "white" }}
-            size=""
-            variant="contained"
-            icon={<AccessTimeIcon color="inherit"/>} 
           />
         </Stack>
       </Box>
@@ -92,16 +107,6 @@ const ClassCard = ({
 
 export default ClassCard;
 
-const cardStyle = {
-  ...cardContainer,
-  borderRadius: "16px",
-  height: { xs: "200px", sm: "250px" },
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-};
-
-// styles for mobile
 const subjectSize = {
   fontSize: { xs: "24px", sm: "32px" },
   fontWeight: "medium",
@@ -111,14 +116,19 @@ const subjectSize = {
 const daySize = {
   fontSize: { xs: "16px", sm: "18px" },
   fontWeight: "medium",
+  color: "black",
 };
 
 const timeSize = {
-  fontSize: { xs: "14px", sm: "16px" },
-  fontWeight: "medium",
+  fontSize: { xs: "12px", sm: "14px" },
+  fontWeight: "bold",
 };
 
-const classSize = {
-  fontSize: { xs: "20px", sm: "22px" },
-  fontWeight: "medium",
+const cardStyle = {
+  ...cardContainer,
+  borderRadius: "16px",
+  padding: {
+    xs: 2,
+    sm: 3,
+  },
 };

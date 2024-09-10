@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FormComponent from "../../../components/common/FormComponent";
-import ClassCard from "../../../components/teacherSite/ClassCard";
+// import ClassCard from "../../../components/teacherSite/ClassCard";
+import ClassCard from  "../../../components/teacherSite/ClassCard";
 import ClassCardSkeleton from "../../../components/loading/ClassCardSkeleton"; // import skeleton component
 import { Grid2 } from "@mui/material";
 import teacher from "../../../assets/icon/teacher.png";
@@ -18,14 +19,10 @@ const classesData = [
 
 // colors for card
 const colors = ["#e7f7ff", "#fffaeb", "#ffebcb", "#f1fcd9", "#ffece9", "#e7eaff"];
-
+// const border = ['#ADC4CE', '#F7B5CA', '#FCDC94', '#f1fcd9', '#E2F3FA', '#E5D1FA'];
 function TeacherClassPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const handleEdit = row => {
-    navigate(`/teacher/classes/attendance/${row.id}`);
-  }
 
   return (
     <>
@@ -41,6 +38,7 @@ function TeacherClassPage() {
             : // Render actual class cards once loading is complete
               classesData.map((classData, index) => {
                 const cardColor = colors[index % colors.length];
+                // const randomBorder = border[index % border.length];
                 return (
                   <Grid2 size={{ xs: 12, md: 6 }} key={classData.id}>
                     <ClassCard
@@ -51,7 +49,6 @@ function TeacherClassPage() {
                       time={classData.time}
                       classIcon={teacher}
                       randomColor={cardColor}
-                      onClick={() => handleEdit(classData)} 
                     />
                   </Grid2>
                 );
