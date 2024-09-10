@@ -85,7 +85,8 @@ function TeacherAttendanceListPage() {
             subTitle={`This is attendance list of ${rows.length} students`}
         >
             <Grid2 xs={12} container>
-                <StatusCard rows={rows} />
+                {/* Status card */}
+                {/* <StatusCard rows={rows} /> */}
             </Grid2>
             <Box display={'flex'} justifyContent={'end'} gap={2}>
                 <Button

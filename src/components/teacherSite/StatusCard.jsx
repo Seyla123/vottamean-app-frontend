@@ -14,10 +14,10 @@ const StatusItem = ({ title, count, color, icon: Icon }) => (
             display: 'flex',
             alignItems: 'start',
             gap: 2,
-            // ...shadow,
+            ...shadow,
             width: 1,
             height: 1,
-            p: 1,
+            p: 2,
             border: '1px solid #ddd',
             borderRadius: 2,
             backgroundColor: 'white',
@@ -28,7 +28,7 @@ const StatusItem = ({ title, count, color, icon: Icon }) => (
             <Typography variant='body2'>{title}</Typography>
             <Typography
                 variant='body1'
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}
             >
                 {count}{' '}
                 <Chip size='small' label='Students' variant='outlined' />
@@ -92,18 +92,18 @@ const StatusCard = ({ rows }) => {
     const counts = getCounts();
 
     return (
-        <Box>
+        <Grid container spacing={1}>
             {statusItems.map((item, index) => (
-                <Box key={index}>
+                <Grid item xs={6} sm={4} md={4} lg={2} key={index}>
                     <StatusItem
                         title={item.title}
                         count={item.status ? counts[item.status] : counts.Total}
                         color={item.color}
                         icon={item.icon}
                     />
-                </Box>
+                </Grid>
             ))}
-        </Box>
+        </Grid>
     );
 };
 
