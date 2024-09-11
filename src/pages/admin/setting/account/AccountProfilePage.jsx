@@ -30,8 +30,8 @@ function AccountProfilePage() {
   }
   const school = {
     "School Name": "Potato Fried",
-    "school phone number" : "097029304",
-    "School Address": "Potato Chip City, FrenchFried Country",
+    "Phone number" : "097029304",
+    "Address": "Potato Chip City, FrenchFried Country",
   }
 
   return (

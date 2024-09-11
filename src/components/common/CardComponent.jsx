@@ -41,7 +41,7 @@ import CardHeader from "./CardHeader";
 function Card({title,imgUrl,imgTitle ,children, handleEdit, handleDelete}) {
   
   return (
-    <Box component={'form'} direction="column" sx={cardContainer }>
+    <Box component={'form'} direction="column" sx={{...cardContainer, bgcolor: "white"} } >
       {/* Card Title */}
       <CardHeader title={title} handleEdit={handleEdit} handleDelete={handleDelete}/>
       <Stack component={'div'} sx={imgUrl ? containerStyle : containerStyleNoImg}>
