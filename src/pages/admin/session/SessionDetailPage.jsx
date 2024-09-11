@@ -20,7 +20,7 @@ const session = {
 }
 function SessionDetailPage() {
   return (
-<FormComponent title={'Sessio Detail'} subTitle={'These are subject information'}>
+<FormComponent title={'Session Detail'} subTitle={"These are Session's information"}>
   <CardComponent 
     title={"Subject Information"} 
     handleEdit={clickEdit} 

@@ -111,6 +111,11 @@ const AccountProfilePage = lazy(
 const AttendanceReportPage = lazy(
     () => import("../pages/admin/report/attendance/AttendanceReportPage")
 );
+const AttendanceViewPage = lazy(
+    () => import("../pages/admin/report/attendance/AttendanceViewPage")
+);
+
+
 const UserUpdatePage = lazy(() => import("../pages/admin/setting/account/UserUpdatePage"));
 
 // Teacher site 
@@ -369,6 +374,10 @@ const routesConfig = [
                     {
                         path: "attendance",
                         element: <AttendanceReportPage />,
+                    },
+                    {
+                        path: ":id",
+                        element: <AttendanceViewPage />,
                     },
                 ],
             },
