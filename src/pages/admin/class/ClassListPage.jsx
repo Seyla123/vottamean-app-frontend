@@ -10,6 +10,7 @@ import DataTable from '../../../components/common/DataTable';
 import { Link } from 'react-router-dom';
 import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
+import { PlusIcon } from 'lucide-react';
 const ClassListPage = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
@@ -54,6 +55,7 @@ const ClassListPage = () => {
                 size='large'
                 variant='contained'
                 color='primary'
+                startIcon={<PlusIcon size={20} />}
             >
                 ADD CLASS
             </Button>

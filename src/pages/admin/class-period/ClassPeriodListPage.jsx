@@ -4,6 +4,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import {Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
+import { PlusIcon } from 'lucide-react';
 
 
 function ClassPeriodListPage() {
@@ -133,6 +134,7 @@ function ClassPeriodListPage() {
                 size='large'
                 variant='contained'
                 color='primary'
+                startIcon={<PlusIcon size={20} />}
             >
                 ADD PERIOD
             </Button>
