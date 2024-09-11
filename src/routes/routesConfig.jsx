@@ -1,6 +1,4 @@
-import React from "react";
 import { lazy } from "react";
-import TestPage from "../pages/TestPage";
 
 // Lazy-loaded Pages
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
@@ -126,12 +124,17 @@ const TeacherAccountProfilePage = lazy(() => import('../pages/teacherSite/settin
 const TeacherSessionPage = lazy(() => import('../pages/teacherSite/session/TeacherSessionPage'));
 
 import Layout from "../components/layout/Layout";
+import ProtectedRoutes from "./ProtectedRoutes";
 // Routes configuration
 const routesConfig = [
     {
         path: "/test",
-        element: <NotFoundPage />,
         element: <Layout />,
+        children: [
+            {
+                path: "",
+                element: <NotFoundPage />,
+            }]
     },
     {
         path: "/auth",
@@ -169,7 +172,7 @@ const routesConfig = [
     },
     {
         path: '/teacher',
-        element: <Layout teacherSite/>,
+        element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
         children: [
             {
                 path: 'classes',
@@ -202,7 +205,7 @@ const routesConfig = [
     {
         path: '/dashboard',
         showSidebar: true,
-        element: <Layout adminSite/>,
+        element:<ProtectedRoutes adminSite></ProtectedRoutes>,
         children: [
             {
                 path: "",
@@ -383,9 +386,15 @@ const routesConfig = [
     },
     {
         path: "*",
-        element: <NotFoundPage />,
-        element: <Layout />,
+        element: <Layout/>,
+        children: [
+            {
+                path: "",
+                element: <NotFoundPage />,
+            },
+        ]
     },
 ];
 
 export default routesConfig;
+
