@@ -3,6 +3,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import { Link } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { useNavigate } from 'react-router-dom';
+import { PlusIcon } from 'lucide-react';
 
 function SubjectListPage() {
     const navigate = useNavigate();
@@ -56,6 +57,7 @@ function SubjectListPage() {
                     size='large'
                     variant='contained'
                     color='primary'
+                    startIcon={<PlusIcon size={20} />}
                 >
                         Add subject
                     </Button>

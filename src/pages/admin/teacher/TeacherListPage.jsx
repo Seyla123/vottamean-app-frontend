@@ -4,6 +4,7 @@ import DataTable from '../../../components/common/DataTable';
 import { Link,useNavigate } from 'react-router-dom';
 import {Stack,Box,Button} from '@mui/material';
 import SearchComponent from '../../../components/common/SearchComponent';
+import { PlusIcon } from 'lucide-react';
 function TeacherListPage() {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
@@ -189,6 +190,7 @@ function TeacherListPage() {
                     size='large'
                     variant='contained'
                     color='primary'
+                    startIcon={<PlusIcon size={20} />}
                 >
                     ADD TEACHER
                 </Button>
