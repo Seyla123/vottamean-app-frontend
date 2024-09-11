@@ -3,20 +3,21 @@ import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import Logo from "../../assets/images/Logo.png";
 import theme from "../../styles/theme";
+
 import {
-    Home as HomeIcon,
-    CalendarMonth as CalendarMonthIcon,
-    Class as ClassIcon,
-    Subject as SubjectIcon,
-    School as StudentIcon,
-    CoPresent as TeacherIcon,
-    LibraryBooks as ClassPeriodIcon,
-    Settings as SettingsIcon,
-    Logout as LogoutIcon,
-    Person,
-} from "@mui/icons-material";
-import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
-import ChecklistIcon from "@mui/icons-material/Checklist";
+    HouseIcon as HomeIcon,
+    CalendarIcon as CalendarMonthIcon,
+    BookIcon as ClassIcon,
+    LibraryIcon as SubjectIcon,
+    GraduationCapIcon as StudentIcon,
+    BriefcaseBusinessIcon as TeacherIcon,
+    SquareChartGanttIcon as ClassPeriodIcon,
+    ClipboardMinusIcon as ReportGmailerrorredIcon,
+    ScrollTextIcon as ChecklistIcon,
+    SettingsIcon,
+    LogOutIcon,
+    UserRoundIcon as Person,
+} from "lucide-react";
 import { Box } from "@mui/system";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { Container } from "@mui/material";
