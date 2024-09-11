@@ -6,38 +6,45 @@ import { CheckCheckIcon, UsersIcon } from "lucide-react";
 import WelcomeImage from "../../../assets/images/welcome-illustration.png";
 import ShortListTable from "../../../components/common/ShortListTable";
 import { shadow } from "../../../styles/global";
-import { AspectRatio } from "@mui/icons-material";
+import StaticTable from "../../../components/common/StaticTable";
 
 const teacherArr = [
     {
         id: 1,
-        fullname: "Sokha Seng",
+        name: "Sokha Seng",
         gender: "Female",
         email: "sokha.seng@example.com",
         phonenumber: "012 345 678",
     },
     {
         id: 2,
-        fullname: "Vuthy Vong",
+        name: "Vuthy Vong",
         gender: "Male",
         email: "vuthy.vong@example.com",
         phonenumber: "098 765 432",
     },
     {
         id: 3,
-        fullname: "Sopheaktra Sorn",
+        name: "Sopheaktra Sorn",
         gender: "Male",
         email: "sopheaktra.sorn@example.com",
         phonenumber: "012 987 654",
     },
     {
         id: 4,
-        fullname: "Sovannary Seng",
+        name: "Sovannary Seng",
         gender: "Female",
         email: "sovannary.seng@example.com",
         phonenumber: "098 123 456",
     },
 ];
+
+const teacherColumnArr = [
+    { id: "name", label: "Full Name" },
+    { id: "gender", label: "Gender" },
+    { id: "email", label: "Email" },
+];
+
 const studentArr = [
     {
         id: 1,
@@ -56,13 +63,6 @@ const studentArr = [
     },
 ];
 
-const columnDefinitions = [
-    { id: "fullname", label: "Full Name" },
-    { id: "gender", label: "Gender" },
-    { id: "email", label: "Email" },
-    // { id: "phonenumber", label: "Phone Number" },
-];
-
 const statusCard = [
     {
         id: 1,
@@ -79,15 +79,6 @@ const statusCard = [
 ];
 
 function dashboard() {
-    const handleEdit = () => {
-        console.log("HandleEdit");
-    };
-    const handleDelete = () => {
-        console.log("HandleDelete");
-    };
-    const handleSelectedDelete = () => {
-        console.log("HandleSelectedDelete");
-    };
     return (
         <FormComponent title="Dashboard Overview" subTitle="All Data">
             <Grid container spacing={2}>
@@ -100,15 +91,10 @@ function dashboard() {
             </Grid>
             <Grid container spacing={2}>
                 <Grid item xs={12} lg={8}>
-                    <DataTable
+                    <StaticTable
                         rows={teacherArr}
-                        columns={columnDefinitions}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
-                        onSelectedDelete={handleSelectedDelete}
-                        hideColumns={["email", "phonenumber"]}
-                        emptyTitle="No data available"
-                        emptySubTitle="Add some data to see it in the table"
+                        columns={teacherColumnArr}
+                        hideColumns={["email"]}
                     />
                 </Grid>
                 <Grid item xs={12} lg={4}>
@@ -127,7 +113,7 @@ const GreetingCard = () => {
                 justifyContent: "space-between",
                 flexDirection: { xs: "column", lg: "row" },
                 alignItems: "center",
-                gap: 2,
+                gap: 1,
                 p: { xs: 4, sm: 6 },
                 ...shadow,
             }}
@@ -136,7 +122,7 @@ const GreetingCard = () => {
                 <Typography variant="h3">Welcome Back 👋</Typography>
                 <Typography variant="body1">Sokha Seng</Typography>
             </Box>
-            <Box sx={{ width: { xs: "100%", lg: "40%" } }}>
+            <Box sx={{ width: { xs: "100%", sm: "300px", lg: "400px" } }}>
                 <img
                     src={WelcomeImage}
                     alt={"Welcome Image"}
