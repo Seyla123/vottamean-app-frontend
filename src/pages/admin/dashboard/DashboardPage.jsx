@@ -147,7 +147,16 @@ const GreetingCard = () => {
 
 const StatusCard = () => {
     return (
-        <CardContent>
+        <Box
+            sx={{
+                p: { xs: 2, sm: 4 },
+                ...shadow,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                height: 1,
+            }}
+        >
             {statusCard.map((item) => (
                 <Grid container key={item.id}>
                     <Grid item>
@@ -158,9 +167,18 @@ const StatusCard = () => {
                                 gap: 2,
                             }}
                         >
-                            <Box>{item.icon}</Box>
+                            <Box
+                                sx={{ ...shadow }}
+                                width={40}
+                                height={40}
+                                display={"flex"}
+                                justifyContent={"center"}
+                                alignItems={"center"}
+                            >
+                                {item.icon}
+                            </Box>
                             <Box>
-                                <Typography variant="h6">
+                                <Typography variant="body2">
                                     {item.title}
                                 </Typography>
                                 <Typography variant="body1">
@@ -171,7 +189,7 @@ const StatusCard = () => {
                     </Grid>
                 </Grid>
             ))}
-        </CardContent>
+        </Box>
     );
 };
 
