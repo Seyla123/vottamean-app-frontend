@@ -1,8 +1,8 @@
 // shadow
 export const shadow = {
     borderRadius: '8px',
-    border: '0.3px solid rgba(0, 0, 0, 0.05)',
-    boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.16)',
+    border: '0.2px solid rgba(0, 0, 0, 0.05)',
+    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.08)',
 };
 // card card container
 export const cardContainer = {

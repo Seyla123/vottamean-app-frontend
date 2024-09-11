@@ -119,57 +119,59 @@ const TeacherAttendanceListPage = lazy(() => import('../pages/teacherSite/teache
 const TeacherClassPage = lazy(() => import('../pages/teacherSite/teacherClass/TeacherClassPage'));
 const TeacherAccountProfilePage = lazy(() => import('../pages/teacherSite/settings/TeacherAccountProfilePage'));
 const TeacherSessionPage = lazy(() => import('../pages/teacherSite/session/TeacherSessionPage'));
+
+import Layout from "../components/layout/Layout";
 // Routes configuration
 const routesConfig = [
     {
         path: "/test",
         element: <NotFoundPage />,
-        showSidebar: false,
+        element: <Layout />,
     },
     {
         path: "/auth",
-        showSidebar: false,
+        element: <Layout />,
         children: [
             {
                 path: "login",
                 element: <LoginPage />,
-                showSidebar: false,
+                element: <Layout />,
             },
             {
                 path: "signup",
                 element: <SignupPage />,
-                showSidebar: false,
+                element: <Layout />,
             },
             {
                 path: "forgot-password",
                 element: <PasswordForgotPage />,
-                showSidebar: false,
+                element: <Layout />,
             },
             {
                 path: "reset-password",
                 element: <PasswordResetPage />,
-                showSidebar: false,
+                element: <Layout />,
             },
             {
                 path: "change-password",
                 element: <PasswordChangePage />,
-                showSidebar: false,
+                element: <Layout />,
             },
             {
                 path: "verify-account",
                 element: <AccountVerifyPage />,
-                showSidebar: false,
+                element: <Layout />,
             },
             {
                 path: "success",
                 element: <AccountSuccessPage />,
-                showSidebar: false,
+                element: <Layout />,
             },
         ]
     },
     {
         path: '/teacher',
-        teacherSidebar: true,
+        element: <Layout teacherSite/>,
         children: [
             {
                 path: 'classes',
@@ -202,6 +204,7 @@ const routesConfig = [
     {
         path: '/dashboard',
         showSidebar: true,
+        element: <Layout adminSite/>,
         children: [
             {
                 path: "",
@@ -374,7 +377,7 @@ const routesConfig = [
     {
         path: "*",
         element: <NotFoundPage />,
-        showSidebar: false,
+        element: <Layout />,
     },
 ];
 

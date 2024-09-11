@@ -21,13 +21,11 @@ const App = () => {
     return (
         <>
             <CssBaseline />
-            <Layout>
                 <Suspense fallback={<LoadingPage />}>
                     <Routes>
                         {renderRoutes(routesConfig)}
                     </Routes>
                 </Suspense>
-            </Layout>
         </>
     );
 };

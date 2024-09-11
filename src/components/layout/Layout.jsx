@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import Logo from '../../assets/images/Logo.png';
 import theme from '../../styles/theme';
@@ -89,7 +89,44 @@ const navigation = [
     },
 ];
 
-const Layout = ({ children }) => {
+const teacherSiteNavigation = [
+    { kind: 'header', title: 'Menu' },
+    {
+        segment: 'dashboard',
+        title: 'Dashboard',
+        icon: <HomeIcon />,
+    },
+    {
+        segment: 'dashboard/reports',
+        title: 'Report',
+        icon: <ReportGmailerrorredIcon />,
+        children: [
+            {
+                segment: 'attendance',
+                title: 'Attendance',
+                icon: <ChecklistIcon />,
+            },
+        ],
+    },
+
+    { kind: 'divider' },
+
+    { kind: 'header', title: 'General' },
+
+    {
+        segment: 'dashboard/settings',
+        title: 'Settings',
+        icon: <SettingsIcon />,
+        children: [
+            {
+                segment: 'account',
+                title: 'Account',
+                icon: <Person />,
+            },
+        ],
+    },
+];
+const Layout = ({teacherSite,adminSite}) => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -125,8 +162,6 @@ const Layout = ({ children }) => {
             navigate: path => navigate(path),
         };
     }, [location, navigate]);
-    // Determine if the dashboard should be shown
-    const showDashboard = !['/auth/login', '/auth/signup', '/auth/forgot-password', '/auth/reset-password', '/auth/change-password'].includes(location.pathname);
 
     return (
         <AppProvider
@@ -134,25 +169,19 @@ const Layout = ({ children }) => {
                 title: '',
                 logo: <img src={Logo} alt='WaveTrack' />,
             }}
-            navigation={navigation}
+            navigation={teacherSite?teacherSiteNavigation:navigation}
             router={router}
             theme={theme}
             session={session}
             authentication={authentication}
         >
-            <Box paddingTop={showDashboard? 2 : 0}>
-                {showDashboard ? (
-                    // Render the dashboard or other components here
-                    <DashboardLayout>
-                        <Container padding={0} maxWidth="xl">
-                         {children}
-                        </Container>
-                    </DashboardLayout>
-                ) : (
+            <Box paddingTop={2}>
                     // Render other components or nothing based on your requirements
-                    children
-                )}
-                
+                <DashboardLayout >
+                    <Container maxWidth='xl'>
+                        <Outlet />
+                    </Container>
+                </DashboardLayout>
             </Box>
         </AppProvider>
     );
