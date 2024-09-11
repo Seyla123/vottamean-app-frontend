@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
-import FilterComponent from '../../../components/common/filterComponent';
+import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
 import { Link } from 'react-router-dom'
 import { PlusIcon } from 'lucide-react';
