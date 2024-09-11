@@ -140,37 +140,30 @@ const routesConfig = [
             {
                 path: "login",
                 element: <LoginPage />,
-                element: <Layout />,
             },
             {
                 path: "signup",
                 element: <SignupPage />,
-                element: <Layout />,
             },
             {
                 path: "forgot-password",
                 element: <PasswordForgotPage />,
-                element: <Layout />,
             },
             {
                 path: "reset-password",
                 element: <PasswordResetPage />,
-                element: <Layout />,
             },
             {
                 path: "change-password",
                 element: <PasswordChangePage />,
-                element: <Layout />,
             },
             {
                 path: "verify-account",
                 element: <AccountVerifyPage />,
-                element: <Layout />,
             },
             {
                 path: "success",
                 element: <AccountSuccessPage />,
-                element: <Layout />,
             },
         ]
     },
@@ -373,12 +366,17 @@ const routesConfig = [
                 children: [
                     {
                         path: "attendance",
-                        element: <AttendanceReportPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <AttendanceViewPage />,
-                    },
+                        children: [
+                            {
+                                path: "",
+                                element: <AttendanceReportPage />,
+                            },
+                            {
+                                path: ":id",
+                                element: <AttendanceViewPage />,
+                            },  
+                        ]
+                    }
                 ],
             },
         ],
