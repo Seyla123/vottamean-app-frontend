@@ -1,9 +1,8 @@
 import React from "react";
 import { Typography, Box, CardContent, Chip, Grid } from "@mui/material";
 import FormComponent from "../../../components/common/FormComponent";
-import DataTable from "../../../components/common/DataTable";
-import { CheckCheckIcon, UsersIcon } from "lucide-react";
-import WelcomeImage from "../../../assets/images/welcome-illustration.png";
+import { GraduationCap, UsersIcon } from "lucide-react";
+import WelcomeHandImage from "../../../assets/images/welcome-illustration.png";
 import ShortListTable from "../../../components/common/ShortListTable";
 import { shadow } from "../../../styles/global";
 import StaticTable from "../../../components/common/StaticTable";
@@ -74,7 +73,7 @@ const statusCard = [
         id: 2,
         title: "Total Students",
         amount: "2,500",
-        icon: <CheckCheckIcon />,
+        icon: <GraduationCap />,
     },
 ];
 
@@ -109,34 +108,55 @@ const GreetingCard = () => {
     return (
         <Box
             sx={{
+                position: "relative",
                 display: "flex",
-                justifyContent: "space-evenly",
+                justifyContent: "space-between",
                 flexDirection: "row",
                 alignItems: "center",
-                gap: 1,
+                background: "#6499E9",
+                color: "white",
+                height: { xs: "120px", sm: "240px" },
+                overflow: "hidden",
                 p: { xs: 2, sm: 4 },
                 ...shadow,
             }}
         >
-            <Box>
+            <Box sx={{ position: "relative", zIndex: 2 }}>
                 <Typography
                     variant="h3"
                     sx={{
                         fontWeight: "bold",
                         fontSize: { xs: "24px", sm: "32px", md: "48px" },
+                        textShadow: "1px 1px 10px #344C64",
                     }}
                 >
                     Welcome Back 👋
                 </Typography>
-                <Typography variant="body1">Sokha Seng</Typography>
+                <Typography
+                    variant="body1"
+                    sx={{ textShadow: "1px 1px 5px #344C64" }}
+                >
+                    Sokha Seng
+                </Typography>
             </Box>
-            <Box sx={{ width: { xs: "200px", sm: "240px", lg: "300px" } }}>
+            <Box
+                sx={{
+                    width: {
+                        xs: "200px",
+                        sm: "240px",
+                        lg: "300px",
+                        position: "absolute",
+                        bottom: -80,
+                        right: 4,
+                    },
+                }}
+            >
                 <img
-                    src={WelcomeImage}
+                    src={WelcomeHandImage}
                     alt={"Welcome Image"}
                     style={{
                         width: "100%",
-                        height: "auto",
+                        height: "100%",
                         objectFit: "contain",
                     }}
                 />
