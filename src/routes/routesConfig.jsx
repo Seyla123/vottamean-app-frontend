@@ -111,6 +111,11 @@ const AccountProfilePage = lazy(
 const AttendanceReportPage = lazy(
     () => import("../pages/admin/report/attendance/AttendanceReportPage")
 );
+const AttendanceViewPage = lazy(
+    () => import("../pages/admin/report/attendance/AttendanceViewPage")
+);
+
+
 const UserUpdatePage = lazy(() => import("../pages/admin/setting/account/UserUpdatePage"));
 
 // Teacher site 
@@ -135,37 +140,30 @@ const routesConfig = [
             {
                 path: "login",
                 element: <LoginPage />,
-                element: <Layout />,
             },
             {
                 path: "signup",
                 element: <SignupPage />,
-                element: <Layout />,
             },
             {
                 path: "forgot-password",
                 element: <PasswordForgotPage />,
-                element: <Layout />,
             },
             {
                 path: "reset-password",
                 element: <PasswordResetPage />,
-                element: <Layout />,
             },
             {
                 path: "change-password",
                 element: <PasswordChangePage />,
-                element: <Layout />,
             },
             {
                 path: "verify-account",
                 element: <AccountVerifyPage />,
-                element: <Layout />,
             },
             {
                 path: "success",
                 element: <AccountSuccessPage />,
-                element: <Layout />,
             },
         ]
     },
@@ -368,8 +366,17 @@ const routesConfig = [
                 children: [
                     {
                         path: "attendance",
-                        element: <AttendanceReportPage />,
-                    },
+                        children: [
+                            {
+                                path: "",
+                                element: <AttendanceReportPage />,
+                            },
+                            {
+                                path: ":id",
+                                element: <AttendanceViewPage />,
+                            },  
+                        ]
+                    }
                 ],
             },
         ],

@@ -153,7 +153,6 @@ const searchBoxStyles = {
 };
 
 const textFieldStyles = {
-    width: '100%',
     width: { xs: 1, sm: '540px' },
 };
 
