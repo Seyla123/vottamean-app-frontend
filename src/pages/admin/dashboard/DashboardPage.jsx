@@ -107,22 +107,30 @@ function dashboard() {
 
 const GreetingCard = () => {
     return (
-        <CardContent
+        <Box
             sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                flexDirection: { xs: "column", lg: "row" },
+                justifyContent: "space-evenly",
+                flexDirection: "row",
                 alignItems: "center",
                 gap: 1,
-                p: { xs: 4, sm: 6 },
+                p: { xs: 2, sm: 4 },
                 ...shadow,
             }}
         >
             <Box>
-                <Typography variant="h3">Welcome Back 👋</Typography>
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontWeight: "bold",
+                        fontSize: { xs: "24px", sm: "32px", md: "48px" },
+                    }}
+                >
+                    Welcome Back 👋
+                </Typography>
                 <Typography variant="body1">Sokha Seng</Typography>
             </Box>
-            <Box sx={{ width: { xs: "100%", sm: "300px", lg: "400px" } }}>
+            <Box sx={{ width: { xs: "200px", sm: "240px", lg: "300px" } }}>
                 <img
                     src={WelcomeImage}
                     alt={"Welcome Image"}
@@ -133,7 +141,7 @@ const GreetingCard = () => {
                     }}
                 />
             </Box>
-        </CardContent>
+        </Box>
     );
 };
 
