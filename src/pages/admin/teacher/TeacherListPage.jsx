@@ -12,11 +12,9 @@ function TeacherListPage() {
     const handleEdit = row => {
         navigate(`/dashboard/students/update/${row.id}`);
     };
-
     const handleDelete = row => {
         console.log('Delete row:', row);
     };
-
     const columns = [
         { id: 'name', label: 'Name' },
         { id: 'gender', label: 'Gender' },
@@ -178,7 +176,7 @@ function TeacherListPage() {
         console.log('Delete all');
     };
 
-    const hideColumns = ['name', 'phoneNumber'];
+    const hideColumns = ['phoneNumber', 'email'];
 
     return (
         <FormComponent title='Teacher List' subTitle='There are 9 Teachers'>
