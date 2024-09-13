@@ -21,10 +21,6 @@ const SessionCreatePage = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleBackClick = () => {
-    console.log("cancel");
-  };
-
   const handleNextClick = () => {
     console.log("add");
   };
@@ -84,7 +80,6 @@ const SessionCreatePage = () => {
         </Box>
         {/* Button Container */}
         <ButtonContainer
-          leftBtn={handleBackClick}
           rightBtn={handleNextClick}
           leftBtnTitle="Cancel"
           rightBtnTitle="Add Subject"

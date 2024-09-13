@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, TextField, Select, MenuItem, Avatar } from '@mui/material';
 import SubHeader from './SubHeader';
 import DatePickerComponent from './DatePickerComponent';
-
+import ButtonContainer from '../common/ButtonContainer';
 const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
   const [gender, setGender] = useState('');
 
@@ -13,8 +13,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
   return (
     <Box sx={profileBox}>
       <Box sx={valueBoxOne}>
-      <Avatar sx={imgStyle} alt='profile picture'src='r'/>
-       
+        <Avatar sx={imgStyle} alt='profile picture' src='r' />
+
       </Box>
 
       <SubHeader title={"Teacher Information"} />
@@ -56,7 +56,7 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             </Box>
           </Box>
         </Box>
-         {/* gender */}
+        {/* gender */}
         <Box sx={textFieldGap}>
           <Typography>Gender</Typography>
           <Select
@@ -100,35 +100,24 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             fullWidth
           />
         </Box>
-        
+
         {/* buttons */}
         <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"} gap={2} mt={2}>
           {mode === "update" && (
             <>
-              <Button
-                variant="outlined"
-                onClick={handleCancel}
-                sx={buttonCancel}
-
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                sx={buttonStyle}
-              >
-                Update
-              </Button>
+              <ButtonContainer
+                rightBtn={handleNext}
+                leftBtnTitle="Cancel"
+                rightBtnTitle="UPDATE"
+              />
             </>
           )}
           {mode === "create" && (
-            <Button
-              variant="contained"
-              onClick={handleNext}
-              sx={buttonStyle}
-            >
-              Next
-            </Button>
+            <ButtonContainer
+              rightBtn={handleNext}
+              leftBtnTitle="Cancel"
+              rightBtnTitle="Next"
+            />
           )}
         </Box>
       </Box>
@@ -178,13 +167,14 @@ const buttonStyle = {
 };
 const buttonCancel = {
   width: { xs: '100%', sm: "170px" },
-  borderColor: "inherit", color: "inherit" 
+  borderColor: "inherit", color: "inherit"
 };
 
 
-const imgStyle ={ 
+const imgStyle = {
   width: {
-  xs:120, sm:160
-}, height:  {
-  xs:120, sm:160
-}}
+    xs: 120, sm: 160
+  }, height: {
+    xs: 120, sm: 160
+  }
+}

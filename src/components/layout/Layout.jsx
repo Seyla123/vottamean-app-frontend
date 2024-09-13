@@ -1,103 +1,35 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import Logo from '../../assets/images/Logo.png';
-import theme from '../../styles/theme';
-import {
-    Home as HomeIcon,
-    CalendarMonth as CalendarMonthIcon,
-    Class as ClassIcon,
-    Subject as SubjectIcon,
-    School as StudentIcon,
-    CoPresent as TeacherIcon,
-    LibraryBooks as ClassPeriodIcon,
-    Settings as SettingsIcon,
-    Logout as LogoutIcon,
-    Person,
-} from '@mui/icons-material';
-import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
-import ChecklistIcon from '@mui/icons-material/Checklist';
+import { extendTheme } from '@mui/material';
+
 import { Box } from '@mui/system';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { Container } from '@mui/material';
+import { teacherSiteNavigation, navigation } from '../../data/navigation';
 
-const navigation = [
-    { kind: 'header', title: 'Menu' },
-    {
-        segment: 'dashboard',
-        title: 'Dashboard',
-        icon: <HomeIcon />,
-    },
-    {
-        segment: 'dashboard/sessions',
-        title: 'Session',
-        icon: <CalendarMonthIcon />,
-    },
-    {
-        segment: 'dashboard/classes',
-        title: 'Class',
-        icon: <ClassIcon />,
-    },
-    {
-        segment: 'dashboard/subjects',
-        title: 'Subject',
-        icon: <SubjectIcon />,
-    },
-    {
-        segment: 'dashboard/students',
-        title: 'Student',
-        icon: <StudentIcon />,
-    },
-    {
-        segment: 'dashboard/teachers',
-        title: 'Teacher',
-        icon: <TeacherIcon />,
-    },
-    {
-        segment: 'dashboard/class-periods',
-        title: 'Class Period',
-        icon: <ClassPeriodIcon />,
-    },
-    {
-        segment: 'dashboard/reports',
-        title: 'Report',
-        icon: <ReportGmailerrorredIcon />,
-        children: [
-            {
-                segment: 'attendance',
-                title: 'Attendance',
-                icon: <ChecklistIcon />,
-            },
-        ],
-    },
-
-    { kind: 'divider' },
-
-    { kind: 'header', title: 'General' },
-
-    {
-        segment: 'dashboard/settings',
-        title: 'Settings',
-        icon: <SettingsIcon />,
-        children: [
-            {
-                segment: 'account',
-                title: 'Account',
-                icon: <Person />,
-            },
-        ],
-    },
-];
-
-const Layout = ({ children }) => {
+const Layout = ({ teacherSite, adminSite }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
     const [session, setSession] = React.useState({
         user: {
-            name: 'Doggo',
-            email: 'doggo@gmail.com',
-            image: 'https://i.pinimg.com/236x/10/18/97/10189726fde11a8182c4ff075bfe094b.jpg',
+            name: 'Selena',
+            email: 'selena@gmail.com',
+            image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        },
+    });
+
+    const theme = extendTheme({
+        breakpoints: {
+            values: {
+                xs: 0,
+                sm: 600,
+                md: 1200,
+                lg: 1200,
+                xl: 1536,
+            },
         },
     });
 
@@ -106,9 +38,9 @@ const Layout = ({ children }) => {
             signIn: () => {
                 setSession({
                     user: {
-                        name: 'Doggo',
-                        email: 'doggo@gmail.com',
-                        image: 'https://i.pinimg.com/236x/10/18/97/10189726fde11a8182c4ff075bfe094b.jpg',
+                        name: 'Selena',
+                        email: 'selena@gmail.com',
+                        image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                     },
                 });
             },
@@ -125,35 +57,41 @@ const Layout = ({ children }) => {
             navigate: path => navigate(path),
         };
     }, [location, navigate]);
-    // Determine if the dashboard should be shown
-    const showDashboard = !['/login', '/signup', '/forgot-password', '/reset-password', '/change-password'].includes(location.pathname);
-
     return (
         <AppProvider
             branding={{
                 title: '',
-                logo: <img src={Logo} alt='WaveTrack' />,
+                logo: (
+                    <img
+                        src={Logo}
+                        alt='WaveTrack'
+                        style={{
+                            width: '150px',
+                            height: '100%',
+                            objectFit: 'contain',
+                        }}
+                    />
+                ),
             }}
-            navigation={navigation}
+            navigation={teacherSite ? teacherSiteNavigation : navigation}
             router={router}
             theme={theme}
             session={session}
             authentication={authentication}
         >
-            <Box paddingTop={showDashboard? 2 : 0}>
-                {showDashboard ? (
-                    // Render the dashboard or other components here
+            {/* Render the component to show different sidebar layout in teacher and admin site */}
+            {teacherSite || adminSite ? (
+                <Box paddingTop={2}>
+                    {/* Render other components or nothing based on your requirements */}
                     <DashboardLayout>
-                        <Container padding={0} maxWidth="xl">
-                         {children}
+                        <Container maxWidth='xl'>
+                            <Outlet />
                         </Container>
                     </DashboardLayout>
-                ) : (
-                    // Render other components or nothing based on your requirements
-                    children
-                )}
-                
-            </Box>
+                </Box>
+            ) : (
+                <Outlet />
+            )}
         </AppProvider>
     );
 };

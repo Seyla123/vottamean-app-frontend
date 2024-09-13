@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, Typography, TextField, Button, Link, Card} from "@mui/material";
+import { Box, Typography, TextField, Button, Card} from "@mui/material";
 import forget from "../../assets/icon/forget.png";
 import GoBackButton from "../../components/common/GoBackButton";
-import { Padding } from "@mui/icons-material";
+import { Link } from "react-router-dom";
+
 function PasswordForgotPage() {
   
   return (
@@ -51,10 +52,14 @@ function PasswordForgotPage() {
               justifyContent: "center",
             }}
           >
-            <Typography variant="subtitle1">
-              Don't have an account ?{" "}
+            <Typography variant="body1">
+          Don't you have an account?
+          <Link to="/auth/signup">
+            <Typography variant="body1" component="span" color="primary">
+              {' '}Sign Up
             </Typography>
-            <Link src={{}}>Sign up</Link>
+          </Link>
+        </Typography>
           </Box>
         </Box>
       </Card>

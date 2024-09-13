@@ -62,7 +62,6 @@ const StudentCreatePage = () => {
       
         {/* buttons container */}
         <ButtonContainer
-          leftBtn={handleCancel}
           rightBtn={handleNext}
           leftBtnTitle="Cancel"
           rightBtnTitle={activeTab === 0 ? "Next" : "Submit"}

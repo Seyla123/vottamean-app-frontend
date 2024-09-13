@@ -1,11 +1,20 @@
-import React from 'react';
+import {useState} from 'react';
 import FormComponent from '../../../components/common/FormComponent';
 import DataTable from '../../../components/common/DataTable';
-import { useNavigate } from 'react-router-dom';
-
+import { Link,useNavigate } from 'react-router-dom';
+import {Stack,Box,Button} from '@mui/material';
+import SearchComponent from '../../../components/common/SearchComponent';
+import { PlusIcon } from 'lucide-react';
 function TeacherListPage() {
     const navigate = useNavigate();
-
+    const [searchTerm, setSearchTerm] = useState('');
+    console.log('searchTerm', searchTerm);
+    const handleEdit = row => {
+        navigate(`/dashboard/students/update/${row.id}`);
+    };
+    const handleDelete = row => {
+        console.log('Delete row:', row);
+    };
     const columns = [
         { id: 'name', label: 'Name' },
         { id: 'gender', label: 'Gender' },
@@ -163,22 +172,43 @@ function TeacherListPage() {
         },
     ];
 
-    const handleEdit = row => {
-        navigate(`/dashboard/teachers/update/${row.id}`);
-    };
-
-    const handleDelete = row => {
-        console.log('Delete row:', row);
-    };
-
     const handleSelectedDelete = () => {
         console.log('Delete all');
     };
 
-    const hideColumns = ['name', 'phoneNumber'];
+    const hideColumns = ['phoneNumber', 'email'];
 
     return (
         <FormComponent title='Teacher List' subTitle='There are 9 Teachers'>
+            {/* button add student container */}
+            <Stack direction="row" justifyContent="flex-end">
+                {/* add student button */}
+                <Link to="/dashboard/teachers/create">
+                <Button
+                    size='large'
+                    variant='contained'
+                    color='primary'
+                    startIcon={<PlusIcon size={20} />}
+                >
+                    ADD TEACHER
+                </Button>
+                </Link>
+            </Stack>
+
+            {/* Container  */}
+            <Box >
+                <Stack direction="row" justifyContent={'flex-end'} width={'100%'} gap={2} >
+
+                    {/* Search teacher */}
+                    <SearchComponent
+                        sx={{ width: '100%', maxWidth: '700px' }}
+                        placeholder='Search'
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        onClickIcon={() => console.log('click search icon')}
+                    />
+                </Stack>
+            </Box>
             <DataTable
                 rows={rows}
                 columns={columns}

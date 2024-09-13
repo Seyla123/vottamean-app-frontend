@@ -27,7 +27,6 @@ function GoBackButton({handleOnClick}) {
   const navigate = useNavigate();
   const goBackHistory = () => {
    navigate(-1)
-    
   }
   return (
     <Box

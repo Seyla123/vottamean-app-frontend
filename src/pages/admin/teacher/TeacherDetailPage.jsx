@@ -7,7 +7,6 @@ const clickEdit = () => {
 }
 const clickDetele = ()=>{
   console.log('delete');
-  
 }
 
 const teacher = {
@@ -22,7 +21,7 @@ const teacher = {
 }
 function TeacherDetailPage() {
   return (
-<FormComponent title={'Teacher Detail'} subTitle={'These are Teacher’s information'}>
+<FormComponent title={'Teacher Detail'} subTitle={"These are Teacher’s information"}>
   <CardComponent 
     title={"Teacher Information"} 
     imgUrl='r' 

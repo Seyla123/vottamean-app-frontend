@@ -22,10 +22,6 @@ function SchoolUpdatePage() {
         const { name, value } = e.target;
         setNewUser((prev) => ({ ...prev, [name]: value }));
     };
-    const onClickBack = () => {
-        console.log('back');
-
-    }
     const onClickNext = () => {
         console.log('submit');
 
@@ -100,7 +96,6 @@ function SchoolUpdatePage() {
                     />
                     {/* Button Container  */}
                     <ButtonContainer
-                        leftBtn={onClickBack}
                         rightBtn={onClickNext}
                         leftBtnTitle={'Cancel'}
                         rightBtnTitle={'Update'}

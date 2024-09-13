@@ -32,7 +32,6 @@ function SubjectCreatePage() {
                     </Stack>
                     {/* Button Container  */}
                     <ButtonContainer 
-                        leftBtn={onClickBack} 
                         rightBtn={onClickNext} 
                         leftBtnTitle={'Cancel'} 
                         rightBtnTitle={'Add subject'} 

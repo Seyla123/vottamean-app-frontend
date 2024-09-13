@@ -1,179 +1,114 @@
-import React from "react";
-import { lazy } from "react";
-import TestPage from "../pages/TestPage";
+// auth
+import LoginPage from "../pages/auth/LoginPage";
+import SignupPage from "../pages/auth/SignupPage";
+import PasswordForgotPage from "../pages/auth/PasswordForgotPage";
+import PasswordResetPage from "../pages/auth/PasswordResetPage";
+import PasswordChangePage from "../pages/auth/PasswordChangePage";
+import AccountVerifyPage from "../pages/auth/AccountVerifyPage";
+import AccountSuccessPage from "../pages/auth/AccountSuccessPage";
 
-// Lazy-loaded Pages
-const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
-const SignupPage = lazy(() => import("../pages/auth/SignupPage"));
-const PasswordForgotPage = lazy(
-    () => import("../pages/auth/PasswordForgotPage")
-);
-const PasswordResetPage = lazy(() => import("../pages/auth/PasswordResetPage"));
-const PasswordChangePage = lazy(
-    () => import("../pages/auth/PasswordChangePage")
-);
-const AccountVerifyPage = lazy(() => import("../pages/auth/AccountVerifyPage"));
-const AccountSuccessPage = lazy(
-    () => import("../pages/auth/AccountSuccessPage")
-);
+import NotFoundPage from "../pages/NotFoundPage";
 
-const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
-const LoadingPage = lazy(() => import("../pages/LoadingPage"));
+// admin
+import DashboardPage from "../pages/admin/dashboard/DashboardPage";
 
-const DashboardPage = lazy(
-    () => import("../pages/admin/dashboard/DashboardPage")
-);
+import SessionListPage from "../pages/admin/session/SessionListPage";
+import SessionDetailPage from "../pages/admin/session/SessionDetailPage";
+import SessionCreatePage from "../pages/admin/session/SessionCreatePage";
+import SessionUpdatePage from "../pages/admin/session/SessionUpdatePage";
 
-const SessionListPage = lazy(
-    () => import("../pages/admin/session/SessionListPage")
-);
-const SessionDetailPage = lazy(
-    () => import("../pages/admin/session/SessionDetailPage")
-);
-const SessionCreatePage = lazy(
-    () => import("../pages/admin/session/SessionCreatePage")
-);
-const SessionUpdatePage = lazy(
-    () => import("../pages/admin/session/SessionUpdatePage")
-);
+import StudentListPage from "../pages/admin/student/StudentListPage";
+import StudentDetailPage from "../pages/admin/student/StudentDetailPage";
+import StudentCreatePage from "../pages/admin/student/StudentCreatePage";
+import StudentUpdatePage from "../pages/admin/student/StudentUpdatePage";
 
-const StudentListPage = lazy(
-    () => import("../pages/admin/student/StudentListPage")
-);
-const StudentDetailPage = lazy(
-    () => import("../pages/admin/student/StudentDetailPage")
-);
-const StudentCreatePage = lazy(
-    () => import("../pages/admin/student/StudentCreatePage")
-);
-const StudentUpdatePage = lazy(
-    () => import("../pages/admin/student/StudentUpdatePage")
-);
+import SubjectListPage from "../pages/admin/subject/SubjectListPage";
+import SubjectDetailPage from "../pages/admin/subject/SubjectDetailPage";
+import SubjectCreatePage from "../pages/admin/subject/SubjectCreatePage";
+import SubjectUpdatePage from "../pages/admin/subject/SubjectUpdatePage";
 
-const SubjectListPage = lazy(
-    () => import("../pages/admin/subject/SubjectListPage")
-);
-const SubjectDetailPage = lazy(
-    () => import("../pages/admin/subject/SubjectDetailPage")
-);
-const SubjectCreatePage = lazy(
-    () => import("../pages/admin/subject/SubjectCreatePage")
-);
-const SubjectUpdatePage = lazy(
-    () => import("../pages/admin/subject/SubjectUpdatePage")
-);
+import ClassPeriodListPage from "../pages/admin/class-period/ClassPeriodListPage";
+import ClassPeriodDetailPage from "../pages/admin/class-period/ClassPeriodDetailPage";
+import ClassPeriodCreatePage from "../pages/admin/class-period/ClassPeriodCreatePage";
+import ClassPeriodUpdatePage from "../pages/admin/class-period/ClassPeriodUpdatePage";
 
-const ClassPeriodListPage = lazy(
-    () => import("../pages/admin/class-period/ClassPeriodListPage")
-);
-const ClassPeriodDetailPage = lazy(
-    () => import("../pages/admin/class-period/ClassPeriodDetailPage")
-);
-const ClassPeriodCreatePage = lazy(
-    () => import("../pages/admin/class-period/ClassPeriodCreatePage")
-);
-const ClassPeriodUpdatePage = lazy(
-    () => import("../pages/admin/class-period/ClassPeriodUpdatePage")
-);
+import TeacherListPage from "../pages/admin/teacher/TeacherListPage";
+import TeacherDetailPage from "../pages/admin/teacher/TeacherDetailPage";
+import TeacherCreatePage from "../pages/admin/teacher/TeacherCreatePage";
+import TeacherUpdatePage from "../pages/admin/teacher/TeacherUpdatePage";
 
-const TeacherListPage = lazy(
-    () => import("../pages/admin/teacher/TeacherListPage")
-);
-const TeacherDetailPage = lazy(
-    () => import("../pages/admin/teacher/TeacherDetailPage")
-);
-const TeacherCreatePage = lazy(
-    () => import("../pages/admin/teacher/TeacherCreatePage")
-);
-const TeacherUpdatePage = lazy(
-    () => import("../pages/admin/teacher/TeacherUpdatePage")
-);
+import ClassListPage from "../pages/admin/class/ClassListPage";
+import ClassDetailPage from "../pages/admin/class/ClassDetailPage";
+import ClassCreatePage from "../pages/admin/class/ClassCreatePage";
+import ClassUpdatePage from "../pages/admin/class/ClassUpdatePage";
 
-const ClassListPage = lazy(() => import("../pages/admin/class/ClassListPage"));
-const ClassDetailPage = lazy(
-    () => import("../pages/admin/class/ClassDetailPage")
-);
-const ClassCreatePage = lazy(
-    () => import("../pages/admin/class/ClassCreatePage")
-);
-const ClassUpdatePage = lazy(
-    () => import("../pages/admin/class/ClassUpdatePage")
-);
+import SchoolUpdatePage from "../pages/admin/setting/account/SchoolUpdatePage";
 
-const SchoolUpdatePage = lazy(
-    () => import("../pages/admin/setting/account/SchoolUpdatePage")
-);
+import AccountProfilePage from "../pages/admin/setting/account/AccountProfilePage";
 
-const AccountProfilePage = lazy(
-    () => import("../pages/admin/setting/account/AccountProfilePage")
-);
+import AttendanceReportPage from "../pages/admin/report/attendance/AttendanceReportPage";
+import AttendanceViewPage from "../pages/admin/report/attendance/AttendanceViewPage";
 
-const AttendanceReportPage = lazy(
-    () => import("../pages/admin/report/attendance/AttendanceReportPage")
-);
-const UserUpdatePage = lazy(() => import("../pages/admin/setting/account/UserUpdatePage"));
+import UserUpdatePage from "../pages/admin/setting/account/UserUpdatePage";
 
 // Teacher site 
+import TeacherAttendanceListPage from "../pages/teacherSite/teacherClass/TeacherAttendanceListPage";
+import TeacherClassPage from "../pages/teacherSite/teacherClass/TeacherClassPage";
+import TeacherAccountProfilePage from "../pages/teacherSite/settings/TeacherAccountProfilePage";
+import TeacherSessionPage from "../pages/teacherSite/session/TeacherSessionPage";
 
-const TeacherAttendanceListPage = lazy(() => import('../pages/teacherSite/teacherClass/TeacherAttendanceListPage'));
-const TeacherClassPage = lazy(() => import('../pages/teacherSite/teacherClass/TeacherClassPage'));
-const TeacherAccountProfilePage = lazy(() => import('../pages/teacherSite/settings/TeacherAccountProfilePage'));
-const TeacherSessionPage = lazy(() => import('../pages/teacherSite/session/TeacherSessionPage'));
+// Layout 
+import Layout from "../components/layout/Layout";
+import ProtectedRoutes from "./ProtectedRoutes";
 // Routes configuration
 const routesConfig = [
     {
-        path: "/test",
-        element: <LoadingPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/login",
-        element: <LoginPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/signup",
-        element: <SignupPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/forgot-password",
-        element: <PasswordForgotPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/reset-password",
-        element: <PasswordResetPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/change-password",
-        element: <PasswordChangePage />,
-        showSidebar: false,
-    },
-    {
-        path: "/verify-account",
-        element: <AccountVerifyPage />,
-        showSidebar: false,
-    },
-    {
-        path: "/success",
-        element: <AccountSuccessPage />,
-        showSidebar: false,
+        path: "/auth",
+        element: <Layout/>,
+        children: [
+            {
+                path: "login",
+                element: <LoginPage />,
+            },
+            {
+                path: "signup",
+                element: <SignupPage />,
+            },
+            {
+                path: "forgot-password",
+                element: <PasswordForgotPage />,
+            },
+            {
+                path: "reset-password",
+                element: <PasswordResetPage />,
+            },
+            {
+                path: "change-password",
+                element: <PasswordChangePage />,
+            },
+            {
+                path: "verify-account",
+                element: <AccountVerifyPage />,
+            },
+            {
+                path: "success",
+                element: <AccountSuccessPage />,
+            },
+        ]
     },
     {
         path: '/teacher',
-        teacherSidebar: true,
+        element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
         children: [
             {
                 path: 'classes',
                 children: [
                     {
-                        path: '',
+                        path: '',   
                         element: <TeacherClassPage />,
                     },
                     {
-                        path: 'attendace/:id',
+                        path: 'attendance/:id',
                         element: <TeacherAttendanceListPage />,
                     }
                 ]
@@ -196,6 +131,7 @@ const routesConfig = [
     {
         path: '/dashboard',
         showSidebar: true,
+        element:<ProtectedRoutes adminSite></ProtectedRoutes>,
         children: [
             {
                 path: "",
@@ -359,17 +295,32 @@ const routesConfig = [
                 children: [
                     {
                         path: "attendance",
-                        element: <AttendanceReportPage />,
-                    },
+                        children: [
+                            {
+                                path: "",
+                                element: <AttendanceReportPage />,
+                            },
+                            {
+                                path: ":id",
+                                element: <AttendanceViewPage />,
+                            },  
+                        ]
+                    }
                 ],
             },
         ],
     },
     {
         path: "*",
-        element: <NotFoundPage />,
-        showSidebar: false,
+        element: <Layout/>,
+        children: [
+            {
+                path: "",
+                element: <NotFoundPage />,
+            },
+        ]
     },
 ];
 
 export default routesConfig;
+

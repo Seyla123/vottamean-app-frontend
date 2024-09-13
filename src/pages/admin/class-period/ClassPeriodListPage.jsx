@@ -1,8 +1,10 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
+import {Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
+import { PlusIcon } from 'lucide-react';
 
 
 function ClassPeriodListPage() {
@@ -124,13 +126,20 @@ function ClassPeriodListPage() {
             title={'Class Period List'}
             subTitle={'There are 24 Class Periods'}
         >
+            {/* button add class periods container */}
+        <Stack direction="row" justifyContent="flex-end">
+            {/* add class periods button */}
+            <Link to="/dashboard/class-periods/create">
             <Button
+                size='large'
                 variant='contained'
-                sx={{ width: '170px', mb: 2, alignSelf: 'flex-end' }}
-                onClick={handleCreate}
+                color='primary'
+                startIcon={<PlusIcon size={20} />}
             >
-                ADD CLASS PERIOD
+                ADD PERIOD
             </Button>
+            </Link>
+        </Stack>
 
             <DataTable
                 rows={rows}

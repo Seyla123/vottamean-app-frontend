@@ -1,27 +1,22 @@
 import React, { useState } from 'react';
 import {
-    TextField,
     Button,
     Box,
-    MenuItem,
-    Hidden,
-    InputAdornment,
-    useMediaQuery,
-    Select,
-    FormControl,
+    Stack,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
-
+import FilterComponent from '../../../components/common/FilterComponent';
+import SearchComponent from '../../../components/common/SearchComponent';
+import { Link } from 'react-router-dom'
+import { PlusIcon } from 'lucide-react';
 const StudentListPage = () => {
     const navigate = useNavigate();
-    const [selectedPostId, setSelectedPostId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('');
+    console.log('searchTerm', searchTerm);
 
-    const isMobile = useMediaQuery('(max-width: 600px)');
     //Navigate to create page
     const handleCreate = () => {
         navigate(`/dashboard/students/create`);
@@ -30,6 +25,13 @@ const StudentListPage = () => {
 
     const handleChange = event => {
         setFilter(event.target.value);
+    };
+    const handleEdit = row => {
+        navigate(`/dashboard/students/update/${row.id}`);
+    };
+
+    const handleDelete = row => {
+        console.log('Delete row:', row);
     };
     // Static student data
     const columns = [
@@ -63,18 +65,15 @@ const StudentListPage = () => {
         // },
     ];
 
-    const handleEdit = row => {
-        navigate(`/dashboard/students/update/${row.id}`);
-    };
-
-    const handleDelete = row => {
-        console.log('Delete row:', row);
-    };
 
     const handleSelectedDelete = () => {
         console.log('Delete all');
     };
-
+    const classes = [
+        { value: '12Aaaaaaaaaaa12Aaaaaaaaaa', label: '12Aaaaaaaaaaa12Aaaaaaaaaaaaa' },
+        { value: '12B', label: '12B' },
+        { value: '12C', label: '12C' },
+    ];
     const hideColumns = ['name', 'phoneNumber'];
 
     return (
@@ -83,94 +82,42 @@ const StudentListPage = () => {
                 title={'Student Lists'}
                 subTitle={'There are 24 Students'}
             >
-                <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                    <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={handleCreate}
-                        sx={{
-                            width: isMobile ? '110px' : '140px',
-                            height: { xs: '38px', sm: '46px' },
-                            fontSize: isMobile ? '14px' : '16px',
-                            padding: isMobile ? '8px' : '10px',
-                        }}
-                    >
-                        ADD NEW
-                    </Button>
-                </Box>
+                {/* button add student container */}
+                <Stack direction="row" justifyContent="flex-end">
+                    {/* add student button */}
+                    <Link to="/dashboard/classes/create">
+                        <Button
+                            size='large'
+                            variant='contained'
+                            color='primary'
+                            startIcon={<PlusIcon size={20} />}
+                        >
+                            ADD STUDENT
+                        </Button>
+                    </Link>
+                </Stack>
+
+                {/* Container  */}
                 <Box sx={inputBoxStyles}>
-                    {/* Filter */}
-                    <Box
-                        sx={{
-                            width: 220,
-                            marginTop: '7px',
-                            display: 'flex',
-                            justifyContent: { xs: 'right', sm: 'left' },
-                            order: { xs: 2, sm: 1 },
-                        }}
-                    >
-                        <FormControl fullWidth>
-                            <Select
-                                id='demo-simple-select'
-                                value={filter}
-                                onChange={handleChange}
-                                displayEmpty
-                                renderValue={selected => {
-                                    if (selected.length === 0) {
-                                        return <em>Filter</em>;
-                                    }
-                                    return selected;
-                                }}
-                            >
-                                <MenuItem value={10}>Raksa</MenuItem>
-                                <MenuItem value={20}>Svieta</MenuItem>
-                                <MenuItem value={30}>Seiha</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    {/* Search  */}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: { xs: 'left', sm: 'right' },
-                            order: { xs: 1, sm: 2 },
-                            alignItems: 'center',
-                            gap: '24px',
-                            width: { xs: 1, sm: '540px' },
-                        }}
-                    >
-                        <TextField
+                    <Stack direction="row" justifyContent={'space-between'} width={'100%'} gap={2} >
+                        {/* Filter by class */}
+                        <FilterComponent
+                            onChange={handleChange}
+                            placeholder='By class'
+                            data={classes}
+                            value={filter}
+                            customStyles={{ minWidth: '100px', maxWidth: '150px' }}
+                        />
+
+                        {/* Search student */}
+                        <SearchComponent
+                            sx={{ width: '100%', maxWidth: '700px' }}
                             placeholder='Search'
-                            variant='outlined'
-                            margin='normal'
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            sx={{
-                                width: '100%',
-                                maxwidth: { xs: 1, sm: '540px' },
-                            }}
-                            InputProps={{
-                                endAdornment: isMobile ? (
-                                    <InputAdornment position='end'>
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ) : null,
-                            }}
+                            onClickIcon={() => console.log('click search icon')}
                         />
-                        <Hidden smDown>
-                            <Button
-                                variant='contained'
-                                color='primary'
-                                sx={{
-                                    width: '108px',
-                                    height: 42,
-                                    marginTop: '5px',
-                                }}
-                            >
-                                Search
-                            </Button>
-                        </Hidden>
-                    </Box>
+                    </Stack>
                 </Box>
                 {/* List Student*/}
                 <DataTable
@@ -196,17 +143,5 @@ const inputBoxStyles = {
     justifyContent: 'space-between',
     gap: { xs: 1, sm: 2 },
     alignItems: 'center',
-    width: '100%',
-    '& .MuiInputBase-root': {
-        height: '42px',
-    },
-    '& .MuiInputBase-input': {
-        padding: '8px 14px',
-        fontSize: '14px',
-    },
-    '& .MuiInputLabel-root': {
-        top: '-4px',
-        fontSize: '14px',
-        lineHeight: '1',
-    },
+    width: '100%'
 };
