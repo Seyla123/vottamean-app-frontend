@@ -50,14 +50,18 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
       setValue('firstName', formData.firstName);
       setValue('lastName', formData.lastName);
       setValue('gender', formData.gender);
-      setDob(formData.dob ? dayjs(formData.dob) : null); // Ensure dob is a Dayjs object or null
+      setDob(formData.dob ? dayjs(formData.dob) : null);
     }
   }, [formData, setValue]);
 
   const onSubmit = (data) => {
-    const updatedData = { ...data, gender, dob };
-    dispatch(updateFormData(updatedData)); // Update Redux with form data
-    nextStep(); // Navigate to the next step
+    const updatedData = {
+      ...data,
+      gender,
+      dob: dob ? dob.toISOString() : null,
+    };
+    dispatch(updateFormData(updatedData));
+    nextStep();
   };
 
   return (
