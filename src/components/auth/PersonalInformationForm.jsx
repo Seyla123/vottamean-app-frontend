@@ -24,7 +24,13 @@ const schema = yup.object().shape({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   gender: yup.string().required('Gender is required'),
-  dob: yup.date().required('Date of birth is required').nullable(),
+  dob: yup
+    .string()
+    .required('Date of birth is required')
+    .matches(
+      /^\d{4}-\d{2}-\d{2}$/,
+      'Date of birth must be in the format YYYY-MM-DD',
+    ),
 });
 
 const PersonalInformationForm = ({ nextStep, onClickBack }) => {
@@ -54,14 +60,18 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
     }
   }, [formData, setValue]);
 
+  // Handle form submission and format the date before sending
   const onSubmit = (data) => {
+    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : ''; // Format dob to 'YYYY-MM-DD'
+
     const updatedData = {
       ...data,
       gender,
-      dob: dob ? dob.toISOString() : null,
+      dob: formattedDob, // Ensure dob is formatted before submission
     };
-    dispatch(updateFormData(updatedData));
-    nextStep();
+
+    dispatch(updateFormData(updatedData)); // Dispatch updated data to Redux
+    nextStep(); // Proceed to the next step
   };
 
   return (
@@ -133,13 +143,18 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
             <Typography variant="body1">Date of Birth</Typography>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                value={dob} // Use dob state instead of value
-                onChange={(newValue) => setDob(newValue)} // Update the dob state
+                value={dob} // Use dob state
+                onChange={(newValue) => {
+                  setDob(newValue); // Update dob state
+                  setValue(
+                    'dob',
+                    newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
+                  ); // Set dob value in react-hook-form
+                }}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    error: !!errors.dob, // Match the validation field to `dob`
-                    helperText: errors.dob?.message,
+                    error: !!errors.dob,
                     placeholder: 'Date of Birth',
                   },
                 }}

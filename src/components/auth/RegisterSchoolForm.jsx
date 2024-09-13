@@ -19,45 +19,52 @@ const schema = yup.object().shape({
   schoolAddress: yup.string().required('School Address is required'),
 });
 
-const RegisterSchoolForm = ({ onClickBack, onSubmit }) => {
+const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form); // Fetch form data from Redux
+  const formData = useSelector((state) => state.form);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue, // Set form values programmatically
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: formData, // Set initial form values from Redux
+    defaultValues: formData,
   });
 
-  // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
-      setValue('schoolName', formData.schoolName);
-      setValue('schoolPhone', formData.schoolPhone);
-      setValue('schoolAddress', formData.schoolAddress);
+      setValue('schoolName', formData.school_name);
+      setValue('schoolPhone', formData.school_phone_number);
+      setValue('schoolAddress', formData.school_address);
     }
   }, [formData, setValue]);
 
-  // Handle form submission
-  const onSubmitLocal = (data) => {
-    dispatch(updateFormData(data)); // Update Redux state with the form data
-    onSubmit(); // Call parent's onSubmit to handle the final submission
+  const onSubmit = (data) => {
+    const formattedData = {
+      ...formData,
+      school_name: data.school_name,
+      school_phone_number: data.school_phone_number,
+      school_address: data.school_address,
+    };
+
+    dispatch(updateFormData(formattedData)); // Update Redux with form data
+
+    if (onFormChange) {
+      // Ensure onFormChange exists before calling it
+      onFormChange(formattedData);
+    }
   };
 
   return (
     <Box sx={containerStyles}>
-      {/* Header Title */}
       <GoBackButton handleOnClick={onClickBack} />
       <HeaderTitle
         title="Introduce Your School to WaveTrack"
         subTitle="Provide the information to begin your journey."
         center
       >
-        {/* Image Container */}
         <Box
           component="img"
           src={schoolIcon}
@@ -65,10 +72,8 @@ const RegisterSchoolForm = ({ onClickBack, onSubmit }) => {
         />
       </HeaderTitle>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmitLocal)} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box sx={formContainerStyles}>
-          {/* School Name Input */}
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">School&apos;s Name</Typography>
             <TextField
@@ -78,8 +83,6 @@ const RegisterSchoolForm = ({ onClickBack, onSubmit }) => {
               helperText={errors.schoolName?.message}
             />
           </Box>
-
-          {/* Phone Number Input */}
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">School Phone Number</Typography>
             <TextField
@@ -89,8 +92,6 @@ const RegisterSchoolForm = ({ onClickBack, onSubmit }) => {
               helperText={errors.schoolPhone?.message}
             />
           </Box>
-
-          {/* schoolAddress Input */}
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">School Address</Typography>
             <TextField
@@ -102,8 +103,6 @@ const RegisterSchoolForm = ({ onClickBack, onSubmit }) => {
               helperText={errors.schoolAddress?.message}
             />
           </Box>
-
-          {/* Submit Button */}
           <Button type="submit" variant="contained" color="primary">
             Submit
           </Button>

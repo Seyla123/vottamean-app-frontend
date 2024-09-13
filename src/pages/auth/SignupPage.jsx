@@ -23,7 +23,7 @@ const steps = [
   'School information',
 ];
 
-function SignupPage() {
+function SignupPage({ formattedData }) {
   // Redux hooks
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
@@ -49,24 +49,28 @@ function SignupPage() {
   // Function to handle form submission
   const handleSubmit = async () => {
     try {
-      await signup(formData);
-      console.log('Signup successful');
+      const formattedData = {
+        email: formData.email,
+        password: formData.password,
+        passwordConfirm: formData.passwordConfirm,
+        address: formData.address,
+        dob: formData.dob,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        gender: formData.gender,
+        phone_number: formData.phone_number,
+        school_name: formData.school_name,
+        school_address: formData.school_address,
+        school_phone_number: formData.school_phone_number,
+      };
+
+      const response = await signup(formattedData).unwrap();
+      console.log('Signup successful:', response);
+      // Redirect or show a success message
     } catch (err) {
-      console.error('Signup failed', err);
+      console.error('Signup failed:', err);
     }
   };
-
-  // Render the button with conditional behavior
-  const renderButton = (btnName) => (
-    <Button
-      onClick={btnName ? handleSubmit : handleNext}
-      sx={{ padding: { xs: 1, md: 2 } }}
-      variant="contained"
-      disabled={isLoading}
-    >
-      {isLoading ? 'Submitting...' : btnName || 'CONTINUE'}
-    </Button>
-  );
 
   // Array of form components corresponding to each step
   const stepForms = [

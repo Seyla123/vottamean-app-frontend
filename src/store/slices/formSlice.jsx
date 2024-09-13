@@ -3,17 +3,16 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   email: '',
   password: '',
-  confirmPassword: '',
-  firstName: '',
-  lastName: '',
-  gender: '',
-  dob: null,
-  phoneNumber: '',
+  passwordConfirm: '',
   address: '',
-  schoolName: '',
-  schoolEmail: '',
-  schoolPhone: '',
-  schoolAddress: '',
+  dob: '',
+  first_name: '',
+  last_name: '',
+  gender: '',
+  phone_number: '',
+  school_name: '',
+  school_address: '',
+  school_phone_number: '',
 };
 
 export const formSlice = createSlice({
