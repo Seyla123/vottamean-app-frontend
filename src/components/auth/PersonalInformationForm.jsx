@@ -1,88 +1,176 @@
-import { useState } from 'react';
-import HeaderTitle from './HeaderTitle'
-import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import {
+  Box,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  Button,
+} from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFormData } from '../../store/slices/formSlice';
 import GoBackButton from '../common/GoBackButton';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import HeaderTitle from './HeaderTitle';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-function PersonalInformationForm({ onClickBack, children }) {
-    const [gender, setGender] = useState('');
-    const [value, setValue] = useState(null);
+// Yup validation schema
+const schema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  gender: yup.string().required('Gender is required'),
+  dob: yup.date().required('Date of birth is required').nullable(),
+});
 
-    const handleChange = (e) => {
-        setGender(e.target.value);
-    };
-    return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
-            {/* header title */}
+const PersonalInformationForm = ({ nextStep, onClickBack }) => {
+  const dispatch = useDispatch();
+  const formData = useSelector((state) => state.form); // Get form data from Redux
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
-                <GoBackButton handleOnClick={onClickBack} />
-                <HeaderTitle
-                    title={"Personal information"}
-                    subTitle={"Input your information"}
-                />
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: formData, // Set initial form values from Redux
+  });
+
+  const [gender, setGender] = useState(formData.gender || '');
+  const [dob, setDob] = useState(formData.dob || null);
+
+  // Pre-fill form data when component mounts
+  useEffect(() => {
+    if (formData) {
+      setValue('firstName', formData.firstName);
+      setValue('lastName', formData.lastName);
+      setValue('gender', formData.gender);
+      setValue('dob', formData.dob);
+    }
+  }, [formData, setValue]);
+
+  const onSubmit = (data) => {
+    const updatedData = { ...data, gender, dob };
+    dispatch(updateFormData(updatedData)); // Update Redux with form data
+    nextStep(); // Navigate to the next step
+  };
+
+  return (
+    <Box sx={containerStyles}>
+      {/* Go Back and Header Title */}
+      <GoBackButton handleOnClick={onClickBack} />
+      <HeaderTitle
+        title="Personal Information"
+        subTitle="Input your information"
+      />
+
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box sx={formContainerStyles}>
+          {/* Name Inputs */}
+          <Box sx={{ display: 'flex', gap: 1.5 }}>
+            <Box sx={inputContainerStyles} flexGrow={1}>
+              <Typography variant="body1">First name</Typography>
+              <TextField
+                placeholder="First name"
+                fullWidth
+                {...register('firstName')}
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
+              />
             </Box>
+            <Box sx={inputContainerStyles} flexGrow={1}>
+              <Typography variant="body1">Last name</Typography>
+              <TextField
+                placeholder="Last name"
+                fullWidth
+                {...register('lastName')}
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message}
+              />
+            </Box>
+          </Box>
 
-            {/* form container */}
-            <Box
-                sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}
+          {/* Gender Select */}
+          <Box sx={inputContainerStyles}>
+            <Typography variant="body1">Gender</Typography>
+            <Select
+              fullWidth
+              value={gender} // Keep this as the state value
+              onChange={(e) => {
+                setGender(e.target.value); // Update gender state
+                setValue('gender', e.target.value); // Set form value for react-hook-form
+              }}
+              displayEmpty
+              renderValue={(selected) => {
+                if (!selected) {
+                  return <Box sx={{ color: '#B5B5B5' }}>Select gender</Box>;
+                }
+                return selected;
+              }}
+              error={!!errors.gender}
             >
-                {/* name input container */}
-                <Box sx={{ display: "flex", gap: 1.5 }}>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+            <Typography variant="body2" color="error">
+              {errors.gender?.message}
+            </Typography>
+          </Box>
 
-                    {/* first name input */}
-                    <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1} >
-                        <Typography variant="body1">First name</Typography>
-                        <TextField placeholder="first name" fullWidth />
-                    </Box>
-                    {/* last name input */}
-                    <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1}>
-                        <Typography variant="body1">Last name</Typography>
-                        <TextField placeholder="last name" fullWidth />
-                    </Box>
-                </Box>
-
-                {/* Gender selector */}
-                <Box display={"flex"} flexDirection={"column"} gap={0.5}>
-                    <Typography>Gender</Typography>
-                    <Select fullWidth
-                        value={gender}
-                        onChange={handleChange}
-                        displayEmpty
-                        renderValue={(selected) => {
-                            if (!selected) {
-                                return <Box component="p" variant="body2" sx={{ color: '#B5B5B5' }}>gender</Box>;
-                            }
-                            return selected;
-                        }}
-                    >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                    </Select>
-                </Box>
-                {/* Date picker */}
-                <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1} sx={{ width: '100%' }}>
-            <Typography>Date</Typography>
+          {/* Date of Birth Picker */}
+          <Box sx={inputContainerStyles}>
+            <Typography variant="body1">Date of Birth</Typography>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']} sx={{ width: '100%' }}>
-                    <DatePicker
-                        fullWidth
-                        placeholder="Date of Birth"
-                        value={value}
-                        onChange={(newValue) => setValue(newValue)}
-                        sx={{ width: '100%' }} // Ensure the DatePicker also has full width
-                    />
-                </DemoContainer>
+              <DatePicker
+                value={dob} // Use dob state instead of value
+                onChange={(newValue) => setDob(newValue)} // Update the dob state
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.dob, // Match the validation field to `dob`
+                    helperText: errors.dob?.message,
+                    placeholder: 'Date of Birth',
+                  },
+                }}
+              />
             </LocalizationProvider>
-        </Box>
-                {children}
-            </Box>
+            <Typography variant="body2" color="error">
+              {errors.dob?.message}
+            </Typography>
+          </Box>
 
+          {/* Submit Button */}
+          <Button type="submit" variant="contained" color="primary">
+            Continue
+          </Button>
         </Box>
-    )
-}
+      </form>
+    </Box>
+  );
+};
 
-export default PersonalInformationForm
+export default PersonalInformationForm;
+
+const containerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 3,
+};
+
+const formContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: { xs: 3, md: 4 },
+};
+
+const inputContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 0.5,
+};
