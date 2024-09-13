@@ -1,10 +1,17 @@
+// React and third-party libraries
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+
+// Material UI components
 import { Box, Typography, TextField, Button, Checkbox } from '@mui/material';
+
+// Custom components
 import HeaderTitle from './HeaderTitle';
 import { Link } from 'react-router-dom';
+
+// Redux hooks and actions
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
 
@@ -18,41 +25,42 @@ const schema = yup.object().shape({
     .string()
     .min(8, 'Password must be at least 8 characters')
     .required('Password is required'),
-  confirmPassword: yup
+  passwordConfirm: yup
     .string()
     .oneOf([yup.ref('password'), null], 'Passwords must match')
     .required('Confirm Password is required'),
 });
 
 const GetStartSignUp = ({ nextStep }) => {
+  // 1. Initialize dispatch for updating Redux store
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form); // Fetch form data from Redux
+  // 2. Get form data from Redux store
+  const formData = useSelector((state) => state.form);
 
-  // Initialize useForm with yup validation schema
+  // 3. Initialize useForm with validation schema
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue, // Set form values programmatically
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: formData, // Set initial form values from Redux
+    defaultValues: formData,
   });
 
-  // Pre-fill form data when component mounts
-  // This ensures that when the user navigates back, the form fields remain filled.
+  // 4. Pre-fill form fields when component mounts
   useEffect(() => {
     if (formData) {
       setValue('email', formData.email);
       setValue('password', formData.password);
-      setValue('confirmPassword', formData.confirmPassword);
+      setValue('passwordConfirm', formData.passwordConfirm);
     }
   }, [formData, setValue]);
 
-  // Handle form submission
+  // 5. Handle form submission
   const onSubmit = (data) => {
-    dispatch(updateFormData(data)); // Update Redux state with the form data
-    nextStep(); // Navigate to the next step
+    dispatch(updateFormData(data)); // Update Redux state with form data
+    nextStep(); // Proceed to the next step
   };
 
   return (
@@ -63,7 +71,7 @@ const GetStartSignUp = ({ nextStep }) => {
       {/* Form Container */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box sx={formContainerStyles}>
-          {/* Email Input Container */}
+          {/* Email Input */}
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">Email</Typography>
             <TextField
@@ -75,7 +83,7 @@ const GetStartSignUp = ({ nextStep }) => {
             />
           </Box>
 
-          {/* Password Input Container */}
+          {/* Password Input */}
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">Password</Typography>
             <TextField
@@ -87,26 +95,26 @@ const GetStartSignUp = ({ nextStep }) => {
             />
           </Box>
 
-          {/* Confirm Password Input Container */}
+          {/* Confirm Password Input */}
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">Confirm Password</Typography>
             <TextField
               placeholder="confirm password"
               type="password"
-              {...register('confirmPassword')}
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword?.message}
+              {...register('passwordConfirm')}
+              error={!!errors.passwordConfirm}
+              helperText={errors.passwordConfirm?.message}
             />
           </Box>
         </Box>
 
         {/* Button Container */}
         <Box sx={buttonContainerStyles}>
-          {/* Checkbox */}
+          {/* Terms and Conditions Checkbox */}
           <Box sx={checkboxContainerStyles}>
             <Checkbox
               color="default"
-              inputProps={{ 'aria-label': 'primary checkbox' }}
+              inputProps={{ 'aria-label': 'agree to terms' }}
             />
             <Typography variant="body2">
               By signing up, I agree with
@@ -122,6 +130,7 @@ const GetStartSignUp = ({ nextStep }) => {
             Sign Up
           </Button>
 
+          {/* Login Link */}
           <Typography variant="body1">
             Already have an account?
             <Link to={'/auth/login'}>
@@ -139,6 +148,7 @@ const GetStartSignUp = ({ nextStep }) => {
 
 export default GetStartSignUp;
 
+// Styles for the component
 const containerStyles = {
   gap: 3,
   justifyContent: 'center',

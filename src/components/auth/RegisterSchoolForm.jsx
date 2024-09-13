@@ -11,15 +11,15 @@ import schoolIcon from '../../assets/icon/schoolIcon.png';
 
 // Yup validation schema
 const schema = yup.object().shape({
-  schoolName: yup.string().required('School name is required'),
-  schoolPhone: yup
+  school_name: yup.string().required('School name is required'),
+  school_phone_number: yup
     .string()
     .required('Phone number is required')
     .matches(/^[0-9]+$/, 'Phone number must be digits only'),
-  schoolAddress: yup.string().required('School Address is required'),
+  school_address: yup.string().required('School Address is required'),
 });
 
-const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
+const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
@@ -35,18 +35,18 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
 
   useEffect(() => {
     if (formData) {
-      setValue('schoolName', formData.school_name);
-      setValue('schoolPhone', formData.school_phone_number);
-      setValue('schoolAddress', formData.school_address);
+      setValue('school_name', formData.school_name);
+      setValue('school_phone_number', formData.school_phone_number);
+      setValue('school_address', formData.school_address);
     }
   }, [formData, setValue]);
 
-  const onSubmit = (data) => {
+  const handleFormSubmit = (data) => {
     const formattedData = {
       ...formData,
-      school_name: data.schoolName,
-      school_phone_number: data.schoolPhone,
-      school_address: data.schoolAddress,
+      school_name: data.school_name,
+      school_phone_number: data.school_phone_number,
+      school_address: data.school_address,
     };
 
     dispatch(updateFormData(formattedData)); // Update Redux with form data
@@ -54,6 +54,11 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
     if (onFormChange) {
       // Ensure onFormChange exists before calling it
       onFormChange(formattedData);
+    }
+
+    // Call parent onSubmit (to finalize the signup)
+    if (onSubmit) {
+      onSubmit(); // Triggers the final API call from SignupPage
     }
   };
 
@@ -72,24 +77,24 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
         />
       </HeaderTitle>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
         <Box sx={formContainerStyles}>
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">School&apos;s Name</Typography>
             <TextField
               placeholder="School's name"
-              {...register('schoolName')}
-              error={!!errors.schoolName}
-              helperText={errors.schoolName?.message}
+              {...register('school_name')}
+              error={!!errors.school_name}
+              helperText={errors.school_name?.message}
             />
           </Box>
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">School Phone Number</Typography>
             <TextField
               placeholder="School Phone number"
-              {...register('schoolPhone')}
-              error={!!errors.schoolPhone}
-              helperText={errors.schoolPhone?.message}
+              {...register('school_phone_number')}
+              error={!!errors.school_phone_number}
+              helperText={errors.school_phone_number?.message}
             />
           </Box>
           <Box sx={inputContainerStyles}>
@@ -98,13 +103,13 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
               multiline
               minRows={5}
               placeholder="Phnom Penh, Street 210, ..."
-              {...register('schoolAddress')}
-              error={!!errors.schoolAddress}
-              helperText={errors.schoolAddress?.message}
+              {...register('school_address')}
+              error={!!errors.school_address}
+              helperText={errors.school_address?.message}
             />
           </Box>
           <Button type="submit" variant="contained" color="primary">
-            Submit
+            Start Now
           </Button>
         </Box>
       </form>

@@ -1,7 +1,11 @@
+// React and third-party libraries
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import dayjs from 'dayjs';
+
+// Material UI components
 import {
   Box,
   TextField,
@@ -10,19 +14,24 @@ import {
   MenuItem,
   Button,
 } from '@mui/material';
+
+// Redux hooks and actions
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
+
+// Custom components
 import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
+
+// Date picker components from MUI X
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
 
 // Yup validation schema
 const schema = yup.object().shape({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
   gender: yup.string().required('Gender is required'),
   dob: yup
     .string()
@@ -34,9 +43,11 @@ const schema = yup.object().shape({
 });
 
 const PersonalInformationForm = ({ nextStep, onClickBack }) => {
+  // Initialize dispatch and form data from Redux
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form); // Get form data from Redux
+  const formData = useSelector((state) => state.form);
 
+  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
@@ -44,30 +55,31 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
     setValue,
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: formData, // Set initial form values from Redux
+    defaultValues: formData,
   });
 
+  // Manage gender and date of birth state
   const [gender, setGender] = useState(formData.gender || '');
   const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
 
-  // Pre-fill form data when component mounts
+  // Pre-fill form fields when component mounts
   useEffect(() => {
     if (formData) {
-      setValue('firstName', formData.firstName);
-      setValue('lastName', formData.lastName);
+      setValue('first_name', formData.first_name);
+      setValue('last_name', formData.last_name);
       setValue('gender', formData.gender);
       setDob(formData.dob ? dayjs(formData.dob) : null);
     }
   }, [formData, setValue]);
 
-  // Handle form submission and format the date before sending
+  // Handle form submission
   const onSubmit = (data) => {
-    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : ''; // Format dob to 'YYYY-MM-DD'
+    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
 
     const updatedData = {
       ...data,
       gender,
-      dob: formattedDob, // Ensure dob is formatted before submission
+      dob: formattedDob,
     };
 
     dispatch(updateFormData(updatedData)); // Dispatch updated data to Redux
@@ -76,7 +88,7 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
 
   return (
     <Box sx={containerStyles}>
-      {/* Go Back and Header Title */}
+      {/* Go Back Button and Header Title */}
       <GoBackButton handleOnClick={onClickBack} />
       <HeaderTitle
         title="Personal Information"
@@ -93,9 +105,9 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
               <TextField
                 placeholder="First name"
                 fullWidth
-                {...register('firstName')}
-                error={!!errors.firstName}
-                helperText={errors.firstName?.message}
+                {...register('first_name')}
+                error={!!errors.first_name}
+                helperText={errors.first_name?.message}
               />
             </Box>
             <Box sx={inputContainerStyles} flexGrow={1}>
@@ -103,9 +115,9 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
               <TextField
                 placeholder="Last name"
                 fullWidth
-                {...register('lastName')}
-                error={!!errors.lastName}
-                helperText={errors.lastName?.message}
+                {...register('last_name')}
+                error={!!errors.last_name}
+                helperText={errors.last_name?.message}
               />
             </Box>
           </Box>
@@ -115,10 +127,10 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
             <Typography variant="body1">Gender</Typography>
             <Select
               fullWidth
-              value={gender} // Keep this as the state value
+              value={gender}
               onChange={(e) => {
-                setGender(e.target.value); // Update gender state
-                setValue('gender', e.target.value); // Set form value for react-hook-form
+                setGender(e.target.value);
+                setValue('gender', e.target.value);
               }}
               displayEmpty
               renderValue={(selected) => {
@@ -143,13 +155,13 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
             <Typography variant="body1">Date of Birth</Typography>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                value={dob} // Use dob state
+                value={dob}
                 onChange={(newValue) => {
-                  setDob(newValue); // Update dob state
+                  setDob(newValue);
                   setValue(
                     'dob',
                     newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
-                  ); // Set dob value in react-hook-form
+                  );
                 }}
                 slotProps={{
                   textField: {
@@ -177,6 +189,7 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
 
 export default PersonalInformationForm;
 
+// Styles for the component
 const containerStyles = {
   display: 'flex',
   flexDirection: 'column',

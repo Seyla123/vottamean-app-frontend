@@ -10,7 +10,7 @@ import HeaderTitle from './HeaderTitle';
 
 // Yup validation schema
 const schema = yup.object().shape({
-  phoneNumber: yup
+  phone_number: yup
     .string()
     .required('Phone number is required')
     .matches(/^[0-9]+$/, 'Phone number must be digits only'),
@@ -34,7 +34,7 @@ const ContactInformationForm = ({ nextStep, onClickBack }) => {
   // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
-      setValue('phoneNumber', formData.phone_number);
+      setValue('phone_number', formData.phone_number);
       setValue('address', formData.address);
     }
   }, [formData, setValue]);
@@ -62,9 +62,9 @@ const ContactInformationForm = ({ nextStep, onClickBack }) => {
             <Typography variant="body1">Phone Number</Typography>
             <TextField
               placeholder="Phone number"
-              {...register('phoneNumber')}
-              error={!!errors.phoneNumber}
-              helperText={errors.phoneNumber?.message}
+              {...register('phone_number')}
+              error={!!errors.phone_number}
+              helperText={errors.phone_number?.message}
             />
           </Box>
 
