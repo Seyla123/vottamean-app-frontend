@@ -44,9 +44,9 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange }) => {
   const onSubmit = (data) => {
     const formattedData = {
       ...formData,
-      school_name: data.school_name,
-      school_phone_number: data.school_phone_number,
-      school_address: data.school_address,
+      school_name: data.schoolName,
+      school_phone_number: data.schoolPhone,
+      school_address: data.schoolAddress,
     };
 
     dispatch(updateFormData(formattedData)); // Update Redux with form data
