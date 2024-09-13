@@ -87,10 +87,8 @@ function SignupPage() {
     />,
     <RegisterSchoolForm
       onClickBack={handleBack}
-      onFormChange={handleFormChange}
-    >
-      {renderButton('Start Now')}
-    </RegisterSchoolForm>,
+      onSubmit={handleSubmit} // Final submit step
+    />,
   ];
 
   return (

@@ -19,7 +19,7 @@ const schema = yup.object().shape({
   schoolAddress: yup.string().required('School Address is required'),
 });
 
-const RegisterSchoolForm = ({ onClickBack }) => {
+const RegisterSchoolForm = ({ onClickBack, onSubmit }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form); // Fetch form data from Redux
 
@@ -43,8 +43,9 @@ const RegisterSchoolForm = ({ onClickBack }) => {
   }, [formData, setValue]);
 
   // Handle form submission
-  const onSubmit = (data) => {
+  const onSubmitLocal = (data) => {
     dispatch(updateFormData(data)); // Update Redux state with the form data
+    onSubmit(); // Call parent's onSubmit to handle the final submission
   };
 
   return (
@@ -65,7 +66,7 @@ const RegisterSchoolForm = ({ onClickBack }) => {
       </HeaderTitle>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={handleSubmit(onSubmitLocal)} noValidate>
         <Box sx={formContainerStyles}>
           {/* School Name Input */}
           <Box sx={inputContainerStyles}>
