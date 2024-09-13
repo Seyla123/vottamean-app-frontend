@@ -17,6 +17,7 @@ import HeaderTitle from './HeaderTitle';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 // Yup validation schema
 const schema = yup.object().shape({
@@ -41,7 +42,7 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
   });
 
   const [gender, setGender] = useState(formData.gender || '');
-  const [dob, setDob] = useState(formData.dob || null);
+  const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
 
   // Pre-fill form data when component mounts
   useEffect(() => {
@@ -49,7 +50,7 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
       setValue('firstName', formData.firstName);
       setValue('lastName', formData.lastName);
       setValue('gender', formData.gender);
-      setValue('dob', formData.dob);
+      setDob(formData.dob ? dayjs(formData.dob) : null); // Ensure dob is a Dayjs object or null
     }
   }, [formData, setValue]);
 

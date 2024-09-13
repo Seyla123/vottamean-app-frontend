@@ -12,14 +12,14 @@ import schoolIcon from '../../assets/icon/schoolIcon.png';
 // Yup validation schema
 const schema = yup.object().shape({
   schoolName: yup.string().required('School name is required'),
-  phoneNumber: yup
+  schoolPhone: yup
     .string()
     .required('Phone number is required')
     .matches(/^[0-9]+$/, 'Phone number must be digits only'),
-  address: yup.string().required('Address is required'),
+  schoolAddress: yup.string().required('School Address is required'),
 });
 
-const RegisterSchoolForm = ({ nextStep, onClickBack }) => {
+const RegisterSchoolForm = ({ onClickBack }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form); // Fetch form data from Redux
 
@@ -37,15 +37,14 @@ const RegisterSchoolForm = ({ nextStep, onClickBack }) => {
   useEffect(() => {
     if (formData) {
       setValue('schoolName', formData.schoolName);
-      setValue('phoneNumber', formData.phoneNumber);
-      setValue('address', formData.address);
+      setValue('schoolPhone', formData.schoolPhone);
+      setValue('schoolAddress', formData.schoolAddress);
     }
   }, [formData, setValue]);
 
   // Handle form submission
   const onSubmit = (data) => {
     dispatch(updateFormData(data)); // Update Redux state with the form data
-    nextStep(); // Navigate to the next step
   };
 
   return (
@@ -81,25 +80,25 @@ const RegisterSchoolForm = ({ nextStep, onClickBack }) => {
 
           {/* Phone Number Input */}
           <Box sx={inputContainerStyles}>
-            <Typography variant="body1">Phone Number</Typography>
+            <Typography variant="body1">School Phone Number</Typography>
             <TextField
-              placeholder="Phone number"
-              {...register('phoneNumber')}
-              error={!!errors.phoneNumber}
-              helperText={errors.phoneNumber?.message}
+              placeholder="School Phone number"
+              {...register('schoolPhone')}
+              error={!!errors.schoolPhone}
+              helperText={errors.schoolPhone?.message}
             />
           </Box>
 
-          {/* Address Input */}
+          {/* schoolAddress Input */}
           <Box sx={inputContainerStyles}>
-            <Typography variant="body1">Address</Typography>
+            <Typography variant="body1">School Address</Typography>
             <TextField
               multiline
               minRows={5}
               placeholder="Phnom Penh, Street 210, ..."
-              {...register('address')}
-              error={!!errors.address}
-              helperText={errors.address?.message}
+              {...register('schoolAddress')}
+              error={!!errors.schoolAddress}
+              helperText={errors.schoolAddress?.message}
             />
           </Box>
 

@@ -44,10 +44,7 @@ function SignupPage() {
   const handleBack = () => setStepActive((prev) => prev - 1);
 
   // Function to proceed to the next step
-  const handleNext = () => {
-    // You can add validation here if necessary
-    setStepActive((prev) => prev + 1);
-  };
+  const handleNext = () => setStepActive((prev) => prev + 1);
 
   // Function to handle form submission
   const handleSubmit = async () => {
@@ -81,10 +78,12 @@ function SignupPage() {
     <PersonalInformationForm
       onClickBack={handleBack}
       onFormChange={handleFormChange}
+      nextStep={handleNext}
     />,
     <ContactInformationForm
       onClickBack={handleBack}
       onFormChange={handleFormChange}
+      nextStep={handleNext}
     />,
     <RegisterSchoolForm
       onClickBack={handleBack}
