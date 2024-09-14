@@ -16,11 +16,13 @@ import { Box, Container, Step, Stepper, StepLabel } from '@mui/material';
 // Custom component for card layout
 import AuthContainerCard from '../../components/auth/AuthContainerCard';
 
-// Components corresponding to each step
-// Step 1: Account details form
-// Step 2: Personal info form
-// Step 3: Contact info form
-// Step 4: School info form
+/**
+ * Components corresponding to each step
+ * Step 1: @param Account details form
+ * Step 2: @param Personal info form
+ * Step 3: @param Contact info form
+ * Step 4: @param School info form
+ */
 import GetStartSignUpForm from '../../components/auth/GetStartSignUpForm';
 import PersonalInformationForm from '../../components/auth/PersonalInformationForm';
 import ContactInformationForm from '../../components/auth/ContactInformationForm';
