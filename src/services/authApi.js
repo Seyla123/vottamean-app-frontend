@@ -16,7 +16,7 @@ export const authApi = baseApi.injectEndpoints({
     verifyEmail: builder.mutation({
       query: ({ verificationToken, tempToken }) => ({
         url: `auth/verify-email/${verificationToken}?token=${tempToken}`,
-        method: 'POST',
+        method: 'GET',
       }),
       invalidatesTags: ['Auth'],
     }),

@@ -20,7 +20,7 @@ function VerifyEmailPage() {
   // Perform email verification on component mount
   useEffect(() => {
     console.log('verificationToken:', verificationToken);
-    console.log('tempToken:', tempToken); // Add this log for debugging
+    console.log('tempToken:', tempToken);
 
     if (verificationToken && tempToken) {
       verifyEmail({ verificationToken, tempToken })
