@@ -7,6 +7,9 @@ import ShortListTable from "../../../components/common/ShortListTable";
 import { shadow } from "../../../styles/global";
 import StaticTable from "../../../components/common/StaticTable";
 
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 const teacherArr = [
     {
         id: 1,
@@ -80,6 +83,7 @@ const statusCard = [
 function dashboard() {
     return (
         <FormComponent title="Dashboard Overview" subTitle="All Data">
+            <Box>Input</Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} lg={8}>
                     <GreetingCard />
