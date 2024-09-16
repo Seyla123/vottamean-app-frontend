@@ -1,65 +1,65 @@
 // auth
-import LoginPage from "../pages/auth/LoginPage";
-import SignupPage from "../pages/auth/SignupPage";
-import PasswordForgotPage from "../pages/auth/PasswordForgotPage";
-import PasswordResetPage from "../pages/auth/PasswordResetPage";
-import PasswordChangePage from "../pages/auth/PasswordChangePage";
-import AccountVerifyPage from "../pages/auth/AccountVerifyPage";
-import AccountSuccessPage from "../pages/auth/AccountSuccessPage";
+import LoginPage from '../pages/auth/LoginPage';
+import SignupPage from '../pages/auth/SignupPage';
+import PasswordForgotPage from '../pages/auth/PasswordForgotPage';
+import PasswordResetPage from '../pages/auth/PasswordResetPage';
+import PasswordChangePage from '../pages/auth/PasswordChangePage';
+import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
+import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 
-import NotFoundPage from "../pages/NotFoundPage";
+import NotFoundPage from '../pages/NotFoundPage';
 
 // admin
-import DashboardPage from "../pages/admin/dashboard/DashboardPage";
+import DashboardPage from '../pages/admin/dashboard/DashboardPage';
 
-import SessionListPage from "../pages/admin/session/SessionListPage";
-import SessionDetailPage from "../pages/admin/session/SessionDetailPage";
-import SessionCreatePage from "../pages/admin/session/SessionCreatePage";
-import SessionUpdatePage from "../pages/admin/session/SessionUpdatePage";
+import SessionListPage from '../pages/admin/session/SessionListPage';
+import SessionDetailPage from '../pages/admin/session/SessionDetailPage';
+import SessionCreatePage from '../pages/admin/session/SessionCreatePage';
+import SessionUpdatePage from '../pages/admin/session/SessionUpdatePage';
 
-import StudentListPage from "../pages/admin/student/StudentListPage";
-import StudentDetailPage from "../pages/admin/student/StudentDetailPage";
-import StudentCreatePage from "../pages/admin/student/StudentCreatePage";
-import StudentUpdatePage from "../pages/admin/student/StudentUpdatePage";
+import StudentListPage from '../pages/admin/student/StudentListPage';
+import StudentDetailPage from '../pages/admin/student/StudentDetailPage';
+import StudentCreatePage from '../pages/admin/student/StudentCreatePage';
+import StudentUpdatePage from '../pages/admin/student/StudentUpdatePage';
 
-import SubjectListPage from "../pages/admin/subject/SubjectListPage";
-import SubjectDetailPage from "../pages/admin/subject/SubjectDetailPage";
-import SubjectCreatePage from "../pages/admin/subject/SubjectCreatePage";
-import SubjectUpdatePage from "../pages/admin/subject/SubjectUpdatePage";
+import SubjectListPage from '../pages/admin/subject/SubjectListPage';
+import SubjectDetailPage from '../pages/admin/subject/SubjectDetailPage';
+import SubjectCreatePage from '../pages/admin/subject/SubjectCreatePage';
+import SubjectUpdatePage from '../pages/admin/subject/SubjectUpdatePage';
 
-import ClassPeriodListPage from "../pages/admin/class-period/ClassPeriodListPage";
-import ClassPeriodDetailPage from "../pages/admin/class-period/ClassPeriodDetailPage";
-import ClassPeriodCreatePage from "../pages/admin/class-period/ClassPeriodCreatePage";
-import ClassPeriodUpdatePage from "../pages/admin/class-period/ClassPeriodUpdatePage";
+import ClassPeriodListPage from '../pages/admin/class-period/ClassPeriodListPage';
+import ClassPeriodDetailPage from '../pages/admin/class-period/ClassPeriodDetailPage';
+import ClassPeriodCreatePage from '../pages/admin/class-period/ClassPeriodCreatePage';
+import ClassPeriodUpdatePage from '../pages/admin/class-period/ClassPeriodUpdatePage';
 
-import TeacherListPage from "../pages/admin/teacher/TeacherListPage";
-import TeacherDetailPage from "../pages/admin/teacher/TeacherDetailPage";
-import TeacherCreatePage from "../pages/admin/teacher/TeacherCreatePage";
-import TeacherUpdatePage from "../pages/admin/teacher/TeacherUpdatePage";
+import TeacherListPage from '../pages/admin/teacher/TeacherListPage';
+import TeacherDetailPage from '../pages/admin/teacher/TeacherDetailPage';
+import TeacherCreatePage from '../pages/admin/teacher/TeacherCreatePage';
+import TeacherUpdatePage from '../pages/admin/teacher/TeacherUpdatePage';
 
-import ClassListPage from "../pages/admin/class/ClassListPage";
-import ClassDetailPage from "../pages/admin/class/ClassDetailPage";
-import ClassCreatePage from "../pages/admin/class/ClassCreatePage";
-import ClassUpdatePage from "../pages/admin/class/ClassUpdatePage";
+import ClassListPage from '../pages/admin/class/ClassListPage';
+import ClassDetailPage from '../pages/admin/class/ClassDetailPage';
+import ClassCreatePage from '../pages/admin/class/ClassCreatePage';
+import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 
-import SchoolUpdatePage from "../pages/admin/setting/account/SchoolUpdatePage";
+import SchoolUpdatePage from '../pages/admin/setting/account/SchoolUpdatePage';
 
-import AccountProfilePage from "../pages/admin/setting/account/AccountProfilePage";
+import AccountProfilePage from '../pages/admin/setting/account/AccountProfilePage';
 
-import AttendanceReportPage from "../pages/admin/report/attendance/AttendanceReportPage";
-import AttendanceViewPage from "../pages/admin/report/attendance/AttendanceViewPage";
+import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
+import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
 
-import UserUpdatePage from "../pages/admin/setting/account/UserUpdatePage";
+import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
-// Teacher site 
-import TeacherAttendanceListPage from "../pages/teacherSite/teacherClass/TeacherAttendanceListPage";
-import TeacherClassPage from "../pages/teacherSite/teacherClass/TeacherClassPage";
-import TeacherAccountProfilePage from "../pages/teacherSite/settings/TeacherAccountProfilePage";
-import TeacherSessionPage from "../pages/teacherSite/session/TeacherSessionPage";
+// Teacher site
+import TeacherAttendanceListPage from '../pages/teacherSite/teacherClass/TeacherAttendanceListPage';
+import TeacherClassPage from '../pages/teacherSite/teacherClass/TeacherClassPage';
+import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAccountProfilePage';
+import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage';
 
-// Layout 
-import Layout from "../components/layout/Layout";
-import ProtectedRoutes from "./ProtectedRoutes";
+// Layout
+import Layout from '../components/layout/Layout';
+import ProtectedRoutes from './ProtectedRoutes';
 // Routes configuration
 const routesConfig = [
   {
@@ -75,8 +75,16 @@ const routesConfig = [
         element: <SignupPage />,
       },
       {
+        path: 'verify-email/:token',
+        element: <VerifyEmailPage />,
+      },
+      {
         path: 'forgot-password',
         element: <PasswordForgotPage />,
+      },
+      {
+        path: 'verify-reset-password/:token',
+        element: <VerifyResetPassword />,
       },
       {
         path: 'reset-password',
@@ -86,54 +94,24 @@ const routesConfig = [
         path: 'change-password',
         element: <PasswordChangePage />,
       },
-      {
-        path: 'verify-account',
-        element: <AccountVerifyPage />,
-      },
-      {
-        path: 'success',
-        element: <AccountSuccessPage />,
-      },
     ],
   },
   {
-    path: '/teacher',
+    path: 'teacher/dashboard',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
     children: [
       {
-        path: 'dashboard',
+        path: 'classes',
         children: [
           {
             path: '',
             element: <TeacherClassPage />,
           },
-
           {
-            path: 'classes/attendance',
-            children: [
-              {
-                path: ':id',
-                element: <ClassListPage />,
-              },
-              {
-                path: '',
-                element: <ClassDetailPage />,
-              },
-              {
-                path: 'create',
-                element: <ClassCreatePage />,
-              },
-              {
-                path: 'update/:id',
-                element: <ClassUpdatePage />,
-              },
-            ],
+            path: 'attendance/:id',
+            element: <TeacherAttendanceListPage />,
           },
         ],
-      },
-      {
-        path: 'reports/attendance',
-        element: <TeacherAttendanceListPage />,
       },
       {
         path: 'sessions',
@@ -151,7 +129,7 @@ const routesConfig = [
     ],
   },
   {
-    path: '/dashboard',
+    path: 'admin/dashboard',
     showSidebar: true,
     element: <ProtectedRoutes adminSite></ProtectedRoutes>,
     children: [
@@ -345,4 +323,3 @@ const routesConfig = [
 ];
 
 export default routesConfig;
-

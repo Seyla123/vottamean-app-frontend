@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 
 // Material UI components
 import { Box, Typography, TextField, Button, Checkbox } from '@mui/material';
@@ -15,21 +14,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
 
-// Yup validation schema
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .required('Password is required'),
-  passwordConfirm: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match')
-    .required('Confirm Password is required'),
-});
+import { getStartSignupValidator } from '../../utils/validationSchemas';
 
 const GetStartSignUp = ({ nextStep }) => {
   // 1. Initialize dispatch for updating Redux store
@@ -45,7 +30,7 @@ const GetStartSignUp = ({ nextStep }) => {
     formState: { errors },
     setValue,
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(getStartSignupValidator),
     defaultValues: formData,
   });
 

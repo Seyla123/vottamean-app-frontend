@@ -1,21 +1,21 @@
+// React and third-party libraries
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { Box, TextField, Typography, Button } from '@mui/material';
+
+// Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
+
+// Material UI components
+import { Box, TextField, Typography, Button } from '@mui/material';
+
+// Custom components
 import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
 
-// Yup validation schema
-const schema = yup.object().shape({
-  phone_number: yup
-    .string()
-    .required('Phone number is required')
-    .matches(/^[0-9]+$/, 'Phone number must be digits only'),
-  address: yup.string().required('Address is required'),
-});
+// Validator
+import { ContactInformationValidator } from '../../utils/validationSchemas';
 
 const ContactInformationForm = ({ nextStep, onClickBack }) => {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const ContactInformationForm = ({ nextStep, onClickBack }) => {
     formState: { errors },
     setValue, // Set form values programmatically
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(ContactInformationValidator),
     defaultValues: formData, // Set initial form values from Redux
   });
 

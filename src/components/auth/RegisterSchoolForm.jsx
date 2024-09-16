@@ -1,23 +1,22 @@
+// React and third-party libraries
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { Box, TextField, Typography, Button } from '@mui/material';
+
+// Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
+
+// Material UI components
+import { Box, TextField, Typography, Button } from '@mui/material';
+
+// Custom components
 import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
 import schoolIcon from '../../assets/icon/schoolIcon.png';
 
-// Yup validation schema
-const schema = yup.object().shape({
-  school_name: yup.string().required('School name is required'),
-  school_phone_number: yup
-    .string()
-    .required('Phone number is required')
-    .matches(/^[0-9]+$/, 'Phone number must be digits only'),
-  school_address: yup.string().required('School Address is required'),
-});
+// Validator
+import { RegisterSchoolValidator } from '../../utils/validationSchemas';
 
 const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
   const dispatch = useDispatch();
@@ -29,7 +28,7 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
     formState: { errors },
     setValue,
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(RegisterSchoolValidator),
     defaultValues: formData,
   });
 

@@ -10,18 +10,11 @@ import * as Yup from 'yup';
  * How to use:
  * 1. Import desired schema: import { schemaName } from './validationSchemas'
  * 2. Use with react-hook-form:
- *    const { control, handleSubmit, errors } = useForm({
+ *    const { control, handleSubmit, formState: { errors } } = useForm({
  *      resolver: yupResolver(schemaName)
  *    });
- * 3. 
- *    <Box
- *      component="form"
- *      onSubmit={handleSignupSubmit(onSignupSubmit)}
- *    >
- *      <Controller
- *        name="name"
- *        control={signupControl}
- *        render={({ field }) => (
+ * 3. <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+ *      <Controller name="name" control={control} render={({ field }) => (
  *          <TextField
  *            {...field}
  *            margin="normal"
@@ -30,63 +23,97 @@ import * as Yup from 'yup';
  *            id="signup-name"
  *            label="Name"
  *            autoComplete="name"
- *            error={!!signupErrors.name}
- *            helperText={signupErrors.name?.message}
+ *            error={!!errors.name}
+ *            helperText={errors.name?.message}
  *          />
  *        )}
  *      />
  *      ...
- *      <Button
- *        type="submit"
- *      >
- *        Sign Up
- *      </Button>
+ *      <Button type="submit">Sign Up</Button>
  *    </Box>
- *
- *
- * Example:
- * export const customFormSchema = createFormSchema(['name', 'email', 'age']);
  */
 
-export const nameSchema = Yup.string()
-  .required('Name is required')
-  .min(3, 'Name must be at least 3 characters')
+// Common name validation schema
+const nameSchema = Yup.string()
+  .required('This field is required')
+  .matches(/^[A-Za-z]+$/, 'Name must contain only alphabetic characters')
+  .min(2, 'Name must be at least 2 characters long')
   .max(40, 'Name must be less than 40 characters');
 
+// First name validator
+export const firstNameSchema = nameSchema
+  .label('First name')
+  .required('First name is required');
+
+// Last name validator
+export const lastNameSchema = nameSchema
+  .label('Last name')
+  .required('Last name is required');
+
+// Date of birth validator
+export const dobSchema = Yup.string()
+  .required('Date of birth is required')
+  .matches(
+    /^\d{4}-\d{2}-\d{2}$/,
+    'Date of birth must be in the format YYYY-MM-DD',
+  );
+
+// Email validator for admin, teacher, student, and guardian
 export const emailSchema = Yup.string()
   .required('Email is required')
-  .email('Invalid email format');
+  .email('Please enter a valid email address');
 
+// Password validator for admin and teacher
 export const passwordSchema = Yup.string()
   .required('Password is required')
   .min(8, 'Password must be at least 8 characters')
   .matches(/[a-zA-Z]/, 'Password must contain at least one letter')
   .matches(/[0-9]/, 'Password must contain at least one number');
 
+// Confirm password validator
+export const passwordConfirmSchema = Yup.string()
+  .oneOf([Yup.ref('password'), null], 'Passwords must match')
+  .required('Confirm Password is required');
+
+// Phone number validator
 export const phoneSchema = Yup.string().matches(
   /^\d{10}$/,
-  'Phone number must be 10 digits',
+  'Phone number must be exactly 10 digits',
 );
 
-const ageSchema = Yup.number()
+// Address validator
+export const addressSchema = Yup.string()
+  .required('Address is required')
+  .min(10, 'Address must be at least 10 characters long')
+  .max(200, 'Address must be less than 200 characters');
+
+// Age validator
+export const ageSchema = Yup.number()
   .required('Age is required')
   .positive('Age must be a positive number')
   .integer('Age must be an integer')
   .min(18, 'You must be at least 18 years old')
   .max(120, 'Age must be less than 120');
 
-export const sexSchema = Yup.string()
-  .required('Sex is required')
-  .oneOf(['male', 'female', 'other'], 'Invalid sex option');
+// Gender validator
+export const genderSchema = Yup.string()
+  .required('Gender is required')
+  .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
 
+// Dynamic form schema generator
 export const createFormSchema = (fields) => {
   const schemaFields = {
-    name: nameSchema,
     email: emailSchema,
     password: passwordSchema,
+    passwordConfirm: passwordConfirmSchema,
+    name: nameSchema,
+    firstName: firstNameSchema,
+    lastName: lastNameSchema,
+    dob: dobSchema,
+    phone: phoneSchema,
     age: ageSchema,
-    sex: sexSchema,
-    // More schemas...
+    gender: genderSchema,
+    // Add more schemas as needed
   };
 
   return Yup.object().shape(
@@ -94,5 +121,40 @@ export const createFormSchema = (fields) => {
   );
 };
 
-// Define your SchemaForm name and paste the fields as array when calling.
-export const signupFormSchema = createFormSchema(['name', 'email', 'password']);
+// Example Signup Schema using the dynamic generator
+export const signupFormSchema = createFormSchema([
+  'name',
+  'email',
+  'password',
+  'passwordConfirm',
+  'age',
+  'gender',
+]);
+
+// Singup Step 1 :
+export const getStartSignupValidator = createFormSchema([
+  'email',
+  'password',
+  'passwordConfirm',
+]);
+
+// Signup Step 2 :
+export const PersonalInformationValidator = createFormSchema([
+  'first_name',
+  'last_name',
+  'gender',
+  'dob',
+]);
+
+// Signup Step 3 :
+export const ContactInformationValidator = createFormSchema([
+  'phone',
+  'address',
+]);
+
+// Signup Step 4 :
+export const RegisterSchoolValidator = createFormSchema([
+  'name',
+  'phone',
+  'address',
+]);
