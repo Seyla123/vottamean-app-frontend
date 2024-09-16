@@ -19,12 +19,22 @@ function VerifyEmailPage() {
 
   // Perform email verification on component mount
   useEffect(() => {
+    console.log('verificationToken:', verificationToken);
+    console.log('tempToken:', tempToken);
+
     if (verificationToken && tempToken) {
-      verifyEmail({ verificationToken, tempToken });
+      verifyEmail({ verificationToken, tempToken })
+        .unwrap()
+        .then((result) => {
+          console.log('Verification successful:', result);
+        })
+        .catch((error) => {
+          console.error('Verification failed:', error.data?.message || error);
+        });
     }
   }, [verificationToken, tempToken, verifyEmail]);
 
-  // Handle redirect to login page
+  // Redirect to login after successful verification
   const handleLoginRedirect = () => {
     navigate('/auth/login');
   };

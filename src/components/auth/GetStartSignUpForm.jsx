@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
 
-import { getStartSignupValidator } from '../../utils/validationSchemas';
+import { getStartSignupValidator } from '../../validators/validationSchemas';
 
 const GetStartSignUp = ({ nextStep }) => {
   // 1. Initialize dispatch for updating Redux store

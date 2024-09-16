@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import GoBackButton from '../../components/common/GoBackButton';
 import forgetIcon from '../../assets/icon/forget.png';
 import { useForgotPasswordMutation } from '../../services/authApi';
-
 function PasswordForgotPage() {
   const [email, setEmail] = useState('');
   const [forgotPassword, { isLoading, error, isSuccess }] =

@@ -35,8 +35,12 @@ import * as Yup from 'yup';
 
 // Common name validation schema
 const nameSchema = Yup.string()
+  .trim()
   .required('This field is required')
-  .matches(/^[A-Za-z]+$/, 'Name must contain only alphabetic characters')
+  .matches(
+    /^[A-Za-z]+( [A-Za-z]+)*$/,
+    'Name must contain only alphabetic characters and single spaces between words',
+  )
   .min(2, 'Name must be at least 2 characters long')
   .max(40, 'Name must be less than 40 characters');
 
@@ -76,10 +80,10 @@ export const passwordConfirmSchema = Yup.string()
   .required('Confirm Password is required');
 
 // Phone number validator
-export const phoneSchema = Yup.string().matches(
-  /^\d{10}$/,
-  'Phone number must be exactly 10 digits',
-);
+export const phoneSchema = Yup.string()
+  .trim() // Remove leading and trailing spaces
+  .required('Phone number is required')
+  .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits');
 
 // Address validator
 export const addressSchema = Yup.string()
@@ -107,12 +111,13 @@ export const createFormSchema = (fields) => {
     password: passwordSchema,
     passwordConfirm: passwordConfirmSchema,
     name: nameSchema,
-    firstName: firstNameSchema,
-    lastName: lastNameSchema,
-    dob: dobSchema,
-    phone: phoneSchema,
-    age: ageSchema,
+    first_name: firstNameSchema,
+    last_name: lastNameSchema,
     gender: genderSchema,
+    dob: dobSchema,
+    phone_number: phoneSchema,
+    address: addressSchema,
+    age: ageSchema,
     // Add more schemas as needed
   };
 
@@ -148,13 +153,13 @@ export const PersonalInformationValidator = createFormSchema([
 
 // Signup Step 3 :
 export const ContactInformationValidator = createFormSchema([
-  'phone',
+  'phone_number',
   'address',
 ]);
 
 // Signup Step 4 :
 export const RegisterSchoolValidator = createFormSchema([
   'name',
-  'phone',
+  'phone_number',
   'address',
 ]);

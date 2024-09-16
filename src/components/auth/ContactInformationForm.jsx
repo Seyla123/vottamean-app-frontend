@@ -15,7 +15,7 @@ import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
 
 // Validator
-import { ContactInformationValidator } from '../../utils/validationSchemas';
+import { ContactInformationValidator } from '../../validators/validationSchemas';
 
 const ContactInformationForm = ({ nextStep, onClickBack }) => {
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const ContactInformationForm = ({ nextStep, onClickBack }) => {
   // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
-      setValue('phone_number', formData.phone_number);
+      setValue('phone', formData.phone_number);
       setValue('address', formData.address);
     }
   }, [formData, setValue]);

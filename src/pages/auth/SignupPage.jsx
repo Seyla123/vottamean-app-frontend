@@ -24,19 +24,13 @@ import {
 // Custom component for card layout
 import AuthContainerCard from '../../components/auth/AuthContainerCard';
 
-/**
- * Components corresponding to each step
- * Step 1: @param Account details form
- * Step 2: @param Personal info form
- * Step 3: @param Contact info form
- * Step 4: @param School info form
- */
+// Components for each step
 import GetStartSignUpForm from '../../components/auth/GetStartSignUpForm';
 import PersonalInformationForm from '../../components/auth/PersonalInformationForm';
 import ContactInformationForm from '../../components/auth/ContactInformationForm';
 import RegisterSchoolForm from '../../components/auth/RegisterSchoolForm';
 
-// Stepper labels for each step in the signup process
+// Stepper labels
 const steps = [
   'Account details',
   'Personal information',
@@ -45,36 +39,36 @@ const steps = [
 ];
 
 function SignupPage() {
-  // 1. Initialize dispatch for updating Redux store
+  // Initialize dispatch for updating Redux store
   const dispatch = useDispatch();
 
-  // 2. Get form data from Redux store
+  // Get form data from Redux store
   const formData = useSelector((state) => state.form);
 
-  // 3. Manage the current step of the signup process
+  // Manage the current step of the signup process
   const [stepActive, setStepActive] = useState(0);
 
-  // 4. Hook for calling signup API and tracking its state
-  const [signup, { isError, error, isSuccess }] = useSignupMutation();
+  // Hook for calling signup API and tracking its state
+  const [signup, { isError, error, isSuccess, data }] = useSignupMutation();
 
-  // 5. Manage the submission state
+  // Manage the submission state
   const [submitMessage, setSubmitMessage] = useState('');
 
-  // 6. Function to handle form data changes and update Redux store
+  // Handle form data changes and update Redux store
   const handleFormChange = (stepData) => {
-    dispatch(updateFormData(stepData)); // Update form data in the Redux store
+    dispatch(updateFormData(stepData));
   };
 
-  // 7. Function to move to the previous step
+  // Move to the previous step
   const handleBack = () => setStepActive((prev) => prev - 1);
 
-  // 8. Function to move to the next step
+  // Move to the next step
   const handleNext = () => setStepActive((prev) => prev + 1);
 
-  // 9. Function to submit form data to the API at the final step
+  // Submit form data to the API at the final step
   const handleSubmit = async () => {
     try {
-      // 9.1 Format data for API submission
+      // Format data for API submission
       const formattedData = {
         email: formData.email,
         password: formData.password,
@@ -90,20 +84,31 @@ function SignupPage() {
         school_phone_number: formData.school_phone_number,
       };
 
-      // 9.2 Send the formatted data to the API
-      await signup(formattedData).unwrap();
+      // Send the formatted data to the API
+      const response = await signup(formattedData).unwrap();
 
-      // 9.3 On success, set a success message
-      setSubmitMessage('Your account has been successfully created.');
+      // Extract tempToken from the response if it exists
+      const tempToken = response.token;
+
+      // Handle the response
+      if (response.status === 'success') {
+        // Redirect to the verification page with tempToken
+        window.location.href = `http://localhost:5173/auth/verify-email/${response.verificationToken}?token=${tempToken}`;
+      }
+
+      // Set a success message
+      setSubmitMessage(
+        'Your account has been successfully created. Please check your email for confirmation.',
+      );
     } catch (err) {
-      // 9.4 On error, display a user-friendly message
+      // On error, display a user-friendly message
       setSubmitMessage(
         'There was an issue with your signup. Please try again.',
       );
     }
   };
 
-  // 10. Array of forms, each corresponding to a signup step
+  // Array of forms, each corresponding to a signup step
   const stepForms = [
     <GetStartSignUpForm
       onClickBack={handleBack}
@@ -132,7 +137,6 @@ function SignupPage() {
       maxWidth="lg"
       sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
     >
-      {/* 11. Display Stepper at the top to show current step */}
       <Box sx={{ width: 1, paddingTop: { xs: 3, md: 4 } }}>
         <Stepper activeStep={stepActive} alternativeLabel>
           {steps.map((label) => (
@@ -143,12 +147,10 @@ function SignupPage() {
         </Stepper>
       </Box>
 
-      {/* 12. Show the form for the current step */}
       <AuthContainerCard sideCard={stepActive === 3 ? 'right' : 'left'}>
         {stepForms[stepActive]}
       </AuthContainerCard>
 
-      {/* 13. Show success or error message when signup is completed */}
       {isSuccess && (
         <Alert severity="success" sx={{ textAlign: 'center', mt: 2 }}>
           Your account has been successfully created. Please check your email
@@ -162,7 +164,6 @@ function SignupPage() {
         </Alert>
       )}
 
-      {/* 14. Additional submit message for user feedback */}
       {submitMessage && (
         <Typography textAlign="center" variant="body1" mt={2}>
           {submitMessage}
