@@ -62,286 +62,286 @@ import Layout from "../components/layout/Layout";
 import ProtectedRoutes from "./ProtectedRoutes";
 // Routes configuration
 const routesConfig = [
-    {
-        path: "/auth",
-        element: <Layout/>,
+  {
+    path: '/auth',
+    element: <Layout />,
+    children: [
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'signup',
+        element: <SignupPage />,
+      },
+      {
+        path: 'forgot-password',
+        element: <PasswordForgotPage />,
+      },
+      {
+        path: 'reset-password',
+        element: <PasswordResetPage />,
+      },
+      {
+        path: 'change-password',
+        element: <PasswordChangePage />,
+      },
+      {
+        path: 'verify-account',
+        element: <AccountVerifyPage />,
+      },
+      {
+        path: 'success',
+        element: <AccountSuccessPage />,
+      },
+    ],
+  },
+  {
+    path: '/teacher',
+    element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
+    children: [
+      {
+        path: 'dashboard',
         children: [
-            {
-                path: "login",
-                element: <LoginPage />,
-            },
-            {
-                path: "signup",
-                element: <SignupPage />,
-            },
-            {
-                path: "forgot-password",
-                element: <PasswordForgotPage />,
-            },
-            {
-                path: "reset-password",
-                element: <PasswordResetPage />,
-            },
-            {
-                path: "change-password",
-                element: <PasswordChangePage />,
-            },
-            {
-                path: "verify-account",
-                element: <AccountVerifyPage />,
-            },
-            {
-                path: "success",
-                element: <AccountSuccessPage />,
-            },
-        ]
-    },
-    {
-        path: '/teacher',
-        element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
-        children: [
-            {
-                path: 'dashboard',
-                children: [
-                    {
-                        path: '',   
-                        element: <TeacherClassPage />,
-                    },
-                    {
-                        path: 'reports/attendance',
-                        element: <TeacherAttendanceListPage />,
-                    },
-                     {
-                        path: "classes",
-                        children: [
-                            {
-                                path: "",
-                                element: <ClassListPage />,
-                            },
-                            {
-                                path: ":id",
-                                element: <ClassDetailPage />,
-                            },
-                            {
-                                path: "create",
-                                element: <ClassCreatePage />,
-                            },
-                            {
-                                path: "update/:id",
-                                element: <ClassUpdatePage />,
-                            },
-                        ],
-                    },
-                ]
-                
-            },
-            {
-                path: 'sessions',
-                element: <TeacherSessionPage />,
-            },
-            {
-                path: 'settings',
-                children: [
-                    {
-                        path: 'account',
-                        element: <TeacherAccountProfilePage />,
-                    }
-                ]
-            }
+          {
+            path: '',
+            element: <TeacherClassPage />,
+          },
+
+          {
+            path: 'classes/attendance',
+            children: [
+              {
+                path: ':id',
+                element: <ClassListPage />,
+              },
+              {
+                path: '',
+                element: <ClassDetailPage />,
+              },
+              {
+                path: 'create',
+                element: <ClassCreatePage />,
+              },
+              {
+                path: 'update/:id',
+                element: <ClassUpdatePage />,
+              },
+            ],
+          },
         ],
-    },
-    {
-        path: '/dashboard',
-        showSidebar: true,
-        element:<ProtectedRoutes adminSite></ProtectedRoutes>,
+      },
+      {
+        path: 'reports/attendance',
+        element: <TeacherAttendanceListPage />,
+      },
+      {
+        path: 'sessions',
+        element: <TeacherSessionPage />,
+      },
+      {
+        path: 'settings',
         children: [
-            {
-                path: "",
-                element: <DashboardPage />,
-                children: [],
-            },
-            {
-                path: "sessions",
-                children: [
-                    {
-                        path: "",
-                        element: <SessionListPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <SessionDetailPage />,
-                    },
-                    {
-                        path: "create",
-                        element: <SessionCreatePage />,
-                    },
-                    {
-                        path: "update/:id",
-                        element: <SessionUpdatePage />,
-                    },
-                ],
-            },
-            {
-                path: "students",
-                children: [
-                    {
-                        path: "",
-                        element: <StudentListPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <StudentDetailPage />,
-                    },
-                    {
-                        path: "create",
-                        element: <StudentCreatePage />,
-                    },
-                    {
-                        path: "update/:id",
-                        element: <StudentUpdatePage />,
-                    },
-                ],
-            },
-            {
-                path: "subjects",
-                children: [
-                    {
-                        path: "",
-                        element: <SubjectListPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <SubjectDetailPage />,
-                    },
-                    {
-                        path: "create",
-                        element: <SubjectCreatePage />,
-                    },
-                    {
-                        path: "update/:id",
-                        element: <SubjectUpdatePage />,
-                    },
-                ],
-            },
-            {
-                path: "class-periods",
-                children: [
-                    {
-                        path: "",
-                        element: <ClassPeriodListPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <ClassPeriodDetailPage />,
-                    },
-                    {
-                        path: "create",
-                        element: <ClassPeriodCreatePage />,
-                    },
-                    {
-                        path: "update/:id",
-                        element: <ClassPeriodUpdatePage />,
-                    },
-                ],
-            },
-            {
-                path: "teachers",
-                children: [
-                    {
-                        path: "",
-                        element: <TeacherListPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <TeacherDetailPage />,
-                    },
-                    {
-                        path: "create",
-                        element: <TeacherCreatePage />,
-                    },
-                    {
-                        path: "update/:id",
-                        element: <TeacherUpdatePage />,
-                    },
-                ],
-            },
-            {
-                path: "classes",
-                children: [
-                    {
-                        path: "",
-                        element: <ClassListPage />,
-                    },
-                    {
-                        path: ":id",
-                        element: <ClassDetailPage />,
-                    },
-                    {
-                        path: "create",
-                        element: <ClassCreatePage />,
-                    },
-                    {
-                        path: "update/:id",
-                        element: <ClassUpdatePage />,
-                    },
-                ],
-            },
-            {
-                path: "settings",
-                children: [
-                    {
-                        path: "account",
-                        children: [
-                            {
-                                path: "",
-                                element: <AccountProfilePage />,
-                            },
-                            {
-                                path: "user/update/:id",
-                                element: <UserUpdatePage />,
-                            },
-                            {
-                                path: "school/:id",
-                                element: <SchoolUpdatePage />,
-                            },
-                            {
-                                path: "school/update/:id",
-                                element: <SchoolUpdatePage />,
-                            }
-                        ],
-                    },
-                ],
-            },
-            {
-                path: "reports",
-                children: [
-                    {
-                        path: "attendance",
-                        children: [
-                            {
-                                path: "",
-                                element: <AttendanceReportPage />,
-                            },
-                            {
-                                path: ":id",
-                                element: <AttendanceViewPage />,
-                            },  
-                        ]
-                    }
-                ],
-            },
+          {
+            path: 'account',
+            element: <TeacherAccountProfilePage />,
+          },
         ],
-    },
-    {
-        path: "*",
-        element: <Layout/>,
+      },
+    ],
+  },
+  {
+    path: '/dashboard',
+    showSidebar: true,
+    element: <ProtectedRoutes adminSite></ProtectedRoutes>,
+    children: [
+      {
+        path: '',
+        element: <DashboardPage />,
+        children: [],
+      },
+      {
+        path: 'sessions',
         children: [
-            {
-                path: "",
-                element: <NotFoundPage />,
-            },
-        ]
-    },
+          {
+            path: '',
+            element: <SessionListPage />,
+          },
+          {
+            path: ':id',
+            element: <SessionDetailPage />,
+          },
+          {
+            path: 'create',
+            element: <SessionCreatePage />,
+          },
+          {
+            path: 'update/:id',
+            element: <SessionUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'students',
+        children: [
+          {
+            path: '',
+            element: <StudentListPage />,
+          },
+          {
+            path: ':id',
+            element: <StudentDetailPage />,
+          },
+          {
+            path: 'create',
+            element: <StudentCreatePage />,
+          },
+          {
+            path: 'update/:id',
+            element: <StudentUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'subjects',
+        children: [
+          {
+            path: '',
+            element: <SubjectListPage />,
+          },
+          {
+            path: ':id',
+            element: <SubjectDetailPage />,
+          },
+          {
+            path: 'create',
+            element: <SubjectCreatePage />,
+          },
+          {
+            path: 'update/:id',
+            element: <SubjectUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'class-periods',
+        children: [
+          {
+            path: '',
+            element: <ClassPeriodListPage />,
+          },
+          {
+            path: ':id',
+            element: <ClassPeriodDetailPage />,
+          },
+          {
+            path: 'create',
+            element: <ClassPeriodCreatePage />,
+          },
+          {
+            path: 'update/:id',
+            element: <ClassPeriodUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'teachers',
+        children: [
+          {
+            path: '',
+            element: <TeacherListPage />,
+          },
+          {
+            path: ':id',
+            element: <TeacherDetailPage />,
+          },
+          {
+            path: 'create',
+            element: <TeacherCreatePage />,
+          },
+          {
+            path: 'update/:id',
+            element: <TeacherUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'classes',
+        children: [
+          {
+            path: '',
+            element: <ClassListPage />,
+          },
+          {
+            path: ':id',
+            element: <ClassDetailPage />,
+          },
+          {
+            path: 'create',
+            element: <ClassCreatePage />,
+          },
+          {
+            path: 'update/:id',
+            element: <ClassUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'settings',
+        children: [
+          {
+            path: 'account',
+            children: [
+              {
+                path: '',
+                element: <AccountProfilePage />,
+              },
+              {
+                path: 'user/update/:id',
+                element: <UserUpdatePage />,
+              },
+              {
+                path: 'school/:id',
+                element: <SchoolUpdatePage />,
+              },
+              {
+                path: 'school/update/:id',
+                element: <SchoolUpdatePage />,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'reports',
+        children: [
+          {
+            path: 'attendance',
+            children: [
+              {
+                path: '',
+                element: <AttendanceReportPage />,
+              },
+              {
+                path: ':id',
+                element: <AttendanceViewPage />,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <Layout />,
+    children: [
+      {
+        path: '',
+        element: <NotFoundPage />,
+      },
+    ],
+  },
 ];
 
 export default routesConfig;

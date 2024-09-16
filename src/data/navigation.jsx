@@ -89,7 +89,7 @@ const teacherSiteNavigation = [
         icon: <HomeIcon />,
     },
     {
-        segment: 'teacher/dashboard/reports',
+        segment: 'teacher/reports',
         title: 'Report',
         icon: <ReportGmailerrorredIcon />,
         children: [
