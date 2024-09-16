@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import NotFoundImage from '../../assets/images/not-found.jpg';
 import { tableShadow } from '../../styles/global';
-import { useUpdateAttendanceMutation } from '../../services/attendanceApi';
 const AttendanceTable = ({
   rows,
   columns,
