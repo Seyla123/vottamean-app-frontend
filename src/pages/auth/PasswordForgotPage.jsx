@@ -81,8 +81,12 @@ function PasswordForgotPage() {
           )}
           {error && (
             <Typography sx={{ color: 'red' }}>
+<<<<<<< HEAD
               Failed to send reset email:{' '}
               {error?.data?.message || 'Error occurred'}
+=======
+              Failed to send reset email: {error.message}
+>>>>>>> e7fd3cd11cd1d9f3ac72e6f61e745f47f1b2561d
             </Typography>
           )}
           <Box
@@ -110,3 +114,56 @@ function PasswordForgotPage() {
 }
 
 export default PasswordForgotPage;
+<<<<<<< HEAD
+=======
+
+const screen = {
+  width: '100%',
+  height: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  mx: 'auto',
+  bgcolor: '#F9FAFB',
+};
+
+const content = {
+  bgcolor: '#FFFFFF',
+  maxWidth: '550px',
+  width: '100%',
+  maxHeight: '602px',
+  mx: 'auto',
+  my: 'auto',
+  borderRadius: '16px',
+  py: '32px',
+  px: { xs: '24px', md: '32px' },
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '24px',
+};
+
+const textInputContainer = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: { xs: '24px', md: '32px' },
+  width: '100%',
+};
+
+const textfield = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+  width: '100%',
+};
+
+const img = {
+  mx: 'auto',
+  width: { xs: '90px', md: '100px' },
+};
+
+const resetTitle = {
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+};
+>>>>>>> e7fd3cd11cd1d9f3ac72e6f61e745f47f1b2561d

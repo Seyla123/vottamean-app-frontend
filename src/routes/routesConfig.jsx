@@ -75,6 +75,10 @@ const routesConfig = [
         element: <SignupPage />,
       },
       {
+        path: 'verify-email/:token',
+        element: <VerifyEmailPage />,
+      },
+      {
         path: 'forgot-password',
         element: <PasswordForgotPage />,
       },
