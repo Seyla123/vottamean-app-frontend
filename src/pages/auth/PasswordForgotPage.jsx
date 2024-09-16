@@ -81,12 +81,7 @@ function PasswordForgotPage() {
           )}
           {error && (
             <Typography sx={{ color: 'red' }}>
-<<<<<<< HEAD
-              Failed to send reset email:{' '}
-              {error?.data?.message || 'Error occurred'}
-=======
               Failed to send reset email: {error.message}
->>>>>>> e7fd3cd11cd1d9f3ac72e6f61e745f47f1b2561d
             </Typography>
           )}
           <Box
@@ -114,8 +109,6 @@ function PasswordForgotPage() {
 }
 
 export default PasswordForgotPage;
-<<<<<<< HEAD
-=======
 
 const screen = {
   width: '100%',
@@ -166,4 +159,3 @@ const resetTitle = {
   display: 'flex',
   flexDirection: 'column',
 };
->>>>>>> e7fd3cd11cd1d9f3ac72e6f61e745f47f1b2561d
