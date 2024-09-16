@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, TextField, Select, MenuItem, Avatar } from '@mui/material';
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  Avatar,
+} from '@mui/material';
 import SubHeader from './SubHeader';
 import DatePickerComponent from './DatePickerComponent';
 import ButtonContainer from '../common/ButtonContainer';
@@ -13,32 +21,42 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
   return (
     <Box sx={profileBox}>
       <Box sx={valueBoxOne}>
-        <Avatar sx={imgStyle} alt='profile picture' src='r' />
-
+        <Avatar sx={imgStyle} alt="profile picture" src="r" />
       </Box>
 
-      <SubHeader title={"Teacher Information"} />
+      <SubHeader title={'Teacher Information'} />
 
-      <Box component="form" width={"100%"} mt={2} display={"flex"} flexDirection={"column"} sx={{
-        gap: {
-          xs: '12px',
-          sm: 3
-        }
-      }}>
-        <Box display={"flex"} flexDirection={"row"} sx={{
+      <Box
+        component="form"
+        width={'100%'}
+        mt={2}
+        display={'flex'}
+        flexDirection={'column'}
+        sx={{
           gap: {
             xs: '12px',
-            sm: 3
+            sm: 3,
           },
-          width: "100%"
-        }}>
+        }}
+      >
+        <Box
+          display={'flex'}
+          flexDirection={'row'}
+          sx={{
+            gap: {
+              xs: '12px',
+              sm: 3,
+            },
+            width: '100%',
+          }}
+        >
           {/* name */}
           <Box sx={{ flex: 1 }}>
             <Box sx={textFieldGap}>
               <Typography>First Name</Typography>
               <TextField
-                id='first-name'
-                placeholder='first name'
+                id="first-name"
+                placeholder="first name"
                 variant="outlined"
                 fullWidth
               />
@@ -48,8 +66,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             <Box sx={textFieldGap}>
               <Typography>Last Name</Typography>
               <TextField
-                id='last-name'
-                placeholder='last name'
+                id="last-name"
+                placeholder="last name"
                 variant="outlined"
                 fullWidth
               />
@@ -66,7 +84,11 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             displayEmpty
             renderValue={(selected) => {
               if (!selected) {
-                return <Box component="p" variant="body2" sx={{ color: '#a7a7a7' }}>gender</Box>;
+                return (
+                  <Box component="p" variant="body2" sx={{ color: '#a7a7a7' }}>
+                    gender
+                  </Box>
+                );
               }
               return selected;
             }}
@@ -84,8 +106,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
         <Box sx={textFieldGap}>
           <Typography>Phone Number</Typography>
           <TextField
-            id='phone-number'
-            placeholder='phone number'
+            id="phone-number"
+            placeholder="phone number"
             variant="outlined"
             fullWidth
           />
@@ -94,16 +116,22 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
         <Box sx={textFieldGap}>
           <Typography>Address</Typography>
           <TextField
-            id='address'
-            placeholder='address'
+            id="address"
+            placeholder="address"
             variant="outlined"
             fullWidth
           />
         </Box>
 
         {/* buttons */}
-        <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"} gap={2} mt={2}>
-          {mode === "update" && (
+        <Box
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'flex-end'}
+          gap={2}
+          mt={2}
+        >
+          {mode === 'update' && (
             <>
               <ButtonContainer
                 rightBtn={handleNext}
@@ -112,7 +140,7 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
               />
             </>
           )}
-          {mode === "create" && (
+          {mode === 'create' && (
             <ButtonContainer
               rightBtn={handleNext}
               leftBtnTitle="Cancel"
@@ -128,53 +156,56 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
 export default TeacherInfo;
 
 const profileBox = {
-  border: "1px solid",
-  borderColor: "#E0E0E0",
-  borderRadius: "8px",
-  bgcolor: "#ffffff",
-  marginTop: "32px",
+  border: '1px solid',
+  borderColor: '#E0E0E0',
+  borderRadius: '8px',
+  bgcolor: '#ffffff',
+  marginTop: '32px',
   padding: {
     xs: 2,
     sm: 3,
   },
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexDirection: "column",
-  position: "relative",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  position: 'relative',
 };
 
 const valueBoxOne = {
   width: 100,
   height: 100,
-  borderRadius: "50%",
-  overflow: "hidden",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  borderRadius: '50%',
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   mb: 2,
-  position: "relative",
+  position: 'relative',
 };
 
 const textFieldGap = {
-  display: "flex",
+  display: 'flex',
   gap: 0.5,
-  flexDirection: "column",
+  flexDirection: 'column',
 };
 
 const buttonStyle = {
-  width: { xs: '100%', sm: "170px" },
+  width: { xs: '100%', sm: '170px' },
 };
 const buttonCancel = {
-  width: { xs: '100%', sm: "170px" },
-  borderColor: "inherit", color: "inherit"
+  width: { xs: '100%', sm: '170px' },
+  borderColor: 'inherit',
+  color: 'inherit',
 };
-
 
 const imgStyle = {
   width: {
-    xs: 120, sm: 160
-  }, height: {
-    xs: 120, sm: 160
-  }
-}
+    xs: 120,
+    sm: 160,
+  },
+  height: {
+    xs: 120,
+    sm: 160,
+  },
+};

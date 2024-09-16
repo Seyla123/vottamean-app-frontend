@@ -1,12 +1,11 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material';
 
 const HeaderTitle = ({ title, subTitle, center, children }) => {
-
   return (
-    <Box sx={{...containerStyles,textAlign: center ? "center" : "left"}}>
-    {/* Render any additional content passed as children */}
+    <Box sx={{ ...containerStyles, textAlign: center ? 'center' : 'left' }}>
+      {/* Render any additional content passed as children */}
       {children}
-      <Typography variant="h4" fontWeight={"bold"} padding={0}>
+      <Typography variant="h4" fontWeight={'bold'} padding={0}>
         {title}
       </Typography>
       <Typography variant="subtitle1">{subTitle}</Typography>
@@ -17,7 +16,7 @@ const HeaderTitle = ({ title, subTitle, center, children }) => {
 export default HeaderTitle;
 
 const containerStyles = {
-    display: "flex",
-    flexDirection: "column",
-    gap: 1,
-  };
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 1,
+};
