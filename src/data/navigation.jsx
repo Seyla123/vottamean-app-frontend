@@ -84,12 +84,12 @@ const navigation = [
 const teacherSiteNavigation = [
     { kind: 'header', title: 'Menu' },
     {
-        segment: 'dashboard',
+        segment: 'teacher/dashboard',
         title: 'Dashboard',
         icon: <HomeIcon />,
     },
     {
-        segment: 'dashboard/reports',
+        segment: 'teacher/reports',
         title: 'Report',
         icon: <ReportGmailerrorredIcon />,
         children: [
@@ -106,7 +106,7 @@ const teacherSiteNavigation = [
     { kind: 'header', title: 'General' },
 
     {
-        segment: 'dashboard/settings',
+        segment: 'teacher/settings',
         title: 'Settings',
         icon: <SettingsIcon />,
         children: [
