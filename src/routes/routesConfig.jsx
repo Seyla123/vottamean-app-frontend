@@ -101,17 +101,39 @@ const routesConfig = [
         element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
         children: [
             {
-                path: 'classes',
+                path: 'dashboard',
                 children: [
                     {
                         path: '',   
                         element: <TeacherClassPage />,
                     },
                     {
-                        path: 'attendance/:id',
+                        path: 'reports/attendance',
                         element: <TeacherAttendanceListPage />,
-                    }
+                    },
+                     {
+                        path: "classes",
+                        children: [
+                            {
+                                path: "",
+                                element: <ClassListPage />,
+                            },
+                            {
+                                path: ":id",
+                                element: <ClassDetailPage />,
+                            },
+                            {
+                                path: "create",
+                                element: <ClassCreatePage />,
+                            },
+                            {
+                                path: "update/:id",
+                                element: <ClassUpdatePage />,
+                            },
+                        ],
+                    },
                 ]
+                
             },
             {
                 path: 'sessions',
