@@ -34,6 +34,7 @@ const schema = yup.object().shape({
 const GetStartSignUp = ({ nextStep }) => {
   // 1. Initialize dispatch for updating Redux store
   const dispatch = useDispatch();
+
   // 2. Get form data from Redux store
   const formData = useSelector((state) => state.form);
 
