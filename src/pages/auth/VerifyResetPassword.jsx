@@ -1,18 +1,25 @@
 import React from 'react';
-import { Box, Typography, TextField, Button, Link, Card } from '@mui/material';
+import { Box, Typography, Button, Card } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import email from '../../assets/icon/email.png';
 
-function AccountVerifyPage() {
+function VerifyResetPassword() {
+  const navigate = useNavigate();
+
+  const handleNavigateToResetPassword = () => {
+    navigate('/auth/reset-password');
+  };
+
   return (
     <Box sx={screen}>
       <Card sx={content}>
-        {/* Image and tittle   */}
+        {/* Image and title */}
         <Box sx={head}>
           <Box sx={img}>
-            <img src={email} style={{ width: '100%' }}></img>
+            <img src={email} style={{ width: '100%' }} alt="Email Icon" />
           </Box>
 
-          {/* Verify Account Title  */}
+          {/* Verify Account Title */}
           <Box sx={resetTitle}>
             <Typography
               sx={{
@@ -21,13 +28,13 @@ function AccountVerifyPage() {
                 fontWeight: 'bold',
               }}
             >
-              Verify Your Accound
+              Verify Your Account
             </Typography>
             <Typography sx={{ fontSize: { xs: '14px', md: '16px' } }}>
               We've sent your verify token
             </Typography>
             <Typography sx={{ fontSize: { xs: '14px', md: '16px' } }}>
-              Confirm that it is You !
+              Confirm that it is You!
             </Typography>
           </Box>
         </Box>
@@ -36,15 +43,16 @@ function AccountVerifyPage() {
           fullWidth
           variant="contained"
           sx={{ padding: { xs: 1, md: 2 } }}
+          onClick={handleNavigateToResetPassword}
         >
-          RESENT TOKEN
+          GO TO RESET PASSWORD
         </Button>
       </Card>
     </Box>
   );
 }
 
-export default AccountVerifyPage;
+export default VerifyResetPassword;
 
 const screen = {
   width: '100%',

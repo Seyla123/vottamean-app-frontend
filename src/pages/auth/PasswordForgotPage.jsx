@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Card } from '@mui/material';
 import { Link } from 'react-router-dom';
 import GoBackButton from '../../components/common/GoBackButton';
-import forget from '../../assets/icon/forget.png';
+import forgetIcon from '../../assets/icon/forget.png';
 import { useForgotPasswordMutation } from '../../services/authApi';
 
 function PasswordForgotPage() {
@@ -14,10 +14,8 @@ function PasswordForgotPage() {
     try {
       await forgotPassword({ email }).unwrap();
       console.log('Password reset email sent');
-      // Handle success (e.g., show confirmation message)
     } catch (err) {
       console.error('Forgot password failed', err);
-      // Handle error
     }
   };
 
@@ -27,16 +25,17 @@ function PasswordForgotPage() {
         <Box>
           <GoBackButton />
           <Box sx={img}>
-            <img src={forget} style={{ width: '100%' }} alt="Forgot password" />
+            <img
+              src={forgetIcon}
+              style={{ width: '100%' }}
+              alt="Forgot password"
+            />
           </Box>
         </Box>
+
         <Box sx={resetTitle}>
           <Typography
-            sx={{
-              transitionDuration: '0.5s',
-              fontSize: { xs: '24px', md: '36px' },
-              fontWeight: 'bold',
-            }}
+            sx={{ fontSize: { xs: '24px', md: '36px' }, fontWeight: 'bold' }}
           >
             Forgot Password?
           </Typography>
@@ -44,6 +43,7 @@ function PasswordForgotPage() {
             We will send you an email to reset your password
           </Typography>
         </Box>
+
         <Box sx={textInputContainer}>
           <Box sx={textfield}>
             <Typography>Email</Typography>
@@ -56,6 +56,7 @@ function PasswordForgotPage() {
             />
           </Box>
         </Box>
+
         <Box display={'flex'} flexDirection={'column'} gap={'8px'}>
           <Button
             fullWidth
@@ -64,17 +65,17 @@ function PasswordForgotPage() {
             disabled={isLoading}
             sx={{ padding: { xs: 1.5, md: 2 } }}
           >
-            Continue
+            {isLoading ? 'Sending...' : 'Continue'}
           </Button>
           {isSuccess && (
-            <p style={{ color: 'green' }}>
+            <Typography sx={{ color: 'green' }}>
               Check your email for password reset instructions.
-            </p>
+            </Typography>
           )}
           {error && (
-            <p style={{ color: 'red' }}>
+            <Typography sx={{ color: 'red' }}>
               Failed to send reset email: {error.message}
-            </p>
+            </Typography>
           )}
           <Box
             sx={{
@@ -121,10 +122,7 @@ const content = {
   my: 'auto',
   borderRadius: '16px',
   py: '32px',
-  px: {
-    xs: '24px',
-    md: '32px',
-  },
+  px: { xs: '24px', md: '32px' },
   display: 'flex',
   flexDirection: 'column',
   gap: '24px',
@@ -133,10 +131,7 @@ const content = {
 const textInputContainer = {
   display: 'flex',
   flexDirection: 'column',
-  gap: {
-    xs: '24px',
-    md: '32px',
-  },
+  gap: { xs: '24px', md: '32px' },
   width: '100%',
 };
 
@@ -149,10 +144,7 @@ const textfield = {
 
 const img = {
   mx: 'auto',
-  width: {
-    xs: '90px',
-    md: '100px',
-  },
+  width: { xs: '90px', md: '100px' },
 };
 
 const resetTitle = {

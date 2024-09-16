@@ -12,6 +12,16 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: ['Auth'],
     }),
 
+    // Verify user email
+    verifyEmail: builder.mutation({
+      query: ({ verificationToken, tempToken }) => ({
+        url: `auth/verify-email/${verificationToken}`,
+        method: 'POST',
+        body: { token: tempToken },
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+
     // Login
     login: builder.mutation({
       query: (user) => ({
@@ -21,7 +31,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // Refresh the JWT token
+    // Logout
     logout: builder.mutation({
       query: () => ({
         url: 'auth/logout',
@@ -78,8 +88,9 @@ export const {
   useSignupMutation,
   useLoginMutation,
   useLogoutMutation,
-  useCheckAuthQuery,
+  useVerifyEmailMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useUpdatePasswordMutation,
+  useCheckAuthQuery,
 } = authApi;
