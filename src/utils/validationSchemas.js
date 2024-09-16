@@ -140,8 +140,8 @@ export const getStartSignupValidator = createFormSchema([
 
 // Signup Step 2 :
 export const PersonalInformationValidator = createFormSchema([
-  'firstName',
-  'lastName',
+  'first_name',
+  'last_name',
   'gender',
   'dob',
 ]);
