@@ -11,6 +11,11 @@ function PasswordForgotPage() {
     useForgotPasswordMutation();
 
   const handleForgotPassword = async () => {
+    if (!email) {
+      alert('Please enter an email');
+      return;
+    }
+
     try {
       await forgotPassword({ email }).unwrap();
       console.log('Password reset email sent');
@@ -53,6 +58,8 @@ function PasswordForgotPage() {
               variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={!!error}
+              helperText={error ? 'Failed to send email, try again' : ''}
             />
           </Box>
         </Box>
@@ -74,7 +81,8 @@ function PasswordForgotPage() {
           )}
           {error && (
             <Typography sx={{ color: 'red' }}>
-              Failed to send reset email: {error.message}
+              Failed to send reset email:{' '}
+              {error?.data?.message || 'Error occurred'}
             </Typography>
           )}
           <Box
@@ -102,53 +110,3 @@ function PasswordForgotPage() {
 }
 
 export default PasswordForgotPage;
-
-const screen = {
-  width: '100%',
-  height: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  mx: 'auto',
-  bgcolor: '#F9FAFB',
-};
-
-const content = {
-  bgcolor: '#FFFFFF',
-  maxWidth: '550px',
-  width: '100%',
-  maxHeight: '602px',
-  mx: 'auto',
-  my: 'auto',
-  borderRadius: '16px',
-  py: '32px',
-  px: { xs: '24px', md: '32px' },
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '24px',
-};
-
-const textInputContainer = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: { xs: '24px', md: '32px' },
-  width: '100%',
-};
-
-const textfield = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-  width: '100%',
-};
-
-const img = {
-  mx: 'auto',
-  width: { xs: '90px', md: '100px' },
-};
-
-const resetTitle = {
-  textAlign: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-};
