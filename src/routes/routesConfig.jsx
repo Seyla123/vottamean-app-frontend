@@ -8,6 +8,7 @@ import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 
 import NotFoundPage from '../pages/NotFoundPage';
+import UnauthorizedPage from '../pages/UnauthorizedPage';
 
 // admin
 import DashboardPage from '../pages/admin/dashboard/DashboardPage';
@@ -309,6 +310,10 @@ const routesConfig = [
         ],
       },
     ],
+  },
+  {
+    path: '/unauthorized',
+    element: <UnauthorizedPage />,
   },
   {
     path: '*',
