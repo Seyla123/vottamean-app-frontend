@@ -28,7 +28,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 // Validator
-import { PersonalInformationValidator } from '../../utils/validationSchemas';
+import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
 const PersonalInformationForm = ({ nextStep, onClickBack }) => {
   // Initialize dispatch and form data from Redux

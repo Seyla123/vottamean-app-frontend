@@ -16,7 +16,7 @@ import HeaderTitle from './HeaderTitle';
 import schoolIcon from '../../assets/icon/schoolIcon.png';
 
 // Validator
-import { RegisterSchoolValidator } from '../../utils/validationSchemas';
+import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 
 const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
   const dispatch = useDispatch();

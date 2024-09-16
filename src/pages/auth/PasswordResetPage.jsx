@@ -1,20 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Card } from '@mui/material';
 import GoBackButton from '../../components/common/GoBackButton';
 import reset from '../../assets/icon/reset.png';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useResetPasswordMutation } from '../../services/authApi';
 
 function PasswordResetPage() {
+  const { token } = useParams(); // Get reset token from the URL
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
+  const [resetPassword, { isLoading, isSuccess, error }] =
+    useResetPasswordMutation();
+
+  const handlePasswordReset = async () => {
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    try {
+      await resetPassword({ token, newPassword }).unwrap();
+      console.log('Password reset successful');
+      navigate('/auth/login');
+    } catch (err) {
+      console.error('Password reset failed', err);
+    }
+  };
+
   return (
     <Box sx={screen}>
       <Card sx={content}>
-        {/* back button and img  */}
+        {/* Back button and img */}
         <Box>
           <GoBackButton />
           <Box sx={img}>
-            <img src={reset} style={{ width: '100%' }}></img>
+            <img src={reset} style={{ width: '100%' }} alt="Reset Password" />
           </Box>
         </Box>
-        {/* Reset Password Title  */}
+
+        {/* Reset Password Title */}
         <Box sx={resetTitle}>
           <Typography
             sx={{ fontSize: { xs: '24px', md: '36px' }, fontWeight: 'bold' }}
@@ -25,6 +50,7 @@ function PasswordResetPage() {
             Set a new password here!
           </Typography>
         </Box>
+
         {/* Text input */}
         <Box sx={textInputContainer}>
           <Box sx={textfield}>
@@ -33,27 +59,44 @@ function PasswordResetPage() {
               id="newPassword"
               placeholder="new password"
               variant="outlined"
-              sx={{ width: '100%' }}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              error={!!error}
+              helperText={error ? 'Failed to reset password, try again' : ''}
             />
           </Box>
 
           <Box sx={textfield}>
             <Typography>Confirm Password</Typography>
             <TextField
-              id="oldPassword"
+              id="confirmPassword"
               placeholder="confirm password"
               variant="outlined"
-              sx={{ width: '100%' }}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </Box>
         </Box>
 
         <Button
           variant="contained"
+          onClick={handlePasswordReset}
+          disabled={isLoading}
           sx={{ width: '100%', height: { sx: '42px', md: '56px' } }}
         >
-          Reset Password
+          {isLoading ? 'Resetting...' : 'Reset Password'}
         </Button>
+
+        {isSuccess && (
+          <Typography sx={{ color: 'green', marginTop: '16px' }}>
+            Password reset successfully. Redirecting to login...
+          </Typography>
+        )}
+        {error && (
+          <Typography sx={{ color: 'red', marginTop: '16px' }}>
+            Failed to reset password: {error?.data?.message || 'Error occurred'}
+          </Typography>
+        )}
       </Card>
     </Box>
   );

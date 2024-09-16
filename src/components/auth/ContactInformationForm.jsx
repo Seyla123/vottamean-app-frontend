@@ -15,7 +15,7 @@ import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
 
 // Validator
-import { ContactInformationValidator } from '../../utils/validationSchemas';
+import { ContactInformationValidator } from '../../validators/validationSchemas';
 
 const ContactInformationForm = ({ nextStep, onClickBack }) => {
   const dispatch = useDispatch();

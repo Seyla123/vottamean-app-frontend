@@ -17,9 +17,9 @@ function NotFoundPage() {
       {/* Image Section */}
       <Box
         component="img"
-        src={notFoundImg} 
+        src={notFoundImg}
         alt="Not Found"
-        sx={{ width: '300px', height: 'auto', marginBottom: '20px' }} 
+        sx={{ width: '300px', height: 'auto', marginBottom: '20px' }}
       />
       <Typography variant="h5" component="h2" gutterBottom>
         Oops! Page not found.
