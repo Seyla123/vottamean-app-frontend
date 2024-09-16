@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import dayjs from 'dayjs';
 
 // Material UI components
@@ -28,19 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-// Yup validation schema
-const schema = yup.object().shape({
-  first_name: yup.string().required('First name is required'),
-  last_name: yup.string().required('Last name is required'),
-  gender: yup.string().required('Gender is required'),
-  dob: yup
-    .string()
-    .required('Date of birth is required')
-    .matches(
-      /^\d{4}-\d{2}-\d{2}$/,
-      'Date of birth must be in the format YYYY-MM-DD',
-    ),
-});
+import { PersonalInformationValidator } from '../../utils/validationSchemas';
 
 const PersonalInformationForm = ({ nextStep, onClickBack }) => {
   // Initialize dispatch and form data from Redux
@@ -54,7 +41,7 @@ const PersonalInformationForm = ({ nextStep, onClickBack }) => {
     formState: { errors },
     setValue,
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(PersonalInformationValidator),
     defaultValues: formData,
   });
 
