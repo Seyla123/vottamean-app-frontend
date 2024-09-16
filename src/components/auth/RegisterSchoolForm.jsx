@@ -34,9 +34,9 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
 
   useEffect(() => {
     if (formData) {
-      setValue('school_name', formData.school_name);
-      setValue('school_phone_number', formData.school_phone_number);
-      setValue('school_address', formData.school_address);
+      setValue('name', formData.school_name);
+      setValue('phone_number', formData.school_phone_number);
+      setValue('address', formData.school_address);
     }
   }, [formData, setValue]);
 
@@ -82,18 +82,18 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
             <Typography variant="body1">School&apos;s Name</Typography>
             <TextField
               placeholder="School's name"
-              {...register('school_name')}
-              error={!!errors.school_name}
-              helperText={errors.school_name?.message}
+              {...register('name')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
             />
           </Box>
           <Box sx={inputContainerStyles}>
             <Typography variant="body1">School Phone Number</Typography>
             <TextField
               placeholder="School Phone number"
-              {...register('school_phone_number')}
-              error={!!errors.school_phone_number}
-              helperText={errors.school_phone_number?.message}
+              {...register('phone_number')}
+              error={!!errors.phone_number}
+              helperText={errors.phone_number?.message}
             />
           </Box>
           <Box sx={inputContainerStyles}>
@@ -102,9 +102,9 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
               multiline
               minRows={5}
               placeholder="Phnom Penh, Street 210, ..."
-              {...register('school_address')}
-              error={!!errors.school_address}
-              helperText={errors.school_address?.message}
+              {...register('address')}
+              error={!!errors.address}
+              helperText={errors.address?.message}
             />
           </Box>
           <Button type="submit" variant="contained" color="primary">

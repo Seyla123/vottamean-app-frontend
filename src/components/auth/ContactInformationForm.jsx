@@ -34,7 +34,7 @@ const ContactInformationForm = ({ nextStep, onClickBack }) => {
   // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
-      setValue('phone_number', formData.phone_number);
+      setValue('phone', formData.phone_number);
       setValue('address', formData.address);
     }
   }, [formData, setValue]);
