@@ -19,3 +19,30 @@ export const phoneSchema = Yup.string().matches(
     /^\d{10}$/,
     "Phone number must be 10 digits"
 );
+
+export const createFormSchema = (fields) => {
+    const schemaFields = {};
+
+    fields.forEach((field) => {
+        switch (field) {
+            case "name":
+                schemaFields.name = nameSchema;
+                break;
+            case "email":
+                schemaFields.email = emailSchema;
+                break;
+            case "password":
+                schemaFields.password = passwordSchema;
+                break;
+            case "phone":
+                schemaFields.phone = phoneSchema;
+                break;
+            // Add more fields as needed
+        }
+    });
+
+    return Yup.object().shape(schemaFields);
+};
+
+export const signupFormSchema = createFormSchema(["name", "email", "password"]);
+export const profileFormSchema = createFormSchema(["name", "email", "phone"]);
