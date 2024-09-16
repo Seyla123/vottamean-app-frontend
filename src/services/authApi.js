@@ -1,24 +1,85 @@
-// Import base api configuration
 import { baseApi } from './baseApi';
 
-// Authentication API
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Signup
     signup: builder.mutation({
       query: (user) => ({
-        url: '/users/signup', // Backend Route
+        url: 'auth/signup',
+        method: 'POST',
+        body: user,
+      }),
+      providesTags: ['Auth'],
+    }),
+
+    // Login
+    login: builder.mutation({
+      query: (user) => ({
+        url: 'auth/login',
         method: 'POST',
         body: user,
       }),
     }),
-    login: builder.mutation({
-      query: (user) => ({
-        url: '/users/login', // Backend Route
+
+    // Refresh the JWT token
+    logout: builder.mutation({
+      query: () => ({
+        url: 'auth/logout',
         method: 'POST',
-        body: user,
       }),
+      providesTags: ['Auth'],
+    }),
+
+    // Forgot password
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: 'auth/forgot-password',
+        method: 'POST',
+        body: data,
+      }),
+      providesTags: ['Auth'],
+    }),
+
+    // Reset password
+    resetPassword: builder.mutation({
+      query: ({ token, newPassword }) => ({
+        url: `auth/reset-password/${token}`,
+        method: 'PATCH',
+        body: {
+          password: newPassword,
+          passwordConfirm: newPassword,
+        },
+      }),
+      providesTags: ['Auth'],
+    }),
+
+    // Update password
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: 'auth/update-password',
+        method: 'PATCH',
+        body: data,
+      }),
+      providesTags: ['Auth'],
+    }),
+
+    // Check the user authorization
+    checkAuth: builder.query({
+      query: () => ({
+        url: 'auth/me',
+        method: 'GET',
+      }),
+      providesTags: ['Auth'],
     }),
   }),
 });
 
-export const { useSignupMutation, useLoginMutation } = authApi;
+export const {
+  useSignupMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useCheckAuthQuery,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useUpdatePasswordMutation,
+} = authApi;

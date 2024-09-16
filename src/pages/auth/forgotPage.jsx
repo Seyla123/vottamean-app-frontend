@@ -1,9 +1,10 @@
 import React from 'react';
 import { Box, Typography, TextField, Button, Card } from '@mui/material';
+import forget from '../../assets/icon/forget.png';
 import GoBackButton from '../../components/common/GoBackButton';
-import reset from '../../assets/icon/reset.png';
+import { Link } from 'react-router-dom';
 
-function PasswordResetPage() {
+function PasswordForgotPage() {
   return (
     <Box sx={screen}>
       <Card sx={content}>
@@ -11,55 +12,66 @@ function PasswordResetPage() {
         <Box>
           <GoBackButton />
           <Box sx={img}>
-            <img src={reset} style={{ width: '100%' }}></img>
+            <img src={forget} style={{ width: '100%' }}></img>
           </Box>
         </Box>
         {/* Reset Password Title  */}
         <Box sx={resetTitle}>
           <Typography
-            sx={{ fontSize: { xs: '24px', md: '36px' }, fontWeight: 'bold' }}
+            sx={{
+              transitionDuration: '0.5s',
+              fontSize: { xs: '24px', md: '36px' },
+              fontWeight: 'bold',
+            }}
           >
-            Reset Your Password
+            Forgot Password ?
           </Typography>
           <Typography sx={{ fontSize: { xs: '14px', md: '16px' } }}>
-            Set a new password here!
+            We will send you an email to reset your password
           </Typography>
         </Box>
         {/* Text input */}
         <Box sx={textInputContainer}>
           <Box sx={textfield}>
-            <Typography>New Password</Typography>
-            <TextField
-              id="newPassword"
-              placeholder="new password"
-              variant="outlined"
-              sx={{ width: '100%' }}
-            />
-          </Box>
-
-          <Box sx={textfield}>
-            <Typography>Confirm Password</Typography>
-            <TextField
-              id="oldPassword"
-              placeholder="confirm password"
-              variant="outlined"
-              sx={{ width: '100%' }}
-            />
+            <Typography>Email</Typography>
+            <TextField id="email" placeholder="email" variant="outlined" />
           </Box>
         </Box>
 
-        <Button
-          variant="contained"
-          sx={{ width: '100%', height: { sx: '42px', md: '56px' } }}
-        >
-          Reset Password
-        </Button>
+        <Box display={'flex'} flexDirection={'column'} gap={'8px'}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ padding: { xs: 1.5, md: 2 } }}
+          >
+            Continue
+          </Button>
+
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="body1">
+              Don't you have an account?
+              <Link to="/auth/signup">
+                <Typography variant="body1" component="span" color="primary">
+                  {' '}
+                  Sign Up
+                </Typography>
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
       </Card>
     </Box>
   );
 }
 
-export default PasswordResetPage;
+export default PasswordForgotPage;
 
 const screen = {
   width: '100%',

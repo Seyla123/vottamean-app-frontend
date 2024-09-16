@@ -1,88 +1,209 @@
-import { useState } from 'react';
-import HeaderTitle from './HeaderTitle'
-import { Box, TextField, Typography, Select, MenuItem, Button } from '@mui/material'
+// React and third-party libraries
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import dayjs from 'dayjs';
+
+// Material UI components
+import {
+  Box,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  Button,
+} from '@mui/material';
+
+// Redux hooks and actions
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFormData } from '../../store/slices/formSlice';
+
+// Custom components
 import GoBackButton from '../common/GoBackButton';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import HeaderTitle from './HeaderTitle';
+
+// Date picker components from MUI X
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-function PersonalInformationForm({ onClickBack, children }) {
-    const [gender, setGender] = useState('');
-    const [value, setValue] = useState(null);
+// Yup validation schema
+const schema = yup.object().shape({
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
+  gender: yup.string().required('Gender is required'),
+  dob: yup
+    .string()
+    .required('Date of birth is required')
+    .matches(
+      /^\d{4}-\d{2}-\d{2}$/,
+      'Date of birth must be in the format YYYY-MM-DD',
+    ),
+});
 
-    const handleChange = (e) => {
-        setGender(e.target.value);
+const PersonalInformationForm = ({ nextStep, onClickBack }) => {
+  // Initialize dispatch and form data from Redux
+  const dispatch = useDispatch();
+  const formData = useSelector((state) => state.form);
+
+  // Initialize useForm with validation schema and default values
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: formData,
+  });
+
+  // Manage gender and date of birth state
+  const [gender, setGender] = useState(formData.gender || '');
+  const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
+
+  // Pre-fill form fields when component mounts
+  useEffect(() => {
+    if (formData) {
+      setValue('first_name', formData.first_name);
+      setValue('last_name', formData.last_name);
+      setValue('gender', formData.gender);
+      setDob(formData.dob ? dayjs(formData.dob) : null);
+    }
+  }, [formData, setValue]);
+
+  // Handle form submission
+  const onSubmit = (data) => {
+    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
+
+    const updatedData = {
+      ...data,
+      gender,
+      dob: formattedDob,
     };
-    return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
-            {/* header title */}
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
-                <GoBackButton handleOnClick={onClickBack} />
-                <HeaderTitle
-                    title={"Personal information"}
-                    subTitle={"Input your information"}
-                />
+    dispatch(updateFormData(updatedData)); // Dispatch updated data to Redux
+    nextStep(); // Proceed to the next step
+  };
+
+  return (
+    <Box sx={containerStyles}>
+      {/* Go Back Button and Header Title */}
+      <GoBackButton handleOnClick={onClickBack} />
+      <HeaderTitle
+        title="Personal Information"
+        subTitle="Input your information"
+      />
+
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box sx={formContainerStyles}>
+          {/* Name Inputs */}
+          <Box sx={{ display: 'flex', gap: 1.5 }}>
+            <Box sx={inputContainerStyles} flexGrow={1}>
+              <Typography variant="body1">First name</Typography>
+              <TextField
+                placeholder="First name"
+                fullWidth
+                {...register('first_name')}
+                error={!!errors.first_name}
+                helperText={errors.first_name?.message}
+              />
             </Box>
+            <Box sx={inputContainerStyles} flexGrow={1}>
+              <Typography variant="body1">Last name</Typography>
+              <TextField
+                placeholder="Last name"
+                fullWidth
+                {...register('last_name')}
+                error={!!errors.last_name}
+                helperText={errors.last_name?.message}
+              />
+            </Box>
+          </Box>
 
-            {/* form container */}
-            <Box
-                sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}
+          {/* Gender Select */}
+          <Box sx={inputContainerStyles}>
+            <Typography variant="body1">Gender</Typography>
+            <Select
+              fullWidth
+              value={gender}
+              onChange={(e) => {
+                setGender(e.target.value);
+                setValue('gender', e.target.value);
+              }}
+              displayEmpty
+              renderValue={(selected) => {
+                if (!selected) {
+                  return <Box sx={{ color: '#B5B5B5' }}>Select gender</Box>;
+                }
+                return selected;
+              }}
+              error={!!errors.gender}
             >
-                {/* name input container */}
-                <Box sx={{ display: "flex", gap: 1.5 }}>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+            <Typography variant="body2" color="error">
+              {errors.gender?.message}
+            </Typography>
+          </Box>
 
-                    {/* first name input */}
-                    <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1} >
-                        <Typography variant="body1">First name</Typography>
-                        <TextField placeholder="first name" fullWidth />
-                    </Box>
-                    {/* last name input */}
-                    <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1}>
-                        <Typography variant="body1">Last name</Typography>
-                        <TextField placeholder="last name" fullWidth />
-                    </Box>
-                </Box>
-
-                {/* Gender selector */}
-                <Box display={"flex"} flexDirection={"column"} gap={0.5}>
-                    <Typography>Gender</Typography>
-                    <Select fullWidth
-                        value={gender}
-                        onChange={handleChange}
-                        displayEmpty
-                        renderValue={(selected) => {
-                            if (!selected) {
-                                return <Box component="p" variant="body2" sx={{ color: '#B5B5B5' }}>gender</Box>;
-                            }
-                            return selected;
-                        }}
-                    >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                    </Select>
-                </Box>
-                {/* Date picker */}
-                <Box display={"flex"} flexDirection={"column"} gap={0.5} flexGrow={1} sx={{ width: '100%' }}>
-            <Typography>Date</Typography>
+          {/* Date of Birth Picker */}
+          <Box sx={inputContainerStyles}>
+            <Typography variant="body1">Date of Birth</Typography>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']} sx={{ width: '100%' }}>
-                    <DatePicker
-                        fullWidth
-                        placeholder="Date of Birth"
-                        value={value}
-                        onChange={(newValue) => setValue(newValue)}
-                        sx={{ width: '100%' }} // Ensure the DatePicker also has full width
-                    />
-                </DemoContainer>
+              <DatePicker
+                value={dob}
+                onChange={(newValue) => {
+                  setDob(newValue);
+                  setValue(
+                    'dob',
+                    newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
+                  );
+                }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.dob,
+                    placeholder: 'Date of Birth',
+                  },
+                }}
+              />
             </LocalizationProvider>
-        </Box>
-                {children}
-            </Box>
+            <Typography variant="body2" color="error">
+              {errors.dob?.message}
+            </Typography>
+          </Box>
 
+          {/* Submit Button */}
+          <Button type="submit" variant="contained" color="primary">
+            Continue
+          </Button>
         </Box>
-    )
-}
+      </form>
+    </Box>
+  );
+};
 
-export default PersonalInformationForm
+export default PersonalInformationForm;
+
+// Styles for the component
+const containerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 3,
+};
+
+const formContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: { xs: 3, md: 4 },
+};
+
+const inputContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 0.5,
+};

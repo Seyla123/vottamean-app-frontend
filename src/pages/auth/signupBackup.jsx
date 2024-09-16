@@ -4,22 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 // React hooks
 import { useState } from 'react';
 
-// Mutation hook for signup API
-import { useSignupMutation } from '../../services/authApi';
-
 // Redux slices
 import { updateFormData } from '../../store/slices/formSlice';
 
+// Mutation hook for signup API
+import { useSignupMutation } from '../../services/authApi';
+
 // Material UI components for layout and stepper
-import {
-  Box,
-  Container,
-  Step,
-  Stepper,
-  StepLabel,
-  Typography,
-  Alert,
-} from '@mui/material';
+import { Box, Container, Step, Stepper, StepLabel } from '@mui/material';
 
 // Custom component for card layout
 import AuthContainerCard from '../../components/auth/AuthContainerCard';
@@ -55,26 +47,23 @@ function SignupPage() {
   const [stepActive, setStepActive] = useState(0);
 
   // 4. Hook for calling signup API and tracking its state
-  const [signup, { isError, error, isSuccess }] = useSignupMutation();
+  const [signup, { isError, error }] = useSignupMutation();
 
-  // 5. Manage the submission state
-  const [submitMessage, setSubmitMessage] = useState('');
-
-  // 6. Function to handle form data changes and update Redux store
+  // 5. Function to handle form data changes and update Redux store
   const handleFormChange = (stepData) => {
     dispatch(updateFormData(stepData)); // Update form data in the Redux store
   };
 
-  // 7. Function to move to the previous step
+  // 6. Function to move to the previous step
   const handleBack = () => setStepActive((prev) => prev - 1);
 
-  // 8. Function to move to the next step
+  // 7. Function to move to the next step
   const handleNext = () => setStepActive((prev) => prev + 1);
 
-  // 9. Function to submit form data to the API at the final step
+  // 8. Function to submit form data to the API at the final step
   const handleSubmit = async () => {
     try {
-      // 9.1 Format data for API submission
+      // 8.1 Format data for API submission
       const formattedData = {
         email: formData.email,
         password: formData.password,
@@ -90,20 +79,20 @@ function SignupPage() {
         school_phone_number: formData.school_phone_number,
       };
 
-      // 9.2 Send the formatted data to the API
-      await signup(formattedData).unwrap();
+      // 8.2 Send the formatted data to the API
+      const response = await signup(formattedData).unwrap();
 
-      // 9.3 On success, set a success message
-      setSubmitMessage('Your account has been successfully created.');
+      console.log('Signup successful:', response); // Log success
     } catch (err) {
-      // 9.4 On error, display a user-friendly message
-      setSubmitMessage(
-        'There was an issue with your signup. Please try again.',
-      );
+      // 8.3 Log errors if the signup fails
+      console.error('Signup failed:', err);
+      if (err?.data) {
+        console.error('Error details:', err.data);
+      }
     }
   };
 
-  // 10. Array of forms, each corresponding to a signup step
+  // 9. Array of forms, each corresponding to a signup step
   const stepForms = [
     <GetStartSignUpForm
       onClickBack={handleBack}
@@ -132,7 +121,7 @@ function SignupPage() {
       maxWidth="lg"
       sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
     >
-      {/* 11. Display Stepper at the top to show current step */}
+      {/* 10. Display Stepper at the top to show current step */}
       <Box sx={{ width: 1, paddingTop: { xs: 3, md: 4 } }}>
         <Stepper activeStep={stepActive} alternativeLabel>
           {steps.map((label) => (
@@ -143,30 +132,16 @@ function SignupPage() {
         </Stepper>
       </Box>
 
-      {/* 12. Show the form for the current step */}
+      {/* 11. Show the form for the current step */}
       <AuthContainerCard sideCard={stepActive === 3 ? 'right' : 'left'}>
         {stepForms[stepActive]}
       </AuthContainerCard>
 
-      {/* 13. Show success or error message when signup is completed */}
-      {isSuccess && (
-        <Alert severity="success" sx={{ textAlign: 'center', mt: 2 }}>
-          Your account has been successfully created. Please check your email
-          for confirmation.
-        </Alert>
-      )}
+      {/* 12. Show error message if signup fails */}
       {isError && (
-        <Alert severity="error" sx={{ textAlign: 'center', mt: 2 }}>
-          Signup failed:{' '}
-          {error?.data?.message || 'Something went wrong. Please try again.'}
-        </Alert>
-      )}
-
-      {/* 14. Additional submit message for user feedback */}
-      {submitMessage && (
-        <Typography textAlign="center" variant="body1" mt={2}>
-          {submitMessage}
-        </Typography>
+        <p style={{ color: 'red' }}>
+          Signup failed: {error?.data?.message || error?.error}
+        </p>
       )}
     </Container>
   );
