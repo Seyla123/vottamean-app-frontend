@@ -1,0 +1,135 @@
+import React, { useEffect } from 'react';
+import { Box, Typography, Button, Card } from '@mui/material';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useVerifyEmailMutation } from '../../services/authApi';
+import verify from '../../assets/icon/verify.png';
+
+function VerifyEmailPage() {
+  const { verificationToken } = useParams(); // Get verificationToken from URL
+  const location = useLocation(); // Get query parameters
+  const navigate = useNavigate();
+
+  // Extract 'tempToken' from the query string
+  const queryParams = new URLSearchParams(location.search);
+  const tempToken = queryParams.get('token');
+
+  // Mutation hook for verifying email
+  const [verifyEmail, { isLoading, isSuccess, isError }] =
+    useVerifyEmailMutation();
+
+  // Perform email verification on component mount
+  useEffect(() => {
+    if (verificationToken && tempToken) {
+      verifyEmail({ verificationToken, tempToken });
+    }
+  }, [verificationToken, tempToken, verifyEmail]);
+
+  // Handle redirect to login page
+  const handleLoginRedirect = () => {
+    navigate('/auth/login');
+  };
+
+  return (
+    <Box sx={screen}>
+      <Card sx={content}>
+        <Box sx={head}>
+          <Box sx={img}>
+            <img src={verify} style={{ width: '100%' }} alt="Verification" />
+          </Box>
+
+          {isLoading ? (
+            <Typography
+              sx={{
+                fontSize: { xs: '24px', md: '36px' },
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}
+            >
+              Verifying...
+            </Typography>
+          ) : isSuccess ? (
+            <Typography
+              sx={{
+                fontSize: { xs: '24px', md: '36px' },
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}
+            >
+              Verified Successfully
+            </Typography>
+          ) : isError ? (
+            <Typography
+              sx={{
+                fontSize: { xs: '24px', md: '36px' },
+                fontWeight: 'bold',
+                textAlign: 'center',
+                color: 'red',
+              }}
+            >
+              Verification Failed
+            </Typography>
+          ) : null}
+        </Box>
+
+        {isSuccess && (
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ padding: { xs: 1, md: 2 } }}
+            onClick={handleLoginRedirect}
+          >
+            GO TO LOGIN
+          </Button>
+        )}
+      </Card>
+    </Box>
+  );
+}
+
+export default VerifyEmailPage;
+
+// Styles
+const screen = {
+  width: '100%',
+  height: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  bgcolor: '#F9FAFB',
+};
+
+const content = {
+  bgcolor: '#FFFFFF',
+  maxWidth: '550px',
+  width: '100%',
+  maxHeight: '384px',
+  borderRadius: '16px',
+  py: '32px',
+  px: {
+    xs: '24px',
+    md: '32px',
+  },
+  display: 'flex',
+  flexDirection: 'column',
+  gap: {
+    xs: '24px',
+    md: '32px',
+  },
+};
+
+const head = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: {
+    xs: '0px',
+    md: '12px',
+  },
+};
+
+const img = {
+  mx: 'auto',
+  width: {
+    xs: '140px',
+    md: '160px',
+  },
+};
