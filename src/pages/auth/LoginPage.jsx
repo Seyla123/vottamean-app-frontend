@@ -17,21 +17,27 @@ function LoginPage() {
       const response = await login(formData).unwrap();
 
       // Log the response for debugging
-      console.log('Login successful', response);
+      console.log('Login successful:', response);
 
       // Check if response includes role and navigate accordingly
-      const { role } = response.data;
+      if (response.data) {
+        const { role } = response.data;
+        console.log('User role:', role);
 
-      if (role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (role === 'teacher') {
-        navigate('/teacher/dashboard');
+        if (role === 'admin') {
+          navigate('/admin/dashboard');
+        } else if (role === 'teacher') {
+          navigate('/teacher/dashboard');
+        } else {
+          console.warn('Unhandled role:', role);
+          navigate('/default-dashboard');
+        }
       } else {
-        console.warn('Unhandled role:', role);
+        console.warn('Response data is missing');
         navigate('/default-dashboard');
       }
     } catch (err) {
-      console.error('Login failed', err);
+      console.error('Login failed:', err);
     }
   };
 

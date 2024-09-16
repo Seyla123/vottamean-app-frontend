@@ -1,17 +1,16 @@
-// src/routes/ProtectedRoutes.js
-import { Outlet, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 
 const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  // Check if the user is authenticated
+  console.log('ProtectedRoutes state:', { isAuthenticated, user });
+
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" />;
   }
 
-  // Role-based access control
   if (adminSite && user?.role !== 'admin') {
     return <Navigate to="/unauthorized" />;
   }

@@ -1,35 +1,23 @@
-// src/store/slices/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { authApi } from '../../services/authApi';
 
-const initialState = {
-  isAuthenticated: false,
-  user: null, // user object with role
-};
-
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
-  reducers: {
-    setAuth: (state, action) => {
-      state.isAuthenticated = action.payload.isAuthenticated;
-      state.user = action.payload.user;
-    },
-    logout: (state) => {
-      state.isAuthenticated = false;
-      state.user = null;
-    },
+  initialState: {
+    isAuthenticated: false,
+    user: null,
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addMatcher(
       authApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
+        console.log('Login fulfilled payload:', payload);
         state.isAuthenticated = true;
-        state.user = payload.user;
+        state.user = payload.data;
       },
     );
   },
 });
 
-export const { setAuth, logout } = authSlice.actions;
 export default authSlice.reducer;
