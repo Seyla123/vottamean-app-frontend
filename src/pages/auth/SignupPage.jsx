@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 // React hooks
 import { useState } from 'react';
 
-// Redux slices
-import { updateFormData } from '../../store/slices/formSlice';
-
 // Mutation hook for signup API
 import { useSignupMutation } from '../../services/authApi';
+
+// Redux slices
+import { updateFormData } from '../../store/slices/formSlice';
 
 // Material UI components for layout and stepper
 import {

@@ -1,9 +1,13 @@
+// For redirecting the user after successful login
+import { useNavigate } from 'react-router-dom';
+
+// Mutation hook for login API
+import { useLoginMutation } from '../../services/authApi';
+
 // Import necessary components
 import AuthContainerCard from '../../components/auth/AuthContainerCard';
 import LoginForm from '../../components/auth/LoginForm';
 import { Container, Stack } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // For redirecting the user after successful login
-import { useLoginMutation } from '../../services/authApi'; // Login mutation from API service
 
 function LoginPage() {
   // 1. Hook to initiate login API call
@@ -22,7 +26,7 @@ function LoginPage() {
       // 3.2 Handle successful login:
       // Token is automatically stored in HTTP-only cookies, just navigate to the appropriate dashboard
       if (response.role === 'admin') {
-        navigate('/dashboard');
+        navigate('/admin/dashboard');
       } else if (response.role === 'teacher') {
         navigate('/teacher/dashboard');
       }

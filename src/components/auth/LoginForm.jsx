@@ -2,6 +2,7 @@ import { Box, Stack, Typography, TextField, Button } from '@mui/material';
 import HeaderTitle from './HeaderTitle';
 import { Link } from 'react-router-dom';
 import WaveTrackLogo from '../../assets/images/logoWaveTrack.png';
+
 const LoginForm = () => {
   return (
     <Box sx={containerStyles}>
