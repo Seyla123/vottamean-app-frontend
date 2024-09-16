@@ -163,3 +163,6 @@ export const RegisterSchoolValidator = createFormSchema([
   'phone_number',
   'address',
 ]);
+
+// Login Validator :
+export const LoginValidator = createFormSchema(['email', 'password']);
