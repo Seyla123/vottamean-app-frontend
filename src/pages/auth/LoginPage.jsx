@@ -42,7 +42,7 @@ function LoginPage() {
             console.warn('Unhandled role:', role);
             navigate('/default-dashboard');
           }
-        }, 2000);
+        }, 3000);
       } else {
         console.warn('Response data is missing');
         navigate('/default-dashboard');
