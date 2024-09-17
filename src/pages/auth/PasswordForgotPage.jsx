@@ -1,26 +1,59 @@
+// React and third-party libraries
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
+
+// Redux hooks and actions
+import { useForgotPasswordMutation } from '../../services/authApi';
+
+// Material UI components
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  Snackbar,
+  Alert,
+} from '@mui/material';
+
+// Custom components
 import GoBackButton from '../../components/common/GoBackButton';
 import forgetIcon from '../../assets/icon/forget.png';
-import { useForgotPasswordMutation } from '../../services/authApi';
+
+// Validator
+import { ForgotPasswordValidator } from '../../validators/validationSchemas';
+
 function PasswordForgotPage() {
-  const [email, setEmail] = useState('');
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+
+  // Hook form setup with Yup validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(ForgotPasswordValidator),
+  });
+
   const [forgotPassword, { isLoading, error, isSuccess }] =
     useForgotPasswordMutation();
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      alert('Please enter an email');
-      return;
-    }
-
+  const handleForgotPassword = async (formData) => {
     try {
-      await forgotPassword({ email }).unwrap();
-      console.log('Password reset email sent');
+      await forgotPassword({ email: formData.email }).unwrap();
+      setOpenSuccess(true);
     } catch (err) {
-      console.error('Forgot password failed', err);
+      setOpenError(true);
     }
+  };
+
+  // Automatically close Snackbars after a duration
+  const handleCloseSnackbar = () => {
+    setOpenError(false);
+    setOpenSuccess(false);
   };
 
   return (
@@ -48,6 +81,7 @@ function PasswordForgotPage() {
           </Typography>
         </Box>
 
+        {/* Form with email input */}
         <Box sx={textInputContainer}>
           <Box sx={textfield}>
             <Typography>Email</Typography>
@@ -55,10 +89,9 @@ function PasswordForgotPage() {
               id="email"
               placeholder="email"
               variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={!!error}
-              helperText={error ? 'Failed to send email, try again' : ''}
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email ? errors.email.message : ''}
             />
           </Box>
         </Box>
@@ -67,22 +100,12 @@ function PasswordForgotPage() {
           <Button
             fullWidth
             variant="contained"
-            onClick={handleForgotPassword}
+            onClick={handleSubmit(handleForgotPassword)}
             disabled={isLoading}
             sx={{ padding: { xs: 1.5, md: 2 } }}
           >
             {isLoading ? 'Sending...' : 'Continue'}
           </Button>
-          {isSuccess && (
-            <Typography sx={{ color: 'green' }}>
-              Check your email for password reset instructions.
-            </Typography>
-          )}
-          {error && (
-            <Typography sx={{ color: 'red' }}>
-              Failed to send reset email: {error.message}
-            </Typography>
-          )}
           <Box
             sx={{
               display: 'flex',
@@ -102,6 +125,43 @@ function PasswordForgotPage() {
             </Typography>
           </Box>
         </Box>
+
+        {/* Snackbar for displaying error */}
+        {error && (
+          <Snackbar
+            open={openError}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="error"
+              sx={{ width: '100%' }}
+            >
+              {error?.data?.message ||
+                'Failed to send reset email. Please try again later.'}
+            </Alert>
+          </Snackbar>
+        )}
+
+        {/* Snackbar for displaying success */}
+        {isSuccess && (
+          <Snackbar
+            open={openSuccess}
+            autoHideDuration={2000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: '100%' }}
+            >
+              Password reset email sent successfully! Check your inbox.
+            </Alert>
+          </Snackbar>
+        )}
       </Card>
     </Box>
   );

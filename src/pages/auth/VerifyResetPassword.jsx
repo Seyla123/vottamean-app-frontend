@@ -1,25 +1,32 @@
+// React and third-party libraries
 import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+// Material UI components
 import { Box, Typography, Button, Card } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+
+// Icons
 import email from '../../assets/icon/email.png';
 
 function VerifyResetPassword() {
   const navigate = useNavigate();
+  const { token } = useParams();
 
   const handleNavigateToResetPassword = () => {
-    navigate('/auth/reset-password');
+    if (token) {
+      navigate(`/auth/reset-password/${token}`);
+    } else {
+      console.error('Token is missing');
+    }
   };
 
   return (
     <Box sx={screen}>
       <Card sx={content}>
-        {/* Image and title */}
         <Box sx={head}>
           <Box sx={img}>
             <img src={email} style={{ width: '100%' }} alt="Email Icon" />
           </Box>
-
-          {/* Verify Account Title */}
           <Box sx={resetTitle}>
             <Typography
               sx={{

@@ -166,3 +166,12 @@ export const RegisterSchoolValidator = createFormSchema([
 
 // Login Validator :
 export const LoginValidator = createFormSchema(['email', 'password']);
+
+// Forgot Password Validator :
+export const ForgotPasswordValidator = createFormSchema(['email']);
+
+// Reset Password Validator :
+export const ResetPasswordValidator = createFormSchema([
+  'password',
+  'passwordConfirm',
+]);

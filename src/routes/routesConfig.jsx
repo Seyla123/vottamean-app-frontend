@@ -8,9 +8,10 @@ import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 
 import NotFoundPage from '../pages/NotFoundPage';
+import UnauthorizedPage from '../pages/UnauthorizedPage';
 
 // admin
-import DashboardPage from '../pages/admin/dashboard/DashboardPage';
+import AdminDashboardPage from '../pages/admin/dashboard/DashboardPage';
 
 import SessionListPage from '../pages/admin/session/SessionListPage';
 import SessionDetailPage from '../pages/admin/session/SessionDetailPage';
@@ -87,7 +88,7 @@ const routesConfig = [
         element: <VerifyResetPassword />,
       },
       {
-        path: 'reset-password',
+        path: 'reset-password/:token',
         element: <PasswordResetPage />,
       },
       {
@@ -97,11 +98,11 @@ const routesConfig = [
     ],
   },
   {
-    path: 'teacher/dashboard',
+    path: 'teacher',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
     children: [
       {
-        path: 'classes',
+        path: 'dashboard',
         children: [
           {
             path: '',
@@ -129,13 +130,13 @@ const routesConfig = [
     ],
   },
   {
-    path: 'admin/dashboard',
+    path: 'admin',
     showSidebar: true,
     element: <ProtectedRoutes adminSite></ProtectedRoutes>,
     children: [
       {
-        path: '',
-        element: <DashboardPage />,
+        path: 'dashboard',
+        element: <AdminDashboardPage />,
         children: [],
       },
       {
@@ -309,6 +310,10 @@ const routesConfig = [
         ],
       },
     ],
+  },
+  {
+    path: '/unauthorized',
+    element: <UnauthorizedPage />,
   },
   {
     path: '*',
