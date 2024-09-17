@@ -1,9 +1,16 @@
+// React and third-party libraries
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Redux hooks and actions
 import { useLoginMutation } from '../../services/authApi';
-import AuthContainerCard from '../../components/auth/AuthContainerCard';
-import LoginForm from '../../components/auth/LoginForm';
+
+// Material UI components
 import { Container, Stack, Snackbar, Alert } from '@mui/material';
+
+// Components
+import LoginForm from '../../components/auth/LoginForm';
+import AuthContainerCard from '../../components/auth/AuthContainerCard';
 
 function LoginPage() {
   const [login, { isSuccess, isLoading, error }] = useLoginMutation();

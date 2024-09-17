@@ -3,6 +3,10 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+// Redux hooks and actions
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFormData } from '../../store/slices/formSlice';
+
 // Material UI components
 import { Box, Typography, TextField, Button, Checkbox } from '@mui/material';
 
@@ -10,10 +14,7 @@ import { Box, Typography, TextField, Button, Checkbox } from '@mui/material';
 import HeaderTitle from './HeaderTitle';
 import { Link } from 'react-router-dom';
 
-// Redux hooks and actions
-import { useSelector, useDispatch } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
-
+// Validator
 import { getStartSignupValidator } from '../../validators/validationSchemas';
 
 const GetStartSignUp = ({ nextStep }) => {
@@ -45,8 +46,8 @@ const GetStartSignUp = ({ nextStep }) => {
 
   // 5. Handle form submission
   const onSubmit = (data) => {
-    dispatch(updateFormData(data)); // Update Redux state with form data
-    nextStep(); // Proceed to the next step
+    dispatch(updateFormData(data));
+    nextStep();
   };
 
   return (

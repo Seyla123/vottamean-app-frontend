@@ -1,4 +1,13 @@
+// React and third-party libraries
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Link } from 'react-router-dom';
+
+// Redux hooks and actions
+import { useForgotPasswordMutation } from '../../services/authApi';
+
+// Material UI components
 import {
   Box,
   Typography,
@@ -8,13 +17,13 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+
+// Custom components
 import GoBackButton from '../../components/common/GoBackButton';
 import forgetIcon from '../../assets/icon/forget.png';
-import { useForgotPasswordMutation } from '../../services/authApi';
+
+// Validator
 import { ForgotPasswordValidator } from '../../validators/validationSchemas';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 function PasswordForgotPage() {
   const [openError, setOpenError] = useState(false);

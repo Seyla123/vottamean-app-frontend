@@ -1,7 +1,12 @@
 import React, { useEffect } from 'react';
-import { Box, Typography, Button, Card } from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+
+
 import { useVerifyEmailMutation } from '../../services/authApi';
+
+// Material UI components
+import { Box, Typography, Button, Card } from '@mui/material';
+
 import verify from '../../assets/icon/verify.png';
 
 function VerifyEmailPage() {

@@ -88,7 +88,7 @@ const routesConfig = [
         element: <VerifyResetPassword />,
       },
       {
-        path: 'reset-password',
+        path: 'reset-password/:token',
         element: <PasswordResetPage />,
       },
       {

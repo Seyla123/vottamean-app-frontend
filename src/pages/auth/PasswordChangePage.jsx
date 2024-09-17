@@ -1,7 +1,13 @@
+// React and third-party libraries
 import React from 'react';
+
+// Material UI components
 import { Box, Typography, TextField, Button, Card } from '@mui/material';
+
+// Icons
 import GoBackButton from '../../components/common/GoBackButton';
 import change from '../../assets/icon/change.png';
+
 function PasswordChangePage() {
   return (
     <Box sx={screen}>

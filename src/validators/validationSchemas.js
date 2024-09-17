@@ -175,4 +175,3 @@ export const ResetPasswordValidator = createFormSchema([
   'password',
   'passwordConfirm',
 ]);
-
