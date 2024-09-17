@@ -7,17 +7,45 @@ const authSlice = createSlice({
     isAuthenticated: false,
     user: null,
   },
-  reducers: {},
+  reducers: {
+    // This action is used to reset the authentication state
+    logout: (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
+    // Handle login success (uses credentials stored in cookies)
     builder.addMatcher(
       authApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
-        console.log('Login fulfilled payload:', payload);
+        state.isAuthenticated = true;
+        state.user = payload.data; // Assume the backend sends back user data
+      },
+    );
+
+    // Handle logout
+    builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+    });
+
+    // Check if the user is already authenticated
+    builder.addMatcher(
+      authApi.endpoints.checkAuth.matchFulfilled,
+      (state, { payload }) => {
         state.isAuthenticated = true;
         state.user = payload.data;
       },
     );
+
+    // Handle failed authentication check
+    builder.addMatcher(authApi.endpoints.checkAuth.matchRejected, (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
+    });
   },
 });
 
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

@@ -8,6 +8,7 @@ export const authApi = baseApi.injectEndpoints({
         url: 'auth/signup',
         method: 'POST',
         body: user,
+        credentials: 'include', // Include cookies for signup
       }),
       providesTags: ['Auth'],
     }),
@@ -17,6 +18,7 @@ export const authApi = baseApi.injectEndpoints({
       query: ({ verificationToken, tempToken }) => ({
         url: `auth/verify-email/${verificationToken}?token=${tempToken}`,
         method: 'GET',
+        credentials: 'include', // Include credentials for email verification
       }),
       invalidatesTags: ['Auth'],
     }),
@@ -27,7 +29,7 @@ export const authApi = baseApi.injectEndpoints({
         url: 'auth/login',
         method: 'POST',
         body: user,
-        credentials: 'include',
+        credentials: 'include', // Include cookies for login
       }),
     }),
 
@@ -36,6 +38,7 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({
         url: 'auth/logout',
         method: 'POST',
+        credentials: 'include', // Ensure the cookie is cleared
       }),
       providesTags: ['Auth'],
     }),
@@ -69,6 +72,7 @@ export const authApi = baseApi.injectEndpoints({
         url: 'auth/update-password',
         method: 'PATCH',
         body: data,
+        credentials: 'include', // Include credentials for secure update
       }),
       providesTags: ['Auth'],
     }),
@@ -78,6 +82,7 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({
         url: 'auth/me',
         method: 'GET',
+        credentials: 'include', // Include credentials to check authorization
       }),
       providesTags: ['Auth'],
     }),
