@@ -19,7 +19,10 @@ import {
   StepLabel,
   Typography,
   Alert,
+  Snackbar,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Custom component for card layout
 import AuthContainerCard from '../../components/auth/AuthContainerCard';
@@ -55,10 +58,12 @@ function SignupPage() {
   const [stepActive, setStepActive] = useState(0);
 
   // 4. Hook for calling signup API and tracking its state
-  const [signup, { isError, error, isSuccess }] = useSignupMutation();
+  const [signup] = useSignupMutation();
 
-  // 5. Manage the submission state
-  const [submitMessage, setSubmitMessage] = useState('');
+  // 5. Manage the submission state and Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   // 6. Function to handle form data changes and update Redux store
   const handleFormChange = (stepData) => {
@@ -93,17 +98,28 @@ function SignupPage() {
       // 9.2 Send the formatted data to the API
       await signup(formattedData).unwrap();
 
-      // 9.3 On success, set a success message
-      setSubmitMessage('Your account has been successfully created.');
+      // 9.3 On success, set a success message and open Snackbar
+      setSnackbarMessage(
+        'Your account has been successfully created. Please verify your email.',
+      );
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
     } catch (err) {
-      // 9.4 On error, display a user-friendly message
-      setSubmitMessage(
+      // 9.4 On error, set an error message and open Snackbar
+      setSnackbarMessage(
         'There was an issue with your signup. Please try again.',
       );
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
-  // 10. Array of forms, each corresponding to a signup step
+  // 10. Function to handle Snackbar close
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  // 11. Array of forms, each corresponding to a signup step
   const stepForms = [
     <GetStartSignUpForm
       onClickBack={handleBack}
@@ -132,7 +148,7 @@ function SignupPage() {
       maxWidth="lg"
       sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
     >
-      {/* 11. Display Stepper at the top to show current step */}
+      {/* 12. Display Stepper at the top to show current step */}
       <Box sx={{ width: 1, paddingTop: { xs: 3, md: 4 } }}>
         <Stepper activeStep={stepActive} alternativeLabel>
           {steps.map((label) => (
@@ -143,31 +159,36 @@ function SignupPage() {
         </Stepper>
       </Box>
 
-      {/* 12. Show the form for the current step */}
+      {/* 13. Show the form for the current step */}
       <AuthContainerCard sideCard={stepActive === 3 ? 'right' : 'left'}>
         {stepForms[stepActive]}
       </AuthContainerCard>
 
-      {/* 13. Show success or error message when signup is completed */}
-      {isSuccess && (
-        <Alert severity="success" sx={{ textAlign: 'center', mt: 2 }}>
-          Your account has been successfully created. Please check your email
-          for confirmation.
+      {/* 14. Display Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        action={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleSnackbarClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
         </Alert>
-      )}
-      {isError && (
-        <Alert severity="error" sx={{ textAlign: 'center', mt: 2 }}>
-          Signup failed:{' '}
-          {error?.data?.message || 'Something went wrong. Please try again.'}
-        </Alert>
-      )}
-
-      {/* 14. Additional submit message for user feedback */}
-      {submitMessage && (
-        <Typography textAlign="center" variant="body1" mt={2}>
-          {submitMessage}
-        </Typography>
-      )}
+      </Snackbar>
     </Container>
   );
 }
