@@ -1,99 +1,120 @@
+import { useDispatch, useSelector } from 'react-redux';
 import React from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { AppProvider } from '@toolpad/core/AppProvider';
-import Logo from '../../assets/images/Logo.png';
-import { extendTheme } from '@mui/material';
 
-import { Box } from '@mui/system';
-import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { Container } from '@mui/material';
+import { useLogoutMutation } from '../../services/authApi';
+import { logout as logoutAction } from '../../store/slices/authSlice';
+
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
+import Logo from '../../assets/images/Logo.png';
+
+import { extendTheme, Box, Container } from '@mui/material';
+import { AppProvider } from '@toolpad/core/AppProvider';
+import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 
 const Layout = ({ teacherSite, adminSite }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
+  // 1. Initialize navigation and location hooks for routing
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-    const [session, setSession] = React.useState({
-        user: {
-            name: 'Selena',
-            email: 'selena@gmail.com',
-            image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        },
-    });
+  // 2. Fetch the current user from the Redux store to get user details
+  const { user } = useSelector((state) => state.auth);
 
-    const theme = extendTheme({
-        breakpoints: {
-            values: {
-                xs: 0,
-                sm: 600,
-                md: 1200,
-                lg: 1200,
-                xl: 1536,
-            },
-        },
-    });
+  // 3. Initialize the logout mutation using the custom API hook
+  const [logout] = useLogoutMutation();
 
-    const authentication = React.useMemo(() => {
-        return {
-            signIn: () => {
-                setSession({
-                    user: {
-                        name: 'Selena',
-                        email: 'selena@gmail.com',
-                        image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                    },
-                });
-            },
-            signOut: () => {
-                setSession(null);
-            },
-        };
-    }, []);
+  // 4. Define the function to handle the logout process
+  const handleLogout = async () => {
+    try {
+      // 4.1. Call the API to log the user out and unwrap the response to handle success or errors
+      await logout().unwrap();
 
-    const router = React.useMemo(() => {
-        return {
-            pathname: location.pathname,
-            searchParams: new URLSearchParams(location.search),
-            navigate: path => navigate(path),
-        };
-    }, [location, navigate]);
-    return (
-        <AppProvider
-            branding={{
-                title: '',
-                logo: (
-                    <img
-                        src={Logo}
-                        alt='WaveTrack'
-                        style={{
-                            width: '150px',
-                            height: '100%',
-                            objectFit: 'contain',
-                        }}
-                    />
-                ),
+      // 4.2. Dispatch a logout action to clear the authentication state in Redux
+      dispatch(logoutAction());
+
+      // 4.3. Navigate the user back to the login page after successful logout
+      navigate('/auth/login');
+    } catch (error) {
+      // Handle potential errors during logout
+      console.error('Failed to logout:', error);
+    }
+  };
+
+  // 5. Set up the Material UI theme for responsive design and custom breakpoints
+  const theme = extendTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 1200,
+        lg: 1200,
+        xl: 1536,
+      },
+    },
+  });
+
+  // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
+  const router = React.useMemo(() => {
+    return {
+      pathname: location.pathname,
+      searchParams: new URLSearchParams(location.search),
+      navigate: (path) => navigate(path),
+    };
+  }, [location, navigate]);
+
+  // 7. Render the AppProvider component, which provides context for layout, navigation, authentication, and theming
+  return (
+    <AppProvider
+      branding={{
+        title: '',
+        logo: (
+          <img
+            src={Logo}
+            alt="WaveTrack"
+            style={{
+              width: '150px',
+              height: '100%',
+              objectFit: 'contain',
             }}
-            navigation={teacherSite ? teacherSiteNavigation : navigation}
-            router={router}
-            theme={theme}
-            session={session}
-            authentication={authentication}
-        >
-            {/* Render the component to show different sidebar layout in teacher and admin site */}
-            {teacherSite || adminSite ? (
-                <Box paddingTop={2}>
-                    {/* Render other components or nothing based on your requirements */}
-                    <DashboardLayout>
-                        <Container maxWidth='xl'>
-                            <Outlet />
-                        </Container>
-                    </DashboardLayout>
-                </Box>
-            ) : (
-                <Outlet />
-            )}
-        </AppProvider>
-    );
+          />
+        ),
+      }}
+      // 8. Set navigation based on the site type (teacher/admin) using conditional logic
+      navigation={teacherSite ? teacherSiteNavigation : navigation}
+      // 9. Pass router details for navigation functionality
+      router={router}
+      // 10. Apply the customized theme
+      theme={theme}
+      // 11. Set the session object, which includes current user details like name, email, and image
+      session={{
+        user: {
+          name: user?.name || '',
+          email: user?.email || '',
+          image: user?.image || 'https://via.placeholder.com/150',
+        },
+      }}
+      // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)
+      authentication={{
+        signIn: () => {},
+        signOut: handleLogout,
+      }}
+    >
+      {teacherSite || adminSite ? (
+        // 13. Conditional rendering of the dashboard layout for teacher or admin sites
+        <Box paddingTop={2}>
+          <DashboardLayout>
+            <Container maxWidth="xl">
+              <Outlet />
+            </Container>
+          </DashboardLayout>
+        </Box>
+      ) : (
+        // 14. Render the Outlet for any other routes or layouts
+        <Outlet />
+      )}
+    </AppProvider>
+  );
 };
 
 export default Layout;
