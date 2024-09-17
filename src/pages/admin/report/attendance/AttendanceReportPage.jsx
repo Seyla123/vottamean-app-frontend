@@ -243,7 +243,6 @@ const gridContainer = {
   justifyContent: "center",
   p: 1,
   width: "100%",
-  justifyContent: "center",
 }
 const gridIcon = {
   display: "flex",
