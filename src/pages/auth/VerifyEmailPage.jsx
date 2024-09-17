@@ -5,8 +5,8 @@ import { useVerifyEmailMutation } from '../../services/authApi';
 import verify from '../../assets/icon/verify.png';
 
 function VerifyEmailPage() {
-  const { verificationToken } = useParams(); // Get verificationToken from URL
-  const location = useLocation(); // Get query parameters
+  const { verificationToken } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
 
   // Extract 'tempToken' from the query string

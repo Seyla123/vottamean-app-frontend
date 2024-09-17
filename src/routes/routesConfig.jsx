@@ -11,7 +11,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 
 // admin
-import DashboardPage from '../pages/admin/dashboard/DashboardPage';
+import AdminDashboardPage from '../pages/admin/dashboard/DashboardPage';
 
 import SessionListPage from '../pages/admin/session/SessionListPage';
 import SessionDetailPage from '../pages/admin/session/SessionDetailPage';
@@ -98,11 +98,11 @@ const routesConfig = [
     ],
   },
   {
-    path: 'teacher/dashboard',
+    path: 'teacher',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
     children: [
       {
-        path: 'classes',
+        path: 'dashboard',
         children: [
           {
             path: '',
@@ -130,13 +130,13 @@ const routesConfig = [
     ],
   },
   {
-    path: 'admin/dashboard',
+    path: 'admin',
     showSidebar: true,
     element: <ProtectedRoutes adminSite></ProtectedRoutes>,
     children: [
       {
-        path: '',
-        element: <DashboardPage />,
+        path: 'dashboard',
+        element: <AdminDashboardPage />,
         children: [],
       },
       {
