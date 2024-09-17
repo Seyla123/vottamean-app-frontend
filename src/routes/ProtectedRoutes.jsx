@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useCheckAuthQuery } from '../services/authApi';
 import Layout from '../components/layout/Layout';
-
+import LoadingPage from '../pages/LoadingPage';
 const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   // Fetch authentication state from Redux
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -11,7 +11,7 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   const { isLoading } = useCheckAuthQuery();
 
   // If checkAuth query is still loading, we can render a loading screen
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingPage/>;
 
   // If not authenticated, redirect to the login page
   if (!isAuthenticated) {
