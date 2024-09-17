@@ -109,9 +109,9 @@ const routesConfig = [
             element: <TeacherClassPage />,
           },
           {
-            path: 'attendance/:id',
+            path: 'class/:id',
             element: <TeacherAttendanceListPage />,
-          },
+          }
         ],
       },
       {
@@ -132,7 +132,7 @@ const routesConfig = [
   {
     path: 'admin',
     showSidebar: true,
-    element: <ProtectedRoutes adminSite></ProtectedRoutes>,
+    element: <ProtectedRoutes adminSite/>,
     children: [
       {
         path: 'dashboard',
