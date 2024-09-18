@@ -181,3 +181,9 @@ export const ResetPasswordValidator = createFormSchema([
   'password',
   'passwordConfirm',
 ]);
+
+// Update Password Validator
+export const ChangePasswordValidator = createFormSchema([
+  'password',
+  'passwordConfirm',
+]);

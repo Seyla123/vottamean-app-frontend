@@ -1,25 +1,73 @@
 // React and third-party libraries
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useUpdatePasswordMutation } from '../../services/authApi';
 
 // Material UI components
-import { Box, Typography, TextField, Button, Card } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 
 // Icons
 import GoBackButton from '../../components/common/GoBackButton';
 import change from '../../assets/icon/change.png';
 
+// Validator
+import { ChangePasswordValidator } from '../../validators/validationSchemas';
+
 function PasswordChangePage() {
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+
+  // Hook form setup with Yup validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(ChangePasswordValidator),
+  });
+
+  const [updatePassword, { isLoading, isError, error, isSuccess }] =
+    useUpdatePasswordMutation();
+
+  const handlePasswordChange = async (formData) => {
+    try {
+      await updatePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      }).unwrap();
+      setOpenSuccess(true);
+      reset();
+    } catch (err) {
+      setOpenError(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenError(false);
+    setOpenSuccess(false);
+  };
+
   return (
     <Box sx={screen}>
       <Card sx={content}>
-        {/* back button and img  */}
+        {/* Back button and image */}
         <Box>
           <GoBackButton />
           <Box sx={img}>
-            <img src={change} style={{ width: '100%' }}></img>
+            <img src={change} style={{ width: '100%' }} alt="Change Password" />
           </Box>
         </Box>
-        {/* Reset Password Title  */}
+        {/* Reset Password Title */}
         <Box sx={resetTitle}>
           <Typography
             sx={{ fontSize: { xs: '24px', md: '36px' }, fontWeight: 'bold' }}
@@ -30,15 +78,21 @@ function PasswordChangePage() {
             Set a new password here!
           </Typography>
         </Box>
-        {/* Text input */}
+
+        {/* Form with password inputs */}
         <Box sx={textInputContainer}>
           <Box sx={textfield}>
             <Typography>Current Password</Typography>
             <TextField
               id="currentPassword"
-              placeholder="current password"
+              placeholder="Current password"
               variant="outlined"
-              sx={{ width: '100%' }}
+              type="password"
+              {...register('currentPassword')}
+              error={!!errors.currentPassword}
+              helperText={
+                errors.currentPassword ? errors.currentPassword.message : ''
+              }
             />
           </Box>
 
@@ -46,9 +100,12 @@ function PasswordChangePage() {
             <Typography>New Password</Typography>
             <TextField
               id="newPassword"
-              placeholder="new password"
+              placeholder="New password"
               variant="outlined"
-              sx={{ width: '100%' }}
+              type="password"
+              {...register('newPassword')}
+              error={!!errors.newPassword}
+              helperText={errors.newPassword ? errors.newPassword.message : ''}
             />
           </Box>
 
@@ -56,19 +113,63 @@ function PasswordChangePage() {
             <Typography>Confirm Password</Typography>
             <TextField
               id="confirmPassword"
-              placeholder="confirm password"
+              placeholder="Confirm password"
               variant="outlined"
-              sx={{ width: '100%' }}
+              type="password"
+              {...register('confirmPassword')}
+              error={!!errors.confirmPassword}
+              helperText={
+                errors.confirmPassword ? errors.confirmPassword.message : ''
+              }
             />
           </Box>
         </Box>
 
         <Button
           variant="contained"
+          onClick={handleSubmit(handlePasswordChange)}
+          disabled={isLoading}
           sx={{ width: '100%', height: { sx: '42px', md: '56px' } }}
         >
-          Save changes
+          {isLoading ? 'Saving...' : 'Save changes'}
         </Button>
+
+        {/* Snackbar for displaying error */}
+        {openError && (
+          <Snackbar
+            open={openError}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="error"
+              sx={{ width: '100%' }}
+            >
+              {error?.data?.message ||
+                'Failed to update password. Please try again'}
+            </Alert>
+          </Snackbar>
+        )}
+
+        {/* Snackbar for displaying success */}
+        {openSuccess && (
+          <Snackbar
+            open={openSuccess}
+            autoHideDuration={3000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: '100%' }}
+            >
+              Password updated successfully!
+            </Alert>
+          </Snackbar>
+        )}
       </Card>
     </Box>
   );
