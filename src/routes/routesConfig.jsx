@@ -91,10 +91,6 @@ const routesConfig = [
         path: 'reset-password/:token',
         element: <PasswordResetPage />,
       },
-      {
-        path: 'change-password',
-        element: <PasswordChangePage />,
-      },
     ],
   },
   {
@@ -111,7 +107,7 @@ const routesConfig = [
           {
             path: 'class/:id',
             element: <TeacherAttendanceListPage />,
-          }
+          },
         ],
       },
       {
@@ -132,7 +128,7 @@ const routesConfig = [
   {
     path: 'admin',
     showSidebar: true,
-    element: <ProtectedRoutes adminSite/>,
+    element: <ProtectedRoutes adminSite />,
     children: [
       {
         path: 'dashboard',
@@ -274,6 +270,10 @@ const routesConfig = [
               {
                 path: '',
                 element: <AccountProfilePage />,
+              },
+              {
+                path: 'change-password',
+                element: <PasswordChangePage />,
               },
               {
                 path: 'user/update/:id',

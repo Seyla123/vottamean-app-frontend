@@ -1,5 +1,5 @@
 // React and third-party libraries
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -22,6 +22,9 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
+  // New state to track submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -40,7 +43,7 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
     }
   }, [formData, setValue]);
 
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = async (data) => {
     const formattedData = {
       ...formData,
       school_name: data.school_name,
@@ -51,13 +54,13 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
     dispatch(updateFormData(formattedData)); // Update Redux with form data
 
     if (onFormChange) {
-      // Ensure onFormChange exists before calling it
       onFormChange(formattedData);
     }
 
-    // Call parent onSubmit (to finalize the signup)
     if (onSubmit) {
-      onSubmit(); // Triggers the final API call from SignupPage
+      setIsSubmitting(true); // Set to true when submission starts
+      await onSubmit(); // Wait for the API call
+      setIsSubmitting(false); // Set back to false when done
     }
   };
 
@@ -107,8 +110,14 @@ const RegisterSchoolForm = ({ onClickBack, onFormChange, onSubmit }) => {
               helperText={errors.address?.message}
             />
           </Box>
-          <Button type="submit" variant="contained" color="primary">
-            Start Now
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isSubmitting} // Disable while submitting
+          >
+            {isSubmitting ? 'Starting Now' : 'Start Now'}{' '}
+            {/* Conditionally render button text */}
           </Button>
         </Box>
       </form>

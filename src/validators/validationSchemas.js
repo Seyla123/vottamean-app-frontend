@@ -79,16 +79,43 @@ export const passwordConfirmSchema = Yup.string()
   .oneOf([Yup.ref('password'), null], 'Passwords must match')
   .required('Confirm Password is required');
 
-// Phone number validator
+// Current password validator
+export const currentPasswordSchema = Yup.string().required(
+  'Current password is required',
+);
+
+// New Password Validator
+export const newPasswordSchema = Yup.string()
+  .required('New password is required')
+  .min(8, 'New password must be at least 8 characters')
+  .matches(/[a-zA-Z]/, 'New password must contain at least one letter')
+  .matches(/[0-9]/, 'New password must contain at least one number')
+  .notOneOf(
+    [Yup.ref('currentPassword'), null],
+    'New password cannot be the same as the old password',
+  );
+
+// New Password Confirm Validator
+export const newPasswordConfirmSchema = Yup.string()
+  .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+  .required('Confirm New Password is required');
+
+// Phone number Validator
 export const phoneSchema = Yup.string()
-  .trim() // Remove leading and trailing spaces
+  .trim()
   .required('Phone number is required')
-  .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits');
+  .matches(/^\d{9,15}$/, 'Phone number must be between 10 and 15 digits')
+  .test(
+    'length',
+    'Phone number must be between 10 and 15 digits',
+    (value) => value && value.length >= 9 && value.length <= 15,
+  );
 
 // Address validator
 export const addressSchema = Yup.string()
-  .required('Address is required')
-  .min(10, 'Address must be at least 10 characters long')
+  .trim()
+  .nullable()
+  .notRequired()
   .max(200, 'Address must be less than 200 characters');
 
 // Age validator
@@ -110,6 +137,9 @@ export const createFormSchema = (fields) => {
     email: emailSchema,
     password: passwordSchema,
     passwordConfirm: passwordConfirmSchema,
+    currentPassword: currentPasswordSchema,
+    newPassword: newPasswordSchema,
+    newPasswordConfirm: newPasswordConfirmSchema,
     name: nameSchema,
     first_name: firstNameSchema,
     last_name: lastNameSchema,
@@ -174,4 +204,11 @@ export const ForgotPasswordValidator = createFormSchema(['email']);
 export const ResetPasswordValidator = createFormSchema([
   'password',
   'passwordConfirm',
+]);
+
+// Update Password Validator
+export const ChangePasswordValidator = createFormSchema([
+  'currentPassword',
+  'newPassword',
+  'newPasswordConfirm',
 ]);

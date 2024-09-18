@@ -66,10 +66,10 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: ['Auth'],
     }),
 
-    // Update password
-    updatePassword: builder.mutation({
+    // Change password
+    changePassword: builder.mutation({
       query: (data) => ({
-        url: 'auth/update-password',
+        url: 'auth/change-password',
         method: 'PATCH',
         body: data,
         credentials: 'include',
@@ -96,6 +96,6 @@ export const {
   useVerifyEmailMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useUpdatePasswordMutation,
+  useChangePasswordMutation,
   useCheckAuthQuery,
 } = authApi;
