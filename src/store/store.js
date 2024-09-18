@@ -5,6 +5,7 @@ import formReducer from './slices/formSlice';
 import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
 import { attendanceApi } from '../services/attendanceApi';
+import { teacherApi } from '../services/teacherApi';
 
 const store = configureStore({
   reducer: {
@@ -13,9 +14,10 @@ const store = configureStore({
     attendance : attendanceReducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [teacherApi.reducerPath]: teacherApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, attendanceApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware, attendanceApi.middleware, teacherApi.middleware),
 });
 
 setupListeners(store.dispatch);

@@ -11,9 +11,56 @@ import {
 import SubHeader from './SubHeader';
 import DatePickerComponent from './DatePickerComponent';
 import ButtonContainer from '../common/ButtonContainer';
-const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
-  const [gender, setGender] = useState('');
+import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useSignUpTeacherMutation } from '../../services/teacherApi';
+import { createFormSchema } from '../../validators/validationSchemas';
+// const schema = yup.object().shape({
+//   firstName: yup.string().required('First name is required'),
+//   lastName: yup.string().required('Last name is required'),
+//   phoneNumber: yup.number().min(10).max(10).required('Phone number is required'),
+//   gender: yup.string().required('Gender is required'),
+//   dob: yup.date().required('Date of birth is required'),
+//   address: yup.string().required('Address is required'),
+// })
 
+const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
+  // Form validation
+  const [signUpTeacher] = useSignUpTeacherMutation();
+  const schema = createFormSchema([
+    'firstName',
+    'lastName',
+    'phoneNumber',
+    'gender',
+    'dob',
+    'address',
+  ]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
+  // This will only proceed to next if form is valid
+  const handleSubmitNext = async (data) => {
+    if (isValid) {
+      try {
+        await signUpTeacher(data);
+        handleNext();
+      } catch (error) {
+        console.error('Teacher info submission failed', error);
+      }
+    } else {
+      console.log('Form contains errors, cannot proceed');
+    }
+  };
+
+  const [gender, setGender] = useState('');
   const handleChangeGender = (e) => {
     setGender(e.target.value);
   };
@@ -27,38 +74,30 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
       <SubHeader title={'Teacher Information'} />
 
       <Box
+        onSubmit={handleSubmit(handleSubmitNext)}
         component="form"
-        width={'100%'}
-        mt={2}
-        display={'flex'}
-        flexDirection={'column'}
         sx={{
+          width: '100%',
+          marginTop: '16px',
           gap: {
             xs: '12px',
             sm: 3,
           },
         }}
       >
-        <Box
-          display={'flex'}
-          flexDirection={'row'}
-          sx={{
-            gap: {
-              xs: '12px',
-              sm: 3,
-            },
-            width: '100%',
-          }}
-        >
+        <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
           {/* name */}
           <Box sx={{ flex: 1 }}>
-            <Box sx={textFieldGap}>
+            <Box name="firstName" sx={textFieldGap}>
               <Typography>First Name</Typography>
               <TextField
                 id="first-name"
                 placeholder="first name"
                 variant="outlined"
                 fullWidth
+                {...register('firstName')}
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
               />
             </Box>
           </Box>
@@ -70,6 +109,9 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
                 placeholder="last name"
                 variant="outlined"
                 fullWidth
+                {...register('lastName')}
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message}
               />
             </Box>
           </Box>
@@ -78,10 +120,12 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
         <Box sx={textFieldGap}>
           <Typography>Gender</Typography>
           <Select
+            {...register('gender')}
             fullWidth
             value={gender}
             onChange={handleChangeGender}
             displayEmpty
+            error={!!errors.gender}
             renderValue={(selected) => {
               if (!selected) {
                 return (
@@ -96,11 +140,18 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
           </Select>
+          {errors.gender && (
+            <Typography color="error">{errors.gender.message}</Typography>
+          )}
         </Box>
         {/* date of birth */}
         <Box sx={textFieldGap}>
           <Typography>Date of Birth</Typography>
-          <DatePickerComponent />
+          <DatePickerComponent
+            {...register('dob')}
+            error={!!errors.dob}
+            helperText={errors.dob?.message}
+          />
         </Box>
         {/* phone number */}
         <Box sx={textFieldGap}>
@@ -110,6 +161,9 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             placeholder="phone number"
             variant="outlined"
             fullWidth
+            {...register('phoneNumber')}
+            error={!!errors.phoneNumber}
+            helperText={errors.phoneNumber?.message}
           />
         </Box>
         {/* address */}
@@ -120,9 +174,11 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             placeholder="address"
             variant="outlined"
             fullWidth
+            {...register('address')}
+            error={!!errors.address}
+            helperText={errors.address?.message}
           />
         </Box>
-
         {/* buttons */}
         <Box
           display={'flex'}
@@ -142,7 +198,7 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
           )}
           {mode === 'create' && (
             <ButtonContainer
-              rightBtn={handleNext}
+              onClick={handleSubmit(handleSubmitNext)}
               leftBtnTitle="Cancel"
               rightBtnTitle="Next"
             />
@@ -154,7 +210,14 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
 };
 
 export default TeacherInfo;
-
+const boxContainer = {
+  width: '100%',
+  marginTop: '16px',
+  gap: {
+    xs: '12px',
+    sm: 3,
+  },
+};
 const profileBox = {
   border: '1px solid',
   borderColor: '#E0E0E0',
@@ -188,15 +251,6 @@ const textFieldGap = {
   display: 'flex',
   gap: 0.5,
   flexDirection: 'column',
-};
-
-const buttonStyle = {
-  width: { xs: '100%', sm: '170px' },
-};
-const buttonCancel = {
-  width: { xs: '100%', sm: '170px' },
-  borderColor: 'inherit',
-  color: 'inherit',
 };
 
 const imgStyle = {

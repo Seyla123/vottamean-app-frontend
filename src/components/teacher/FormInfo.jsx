@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
-import TeacherInfo from "./TeacherInfo";
-import AccountInfo from "./AccountInfo";
+import TeacherForm from './TeacherForm'
+// import TeacherInfo from "./TeacherInfo";
+// import AccountInfo from "./AccountInfo";
 
 function FormInfo() {
   const [value, setValue] = useState("1");
@@ -10,29 +11,24 @@ function FormInfo() {
     setValue(newValue);
   };
 
-  const handleNext = () => {
-    if (value === "1") {
-      setValue("2");
-    }
-  };
+  // const handleNext = () => {
+  //   if (value === "1") {
+  //     setValue("2");
+  //   }
+  // };
 
-  const handleBack = () => {
-    if (value === "2") {
-      setValue("1");
-    }
-  };
+  // const handleBack = () => {
+  //   if (value === "2") {
+  //     setValue("1");
+  //   }
+  // };
 
   return (
     <>
       <Box>
-        <Tabs value={value} onChange={handleChange} aria-label="tabs information">
-          <Tab label="TEACHER INFORMATION" value="1" sx={tabSize} />
-          <Tab label="ACCOUNT INFORMATION" value="2" sx={tabSize} />
-        </Tabs>
-      </Box>
+        <TeacherForm/>
 
-      {value === "1" && <TeacherInfo handleNext={handleNext} />}
-      {value === "2" && <AccountInfo handleBack={handleBack} />}
+      </Box>
     </>
   );
 }
