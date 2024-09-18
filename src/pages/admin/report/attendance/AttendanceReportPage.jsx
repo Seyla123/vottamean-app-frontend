@@ -8,7 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
-import AttendanceTable from "../../../../components/teacherSite/AttendanceTable";
+import AttendanceTable from "../../../../components/attendance/AttendanceReportTable";
 import CalendarImage from "../../../../assets/icon/calendar.png";
 import FilterComponent from "../../../../components/common/FilterComponent";
 import { shadow } from "../../../../styles/global";
@@ -190,8 +190,7 @@ const AttendanceReportPage = () => {
       <AttendanceTable
         rows={rows}
         columns={columns}
-        status={statusDetails.map((s) => s.label)}
-        hideColumns={["time", "subject", "class", "address"]}
+        hideColumns={["Name","id","subject", "class", "address"]}
         onStatusChange={handleStatusChange}
       />
 

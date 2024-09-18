@@ -2,34 +2,24 @@ import React from 'react';
 import { Chip } from '@mui/material';
 import { CheckCheckIcon, AlarmClockIcon, CircleX, PencilIcon } from 'lucide-react';
 
-const statusColor = {
-  1: '#E0F5D7',
-  2: '#FFF3C7',
-  3: '#FADBD8',
-  4: '#D6EAF8',
+const statusObj = {
+  1: { color: '#E0F5D7', icon: <CheckCheckIcon size={16} color="green" />, textColor: 'green' },
+  2: { color: '#FFF3C7', icon: <AlarmClockIcon size={16} color="orange" />, textColor: 'orange' },
+  3: { color: '#FADBD8', icon: <CircleX size={16} color="red" />, textColor: 'red' },
+  4: { color: '#D6EAF8', icon: <PencilIcon size={16} color="blue" />, textColor: 'blue' },
 };
-
-const statusIcon = {
-  1: <CheckCheckIcon size={16} color="green" />,
-  2: <AlarmClockIcon size={16} color="orange" />,
-  3: <CircleX size={16} color="red" />,
-  4: <PencilIcon size={16} color="blue" />,
-};
-
-const getStatusColor = (status) => statusColor[status];
-const getStatusIcon = (status) => statusIcon[status];
-const getStatusTextColor = (status) =>
-  status === 1 ? 'green' : status === 2 ? 'orange' : status === 3 ? 'red' : 'blue';
 
 const StatusChip = ({ status, statusId }) => {
+  const statusConfig = statusObj[statusId];
+
   return (
     <Chip
-      icon={getStatusIcon(statusId)}
+      icon={statusConfig.icon}
       label={status}
       sx={{
-        backgroundColor: getStatusColor(statusId),
+        backgroundColor: statusConfig.color,
         px: '4px',
-        color: getStatusTextColor(statusId),
+        color: statusConfig.textColor,
       }}
       size="small"
     />
