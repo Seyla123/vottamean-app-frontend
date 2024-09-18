@@ -1,12 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, {useEffect, useState } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
 import {
   Grid,
   Typography,
   Box,
   Avatar,
-  Stack,
-  TableContainer,
   Button,
 } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
@@ -21,42 +19,33 @@ import {
   PencilIcon,
 } from "lucide-react";
 import theme from "../../../../styles/theme";
-
-
+import { useGetAllAttendanceQuery } from "../../../../services/attendanceApi";
+import {transformAttendanceData} from "../../../../utils/formatData"
+import LoadingCircle from "../../../../components/loading/LoadingCircle"
 // --- data --------------------------------
 // column styles
 const columns = [
-  { id: "id", label: "ID" },
+  { id: "id", label: "StudentID" },
   { id: "name", label: "Name" },
   { id: "time", label: "Time" },
   { id: "subject", label: "Subject" },
   { id: "class", label: "Class" },
   { id: "address", label: "Address" },
 ];
-// data
-const data = [
-  {
-    id: 31,
-    name: "Kunthea Chhum",
-    time: "7:00 - 8:00",
-    subject: "Web Development",
-    class: "Class 1",
-    address: "Takeo",
-    status: "Present",
-  },
-  {
-    id: 21,
-    name: "Teddy",
-    time: "7:00 - 11:00",
-    subject: "Web Development",
-    class: "Class 2",
-    address: "Takeo",
-    status: "Late",
-  },
-];
 
 const AttendanceReportPage = () => {
-  const [rows, setRows] = useState(data);
+  const { data: allAttendanceData, isLoading, isSuccess } = useGetAllAttendanceQuery();
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    // Transform API response into table data format
+    console.log(allAttendanceData);
+    if(allAttendanceData){
+      const formattedData = transformAttendanceData(allAttendanceData.data)
+      console.log(formattedData);
+      setRows(formattedData);
+    }
+},[allAttendanceData, isLoading, isSuccess])
+
   const [subjectValue, setSubjectValue] = useState("");
   const [classValue, setClassValue] = useState("");
   const [filterValue, setFilterValue] = useState("");
@@ -123,7 +112,9 @@ const AttendanceReportPage = () => {
   const handleExport = () => {
     console.log('click')
   }
-
+  if(isLoading){
+    return <LoadingCircle/>
+  }
   return (
     <FormComponent title={"Attendance Report"} subTitle={"Report"}>
       {/* Cards Grid */}
