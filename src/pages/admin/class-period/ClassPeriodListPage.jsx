@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
-
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 function ClassPeriodListPage() {
     const navigate = useNavigate();
@@ -129,7 +129,7 @@ function ClassPeriodListPage() {
             {/* button add class periods container */}
         <Stack direction="row" justifyContent="flex-end">
             {/* add class periods button */}
-            <Link to="/dashboard/class-periods/create">
+            <Link to="/admin/class-periods/create">
             <Button
                 size='large'
                 variant='contained'
