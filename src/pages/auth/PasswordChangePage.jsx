@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useUpdatePasswordMutation } from '../../services/authApi';
+
+// Redux hooks and actions
+import { useChangePasswordMutation } from '../../services/authApi';
 
 // Material UI components
 import {
@@ -36,18 +38,21 @@ function PasswordChangePage() {
     resolver: yupResolver(ChangePasswordValidator),
   });
 
-  const [updatePassword, { isLoading, isError, error, isSuccess }] =
-    useUpdatePasswordMutation();
+  const [changePassword, { isLoading, error }] = useChangePasswordMutation();
 
   const handlePasswordChange = async (formData) => {
+    console.log('Form Data:', formData);
     try {
-      await updatePassword({
+      const response = await changePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
       }).unwrap();
+
+      console.log('API Response:', response);
       setOpenSuccess(true);
       reset();
     } catch (err) {
+      console.error('API Error:', err);
       setOpenError(true);
     }
   };
@@ -112,14 +117,16 @@ function PasswordChangePage() {
           <Box sx={textfield}>
             <Typography>Confirm Password</Typography>
             <TextField
-              id="confirmPassword"
+              id="newPasswordConfirm"
               placeholder="Confirm password"
               variant="outlined"
               type="password"
-              {...register('confirmPassword')}
-              error={!!errors.confirmPassword}
+              {...register('newPasswordConfirm')}
+              error={!!errors.newPasswordConfirm}
               helperText={
-                errors.confirmPassword ? errors.confirmPassword.message : ''
+                errors.newPasswordConfirm
+                  ? errors.newPasswordConfirm.message
+                  : ''
               }
             />
           </Box>
@@ -129,7 +136,7 @@ function PasswordChangePage() {
           variant="contained"
           onClick={handleSubmit(handlePasswordChange)}
           disabled={isLoading}
-          sx={{ width: '100%', height: { sx: '42px', md: '56px' } }}
+          sx={{ width: '100%', height: { xs: '42px', md: '56px' } }}
         >
           {isLoading ? 'Saving...' : 'Save changes'}
         </Button>

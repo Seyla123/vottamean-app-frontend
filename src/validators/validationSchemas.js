@@ -79,7 +79,28 @@ export const passwordConfirmSchema = Yup.string()
   .oneOf([Yup.ref('password'), null], 'Passwords must match')
   .required('Confirm Password is required');
 
-// Phone number validator
+// Current password validator
+export const currentPasswordSchema = Yup.string().required(
+  'Current password is required',
+);
+
+// New Password Validator
+export const newPasswordSchema = Yup.string()
+  .required('New password is required')
+  .min(8, 'New password must be at least 8 characters')
+  .matches(/[a-zA-Z]/, 'New password must contain at least one letter')
+  .matches(/[0-9]/, 'New password must contain at least one number')
+  .notOneOf(
+    [Yup.ref('currentPassword'), null],
+    'New password cannot be the same as the old password',
+  );
+
+// New Password Confirm Validator
+export const newPasswordConfirmSchema = Yup.string()
+  .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+  .required('Confirm New Password is required');
+
+// Phone number Validator
 export const phoneSchema = Yup.string()
   .trim()
   .required('Phone number is required')
@@ -116,6 +137,9 @@ export const createFormSchema = (fields) => {
     email: emailSchema,
     password: passwordSchema,
     passwordConfirm: passwordConfirmSchema,
+    currentPassword: currentPasswordSchema,
+    newPassword: newPasswordSchema,
+    newPasswordConfirm: newPasswordConfirmSchema,
     name: nameSchema,
     first_name: firstNameSchema,
     last_name: lastNameSchema,
@@ -184,6 +208,7 @@ export const ResetPasswordValidator = createFormSchema([
 
 // Update Password Validator
 export const ChangePasswordValidator = createFormSchema([
-  'password',
-  'passwordConfirm',
+  'currentPassword',
+  'newPassword',
+  'newPasswordConfirm',
 ]);

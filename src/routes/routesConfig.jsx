@@ -91,10 +91,6 @@ const routesConfig = [
         path: 'reset-password/:token',
         element: <PasswordResetPage />,
       },
-      {
-        path: 'change-password',
-        element: <PasswordChangePage />,
-      },
     ],
   },
   {
@@ -274,6 +270,10 @@ const routesConfig = [
               {
                 path: '',
                 element: <AccountProfilePage />,
+              },
+              {
+                path: 'change-password',
+                element: <PasswordChangePage />,
               },
               {
                 path: 'user/update/:id',
