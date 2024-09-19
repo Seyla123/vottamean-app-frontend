@@ -28,10 +28,10 @@ function ClassPeriodDetailPage() {
   const { period_id, start_time, end_time } = data.data;
 
   const newArray = {
-    period_id: period_id,
+    'Period id': period_id,
     'Start time': formatTimeTo12Hour(start_time),
     'End time': formatTimeTo12Hour(end_time),
-    period: calculatePeriod(start_time, end_time),
+    'Period': calculatePeriod(start_time, end_time),
   };
 
   return (
