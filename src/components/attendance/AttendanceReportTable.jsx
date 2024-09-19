@@ -12,7 +12,6 @@ import {
   MenuItem,
   useMediaQuery,
   useTheme,
-  Chip,
   Avatar,
   Box,
   TablePagination,
@@ -22,6 +21,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NotFoundImage from '../../assets/images/not-found.jpg';
 import { tableShadow } from '../../styles/global';
 import StatusChip from '../common/StatusChip';
+import { truncate } from '../../utils/truncate';
 const AttendanceReportTable = ({
   rows,
   columns,
@@ -38,19 +38,12 @@ const AttendanceReportTable = ({
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setSelectedRow(null);
   };
 
-
-  const truncate = (text, maxLength) => {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + '...';
-  };
 
   const visibleColumns = columns.filter((col) =>
     isMobile ? !hideColumns.includes(col.id) : true,
@@ -64,6 +57,13 @@ const AttendanceReportTable = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const handleView = (id)=>{
+    console.log('view :',id);
+  }
+  const handleDetele = (id)=>{
+    console.log('delete :',id);
+  }
 
   return (
     <Paper sx={{ ...tableShadow }}>
@@ -126,7 +126,7 @@ const AttendanceReportTable = ({
                         justifyContent: 'flex-end',
                       }}
                     >
-                      <StatusChip status={row.status} statusId={row.status_id}/>
+                      <StatusChip status={row.status} statusId={row.status_id} />
 
                       <IconButton
                         size="small"
@@ -159,7 +159,7 @@ const AttendanceReportTable = ({
                 style={{ objectFit: 'cover' }}
               />
               <Typography variant="h6" color="text.primary" textAlign="center">
-                No student
+                No Attendance Record
               </Typography>
             </Box>
           </Box>
@@ -174,21 +174,18 @@ const AttendanceReportTable = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        {status.map((statusOption) => (
-          <MenuItem
-            key={statusOption}
-            onClick={() => handleStatusChange(statusOption)}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {getStatusIcon(statusOption)}
-              <Box component="span" sx={{ ml: 1 }}>
-                {statusOption}
-              </Box>
-            </Box>
-          </MenuItem>
-        ))}
-      </Menu> */}
+      <Menu
+        id='basic-menu'
+        open={Boolean(anchorEl)}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        anchorEl={anchorEl} 
+        onClose={handleClose}
+      >
+        <MenuItem onClick={()=>{handleView(1)}}>View</MenuItem>
+        <MenuItem onClick={()=>handleDetele(2)}>Delete</MenuItem>
+      </Menu>
     </Paper>
   );
 };
