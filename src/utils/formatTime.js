@@ -9,26 +9,27 @@ export function calculatePeriod(startTime, endTime) {
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-  // Format the start and end times to AM/PM
-  const formattedStart = formatTimeTo12Hour(start);
-  const formattedEnd = formatTimeTo12Hour(end);
+
 
   // Return the formatted period and time range
-  return {
-    period: `${hours}h ${minutes}m`,
-    formattedStart,
-    formattedEnd,
-  };
+  return `${hours}h ${minutes}m`;
 }
-
-export function formatTimeTo12Hour(date) {
-  let hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-
-  hours = hours % 12;
-  hours = hours ? hours : 12; // Hour '0' should be '12'
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-  return `${hours}:${formattedMinutes} ${ampm}`;
-}
+export function formatTimeTo12Hour(timeString) {
+    // Split the input time string to get hours, minutes, and seconds
+    const [hourStr, minuteStr] = timeString.split(':');
+    
+    // Convert hours and minutes to numbers
+    let hours = parseInt(hourStr, 10);
+    const minutes = parseInt(minuteStr, 10);
+    
+    // Determine AM or PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    
+    // Convert hours to 12-hour format
+    hours = hours % 12 || 12; // '0' hour should be '12'
+    
+    // Format minutes with leading zero if necessary
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    
+    return `${hours}:${formattedMinutes} ${ampm}`;
+  }

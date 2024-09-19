@@ -16,15 +16,15 @@ export const classPeriodApi = baseApi.injectEndpoints({
       providesTags: ['ClassPeriods'],
     }),
 
-//     // Fetch detail data
-//     detailClassPeriod: builder.query({
-//       query: (id) => ({
-//         url: `admin/class-periods/${id}`,
-//         method: 'GET',
-//         credentials: 'include',
-//       }),
-//       providesTags: ['ClassPeriods'],
-//     }),
+    // Fetch detail data
+    getClassPeriodById: builder.query({
+      query: (id) => ({
+        url: `periods/${id}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['ClassPeriods'],
+    }),
 
 //     // Create data
 //     createClassPeriod: builder.mutation({
@@ -59,5 +59,5 @@ export const classPeriodApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useViewListClassPeriodQuery } =
+export const { useViewListClassPeriodQuery, useGetClassPeriodByIdQuery } =
   classPeriodApi;
