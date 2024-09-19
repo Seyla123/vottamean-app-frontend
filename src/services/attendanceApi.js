@@ -12,13 +12,15 @@ export const attendanceApi = baseApi.injectEndpoints({
           filter: data.filter,
         },
       }),
+      providesTags: ['Attendance'],
     }),
     deleteAttendance: builder.mutation({
-      mutation: (data) => ({
+      query: (data) => ({
         url: `attendance/${data.id}`,
         method: 'DELETE',
         credentials: 'include',
-      })
+      }),
+      invalidatesTags: ['Attendance'],
     })
   }),
 });
