@@ -1,4 +1,13 @@
-import React, { useState } from 'react';
+
+// const schema = yup.object().shape({
+//   firstName: yup.string().required('First name is required'),
+//   lastName: yup.string().required('Last name is required'),
+//   phoneNumber: yup.number().min(10).max(10).required('Phone number is required'),
+//   gender: yup.string().required('Gender is required'),
+//   dob: yup.date().required('Date of birth is required'),
+//   address: yup.string().required('Address is required'),
+// })
+import React from 'react';
 import {
   Box,
   Button,
@@ -11,23 +20,15 @@ import {
 import SubHeader from './SubHeader';
 import DatePickerComponent from './DatePickerComponent';
 import ButtonContainer from '../common/ButtonContainer';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import { createFormSchema } from '../../validators/validationSchemas';
-// const schema = yup.object().shape({
-//   firstName: yup.string().required('First name is required'),
-//   lastName: yup.string().required('Last name is required'),
-//   phoneNumber: yup.number().min(10).max(10).required('Phone number is required'),
-//   gender: yup.string().required('Gender is required'),
-//   dob: yup.date().required('Date of birth is required'),
-//   address: yup.string().required('Address is required'),
-// })
 
 const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
-  // Form validation
   const [signUpTeacher] = useSignUpTeacherMutation();
+
+  // Form schema using Yup
   const schema = createFormSchema([
     'firstName',
     'lastName',
@@ -37,33 +38,28 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
     'address',
   ]);
 
+  // Hook form setup
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(schema),
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
+  
 
-  // This will only proceed to next if form is valid
+  // Form submission logic
   const handleSubmitNext = async (data) => {
-    if (isValid) {
-      try {
-        await signUpTeacher(data);
-        handleNext();
-      } catch (error) {
-        console.error('Teacher info submission failed', error);
-      }
-    } else {
-      console.log('Form contains errors, cannot proceed');
+    try {
+      await signUpTeacher(data);
+      handleNext();
+    } catch (error) {
+      console.error('Teacher info submission failed', error);
     }
   };
 
-  const [gender, setGender] = useState('');
-  const handleChangeGender = (e) => {
-    setGender(e.target.value);
-  };
 
   return (
     <Box sx={profileBox}>
@@ -74,8 +70,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
       <SubHeader title={'Teacher Information'} />
 
       <Box
-        onSubmit={handleSubmit(handleSubmitNext)}
         component="form"
+        onSubmit={handleSubmit(handleSubmitNext)}
         sx={{
           width: '100%',
           marginTop: '16px',
@@ -86,9 +82,9 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
         }}
       >
         <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-          {/* name */}
+          {/* First Name */}
           <Box sx={{ flex: 1 }}>
-            <Box name="firstName" sx={textFieldGap}>
+            <Box sx={textFieldGap}>
               <Typography>First Name</Typography>
               <TextField
                 id="first-name"
@@ -101,6 +97,7 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
               />
             </Box>
           </Box>
+          {/* Last Name */}
           <Box sx={{ flex: 1 }}>
             <Box sx={textFieldGap}>
               <Typography>Last Name</Typography>
@@ -116,44 +113,54 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             </Box>
           </Box>
         </Box>
-        {/* gender */}
+
+        {/* Gender */}
         <Box sx={textFieldGap}>
           <Typography>Gender</Typography>
-          <Select
-            {...register('gender')}
-            fullWidth
-            value={gender}
-            onChange={handleChangeGender}
-            displayEmpty
-            error={!!errors.gender}
-            renderValue={(selected) => {
-              if (!selected) {
-                return (
-                  <Box component="p" variant="body2" sx={{ color: '#a7a7a7' }}>
-                    gender
-                  </Box>
-                );
-              }
-              return selected;
-            }}
-          >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-          </Select>
+          <Controller
+            name="gender"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <Select
+                {...field}
+                fullWidth
+                displayEmpty
+                error={!!errors.gender}
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return (
+                      <Box component="p" variant="body2" sx={{ color: '#a7a7a7' }}>
+                        gender
+                      </Box>
+                    );
+                  }
+                  return selected;
+                }}
+              >
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+              </Select>
+            )}
+          />
           {errors.gender && (
             <Typography color="error">{errors.gender.message}</Typography>
           )}
         </Box>
-        {/* date of birth */}
+
+        {/* Date of Birth */}
         <Box sx={textFieldGap}>
           <Typography>Date of Birth</Typography>
-          <DatePickerComponent
-            {...register('dob')}
-            error={!!errors.dob}
-            helperText={errors.dob?.message}
+          <Controller
+            name="dob"
+            control={control}
+            render={({ field }) => (
+              <DatePickerComponent {...field} error={errors.dob} />
+            )}
           />
         </Box>
-        {/* phone number */}
+
+        {/* Phone Number */}
         <Box sx={textFieldGap}>
           <Typography>Phone Number</Typography>
           <TextField
@@ -166,7 +173,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             helperText={errors.phoneNumber?.message}
           />
         </Box>
-        {/* address */}
+
+        {/* Address */}
         <Box sx={textFieldGap}>
           <Typography>Address</Typography>
           <TextField
@@ -179,7 +187,8 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
             helperText={errors.address?.message}
           />
         </Box>
-        {/* buttons */}
+
+        {/* Buttons */}
         <Box
           display={'flex'}
           flexDirection={'row'}
@@ -187,15 +196,6 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
           gap={2}
           mt={2}
         >
-          {mode === 'update' && (
-            <>
-              <ButtonContainer
-                rightBtn={handleNext}
-                leftBtnTitle="Cancel"
-                rightBtnTitle="UPDATE"
-              />
-            </>
-          )}
           {mode === 'create' && (
             <ButtonContainer
               onClick={handleSubmit(handleSubmitNext)}
@@ -210,6 +210,7 @@ const TeacherInfo = ({ handleNext, handleCancel, mode = 'create' }) => {
 };
 
 export default TeacherInfo;
+
 const boxContainer = {
   width: '100%',
   marginTop: '16px',

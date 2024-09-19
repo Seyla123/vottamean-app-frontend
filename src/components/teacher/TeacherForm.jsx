@@ -7,19 +7,18 @@ import {
   Select,
   MenuItem,
   Avatar,
+  FormHelperText,
 } from '@mui/material';
 import SubHeader from './SubHeader';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import DatePickerComponent from './DatePickerComponent';
 import ButtonContainer from '../common/ButtonContainer';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import { createFormSchema } from '../../validators/validationSchemas';
-
-import TeacherInfo from './TeacherInfo';
-import AccountInfo from './AccountInfo';
-function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+function TeacherForm(handleNext, handleCancel, mode = 'create') {
   // Form validation
   const schema = createFormSchema([
     'email',
@@ -35,11 +34,12 @@ function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(schema),
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
 
   const [signUpTeacher, { isLoading, error }] = useSignUpTeacherMutation();
@@ -80,9 +80,9 @@ function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
         <Box sx={valueBoxOne}>
           <Avatar sx={imgStyle} alt="profile picture" src="r" />
         </Box>
-
+        {/* subheader */}
         <SubHeader title={'Teacher Information'} />
-
+        {/* teacher information */}
         <Box
           onSubmit={handleSubmit(handleSubmitNext)}
           component="form"
@@ -155,18 +155,28 @@ function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
               <MenuItem value="Female">Female</MenuItem>
             </Select>
             {errors.gender && (
-              <Typography color="error">{errors.gender.message}</Typography>
+              <FormHelperText color="error">
+                {errors.gender.message}
+              </FormHelperText>
             )}
           </Box>
           {/* date of birth */}
           <Box sx={textFieldGap}>
-            <Typography>Date of Birth</Typography>
-            <DatePickerComponent
-              {...register('dob')}
-              error={!!errors.dob}
-              helperText={errors.dob?.message}
-            />
-          </Box>
+          <Typography>Date of Birth</Typography>
+          <Controller
+            name="dob"
+            control={control}
+            render={({ field }) => (
+              <DatePickerComponent 
+                control={control}
+                name="dob"
+              />
+            )}
+          />
+          {errors.dob && (
+            <FormHelperText color="error">{errors.dob.message}</FormHelperText>
+          )}
+        </Box>
           {/* phone number */}
           <Box sx={textFieldGap}>
             <Typography>Phone Number</Typography>
@@ -196,7 +206,7 @@ function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
           {/* buttons */}
           <Box
             display={'flex'}
-            flexDirection={'row'} 
+            flexDirection={'row'}
             justifyContent={'flex-end'}
             gap={2}
             mt={2}
@@ -214,7 +224,7 @@ function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
         </Box>
       </Box>
 
-      {/* email */}
+      {/* Account information */}
       <Box sx={profileBox}>
         <Box
           onSubmit={handleSubmit(onSubmit)}
@@ -287,12 +297,11 @@ function TeacherForm(handleNext, handleCancel, mode = 'create' ) {
             <Button
               variant="outlined"
               sx={{ borderColor: 'inherit', color: 'inherit' }}
-
               fullWidth
             >
               Back
             </Button>
-            <Button fullWidth variant="contained" type="submit" onSubmit={handleSubmit(onSubmit)}>
+            <Button fullWidth variant="contained" type="submit">
               Add Teacher
             </Button>
           </Box>
