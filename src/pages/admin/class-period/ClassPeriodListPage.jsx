@@ -6,6 +6,8 @@ import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
 import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+
 
 function ClassPeriodListPage() {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ function ClassPeriodListPage() {
 
   // Handle loading state
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <CircularIndeterminate/>;
   }
 
   // Handle error state

@@ -4,6 +4,7 @@ import CardInformation from '../../../components/common/CardInformation';
 import { useGetClassPeriodByIdQuery } from '../../../services/classPeriodApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 
 function ClassPeriodDetailPage() {
   const { id } = useParams();
@@ -12,7 +13,7 @@ function ClassPeriodDetailPage() {
 
   // Handle loading state
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <CircularIndeterminate/>;
   }
 
   // Handle error state
