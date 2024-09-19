@@ -28,9 +28,9 @@ function ClassPeriodDetailPage() {
   const { period_id, start_time, end_time } = data.data;
 
   const newArray = {
-    'Period id': period_id,
-    'Start time': formatTimeTo12Hour(start_time),
-    'End time': formatTimeTo12Hour(end_time),
+    'Class Period ID': period_id,
+    'Start Time': formatTimeTo12Hour(start_time),
+    'End Time': formatTimeTo12Hour(end_time),
     'Period': calculatePeriod(start_time, end_time),
   };
 
