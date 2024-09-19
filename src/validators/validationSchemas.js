@@ -232,3 +232,9 @@ export const  AccountInformation = createFormSchema([
   'password',
   'passwordConfirm'
 ])
+//Class Valid
+export const ClassValidator = Yup.object().shape({
+  class_name: Yup.string().required('Class name is required'), // Custom message for required validation
+  description: Yup.string().optional(), // Optional field
+});
+
