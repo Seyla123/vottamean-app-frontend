@@ -15,18 +15,29 @@ export const classApi = baseApi.injectEndpoints({
     getClassesById: builder.query({
       query: (id) => ({
         url: `classes/${id}`,
-      
         method: 'GET',
         credentials: 'include',
       }), 
       providesTags: ['Classes'],
     }),
+
+  //Post Class
+  postClassesData: builder.mutation({
+    query: (data) => ({
+      url: `classes`,
+      method: 'POST',
+      body: data,
+      credentials: 'include',
+    }), 
+    invalidatesTags: ['Classes'],
+  }),
   }),
 });
 
 export const {
   useGetClassesDataQuery,
   useGetClassesByIdQuery,
+  usePostClassesDataMutation,
 } = classApi;
 
 

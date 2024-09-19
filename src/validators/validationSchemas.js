@@ -61,6 +61,9 @@ export const dobSchema = Yup.string()
     /^\d{4}-\d{2}-\d{2}$/,
     'Date of birth must be in the format YYYY-MM-DD',
   );
+  //class validation
+  export const classSchema = Yup.string()
+   .required('Class is required')
 
 // Email validator for admin, teacher, student, and guardian
 export const emailSchema = Yup.string()
@@ -148,6 +151,7 @@ export const createFormSchema = (fields) => {
     phone_number: phoneSchema,
     address: addressSchema,
     age: ageSchema,
+    class_name: classSchema,
     // Add more schemas as needed
   };
 

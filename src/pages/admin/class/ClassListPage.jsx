@@ -7,41 +7,40 @@ import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import { PlusIcon } from 'lucide-react';
 import { useGetClassesDataQuery } from '../../../services/classApi'; // Adjust the import based on your project structure
-
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
 const ClassListPage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
   // Fetch classes using the API hook
   const { data, error, isLoading } = useGetClassesDataQuery();
-  // Check if data is defined
-
   if (isLoading) {
-    return <div>Loading...</div>;
+    return ClassCardSkeleton;
   }
-
   if (error) {
-    return <div>Error fetching data</div>;
+    return CircularIndeterminate;
   }
   // Ensure data is defined before mapping
-  const newClassesData = data?.data?.map((item) => {
+  const newClassesData = data?.data
+  ?.filter((item) => {
+    return (
+      item.class_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  })
+  .map((item) => {
     const { class_id, class_name, description } = item;
-
     return {
       class_id,
       class_name,
       description,
     };
-  }); 
+  });
 
-  console.log(newClassesData);
-
-  // const classes = response.data || [];
-  console.log(data.data);
   const handleEdit = (row) => {
     navigate(`/admin/classes/update/${row.class_id}`);
   };
-
+  
   const handleDelete = (row) => {
     console.log('Delete row:', row);
   };
@@ -52,8 +51,6 @@ const ClassListPage = () => {
   const handleView = (row) => {
     navigate(`/admin/classes/${row.class_id}`);
   }
-
-  
 
   const columns = [
     { id: 'class_id', label: 'Class ID' },
@@ -78,7 +75,6 @@ const ClassListPage = () => {
           </Button>
         </Link>
       </Stack>
-
       
       <Box>
         <Stack
@@ -96,13 +92,6 @@ const ClassListPage = () => {
           />
         </Stack>
       </Box>
-
-      {/* Loading and error handling */}
-      {isLoading && <Typography>Loading classes...</Typography>}
-      {error && (
-        <Typography>Error fetching classes: {error}</Typography>
-      )}
-
       <DataTable
         rows={newClassesData}
         columns={columns}
