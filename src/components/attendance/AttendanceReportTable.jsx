@@ -22,12 +22,16 @@ import NotFoundImage from '../../assets/images/not-found.jpg';
 import { tableShadow } from '../../styles/global';
 import StatusChip from '../common/StatusChip';
 import { truncate } from '../../utils/truncate';
+
 const AttendanceReportTable = ({
   rows,
   columns,
-  hideColumns = []
+  hideColumns = [],
+  handleView,
+  handleDelete
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -38,12 +42,25 @@ const AttendanceReportTable = ({
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(row); // Store the row data
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+    setSelectedRow(null); // Clear the row data when menu is closed
   };
 
+  const handleMenuAction = (action) => {
+    if (selectedRow) {
+      if (action === 'view') {
+        handleView(selectedRow.attendance_id);
+         // Pass the row ID to handleView
+      } else if (action === 'delete') {
+        handleDelete(selectedRow.attendance_id); // Pass the row ID to handleDelete
+      }
+      handleClose(); // Close the menu after action
+    }
+  };
 
   const visibleColumns = columns.filter((col) =>
     isMobile ? !hideColumns.includes(col.id) : true,
@@ -57,13 +74,6 @@ const AttendanceReportTable = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const handleView = (id)=>{
-    console.log('view :',id);
-  }
-  const handleDetele = (id)=>{
-    console.log('delete :',id);
-  }
 
   return (
     <Paper sx={{ ...tableShadow }}>
@@ -180,11 +190,11 @@ const AttendanceReportTable = ({
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
-        anchorEl={anchorEl} 
+        anchorEl={anchorEl}
         onClose={handleClose}
       >
-        <MenuItem onClick={()=>{handleView(1)}}>View</MenuItem>
-        <MenuItem onClick={()=>handleDetele(2)}>Delete</MenuItem>
+        <MenuItem onClick={() => handleMenuAction('view')}>View</MenuItem>
+        <MenuItem onClick={() => handleMenuAction('delete')}>Delete</MenuItem>
       </Menu>
     </Paper>
   );
