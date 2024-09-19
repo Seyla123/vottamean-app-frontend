@@ -39,7 +39,7 @@ const ClassListPage = () => {
   // const classes = response.data || [];
   console.log(data.data);
   const handleEdit = (row) => {
-    navigate(`/admin/classes/update/${row.id}`);
+    navigate(`/admin/classes/update/${row.class_id}`);
   };
 
   const handleDelete = (row) => {
@@ -49,6 +49,11 @@ const ClassListPage = () => {
   const handleSelectedDelete = () => {
     console.log('Delete all');
   };
+  const handleView = (row) => {
+    navigate(`/admin/classes/${row.class_id}`);
+  }
+
+  
 
   const columns = [
     { id: 'class_id', label: 'Class ID' },
@@ -59,7 +64,7 @@ const ClassListPage = () => {
   const hideColumns = ['description'];
 
   return (
-    <FormComponent title="Class List" subTitle={`Total Classes: `}>
+    <FormComponent title="Class List" subTitle={`Total Classes: ${newClassesData.length}`}>
       {/* Button add class container */}
       <Stack direction="row" justifyContent="flex-end">
         <Link to="/admin/classes/create">
@@ -103,6 +108,7 @@ const ClassListPage = () => {
         columns={columns}
         onEdit={handleEdit}
         onDelete={handleDelete}
+       onView={handleView}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={hideColumns}
         emptyTitle={'No Class'}

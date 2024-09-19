@@ -1,38 +1,55 @@
-import FormComponent from "../../../components/common/FormComponent"
-import CardComponent from "../../../components/common/CardComponent"
-import CardInformation from "../../../components/common/CardInformation"
-import {Stack } from '@mui/material';
-const clickEdit = () => {
-  console.log('edit')
-}
-const clickDetele = ()=>{
-  console.log('delete');
-  
-}
+import FormComponent from '../../../components/common/FormComponent';
+import CardComponent from '../../../components/common/CardComponent';
+import CardInformation from '../../../components/common/CardInformation';
+import { Stack } from '@mui/material';
+import { useParams } from 'react-router-dom';
+import { useGetClassesByIdQuery } from '../../../services/classApi';
+import { useNavigate } from 'react-router-dom';
 
-const classData = {
-  "Class ID" : "00101",
-  "Class Name": "Potato Fried",
-  "Total": "40 Students",
-  "Female": "5 Students",
-  "Description" : "Lorem ipsum dolor sit amet consectetur"
-}
 function ClassDetailPage() {
-  return (
-<FormComponent title={'Class Detail'} subTitle={'These are Subject’s information'}>
-  <Stack gap={2}>
-    <CardComponent 
-      title={"Class Information"} 
-      handleEdit={clickEdit} 
-      handleDelete={clickDetele}>
-      <CardInformation  data={classData} />
-    </CardComponent>
-    <CardComponent title={"Total 40 Students"}>
-      {/* add table here */}
-    </CardComponent>
-  </Stack>
-</FormComponent>
-  )
-}
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-export default ClassDetailPage
+  const clickEdit = (row) => {
+    navigate(`/admin/classes/update/${row.class_id}`);
+  };
+  const clickDetele = () => {
+    console.log('delete');
+  };
+  // Fetch class data using the API hook and Id
+  const { data, error, isLoading } = useGetClassesByIdQuery(id);
+  console.log(data);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error fetching data</div>;
+  }
+  //Extract the class Data
+  const extractClassData = (data) => {
+    const { class_id, class_name, description } = data.data;
+    return { class_id, class_name, description };
+  };
+  const classData = extractClassData(data);
+
+  return (
+    <FormComponent
+      title={`${classData.class_name} Class Detail`}
+      subTitle={`These are Class ${classData.class_name} information`}
+    >
+      <Stack gap={2}>
+        <CardComponent
+          title={'Class Information'}
+          handleEdit={clickEdit}
+          handleDelete={clickDetele}
+        >
+          <CardInformation data={classData} />
+        </CardComponent>
+        <CardComponent title={'Total 40 Students'}>
+          {/* add table here */}
+        </CardComponent>
+      </Stack>
+    </FormComponent>
+  );
+}
+export default ClassDetailPage;

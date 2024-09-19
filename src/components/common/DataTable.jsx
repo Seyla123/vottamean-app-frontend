@@ -63,6 +63,7 @@ const DataTable = ({
   columns,
   onEdit,
   onDelete,
+  onView,
   onSelectedDelete,
   hideColumns,
   emptyTitle,
@@ -71,9 +72,12 @@ const DataTable = ({
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
+
+
 
   const handleSelectAllClick = (event) => {
     const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
@@ -112,6 +116,11 @@ const DataTable = ({
     handleMenuClose();
   };
 
+  const handleView = () => {
+    if (onView ) onView(menuRow);
+    handleMenuClose();
+  }
+
   const handleSelectedDelete = () => {
     if (onSelectedDelete) {
       const selectedData = rows.filter((row) => selected.includes(row.id));
@@ -120,6 +129,8 @@ const DataTable = ({
     }
     setSelected([]);
   };
+
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -231,6 +242,7 @@ const DataTable = ({
       >
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
+        <MenuItem onClick={handleView}>View</MenuItem>
       </Menu>
     </TableContainer>
   );
