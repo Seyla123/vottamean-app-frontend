@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   TextField,
   MenuItem,
@@ -15,22 +15,25 @@ import * as yup from 'yup';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
+import dayjs from 'dayjs';
 
-// add validate schemas
+// Define validation schema
 const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   phoneNumber: yup.string().required('Phone number is required'),
   gender: yup.string().required('Gender is required'),
-  dob: yup.date().required('Date of birth is required'),
+  dob: yup.date().required('Date of birth is required').nullable(),
   address: yup.string().required('Address is required'),
 });
 
-const TeacherInfo = ({ handleNextClick }) => {
+const TeacherInfo = ({ handleNextClick, defaultValues }) => {
+   const [date, setDate] = React.useState(dayjs());
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -43,19 +46,27 @@ const TeacherInfo = ({ handleNextClick }) => {
     },
   });
 
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
+
+  const onSubmit = (data) => {
+    handleNextClick(true, data);
+    console.log(data);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <form onSubmit={handleSubmit(handleNextClick)}>
-        {/* profile */}
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
           <Box sx={valueBoxOne}>
             <Avatar sx={imgStyle} alt="profile picture" src="r" />
           </Box>
-          {/* subheader */}
           <SubHeader title={'Teacher Information'} />
-          {/* text fields */}
           <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-            {/* first name */}
+            {/* First Name */}
             <Box sx={{ flex: 1, width: '100%' }}>
               <Box sx={textFieldGap}>
                 <Typography>First Name</Typography>
@@ -74,7 +85,7 @@ const TeacherInfo = ({ handleNextClick }) => {
                 />
               </Box>
             </Box>
-            {/* last name */}
+            {/* Last Name */}
             <Box sx={{ flex: 1, width: '100%' }}>
               <Box sx={textFieldGap}>
                 <Typography>Last Name</Typography>
@@ -94,7 +105,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               </Box>
             </Box>
           </Box>
-          {/* phone number */}
+          {/* Phone Number */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Phone Number</Typography>
             <Controller
@@ -111,7 +122,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               )}
             />
           </Box>
-          {/* gender */}
+          {/* Gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Gender</Typography>
             <Controller
@@ -133,7 +144,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               )}
             />
           </Box>
-          {/* date of birth */}
+          {/* Date of Birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Date of Birth</Typography>
             <Controller
@@ -142,6 +153,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               render={({ field }) => (
                 <DesktopDatePicker
                   {...field}
+                  inputFormat="MM/DD/YYYY"
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -150,13 +162,13 @@ const TeacherInfo = ({ handleNextClick }) => {
                       fullWidth
                     />
                   )}
-                  placeholder="Date of Birth"
                   value={field.value || null}
+                  onChange={(newDate) => setDate(newDate ? dayjs(newDate) : null)}
                 />
               )}
             />
           </Box>
-          {/* address */}
+          {/* Address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Address</Typography>
             <Controller
@@ -173,8 +185,8 @@ const TeacherInfo = ({ handleNextClick }) => {
               )}
             />
           </Box>
-          {/* Button */}
-          <Stack  direction={'row'} alignSelf={'flex-end'} justifyContent={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
+          {/* Buttons */}
+          <Stack direction={'row'} alignSelf={'flex-end'} justifyContent={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
             <Button fullWidth variant="outlined" color="inherit">
               Cancel
             </Button>
@@ -190,6 +202,7 @@ const TeacherInfo = ({ handleNextClick }) => {
 
 export default TeacherInfo;
 
+// Styles
 const boxContainer = {
   width: '100%',
   marginTop: '16px',
