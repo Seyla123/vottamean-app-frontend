@@ -1,16 +1,39 @@
 import React, { useEffect, useState } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
-import { Button } from "@mui/material";
+import { Button, Snackbar, Alert } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import AttendanceTable from "../../../../components/attendance/AttendanceReportTable";
-import { shadow } from "../../../../styles/global";
-import { useGetAllAttendanceQuery } from "../../../../services/attendanceApi";
-import { transformAttendanceData } from "../../../../utils/formatData"
-import LoadingCircle from "../../../../components/loading/LoadingCircle"
+import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
-import FilterSection from "../../../../components/attendance/FilterSection";
-// --- data --------------------------------
-// column styles
+import { useGetAllAttendanceQuery } from "../../../../services/attendanceApi";
+import { transformAttendanceData } from "../../../../utils/formatData";
+import { Box } from "@mui/material";
+import FilterComponent from "../../../../components/common/FilterComponent";
+import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
+import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
+
+const subjects = [
+  { value: '', label: "All" },
+  { value: 1, label: "Math" },
+  { value: 2, label: "Science" },
+  { value: 3, label: "English" },
+];
+
+const classes = [
+  { value: '', label: "All" },
+  { value: 1, label: "Class A" },
+  { value: 2, label: "Class B" },
+  { value: 3, label: "Class C" },
+];
+
+const filterOptions = [
+  { value: "", label: "All" },
+  { value: "today", label: "Daily" },
+  { value: "lastWeek", label: "Weekly" },
+  { value: "lastMonth", label: "Monthly" },
+  { value: "lastYear", label: "Yearly" },
+];
+
 const columns = [
   { id: "id", label: "StudentID" },
   { id: "name", label: "Name" },
@@ -21,106 +44,105 @@ const columns = [
 ];
 
 const AttendanceReportPage = () => {
-  // Define the parameters for the query
   const [subjectValue, setSubjectValue] = useState("");
   const [classValue, setClassValue] = useState("");
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('today');
+  const [filterLabel, setFilterLabel] = useState('Daily');
+  const [rows, setRows] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
   const { data: allAttendanceData, isLoading, isSuccess } = useGetAllAttendanceQuery({
     classId: classValue,
     subjectId: subjectValue,
     filter: filterValue,
   });
-  const [rows, setRows] = useState([]);
+  const [deleteAttendance, { isError, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
   useEffect(() => {
-    // Transform API response into table data format
     if (isSuccess && allAttendanceData) {
-      console.log(allAttendanceData);
       const formattedData = transformAttendanceData(allAttendanceData.data);
-      console.log(formattedData);
       setRows(formattedData);
     }
-  }, [allAttendanceData, isSuccess, subjectValue, classValue, filterValue])
+  }, [allAttendanceData, isSuccess]);
 
-
-  // --- Filters --------------------------------
-  // subjects
-  const subjects = [
-    { id: 1, subjectName: "Math" },
-    { id: 2, subjectName: "Science" },
-    { id: 3, subjectName: "English" },
-  ];
-  console.log(subjects.value);
-  
-  // handle subjects
   const handleSubjectChange = (event) => {
     setSubjectValue(event.target.value);
   };
-  // classes
+
   const handleClassChange = (event) => {
     setClassValue(event.target.value);
   };
-  // handle filter
+
   const handleFilterChange = (event) => {
     setFilterValue(event.target.value);
+    const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
+    setFilterLabel(selectedLabel);
   };
-  const classes = [
-    { value: 1, label: "Class A" },
-    { value: 2, label: "Class B" },
-    { value: 3, label: "Class C" },
-  ];
-  //handle class
-  // filter
-  const filter = [
-    { value: "All", label: "All" },
-    { value: "today", label: "Today" },
-  ];
 
-  // --- Count status --------------------------------
-  // handle export 
   const handleExport = () => {
-    console.log('click export')
-  }
-  if (isLoading) {
-    return <LoadingCircle />
-  }
-  const statusCounts = {
-    Present: 0,
-    Late: 0,
-    Permission: 0,
-    Absent: 0,
+    console.log('Export clicked');
   };
-  rows.forEach((row) => {
-    if (row.status) {
-      statusCounts[row.status] = (statusCounts[row.status] || 0) + 1;
+
+  const onDelete = (id) => {
+    setItemToDelete(id);
+    setIsOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setIsOpen(false);
+      setSnackbarMessage("Deleted successfully");
+      setSnackbarOpen(true);
+      await deleteAttendance({ id: itemToDelete }).unwrap();
+    } catch (error) {
+      setSnackbarMessage("Failed to delete");
+      setSnackbarOpen(true);
     }
-  });
+  };
+  const onView = (id) => {
+    console.log('View clicked', id);
+  };
+
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+
   return (
     <FormComponent title={"Attendance Report"} subTitle={"Report"}>
-      {/* Cards Grid */}
-      <ReportHeader 
-        statusCounts={statusCounts} 
-      /> 
-
-      {/* Filter Section */}
-      <FilterSection
-        subjectValue={subjectValue}
-        classValue={classValue}
-        filterValue={filterValue}
-        subjects={subjects}
-        classes={classes}
-        filter={filter}
-        handleSubjectChange={handleSubjectChange}
-        handleClassChange={handleClassChange}
-        handleFilterChange={handleFilterChange}
-      />
-
-      {/* Table */}
+      <ReportHeader data={rows} title={filterLabel} />
+      <Box sx={filterBoxStyle}>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start" }}>
+          <FilterComponent
+            value={subjectValue}
+            data={subjects}
+            onChange={handleSubjectChange}
+            placeholder={"By Subject"}
+          />
+          <FilterComponent
+            value={classValue}
+            data={classes}
+            onChange={handleClassChange}
+            placeholder={"By Class"}
+          />
+        </Box>
+        <Box alignSelf={"end"}>
+          <FilterComponent
+            value={filterValue}
+            data={filterOptions}
+            onChange={handleFilterChange}
+            placeholder={"Filter"}
+          />
+        </Box>
+      </Box>
       <AttendanceTable
         rows={rows}
         columns={columns}
-        hideColumns={["Name", "id", "subject", "class", "address"]}
+        hideColumns={["id", "subject",'class', "address"]}
+        handleDelete={onDelete}
+        handleView={onView}
       />
-
       <Button
         variant="contained"
         endIcon={<DownloadIcon size={16} />}
@@ -129,14 +151,34 @@ const AttendanceReportPage = () => {
       >
         Export List
       </Button>
+      <DeleteConfirmationModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={confirmDelete}
+        itemName="Example Item"
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={isDeleting ? "info" : (snackbarMessage.includes("Failed") ? "error" : "success")}
+          sx={{ width: '100%' }}
+        >
+          {isDeleting ? "Deleting..." : snackbarMessage}
+        </Alert>
+      </Snackbar>
+
     </FormComponent>
+
   );
 };
 
 export default AttendanceReportPage;
 
-
-const boxStyle = {
+const filterBoxStyle = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
@@ -145,48 +187,4 @@ const boxStyle = {
   width: "100%",
   gap: 2,
 };
-const cardGrid = {
-  display: "flex",
-  flexDirection: { md: "row", xs: "column" },
-  gap: 1,
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-}
-const gridContainer = {
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  p: 1,
-  width: "100%",
-}
-const gridIcon = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  width: "100%",
-  p: 1,
-  overflow: "hidden",
-}
-const avatar = {
-  width: {
-    xs: "80px",
-    sm: "100px",
-  },
-  height: {
-    xs: "80px",
-    sm: "100px",
-  },
-  objectFit: "cover",
-}
-const boxGrid = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-  p: 2,
-  ...shadow,
-}
+
