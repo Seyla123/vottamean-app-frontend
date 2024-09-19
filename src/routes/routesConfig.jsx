@@ -6,6 +6,7 @@ import PasswordResetPage from '../pages/auth/PasswordResetPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
 import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
+import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
@@ -78,6 +79,10 @@ const routesConfig = [
       {
         path: 'verify-email/:verificationToken',
         element: <VerifyEmailPage />,
+      },
+      {
+        path: 'verify-teacher-email/:verificationToken',
+        element: <VerifyTeacherEmailPage />,
       },
       {
         path: 'forgot-password',
