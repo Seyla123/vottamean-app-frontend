@@ -89,8 +89,8 @@ const Layout = ({ teacherSite, adminSite }) => {
       // 11. Set the session object, which includes current user details like name, email, and image
       session={{
         user: {
-          name: user?.name || '',
-          email: user?.email || '',
+          name: user?.name || 'Username',
+          email: user?.email || 'Useremail001@gmail.com',
           image: user?.image || 'https://via.placeholder.com/150',
         },
       }}

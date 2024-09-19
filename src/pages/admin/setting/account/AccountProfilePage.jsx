@@ -3,35 +3,93 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import FormComponent from '../../../../components/common/FormComponent';
 import CardComponent from '../../../../components/common/CardComponent';
 import CardInformation from '../../../../components/common/CardInformation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import profile from '../../../../assets/images/default-profile.png';
-import { Trash2, SquarePenIcon, KeyRoundIcon } from 'lucide-react';
+import { Trash2, KeyRoundIcon } from 'lucide-react';
+
+// Redux hooks and API
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFormData } from '../../../../store/slices/formSlice';
+import { useGetUserProfileByIdQuery } from '../../../../services/userApi';
 
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
-  const clickEdit = () => {
-    console.log('edit');
-  };
-  const clickDeteleAccount = () => {
-    console.log('delete account');
-  };
+  const dispatch = useDispatch();
+
+  // Fetch user_id from auth slice
+  const user_id = useSelector((state) => state.auth.user?.user_id);
+  // console.log('User Id : ', user_id);
+
+  // Fetch user profile data using the user API
+  const { data: user, isLoading, error } = useGetUserProfileByIdQuery(user_id);
+  // console.log('User Data', user);
+
+  // Form slice for managing the user data
+  const formData = useSelector((state) => state.form);
+  // console.log('Form Data : ', formData);
+
+  useEffect(() => {
+    if (user && user.data.adminProfile?.Info) {
+      const info = user.data.adminProfile.Info;
+      const school = user.data.adminProfile?.Schools[0] || {};
+
+      // Dispatch user data to form state
+      dispatch(
+        updateFormData({
+          first_name: info.first_name,
+          last_name: info.last_name,
+          gender: info.gender,
+          dob: info.dob,
+          phone_number: info.phone_number,
+          address: info.address || 'N/A',
+          email: user.data.email,
+          school_name: school.school_name,
+          school_address: school.school_address,
+          school_phone_number: school.school_phone_number,
+        }),
+      );
+    }
+  }, [user, dispatch]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const teacher = {
-    'Full Name ': 'Potato Fried',
-    Age: 18,
-    Gender: 'Male',
-    'Date of Birth': '01/01/2001',
-    Phone: '01234567',
-    Email: 'mrpotato123gmail.com',
-    Address: 'Potato Chip City, FrenchFried Country',
+
+  const clickEdit = () => {
+    console.log('edit');
   };
+
+  const clickDeleteAccount = () => {
+    console.log('delete account');
+  };
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Error loading user data</Typography>;
+  }
+
+  const user_profile = {
+    'Full Name': `${formData.first_name} ${formData.last_name}`,
+    Age: formData.dob
+      ? new Date().getFullYear() - new Date(formData.dob).getFullYear()
+      : 'N/A',
+    Gender: formData.gender,
+    'Date of Birth': formData.dob
+      ? new Date(formData.dob).toLocaleDateString()
+      : 'N/A',
+    Phone: formData.phone_number,
+    Email: formData.email,
+    Address: formData.address,
+  };
+
   const school = {
-    'School Name': 'Potato Fried',
-    'Phone number': '097029304',
-    Address: 'Potato Chip City, FrenchFried Country',
+    'School Name': formData.school_name,
+    'Phone Number': formData.school_phone_number,
+    Address: formData.school_address,
   };
 
   return (
@@ -45,20 +103,18 @@ function AccountProfilePage() {
             <Tab label="General" value="1" />
             <Tab label="Advanced" value="2" />
           </TabList>
-          {/* tab general */}
+          {/* General tab */}
           <TabPanel value="1" sx={{ px: 0, py: 2 }}>
             <Stack direction={'column'} gap={2}>
-              {/* user profile information */}
+              {/* User profile information */}
               <CardComponent
                 title={'User Information'}
-                imgUrl={
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                }
+                imgUrl={profile}
                 handleEdit={clickEdit}
               >
-                <CardInformation data={teacher} />
+                <CardInformation data={user_profile} />
               </CardComponent>
-              {/* school information */}
+              {/* School information */}
               <CardComponent
                 title={'School Information'}
                 handleEdit={clickEdit}
@@ -67,11 +123,11 @@ function AccountProfilePage() {
               </CardComponent>
             </Stack>
           </TabPanel>
-          {/* tap advanced */}
+          {/* Advanced tab */}
           <TabPanel value="2" sx={{ px: 0, py: 2 }}>
-            <CardComponent title={'Login and security'}>
+            <CardComponent title={'Login and Security'}>
               <Stack direction={'column'} gap={2}>
-                {/* change password */}
+                {/* Change password */}
                 <Stack
                   direction={{ xs: 'column', md: 'row' }}
                   gap={1}
@@ -106,7 +162,7 @@ function AccountProfilePage() {
                     </Button>
                   </Link>
                 </Stack>
-                {/* delete account */}
+                {/* Delete account */}
                 <Stack
                   direction={{ xs: 'column', md: 'row' }}
                   gap={1}
@@ -130,7 +186,7 @@ function AccountProfilePage() {
                       fontWeight={600}
                       textAlign="start"
                     >
-                      Account ownership
+                      Account Ownership
                     </Typography>
                     <Typography
                       variant="subtitle1"
@@ -143,7 +199,7 @@ function AccountProfilePage() {
                   <Button
                     variant="contained"
                     color="error"
-                    onClick={clickDeteleAccount}
+                    onClick={clickDeleteAccount}
                     startIcon={<Trash2 size={20} />}
                   >
                     Delete Account
