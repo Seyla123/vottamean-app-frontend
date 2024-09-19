@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
 import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
-import { calculatePeriod } from '../../../utils/formatTime';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatTime';
 
 function ClassPeriodListPage() {
   const { data, error, isLoading } = useViewListClassPeriodQuery();
@@ -43,16 +43,12 @@ function ClassPeriodListPage() {
   };
 
   const rows = data.data.map((item) => {
-    const { period, formattedStart, formattedEnd } = calculatePeriod(
-      item.start_time,
-      item.end_time,
-    );
-
+  const { period_id, start_time, end_time } = item;
     return {
-      period_id: item.period_id,
-      start_time: formattedStart, // AM/PM format
-      end_time: formattedEnd, // AM/PM format
-      period: period, // "Xh Xm" format
+        period_id: period_id,
+        start_time: formatTimeTo12Hour(start_time),
+        end_time: formatTimeTo12Hour(end_time),
+        period: calculatePeriod(start_time, end_time),
     };
   });
   // Columns to hide

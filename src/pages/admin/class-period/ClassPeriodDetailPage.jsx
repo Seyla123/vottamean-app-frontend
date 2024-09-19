@@ -27,8 +27,6 @@ function ClassPeriodDetailPage() {
 
   const { period_id, start_time, end_time } = data.data;
 
-
-
   const newArray = {
     period_id: period_id,
     'Start time': formatTimeTo12Hour(start_time),
