@@ -50,6 +50,16 @@ export const classApi = baseApi.injectEndpoints({
       invalidatesTags: ['Classes'],
     }),
   }),
+  //Delete Class
+  deleteClassesData: builder.mutation({
+    query: (id) => ({
+      url: `classes/${id}`,
+      method: 'DELETE',
+      credentials: 'include',
+    }), 
+    invalidatesTags: ['Classes'],
+  }),
+}),
 });
 export const {
   useGetClassesDataQuery,
