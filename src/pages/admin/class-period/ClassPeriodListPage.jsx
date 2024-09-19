@@ -8,8 +8,8 @@ import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
 function ClassPeriodListPage() {
-  const { data, error, isLoading } = useViewListClassPeriodQuery();
   const navigate = useNavigate();
+  const { data, error, isLoading } = useViewListClassPeriodQuery();
 
   // Handle loading state
   if (isLoading) {
@@ -21,30 +21,36 @@ function ClassPeriodListPage() {
     return <div>Error loading class periods: {error.message}</div>;
   }
 
-  // Define table columns
-  const columns = [
-    { id: 'period_id', label: 'ID' },
-    { id: 'start_time', label: 'Start Time' },
-    { id: 'end_time', label: 'End Time' },
-    { id: 'period', label: 'Period' }, // Uncomment if needed
-  ];
-
-  // Helper function to format time to 12-hour AM/PM
-
+  // Handle EDIT action
   const handleEdit = (row) => {
-    navigate(`/dashboard/class-periods/update/${row.id}`);
+    navigate(`/admin/class-periods/update/${row.id}`);
   };
+
+  // Handle DELETE action
   const handleDelete = (row) => {
     console.log('Delete row:', row);
   };
+
+  // Handle DELETE ALL action
   const handleSelectedDelete = () => {
     console.log('Delete all');
   };
+
+  // Handle DETAIL action
   const handleView = (row) => {
     navigate(`/admin/class-periods/${row.period_id}`);
   };
 
-  const rows = data.data.map((item) => {
+  // Define table columns title
+  const tableTitles = [
+    { id: 'period_id', label: 'ID' },
+    { id: 'start_time', label: 'Start Time' },
+    { id: 'end_time', label: 'End Time' },
+    { id: 'period', label: 'Period' },
+  ];
+
+  // Define formatted data to display
+  const periodData = data.data.map((item) => {
     const { period_id, start_time, end_time } = item;
     return {
       period_id: period_id,
@@ -53,13 +59,14 @@ function ClassPeriodListPage() {
       period: calculatePeriod(start_time, end_time),
     };
   });
-  // Columns to hide
-  const hideColumns = ['start'];
+
+  // Columns to hide within mobile screen
+  const hideColumns = ['period_id'];
 
   return (
     <FormComponent
       title={'Class Period List'}
-      subTitle={`There are ${data.length} Class Periods`} // Dynamically show the number of periods
+      subTitle={`There are ${periodData.length} Class Periods`}
     >
       {/* Button to add a new class period */}
       <Stack direction="row" justifyContent="flex-end">
@@ -77,8 +84,8 @@ function ClassPeriodListPage() {
 
       {/* Data table to display class periods */}
       <DataTable
-        rows={rows}
-        columns={columns}
+        rows={periodData}
+        columns={tableTitles}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}

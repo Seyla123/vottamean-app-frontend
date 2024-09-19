@@ -20,23 +20,24 @@ function ClassPeriodDetailPage() {
     return <div>Error loading class periods: {error.message}</div>;
   }
 
-  // handle edit action
+  // Handle EDIT action
   const clickEdit = (row) => {
     navigate(`/admin/class-periods/update/${row.id}`);
   };
 
-  // handle delete action
+  // Handle DELETE action
   const clickDetele = () => {
     console.log('delete');
   };
 
   const { period_id, start_time, end_time } = data.data;
 
+  // Define formatted data to display
   const periodDetail = {
     'Class Period ID': period_id,
     'Start Time': formatTimeTo12Hour(start_time),
     'End Time': formatTimeTo12Hour(end_time),
-    Period: calculatePeriod(start_time, end_time),
+    'Period': calculatePeriod(start_time, end_time),
   };
 
   return (
