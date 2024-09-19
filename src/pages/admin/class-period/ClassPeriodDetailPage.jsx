@@ -5,15 +5,6 @@ import { useGetClassPeriodByIdQuery } from '../../../services/classPeriodApi';
 import { useParams } from 'react-router-dom';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
-// handle edit action
-const clickEdit = () => {
-  console.log('edit');
-};
-// handle delete action
-const clickDetele = () => {
-  console.log('delete');
-};
-
 function ClassPeriodDetailPage() {
   const { id } = useParams();
   const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
@@ -22,10 +13,21 @@ function ClassPeriodDetailPage() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
   // Handle error state
   if (error) {
     return <div>Error loading class periods: {error.message}</div>;
   }
+
+  // handle edit action
+  const clickEdit = () => {
+    console.log('edit');
+  };
+  
+  // handle delete action
+  const clickDetele = () => {
+    console.log('delete');
+  };
 
   const { period_id, start_time, end_time } = data.data;
 
@@ -33,7 +35,7 @@ function ClassPeriodDetailPage() {
     'Class Period ID': period_id,
     'Start Time': formatTimeTo12Hour(start_time),
     'End Time': formatTimeTo12Hour(end_time),
-    'Period': calculatePeriod(start_time, end_time),
+    Period: calculatePeriod(start_time, end_time),
   };
 
   return (

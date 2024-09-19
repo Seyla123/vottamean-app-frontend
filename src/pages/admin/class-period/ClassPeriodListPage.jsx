@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Stack } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,7 +9,6 @@ import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
 function ClassPeriodListPage() {
   const { data, error, isLoading } = useViewListClassPeriodQuery();
-  // Use navigate hook to handle routing
   const navigate = useNavigate();
 
   // Handle loading state
