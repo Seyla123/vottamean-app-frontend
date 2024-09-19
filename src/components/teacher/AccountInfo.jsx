@@ -300,7 +300,7 @@ const AccountInfo = ({ handleBack }) => {
   const [signUpTeacher, { isLoading, error }] = useSignUpTeacherMutation();
   const schema = createFormSchema(['email', 'password', 'passwordConfirm']);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors , isValid} } = useForm({
     resolver: yupResolver(schema)
   });
 
@@ -382,8 +382,13 @@ const AccountInfo = ({ handleBack }) => {
           >
             Back
           </Button>
-          <Button fullWidth variant="contained" type="submit">
-            Add Teacher
+          <Button 
+            fullWidth 
+            variant="contained" 
+            type="submit"
+            disabled={!isValid || isLoading}
+          >
+            {isLoading ? 'Submitting...' : 'Add Teacher'}
           </Button>
         </Box>
       </form>

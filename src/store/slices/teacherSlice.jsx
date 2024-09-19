@@ -17,7 +17,8 @@ const initialState = {
         reducers: {
             createTeacherSlice: (state, action) => {
                 return { ...state, ...action.payload };
-            }
+            },
+            resetTeacherSlice: () => initialState
         },
     });
 
