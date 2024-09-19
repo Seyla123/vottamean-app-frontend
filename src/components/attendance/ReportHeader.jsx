@@ -4,12 +4,24 @@ import StatusGrid from "./StatusGrid";
 import CalendarImage from "../../assets/icon/calendar.png"; 
 import { shadow } from "../../styles/global"; 
 
-const ReportHeader = ({ statusCounts }) => {
+const ReportHeader = ({ title,data }) => {
+      // Calculate status counts
+  const dataCount = data.reduce((counts, row) => {
+    if (row.status) {
+      counts[row.status] = (counts[row.status] || 0) + 1;
+    }
+    return counts;
+  }, {
+    Present: 0,
+    Late: 0,
+    Permission: 0,
+    Absent: 0,
+  });
   return (
     <Box sx={cardGrid}>
       <Box sx={boxGrid}>
         <Typography variant="h4" fontWeight={"bold"}>
-          Today's report
+         {title == 'All' ? 'All Attendance Report' : `${title}'s report`}
         </Typography>
         <Avatar
           variant="square"
@@ -18,7 +30,7 @@ const ReportHeader = ({ statusCounts }) => {
           sx={avatar}
         />
       </Box>
-      <StatusGrid statusCounts={statusCounts} />
+      <StatusGrid statusCounts={dataCount} />
     </Box>
   );
 };
