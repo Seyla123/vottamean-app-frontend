@@ -23,6 +23,16 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Auth'],
     }),
 
+    // Verify Teacher Email
+    verifyTeacherEmail: builder.mutation({
+      query: ({ verificationToken, tempToken }) => ({
+        url: `teachers/verify-email/${verificationToken}?token=${tempToken}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+
     // Login
     login: builder.mutation({
       query: (user) => ({
@@ -94,6 +104,7 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useVerifyEmailMutation,
+  useVerifyTeacherEmailMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useChangePasswordMutation,

@@ -111,12 +111,8 @@ const LoginForm = ({ onSubmit }) => {
           </Stack>
 
           {/* Submit Button */}
-          <Button
-            sx={{ padding: { xs: 1, md: 2 } }}
-            variant="contained"
-            type="submit"
-          >
-            SIGN IN
+          <Button variant="contained" type="submit">
+            LOGIN
           </Button>
 
           {/* Sign Up Link */}
