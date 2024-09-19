@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
 import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatTime';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
 function ClassPeriodListPage() {
   const { data, error, isLoading } = useViewListClassPeriodQuery();

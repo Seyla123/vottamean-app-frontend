@@ -3,7 +3,7 @@ import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
 import { useGetClassPeriodByIdQuery } from '../../../services/classPeriodApi';
 import { useParams } from 'react-router-dom';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatTime';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
 const clickEdit = () => {
   console.log('edit');

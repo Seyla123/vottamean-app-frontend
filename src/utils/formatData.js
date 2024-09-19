@@ -16,3 +16,24 @@ export const transformAttendanceData = (apiResponse) => {
       img:item.Student.Info.photo, // Photo
     }));
   };
+
+// Calculation to get period of hour
+export function calculatePeriod(startTime, endTime) {
+  const start = new Date(`1970-01-01T${startTime}Z`);
+  const end = new Date(`1970-01-01T${endTime}Z`);
+  const diff = Math.abs(end - start);
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return `${hours}h ${minutes}m`;
+}
+
+// Format into standard hour AM or PM
+export function formatTimeTo12Hour(timeString) {
+  const [hourStr, minuteStr] = timeString.split(':');
+  let hours = parseInt(hourStr, 10);
+  const minutes = parseInt(minuteStr, 10);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  return `${hours}:${formattedMinutes} ${ampm}`;
+}
