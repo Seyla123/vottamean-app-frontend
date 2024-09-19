@@ -31,7 +31,7 @@ function ClassPeriodListPage() {
   ];
 
   // Helper function to format time to 12-hour AM/PM
- 
+
   const handleEdit = (row) => {
     navigate(`/dashboard/class-periods/update/${row.id}`);
   };
@@ -41,14 +41,17 @@ function ClassPeriodListPage() {
   const handleSelectedDelete = () => {
     console.log('Delete all');
   };
+  const handleView = (row) => {
+    navigate(`/admin/class-periods/${row.period_id}`);
+  };
 
   const rows = data.data.map((item) => {
-  const { period_id, start_time, end_time } = item;
+    const { period_id, start_time, end_time } = item;
     return {
-        period_id: period_id,
-        start_time: formatTimeTo12Hour(start_time),
-        end_time: formatTimeTo12Hour(end_time),
-        period: calculatePeriod(start_time, end_time),
+      period_id: period_id,
+      start_time: formatTimeTo12Hour(start_time),
+      end_time: formatTimeTo12Hour(end_time),
+      period: calculatePeriod(start_time, end_time),
     };
   });
   // Columns to hide
@@ -79,6 +82,7 @@ function ClassPeriodListPage() {
         columns={columns}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onView={handleView}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={hideColumns}
         emptyTitle={'No Class Periods'}
