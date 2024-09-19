@@ -12,7 +12,6 @@ import {
   MenuItem,
   useMediaQuery,
   useTheme,
-  Chip,
   Avatar,
   Box,
   TablePagination,
@@ -22,12 +21,17 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NotFoundImage from '../../assets/images/not-found.jpg';
 import { tableShadow } from '../../styles/global';
 import StatusChip from '../common/StatusChip';
+import { truncate } from '../../utils/truncate';
+
 const AttendanceReportTable = ({
   rows,
   columns,
-  hideColumns = []
+  hideColumns = [],
+  handleView,
+  handleDelete
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -38,18 +42,24 @@ const AttendanceReportTable = ({
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
+    setSelectedRow(row); // Store the row data
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setSelectedRow(null);
+    setSelectedRow(null); // Clear the row data when menu is closed
   };
 
-
-  const truncate = (text, maxLength) => {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + '...';
+  const handleMenuAction = (action) => {
+    if (selectedRow) {
+      if (action === 'view') {
+        handleView(selectedRow.attendance_id);
+         // Pass the row ID to handleView
+      } else if (action === 'delete') {
+        handleDelete(selectedRow.attendance_id); // Pass the row ID to handleDelete
+      }
+      handleClose(); // Close the menu after action
+    }
   };
 
   const visibleColumns = columns.filter((col) =>
@@ -126,7 +136,7 @@ const AttendanceReportTable = ({
                         justifyContent: 'flex-end',
                       }}
                     >
-                      <StatusChip status={row.status} statusId={row.status_id}/>
+                      <StatusChip status={row.status} statusId={row.status_id} />
 
                       <IconButton
                         size="small"
@@ -159,7 +169,7 @@ const AttendanceReportTable = ({
                 style={{ objectFit: 'cover' }}
               />
               <Typography variant="h6" color="text.primary" textAlign="center">
-                No student
+                No Attendance Record
               </Typography>
             </Box>
           </Box>
@@ -174,21 +184,18 @@ const AttendanceReportTable = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        {status.map((statusOption) => (
-          <MenuItem
-            key={statusOption}
-            onClick={() => handleStatusChange(statusOption)}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {getStatusIcon(statusOption)}
-              <Box component="span" sx={{ ml: 1 }}>
-                {statusOption}
-              </Box>
-            </Box>
-          </MenuItem>
-        ))}
-      </Menu> */}
+      <Menu
+        id='basic-menu'
+        open={Boolean(anchorEl)}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={() => handleMenuAction('view')}>View</MenuItem>
+        <MenuItem onClick={() => handleMenuAction('delete')}>Delete</MenuItem>
+      </Menu>
     </Paper>
   );
 };

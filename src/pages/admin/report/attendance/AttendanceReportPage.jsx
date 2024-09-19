@@ -1,29 +1,39 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
-import {
-  Grid,
-  Typography,
-  Box,
-  Avatar,
-  Button,
-} from "@mui/material";
+import { Button, Snackbar, Alert } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import AttendanceTable from "../../../../components/attendance/AttendanceReportTable";
-import CalendarImage from "../../../../assets/icon/calendar.png";
-import FilterComponent from "../../../../components/common/FilterComponent";
-import { shadow } from "../../../../styles/global";
-import {
-  CheckCheckIcon,
-  AlarmClockIcon,
-  CircleX,
-  PencilIcon,
-} from "lucide-react";
-import theme from "../../../../styles/theme";
+import LoadingCircle from "../../../../components/loading/LoadingCircle";
+import ReportHeader from "../../../../components/attendance/ReportHeader";
 import { useGetAllAttendanceQuery } from "../../../../services/attendanceApi";
-import {transformAttendanceData} from "../../../../utils/formatData"
-import LoadingCircle from "../../../../components/loading/LoadingCircle"
-// --- data --------------------------------
-// column styles
+import { transformAttendanceData } from "../../../../utils/formatData";
+import { Box } from "@mui/material";
+import FilterComponent from "../../../../components/common/FilterComponent";
+import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
+import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
+
+const subjects = [
+  { value: '', label: "All" },
+  { value: 1, label: "Math" },
+  { value: 2, label: "Science" },
+  { value: 3, label: "English" },
+];
+
+const classes = [
+  { value: '', label: "All" },
+  { value: 1, label: "Class A" },
+  { value: 2, label: "Class B" },
+  { value: 3, label: "Class C" },
+];
+
+const filterOptions = [
+  { value: "", label: "All" },
+  { value: "today", label: "Daily" },
+  { value: "lastWeek", label: "Weekly" },
+  { value: "lastMonth", label: "Monthly" },
+  { value: "lastYear", label: "Yearly" },
+];
+
 const columns = [
   { id: "id", label: "StudentID" },
   { id: "name", label: "Name" },
@@ -34,134 +44,76 @@ const columns = [
 ];
 
 const AttendanceReportPage = () => {
-  const { data: allAttendanceData, isLoading, isSuccess } = useGetAllAttendanceQuery();
-  const [rows, setRows] = useState([]);
-  useEffect(() => {
-    // Transform API response into table data format
-    console.log(allAttendanceData);
-    if(allAttendanceData){
-      const formattedData = transformAttendanceData(allAttendanceData.data)
-      console.log(formattedData);
-      setRows(formattedData);
-    }
-},[allAttendanceData, isLoading, isSuccess])
-
   const [subjectValue, setSubjectValue] = useState("");
   const [classValue, setClassValue] = useState("");
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('today');
+  const [filterLabel, setFilterLabel] = useState('Daily');
+  const [rows, setRows] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  // --- Filters --------------------------------
-  // subjects
-  const subjects = [
-    { value: "Math", label: "Math" },
-    { value: "Science", label: "Science" },
-    { value: "English", label: "English" },
-  ];
-  // handle subjects
+  const { data: allAttendanceData, isLoading, isSuccess } = useGetAllAttendanceQuery({
+    classId: classValue,
+    subjectId: subjectValue,
+    filter: filterValue,
+  });
+  const [deleteAttendance, { isError, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
+  useEffect(() => {
+    if (isSuccess && allAttendanceData) {
+      const formattedData = transformAttendanceData(allAttendanceData.data);
+      setRows(formattedData);
+    }
+  }, [allAttendanceData, isSuccess]);
+
   const handleSubjectChange = (event) => {
     setSubjectValue(event.target.value);
   };
-  // classes
-  const classes = [
-    { value: "Class A", label: "Class A" },
-    { value: "Class B", label: "Class B" },
-    { value: "Class C", label: "Class C" },
-  ];
-  //handle class
+
   const handleClassChange = (event) => {
     setClassValue(event.target.value);
   };
-  // filter
-  const filter = [
-    { value: "All", label: "All" },
-    { value: "Today", label: "Today" },
-  ];
-  // handle filter
+
   const handleFilterChange = (event) => {
     setFilterValue(event.target.value);
+    const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
+    setFilterLabel(selectedLabel);
   };
 
-  // Status updates
-  const statusDetails = [
-    { label: "Present", color: "#28a745", icon: CheckCheckIcon },
-    { label: "Late", color: "#fd7e14", icon: AlarmClockIcon },
-    { label: "Permission", color: "#007bff", icon: PencilIcon },
-    { label: "Absent", color: "#dc3545", icon: CircleX },
-  ];
-
-  // --- Table status change functions --------------------------------
-  const handleStatusChange = (updatedRow, newStatus) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === updatedRow.id ? { ...row, status: newStatus } : row
-      )
-    );
-  };
-
-  // --- Count status --------------------------------
-  const statusCounts = {};
-  rows.forEach((row) => {
-    if (!statusCounts[row.status]) {
-      statusCounts[row.status] = 1;
-    } else {
-      statusCounts[row.status]++;
-    }
-  });
-
-  // handle export 
   const handleExport = () => {
-    console.log('click')
+    console.log('Export clicked');
+  };
+
+  const onDelete = (id) => {
+    setItemToDelete(id);
+    setIsOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setIsOpen(false);
+      setSnackbarMessage("Deleted successfully");
+      setSnackbarOpen(true);
+      await deleteAttendance({ id: itemToDelete }).unwrap();
+    } catch (error) {
+      setSnackbarMessage("Failed to delete");
+      setSnackbarOpen(true);
+    }
+  };
+  const onView = (id) => {
+    console.log('View clicked', id);
+  };
+
+  if (isLoading) {
+    return <LoadingCircle />;
   }
-  if(isLoading){
-    return <LoadingCircle/>
-  }
+
   return (
     <FormComponent title={"Attendance Report"} subTitle={"Report"}>
-      {/* Cards Grid */}
-      <Box sx={cardGrid}>
-        <Box sx={boxGrid}>
-          <Typography variant="h4" fontWeight={"bold"}>
-            Today's report
-          </Typography>
-          <Avatar
-            variant="square"
-            src={CalendarImage}
-            alt="Calendar Icon"
-            sx={avatar}
-          />
-        </Box>
-        <Box sx={{ width: "100%", ...shadow }}>
-          <Grid column={14} container sx={gridContainer}>
-            {statusDetails.map(({ icon: Icon, label, color }, index) => (
-              <Grid key={index} item xs={6} sm={3} sx={gridIcon}>
-                <Avatar sx={{ bgcolor: color, width: 40, height: 40, mb: 1 }}>
-                  <Icon color="white" size={20} />
-                </Avatar>
-                <Typography
-                  variant="body2"
-                  sx={{ color: theme.palette.secondary.main }}
-                >
-                  {label}
-                </Typography>
-                <Typography variant="h5">
-                  {statusCounts[label]?.toString().padStart(2, "0") || "00"}
-                </Typography>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Box>
-
-      {/* Filter */}
-      <Box sx={boxStyle}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 2,
-            alignSelf: "start",
-          }}
-        >
+      <ReportHeader data={rows} title={filterLabel} />
+      <Box sx={filterBoxStyle}>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start" }}>
           <FilterComponent
             value={subjectValue}
             data={subjects}
@@ -178,22 +130,19 @@ const AttendanceReportPage = () => {
         <Box alignSelf={"end"}>
           <FilterComponent
             value={filterValue}
-            data={filter}
+            data={filterOptions}
             onChange={handleFilterChange}
             placeholder={"Filter"}
           />
-           
         </Box>
       </Box>
-
-      {/* Table */}
       <AttendanceTable
         rows={rows}
         columns={columns}
-        hideColumns={["Name","id","subject", "class", "address"]}
-        onStatusChange={handleStatusChange}
+        hideColumns={["id", "subject",'class', "address"]}
+        handleDelete={onDelete}
+        handleView={onView}
       />
-
       <Button
         variant="contained"
         endIcon={<DownloadIcon size={16} />}
@@ -202,14 +151,34 @@ const AttendanceReportPage = () => {
       >
         Export List
       </Button>
+      <DeleteConfirmationModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={confirmDelete}
+        itemName="Example Item"
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={isDeleting ? "info" : (snackbarMessage.includes("Failed") ? "error" : "success")}
+          sx={{ width: '100%' }}
+        >
+          {isDeleting ? "Deleting..." : snackbarMessage}
+        </Alert>
+      </Snackbar>
+
     </FormComponent>
+
   );
 };
 
 export default AttendanceReportPage;
 
-
-const boxStyle = {
+const filterBoxStyle = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
@@ -218,48 +187,4 @@ const boxStyle = {
   width: "100%",
   gap: 2,
 };
-const cardGrid = {
-  display: "flex",
-  flexDirection: { md: "row", xs: "column" },
-  gap: 1,
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-}
-const gridContainer = {
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  p: 1,
-  width: "100%",
-}
-const gridIcon = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  width: "100%",
-  p: 1,
-  overflow: "hidden",
-}
-const avatar ={
-  width: {
-    xs: "80px",
-    sm: "100px",
-  },
-  height: {
-    xs: "80px",
-    sm: "100px",
-  },
-  objectFit: "cover",
-}
-const boxGrid = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-  p: 2,
-  ...shadow,
-}
+
