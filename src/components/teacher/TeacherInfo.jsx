@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   TextField,
@@ -7,6 +6,7 @@ import {
   Box,
   Avatar,
   Typography,
+  Stack,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
 
+// add validate schemas
 const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
@@ -45,14 +46,16 @@ const TeacherInfo = ({ handleNextClick }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(handleNextClick)}>
+        {/* profile */}
         <Box sx={profileBox}>
           <Box sx={valueBoxOne}>
             <Avatar sx={imgStyle} alt="profile picture" src="r" />
           </Box>
-
+          {/* subheader */}
           <SubHeader title={'Teacher Information'} />
-
+          {/* text fields */}
           <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+            {/* first name */}
             <Box sx={{ flex: 1, width: '100%' }}>
               <Box sx={textFieldGap}>
                 <Typography>First Name</Typography>
@@ -62,7 +65,7 @@ const TeacherInfo = ({ handleNextClick }) => {
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="First Name"
+                      placeholder="First Name"
                       error={!!errors.firstName}
                       helperText={errors.firstName?.message}
                       fullWidth
@@ -71,6 +74,7 @@ const TeacherInfo = ({ handleNextClick }) => {
                 />
               </Box>
             </Box>
+            {/* last name */}
             <Box sx={{ flex: 1, width: '100%' }}>
               <Box sx={textFieldGap}>
                 <Typography>Last Name</Typography>
@@ -80,7 +84,7 @@ const TeacherInfo = ({ handleNextClick }) => {
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Last Name"
+                      placeholder="Last Name"
                       error={!!errors.lastName}
                       helperText={errors.lastName?.message}
                       fullWidth
@@ -90,7 +94,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               </Box>
             </Box>
           </Box>
-
+          {/* phone number */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Phone Number</Typography>
             <Controller
@@ -99,7 +103,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Phone Number"
+                  placeholder="Phone Number"
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber?.message}
                   fullWidth
@@ -107,7 +111,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               )}
             />
           </Box>
-          
+          {/* gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Gender</Typography>
             <Controller
@@ -117,7 +121,7 @@ const TeacherInfo = ({ handleNextClick }) => {
                 <TextField
                   {...field}
                   select
-                  label="Gender"
+                  placeholder="Gender"
                   error={!!errors.gender}
                   helperText={errors.gender?.message}
                   fullWidth
@@ -129,7 +133,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               )}
             />
           </Box>
-          
+          {/* date of birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Date of Birth</Typography>
             <Controller
@@ -146,13 +150,13 @@ const TeacherInfo = ({ handleNextClick }) => {
                       fullWidth
                     />
                   )}
-                  label="Date of Birth"
+                  placeholder="Date of Birth"
                   value={field.value || null}
                 />
               )}
             />
           </Box>
-          
+          {/* address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Address</Typography>
             <Controller
@@ -161,7 +165,7 @@ const TeacherInfo = ({ handleNextClick }) => {
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Address"
+                  placeholder="Address"
                   error={!!errors.address}
                   helperText={errors.address?.message}
                   fullWidth
@@ -169,10 +173,15 @@ const TeacherInfo = ({ handleNextClick }) => {
               )}
             />
           </Box>
-          
-          <Button type="submit" variant="contained" color="primary">
-            Submit
-          </Button>
+          {/* Button */}
+          <Stack  direction={'row'} alignSelf={'flex-end'} justifyContent={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
+            <Button fullWidth variant="outlined" color="inherit">
+              Cancel
+            </Button>
+            <Button fullWidth type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </Stack>
         </Box>
       </form>
     </LocalizationProvider>
