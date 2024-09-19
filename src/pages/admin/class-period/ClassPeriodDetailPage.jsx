@@ -2,11 +2,12 @@ import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
 import { useGetClassPeriodByIdQuery } from '../../../services/classPeriodApi';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
 function ClassPeriodDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
 
   // Handle loading state
@@ -20,10 +21,10 @@ function ClassPeriodDetailPage() {
   }
 
   // handle edit action
-  const clickEdit = () => {
-    console.log('edit');
+  const clickEdit = (row) => {
+    navigate(`/admin/class-periods/update/${row.id}`);
   };
-  
+
   // handle delete action
   const clickDetele = () => {
     console.log('delete');
