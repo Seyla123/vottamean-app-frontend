@@ -107,7 +107,6 @@ const ClassListPage = () => {
           </Button>
         </Link>
       </Stack>
-
       <Box>
         <Stack
           direction="row"
