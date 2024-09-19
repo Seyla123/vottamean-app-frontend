@@ -14,7 +14,6 @@ const ClassListPage = () => {
 
   // Fetch classes using the API hook
   const { data, error, isLoading } = useGetClassesDataQuery();
-
   // Check if data is defined
 
   if (isLoading) {
@@ -24,7 +23,6 @@ const ClassListPage = () => {
   if (error) {
     return <div>Error fetching data</div>;
   }
-
   // Ensure data is defined before mapping
   const newClassesData = data?.data?.map((item) => {
     const { class_id, class_name, description } = item;
@@ -41,16 +39,11 @@ const ClassListPage = () => {
   // const classes = response.data || [];
   console.log(data.data);
   const handleEdit = (row) => {
-    navigate(`/dashboard/classes/update/${row.id}`);
+    navigate(`/admin/classes/update/${row.id}`);
   };
 
   const handleDelete = (row) => {
     console.log('Delete row:', row);
-  };
-
-  // Navigate to create page
-  const handleCreate = () => {
-    navigate(`/dashboard/classes/create/${row.id}`);
   };
 
   const handleSelectedDelete = () => {
@@ -63,19 +56,13 @@ const ClassListPage = () => {
     { id: 'description', label: 'Description' },
   ];
 
-  // // Filter rows based on the search term
-  // const filteredRows = classes.filter(classItem =>
-  //     classItem.class_name.toLowerCase().includes(searchTerm.toLowerCase())
-  // ) ;
-  // console.log('Filtered Rows:', filteredRows);
-
   const hideColumns = ['description'];
 
   return (
     <FormComponent title="Class List" subTitle={`Total Classes: `}>
       {/* Button add class container */}
       <Stack direction="row" justifyContent="flex-end">
-        <Link to="/dashboard/classes/create">
+        <Link to="/admin/classes/create">
           <Button
             size="large"
             variant="contained"
