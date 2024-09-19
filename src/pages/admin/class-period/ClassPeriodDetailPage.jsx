@@ -5,9 +5,11 @@ import { useGetClassPeriodByIdQuery } from '../../../services/classPeriodApi';
 import { useParams } from 'react-router-dom';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 
+// handle edit action
 const clickEdit = () => {
   console.log('edit');
 };
+// handle delete action
 const clickDetele = () => {
   console.log('delete');
 };
@@ -27,7 +29,7 @@ function ClassPeriodDetailPage() {
 
   const { period_id, start_time, end_time } = data.data;
 
-  const newArray = {
+  const periodDetail = {
     'Class Period ID': period_id,
     'Start Time': formatTimeTo12Hour(start_time),
     'End Time': formatTimeTo12Hour(end_time),
@@ -44,7 +46,7 @@ function ClassPeriodDetailPage() {
         handleEdit={clickEdit}
         handleDelete={clickDetele}
       >
-        <CardInformation data={newArray} />
+        <CardInformation data={periodDetail} />
       </CardComponent>
     </FormComponent>
   );
