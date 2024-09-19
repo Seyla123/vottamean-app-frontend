@@ -5,7 +5,9 @@ export const transformAttendanceData = (apiResponse) => {
       attendance_id: item.attendance_id,
       name: `${item.Student.Info.first_name} ${item.Student.Info.last_name}`, // Combine first and last name
       time: `${item.Sessions.Period.start_time.slice(0, 5)} - ${item.Sessions.Period.end_time.slice(0, 5)}`, // Time range
+      subjectId: item.Sessions.Subject.id,
       subject: item.Sessions.Subject.name, // Subject name
+      classId: item.Student.Class.id,
       class: item.Student.Class.class_name, // Class name
       address: item.Student.Info.address, // Address
       date:item.date,// Date
