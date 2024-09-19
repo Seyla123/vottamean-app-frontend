@@ -6,11 +6,9 @@ import ButtonContainer from "../../../components/common/ButtonContainer";
 function ClassUpdatePage() {
     const onClickBack = () => {
         console.log('cancel');
-
     }
     const onClickNext = () => {
         console.log('add');
-
     }
     return (
         <>
