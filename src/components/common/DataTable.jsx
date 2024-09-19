@@ -13,12 +13,50 @@ import {
   MenuItem,
   Tooltip,
   TablePagination,
+  Box,
   Typography,
 } from '@mui/material';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
 import NotFoundIcon from '../../assets/images/not-found.jpg';
+
+/**
+ * DataTable Component
+ *
+ * A reusable and feature-rich table component built with React and Material-UI.
+ *
+ * Features:
+ * - Sortable columns
+ * - Pagination
+ * - Row selection (single and multi-select)
+ * - Responsive design with column hiding for mobile views
+ * - Action menu for each row (edit and delete)
+ * - Bulk delete functionality
+ * - Empty state handling
+ *
+ * Props:
+ * @param {Object[]} rows - Array of data objects to display in the table
+ * @param {Object[]} columns - Array of column definitions (id, label, align)
+ * @param {Function} onEdit - Callback function for row edit action
+ * @param {Function} onDelete - Callback function for row delete action
+ * @param {Function} onSelectedDelete - Callback function for bulk delete action
+ * @param {string[]} hideColumns - Array of column ids to hide on mobile views
+ * @param {string} emptyTitle - Title to display when the table is empty
+ * @param {string} emptySubTitle - Subtitle to display when the table is empty
+ *
+ * Usage:
+ * <DataTable
+ *   rows={dataArray}
+ *   columns={columnDefinitions}
+ *   onEdit={handleEdit}
+ *   onDelete={handleDelete}
+ *   onSelectedDelete={handleBulkDelete}
+ *   hideColumns={['columnToHide']}
+ *   emptyTitle="No data available"
+ *   emptySubTitle="Add some data to see it in the table"
+ * />
+ */
 
 const DataTable = ({
   rows,
@@ -29,15 +67,12 @@ const DataTable = ({
   hideColumns,
   emptyTitle,
   emptySubTitle,
-  page,
-  rowsPerPage,
-  onPageChange,
-  onRowsPerPageChange,
-  totalCount,
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
 
   const handleSelectAllClick = (event) => {
@@ -86,6 +121,20 @@ const DataTable = ({
     setSelected([]);
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
+
   return (
     <TableContainer
       component={Paper}
@@ -130,11 +179,11 @@ const DataTable = ({
           {rows.length === 0 ? (
             <EmptyTable
               columns={columns}
-              emptyTitle={totalCount > 0 ? 'No items on this page' : emptyTitle}
-              emptySubTitle={totalCount > 0 ? 'Try changing page or rows per page' : emptySubTitle}
+              emptyTitle={emptyTitle}
+              emptySubTitle={emptySubTitle}
             />
           ) : (
-            rows.map((row) => {
+            paginatedRows.map((row) => {
               const isItemSelected = isSelected(row.id);
               return (
                 <TableRow key={row.id} selected={isItemSelected}>
@@ -165,11 +214,11 @@ const DataTable = ({
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={totalCount}
+        count={14}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <Menu
         id="basic-menu"

@@ -1,25 +1,45 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Stack, Button, Box, Typography } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
+import { Link } from 'react-router-dom';
 import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import { PlusIcon } from 'lucide-react';
-import { useGetClassesDataQuery } from '../../../services/classApi';
+import { useGetClassesDataQuery } from '../../../services/classApi'; // Adjust the import based on your project structure
 
 const ClassListPage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // Fetch classes using the API hook with pagination
-  const { data, error, isLoading } = useGetClassesDataQuery({
-    limit: rowsPerPage,
-    page: page + 1, // API might expect 1-indexed pages
-    search: searchTerm, // Include search term in the query
-  });
+  // Fetch classes using the API hook
+  const { data, error, isLoading } = useGetClassesDataQuery();
 
+  // Check if data is defined
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching data</div>;
+  }
+
+  // Ensure data is defined before mapping
+  const newClassesData = data?.data?.map((item) => {
+    const { class_id, class_name, description } = item;
+
+    return {
+      class_id,
+      class_name,
+      description,
+    };
+  }); 
+
+  console.log(newClassesData);
+
+  // const classes = response.data || [];
+  console.log(data.data);
   const handleEdit = (row) => {
     navigate(`/dashboard/classes/update/${row.id}`);
   };
@@ -28,22 +48,13 @@ const ClassListPage = () => {
     console.log('Delete row:', row);
   };
 
-  const handleSelectedDelete = (selectedIds) => {
-    console.log('Delete selected:', selectedIds);
+  // Navigate to create page
+  const handleCreate = () => {
+    navigate(`/dashboard/classes/create/${row.id}`);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setPage(0); // Reset to first page when searching
+  const handleSelectedDelete = () => {
+    console.log('Delete all');
   };
 
   const columns = [
@@ -52,20 +63,17 @@ const ClassListPage = () => {
     { id: 'description', label: 'Description' },
   ];
 
+  // // Filter rows based on the search term
+  // const filteredRows = classes.filter(classItem =>
+  //     classItem.class_name.toLowerCase().includes(searchTerm.toLowerCase())
+  // ) ;
+  // console.log('Filtered Rows:', filteredRows);
+
   const hideColumns = ['description'];
 
-  // Process the data when it's available
-  const processedData = data?.data?.map((item) => ({
-    id: item.class_id, // Ensure each row has a unique 'id' for DataTable
-    class_id: item.class_id,
-    class_name: item.class_name,
-    description: item.description,
-  })) || [];
-
-
-  console.log(processedData);
   return (
-    <FormComponent title="Class List" subTitle={`Total Classes: ${data?.total || 0}`}>
+    <FormComponent title="Class List" subTitle={`Total Classes: `}>
+      {/* Button add class container */}
       <Stack direction="row" justifyContent="flex-end">
         <Link to="/dashboard/classes/create">
           <Button
@@ -79,6 +87,7 @@ const ClassListPage = () => {
         </Link>
       </Stack>
 
+      
       <Box>
         <Stack
           direction="row"
@@ -90,32 +99,28 @@ const ClassListPage = () => {
             sx={{ width: '100%', maxWidth: '700px' }}
             placeholder="Search"
             value={searchTerm}
-            onChange={handleSearch}
+            onChange={(e) => setSearchTerm(e.target.value)}
             onClickIcon={() => console.log('click search icon')}
           />
         </Stack>
       </Box>
 
+      {/* Loading and error handling */}
       {isLoading && <Typography>Loading classes...</Typography>}
-      {error && <Typography>Error fetching classes: {error.toString()}</Typography>}
-
-      {!isLoading && !error && (
-        <DataTable
-          rows={processedData}
-          columns={columns}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onSelectedDelete={handleSelectedDelete}
-          hideColumns={hideColumns}
-          emptyTitle={'No Class'}
-          emptySubTitle={'No Class Available'}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          totalCount={data?.total || 0}
-        />
+      {error && (
+        <Typography>Error fetching classes: {error}</Typography>
       )}
+
+      <DataTable
+        rows={newClassesData}
+        columns={columns}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onSelectedDelete={handleSelectedDelete}
+        hideColumns={hideColumns}
+        emptyTitle={'No Class'}
+        emptySubTitle={'No Class Available'}
+      />
     </FormComponent>
   );
 };
