@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   TextField,
   MenuItem,
@@ -25,14 +26,13 @@ const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   phoneNumber: yup.string().required('Phone number is required'),
-  gender: yup
-    .string()
-    .required('Gender is required'),
+  gender: yup.string().required('Gender is required'),
   dob: yup
     .date()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
-    .nullable(),
+    .nullable()
+    .typeError('Invalid date format'),
   address: yup.string().required('Address is required'),
 });
 
@@ -42,6 +42,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -54,15 +55,21 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     },
   });
 
+  const [dob, setDob] = useState(null);
+
+  const handleCancel = () => {
+    navigate('/teacher');
+  }
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
+      setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
     }
   }, [defaultValues, reset]);
 
   const onSubmit = (data) => {
-    handleNextClick(true, data);
-    console.log(data);
+    handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null });
+    // 
   };
 
   return (
@@ -137,24 +144,25 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               name="gender"
               control={control}
               render={({ field }) => (
-                <FormControl fullWidth margin="normal" error={!!errors.gender}>
-                  <InputLabel id="gender-label">Gender</InputLabel>
+                <FormControl fullWidth error={!!errors.gender}>
                   <Select
                     {...field}
-                    labelId="gender-label"
-                    label="Gender"
                     displayEmpty
                     error={!!errors.gender}
-                    onChange={(e) => {
-                      const value = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1); // Capitalize the first letter
-                      field.onChange(value);
+                    renderValue={(selected) => {
+                      if (!selected) {
+                        return (
+                          <Box sx={{ color: '#B5B5B5' }}>Select Gender</Box>
+                        );
+                      }
+                      return selected;
                     }}
                   >
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                    <MenuItem value="other">Other</MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                    <MenuItem value="Other">Other</MenuItem>
                   </Select>
-                  <Typography variant="body2" color="error">
+                  <Typography variant="caption" color="error">
                     {errors.gender?.message}
                   </Typography>
                 </FormControl>
@@ -167,20 +175,30 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             <Controller
               name="dob"
               control={control}
-              render={({ field }) => (
+              rules={{ required: 'Date of birth is required' }}
+              render={({ field, fieldState: { error } }) => (
                 <DesktopDatePicker
                   inputFormat="MM/DD/YYYY"
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      error={!!errors.dob}
-                      helperText={errors.dob?.message}
+                      error={!!error}
+                      helperText={error ? error.message : ''}
                       fullWidth
                     />
                   )}
-                  value={field.value ? dayjs(field.value) : null}
-                  onChange={(newDate) => field.onChange(newDate ? newDate.toISOString() : null)}
-                  maxDate={dayjs()} 
+                  value={dob}
+                  onChange={(newValue) => {
+                    setDob(newValue);
+                    field.onChange(newValue);
+                  }}
+                  maxDate={dayjs()}
+                  onError={(error) => {
+                    if (error === 'invalidDate') {
+                      setDob(null);
+                      field.onChange(null);
+                    }
+                  }}
                 />
               )}
             />

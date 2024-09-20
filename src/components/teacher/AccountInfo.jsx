@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box, Button, Typography, TextField } from '@mui/material';
+import { Box, Button, Typography, TextField, Stack } from '@mui/material';
 import SubHeader from './SubHeader';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AccountInformation } from '../../validators/validationSchemas';
 
 const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
+  // yup validation from account information schema
   const {
     register,
     handleSubmit,
@@ -13,7 +14,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
   } = useForm({
     resolver: yupResolver(AccountInformation),
     defaultValues: {
-      email: teacherData.email || '',
+      email: '',
       password: '',
       passwordConfirm: '',
     },
@@ -33,7 +34,6 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
           <SubHeader title={'Account Information'} />
-
           {/* Email */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Email</Typography>
@@ -47,7 +47,6 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               helperText={errors.email?.message}
             />
           </Box>
-
           {/* Password */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Password</Typography>
@@ -62,7 +61,6 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               helperText={errors.password?.message}
             />
           </Box>
-
           {/* Confirm Password */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Confirm Password</Typography>
@@ -77,14 +75,21 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               helperText={errors.passwordConfirm?.message}
             />
           </Box>
-
           {/* Buttons */}
-          <Box display={'flex'} justifyContent={'flex-end'} gap={2}>
-            <Button variant="outlined" onClick={handleBack}>Back</Button>
-            <Button fullWidth variant="contained" type="submit" disabled={!isValid}>
-              Add Teacher
+          <Stack
+            direction={'row'}
+            alignSelf={'flex-end'}
+            justifyContent={'flex-end'}
+            width={{ xs: '100%', sm: '340px' }}
+            gap={{ xs: 1, sm: 2 }}
+          >
+            <Button onClick={handleBack} fullWidth variant="outlined" color="inherit">
+              Back
             </Button>
-          </Box>
+            <Button fullWidth variant="contained" type="submit" >
+            Add Teacher
+            </Button>
+          </Stack>
         </Box>
       </form>
     </Box>
@@ -101,6 +106,10 @@ const profileBox = {
   marginTop: '32px',
   padding: {
     xs: 2,
+    sm: 3,
+  },
+  gap: {
+    xs: '12px',
     sm: 3,
   },
   display: 'flex',
