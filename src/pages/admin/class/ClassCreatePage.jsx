@@ -23,16 +23,16 @@ function ClassCreatePage() {
   const { control, handleSubmit,getValues,formState: { isSubmitting, errors }, } = useForm({
     resolver: yupResolver(ClassValidator),
   });
-  const [addClass] = usePostClassesDataMutation();
+  const [addClass, isLoading , isSuccess, isError] = usePostClassesDataMutation();
   const onSubmit = async () => {
     try {
       const { class_name, description } = getValues();
-      const formatData = {
+      const formData = {
         class_name,
         description,
       };
       // Dispatch the action to update the class data in Redux
-      await addClass(formatData).unwrap();
+      await addClass(formData).unwrap();
       setSnackbarMessage(
         'You are created class successfully, please go to class list',
       );
@@ -120,7 +120,7 @@ function ClassCreatePage() {
               severity={snackbarSeverity}
               sx={{ width: '100%' }}
             >
-              {snackbarMessage}
+              {isLoading ? "creating":snackbarMessage}
             </Alert>
           </Snackbar>
         </CardComponent>
