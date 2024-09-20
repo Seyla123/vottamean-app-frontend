@@ -47,7 +47,26 @@ const classSlice = createSlice({
         (state) => {
           state.snackbar = { open: true, message: 'Failed to delete', severity: 'error' };
         }
-      );
+      )
+      .addMatcher(
+        classApi.endpoints.postClassesData.matchPending,
+        (state) => {
+          state.snackbar = { open: true, message: 'Creating...', severity: 'info' };
+        }
+      )
+      .addMatcher(
+        classApi.endpoints.postClassesData.matchFulfilled,
+        (state, action) => {
+          state.rows = state.rows.filter((row) => row.id !== action.payload);
+          state.snackbar = { open: true, message: 'Created successfully', severity: 'success' };
+        }
+      )
+      .addMatcher(
+        classApi.endpoints.postClassesData.matchRejected,
+        (state) => {
+          state.snackbar = { open: true, message: 'Failed to create', severity: 'error' };
+        }
+      ); 
   },
 });
 

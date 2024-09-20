@@ -2,7 +2,14 @@ import React from 'react';
 import { useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 //import marterial ui
-import {Typography,Stack,TextField,Snackbar,IconButton,Alert,} from '@mui/material';
+import {
+  Typography,
+  Stack,
+  TextField,
+  Snackbar,
+  IconButton,
+  Alert,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 //Import component
 import { useForm, Controller } from 'react-hook-form';
@@ -13,17 +20,25 @@ import ButtonContainer from '../../../components/common/ButtonContainer';
 import { usePostClassesDataMutation } from '../../../services/classApi';
 import { ClassValidator } from '../../../validators/validationSchemas';
 // import { createClassData } from '../../../store/slices/classSlice';
-
-
+import { setSnackbar } from '../../../store/slices/classSlice';
+import { useDispatch, useSelector } from 'react-redux';
 function ClassCreatePage() {
+  const dispatch = useDispatch();
+  const { snackbar } = useSelector((state) => state.classes);
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
-  const { control, handleSubmit,getValues,formState: { isSubmitting, errors }, } = useForm({
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(ClassValidator),
   });
-  const [addClass, isLoading , isSuccess, isError] = usePostClassesDataMutation();
+  const [addClass, isLoading, isSuccess, isError] = usePostClassesDataMutation();
   const onSubmit = async () => {
     try {
       const { class_name, description } = getValues();
@@ -31,24 +46,14 @@ function ClassCreatePage() {
         class_name,
         description,
       };
+      dispatch(setSnackbar({ open: true }));
       // Dispatch the action to update the class data in Redux
       await addClass(formData).unwrap();
-      setSnackbarMessage(
-        'You are created class successfully, please go to class list',
-      );
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
+
     } catch (err) {
       // On error, set an error message and open Snackbar to show error message
-      setSnackbarMessage(
-        'There was an issue with your creating or you are creating duplicate class',
-      );
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+      console.log('error message :', error);
     }
-  };
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
   return (
     <>
@@ -96,31 +101,19 @@ function ClassCreatePage() {
             rightBtn={handleSubmit(onSubmit)}
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Add Class'}
-            disabled={isSubmitting}
           />
           {/*  Display Snackbar for notifications */}
           <Snackbar
-            open={snackbarOpen}
+            open={snackbar.open}
             autoHideDuration={6000}
-            onClose={handleSnackbarClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            action={
-              <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleSnackbarClose}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            }
+            onClose={() => dispatch(setSnackbar({ open: false }))}
           >
             <Alert
-              onClose={handleSnackbarClose}
-              severity={snackbarSeverity}
+              onClose={() => dispatch(setSnackbar({ open: false }))}
+              severity={snackbar.severity}
               sx={{ width: '100%' }}
             >
-              {isLoading ? "creating":snackbarMessage}
+              {snackbar.message}
             </Alert>
           </Snackbar>
         </CardComponent>
