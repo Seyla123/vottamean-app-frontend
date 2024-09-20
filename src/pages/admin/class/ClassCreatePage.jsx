@@ -49,7 +49,6 @@ function ClassCreatePage() {
       dispatch(setSnackbar({ open: true }));
       // Dispatch the action to update the class data in Redux
       await addClass(formData).unwrap();
-
     } catch (err) {
       // On error, set an error message and open Snackbar to show error message
       console.log('error message :', error);
