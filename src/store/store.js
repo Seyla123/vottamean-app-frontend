@@ -28,6 +28,7 @@ const store = configureStore({
     ui: uiReducer,
 >>>>>>> cd8235e (feature: Done on using ui slice in ClassList)
     [attendanceApi.reducerPath]: attendanceApi.reducer,
+    class: classReducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
   },
