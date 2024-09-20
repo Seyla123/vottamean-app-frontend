@@ -1,21 +1,34 @@
-import React from 'react';
-import { Button, Stack } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Stack, Snackbar, Alert } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { Link, useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
-import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
+import {
+  useViewListClassPeriodQuery,
+  useDeleteClassPeriodMutation,
+} from '../../../services/classPeriodApi';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 
+import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 
 function ClassPeriodListPage() {
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");  
+
   const navigate = useNavigate();
   const { data, error, isLoading } = useViewListClassPeriodQuery();
+  const [
+    deleteClassPeriod,
+    { isError, isLoading: isDeleting, isSuccess: isDeleted },
+  ] = useDeleteClassPeriodMutation();
 
   // Handle loading state
   if (isLoading) {
-    return <CircularIndeterminate/>;
+    return <CircularIndeterminate />;
   }
 
   // Handle error state
@@ -29,8 +42,21 @@ function ClassPeriodListPage() {
   };
 
   // Handle DELETE action
-  const handleDelete = (row) => {
-    console.log('Delete row:', row);
+  const handleDelete = (id) => {
+    setItemToDelete(id.period_id);
+    setIsOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setIsOpen(false);
+      setSnackbarMessage('Deleted successfully');
+      setSnackbarOpen(true);
+      await deleteClassPeriod(itemToDelete).unwrap();
+    } catch (error) {
+      setSnackbarMessage('Failed to delete');
+      setSnackbarOpen(true);
+    }
   };
 
   // Handle DELETE ALL action
@@ -83,6 +109,12 @@ function ClassPeriodListPage() {
           </Button>
         </Link>
       </Stack>
+      <DeleteConfirmationModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={confirmDelete}
+        itemName="Example Item"
+      />
 
       {/* Data table to display class periods */}
       <DataTable
@@ -96,6 +128,19 @@ function ClassPeriodListPage() {
         emptyTitle={'No Class Periods'}
         emptySubTitle={'No class periods available. Add some to see them here.'}
       />
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={isDeleting ? 'info' : snackbarMessage.includes('Failed') ? 'error' : 'success'}
+          sx={{ width: '100%' }}>
+          {isDeleting ? 'Deleting...' : snackbarMessage}
+        </Alert>
+      </Snackbar>
     </FormComponent>
   );
 }

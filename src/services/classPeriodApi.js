@@ -45,7 +45,7 @@ export const classPeriodApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['ClassPeriods'],
-    }),
+    }),    
 
 //     // Update data by Id
 //     updateClassPeriod: builder.mutation({
