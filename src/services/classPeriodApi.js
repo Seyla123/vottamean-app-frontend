@@ -3,13 +3,9 @@ import { baseApi } from './baseApi';
 export const classPeriodApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch data into list
-    viewListClassPeriod: builder.query({
+    getClassPeriod: builder.query({
       query: () => ({
         url: 'periods',
-        // params:{
-        //   limit:5,
-        //   page:1
-        // },
         method: 'GET',
         credentials: 'include',
       }),
@@ -28,10 +24,10 @@ export const classPeriodApi = baseApi.injectEndpoints({
 
     // Create data
     createClassPeriod: builder.mutation({
-      query: (classPeriod) => ({
+      query: (classPeriodData) => ({
         url: 'periods',
         method: 'POST',
-        body: classPeriod,
+        body: classPeriodData,
         credentials: 'include',
       }),
       invalidatesTags: ['ClassPeriods'],
@@ -45,33 +41,13 @@ export const classPeriodApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['ClassPeriods'],
-    }),    
-
-//     // Update data by Id
-//     updateClassPeriod: builder.mutation({
-//       query: (id) => ({
-//         url: `/admin/class-periods/${id}`,
-//         method: 'PATCH',
-//         credentails: 'include',
-//       }),
-//       invalidatesTags: ['ClassPeriods'],
-//     }),
-
-//     // Update data by Id
-//     deleteClassPeriod: builder.mutation({
-//       query: (id) => ({
-//         url: `/admin/class-periods/${id}`,
-//         method: 'PATCH',
-//         credentails: 'include',
-//       }),
-//       invalidatesTags: ['ClassPeriods'],
-//     }),
+    }),
   }),
 });
 
 export const {
-  useViewListClassPeriodQuery,
+  useGetClassPeriodQuery,
   useGetClassPeriodByIdQuery,
   useCreateClassPeriodMutation,
-  useDeleteClassPeriodMutation
+  useDeleteClassPeriodMutation,
 } = classPeriodApi;
