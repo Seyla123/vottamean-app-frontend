@@ -11,6 +11,7 @@ import Logo from '../../assets/images/Logo.png';
 import { extendTheme, Box, Container } from '@mui/material';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
+import userProfile from '../../assets/images/user.png';
 
 const Layout = ({ teacherSite, adminSite }) => {
   // 1. Initialize navigation and location hooks for routing
@@ -91,7 +92,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         user: {
           name: user?.name || 'Username',
           email: user?.email || 'Useremail001@gmail.com',
-          image: user?.image || 'https://via.placeholder.com/150',
+          image: user?.image || userProfile,
         },
       }}
       // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)
