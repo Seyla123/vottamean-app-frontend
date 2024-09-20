@@ -1,40 +1,39 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Tab, Box, Stack, Typography, Button } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import FormComponent from '../../../../components/common/FormComponent';
 import CardComponent from '../../../../components/common/CardComponent';
 import CardInformation from '../../../../components/common/CardInformation';
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import profile from '../../../../assets/images/default-profile.png';
 import { Trash2, KeyRoundIcon } from 'lucide-react';
 
 // Redux hooks and API
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
-import { useGetUserProfileByIdQuery } from '../../../../services/userApi';
+import {
+  useGetUserProfileQuery,
+  useDeleteUserAccountMutation,
+} from '../../../../services/userApi';
 
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Fetch user_id from auth slice
   const user_id = useSelector((state) => state.auth.user?.user_id);
-  // console.log('User Id : ', user_id);
+  const formData = useSelector((state) => state.form); // Access form data from Redux
 
-  // Fetch user profile data using the user API
-  const { data: user, isLoading, error } = useGetUserProfileByIdQuery(user_id);
-  // console.log('User Data', user);
+  const { data: user, isLoading, error } = useGetUserProfileQuery(user_id);
+  const [deleteUserAccount] = useDeleteUserAccountMutation();
 
-  // Form slice for managing the user data
-  const formData = useSelector((state) => state.form);
-  // console.log('Form Data : ', formData);
-
+  // Dispatch user data to form state
   useEffect(() => {
     if (user && user.data.adminProfile?.Info) {
       const info = user.data.adminProfile.Info;
       const school = user.data.adminProfile?.Schools[0] || {};
 
-      // Dispatch user data to form state
       dispatch(
         updateFormData({
           first_name: info.first_name,
@@ -57,11 +56,16 @@ function AccountProfilePage() {
   };
 
   const clickEdit = () => {
-    console.log('edit');
+    navigate('/admin/settings/account/update-me');
   };
 
-  const clickDeleteAccount = () => {
-    console.log('delete account');
+  const clickDeleteAccount = async () => {
+    try {
+      await deleteUserAccount(user_id).unwrap();
+      console.log('Account deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
   };
 
   if (isLoading) {
@@ -103,6 +107,7 @@ function AccountProfilePage() {
             <Tab label="General" value="1" />
             <Tab label="Advanced" value="2" />
           </TabList>
+
           {/* General tab */}
           <TabPanel value="1" sx={{ px: 0, py: 2 }}>
             <Stack direction={'column'} gap={2}>
@@ -114,6 +119,7 @@ function AccountProfilePage() {
               >
                 <CardInformation data={user_profile} />
               </CardComponent>
+
               {/* School information */}
               <CardComponent
                 title={'School Information'}
@@ -123,6 +129,7 @@ function AccountProfilePage() {
               </CardComponent>
             </Stack>
           </TabPanel>
+
           {/* Advanced tab */}
           <TabPanel value="2" sx={{ px: 0, py: 2 }}>
             <CardComponent title={'Login and Security'}>
@@ -162,6 +169,7 @@ function AccountProfilePage() {
                     </Button>
                   </Link>
                 </Stack>
+
                 {/* Delete account */}
                 <Stack
                   direction={{ xs: 'column', md: 'row' }}
