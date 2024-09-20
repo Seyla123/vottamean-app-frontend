@@ -1,10 +1,7 @@
-// React and third-party libraries
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
-
-// Material UI components
 import {
   Typography,
   Stack,
@@ -12,46 +9,35 @@ import {
   Box,
   Select,
   MenuItem,
+  Button,
 } from '@mui/material';
-
-// Date picker components from MUI X
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
-// Custom components
 import CardComponent from '../../../../components/common/CardComponent';
 import TextFieldComponent from '../../../../components/common/TextFieldComponent';
 import FormComponent from '../../../../components/common/FormComponent';
 import ButtonContainer from '../../../../components/common/ButtonContainer';
 import userProfile from '../../../../assets/images/default-profile.png';
-
-// Redux hooks and actions
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
-
-// Mutation hook for Get and Update API
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } from '../../../../services/userApi';
-
-// Validator
 import { UserProfileValidator } from '../../../../validators/validationSchemas';
 
 function UserUpdatePage() {
-  // Dispatch redux slice
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
-  // Redux-generated hook
   const { data: user, isLoading } = useGetUserProfileQuery(formData.id);
-  const [updateUserProfile] = useUpdateUserProfileMutation();
+  const [updateUserProfile, { isLoading: isUpdating }] =
+    useUpdateUserProfileMutation();
 
   const [gender, setGender] = useState(formData.gender || '');
   const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
 
-  // Initialize useForm with validation schema and default values
   const {
     control,
     register,
@@ -63,19 +49,16 @@ function UserUpdatePage() {
     defaultValues: formData,
   });
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     dispatch(updateFormData({ [name]: value }));
   };
 
-  // Handle DatePicker changes
   const handleDateChange = (date) => {
     setDob(date);
     dispatch(updateFormData({ dob: date?.toISOString() }));
   };
 
-  // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -86,14 +69,15 @@ function UserUpdatePage() {
   const onSubmit = async (data) => {
     try {
       const formDataToSend = new FormData();
-      Object.keys(data).forEach((key) => {
-        if (key !== 'image') {
-          formDataToSend.append(key, data[key]);
+      Object.entries(data).forEach(([key, value]) => {
+        if (key !== 'image' && value) {
+          formDataToSend.append(key, value);
         }
       });
       if (formData.image) {
         formDataToSend.append('image', formData.image);
       }
+
       await updateUserProfile(formDataToSend).unwrap();
       console.log('Profile updated successfully');
     } catch (error) {
@@ -146,7 +130,6 @@ function UserUpdatePage() {
         </Stack>
 
         <Stack direction="row" gap={2}>
-          {/* First Name Field */}
           <Box flexGrow={1}>
             <Typography variant="body1">First Name</Typography>
             <TextFieldComponent
@@ -161,7 +144,6 @@ function UserUpdatePage() {
             />
           </Box>
 
-          {/* Last Name Field */}
           <Box flexGrow={1}>
             <Typography variant="body1">Last Name</Typography>
             <TextFieldComponent
@@ -177,7 +159,6 @@ function UserUpdatePage() {
           </Box>
         </Stack>
 
-        {/* Gender Select */}
         <Box>
           <Typography variant="body1">Gender</Typography>
           <Select
@@ -201,7 +182,6 @@ function UserUpdatePage() {
           </Select>
         </Box>
 
-        {/* Date of Birth Picker */}
         <Box>
           <Typography variant="body1">Date of Birth</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -227,7 +207,6 @@ function UserUpdatePage() {
           </LocalizationProvider>
         </Box>
 
-        {/* Phone Number Field */}
         <Box>
           <Typography variant="body1">Phone Number</Typography>
           <TextFieldComponent
@@ -241,7 +220,6 @@ function UserUpdatePage() {
           />
         </Box>
 
-        {/* Address Field */}
         <Box>
           <Typography variant="body1">Address</Typography>
           <TextFieldComponent
@@ -257,8 +235,8 @@ function UserUpdatePage() {
 
         <ButtonContainer
           leftBtnTitle="Cancel"
-          rightBtnTitle="Update"
-          rightBtnOnClick={handleSubmit(onSubmit)}
+          rightBtnTitle={isUpdating ? 'Updating...' : 'Update'}
+          rightBtn={handleSubmit(onSubmit)}
         />
       </CardComponent>
     </FormComponent>
