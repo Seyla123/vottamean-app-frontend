@@ -1,62 +1,72 @@
 import { useEffect, useState } from 'react';
 import { Stack, Button, Box, Snackbar, Alert } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
-import { Link } from 'react-router-dom';
 import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
-import { PlusIcon } from 'lucide-react';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
-import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import {
   useDeleteClassesDataMutation,
   useGetClassesDataQuery,
 } from '../../../services/classApi';
+import {
+  setRows,
+  setSearch,
+  setSelectedClass,
+  setSnackbar
+} from '../../../store/slices/classSlice';
+import { setModel } from '../../../store/slices/uiSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ClassListPage = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState(' ');
-  const [rows, setRows] = useState([]);
-  // Fetch classes using the API hook
-  const { data, error, isLoading, refetch } = useGetClassesDataQuery();
-  const [ deleteClasses, { isLoading: isDeleting, isSuccess }] = useDeleteClassesDataMutation();
-  useEffect(() => {
-    if(data){
-      const classes = data.data;
-      setRows(classes)
-    }
-  }, [data,isSuccess]);
-  // Delete class using the API hook
+  const dispatch = useDispatch();
 
-  // if (isLoading) {
-  //   return ClassCardSkeleton;
-  // }
-  // if (error) {
-  //   return CircularIndeterminate;
-  // }
+  const { rows, selectClass, search,snackbar } = useSelector((state) => state.classes);
+  const { model } = useSelector((state) => state.ui);
+
+  // Fetch classes using the API hook
+  const { data, isLoading } = useGetClassesDataQuery();
+  const [deleteClasses, { isLoading: isDeleting, isSuccess, isError, error }] =
+    useDeleteClassesDataMutation();
+
+  useEffect(() => {
+    if (data) {
+      const classes = data.data;
+      dispatch(setRows(classes));
+      console.log('data :', classes);
+    } else {
+      dispatch(setRows([]));
+      console.log('data is null');
+    }
+  }, [data, isSuccess, dispatch]);
   // Handle delete confirmation
   const handleDelete = (row) => {
-    setItemToDelete(row);
-    setIsOpen(true);
+    dispatch(setSelectedClass(row));
+    dispatch(setModel({ open: true }));
   };
+  console.log('selectClass :', selectClass);
+  console.log('model :', model.open);
+  console.log('search :', search);
+  console.log('error :', isError);
+  console.log('snackbar :', snackbar);
+
+  if (isError) {
+    console.log('error message :', error.data.message);
+  }
   const handleDeleteConfirmed = async () => {
     try {
-      setIsOpen(false);
-      setSnackbarOpen(true);
-      setSnackbarMessage('Class deleted successfully!');
-      await deleteClasses(itemToDelete.class_id).unwrap();
-      refetch();
+      dispatch(setModel({ open: false }));
+     await deleteClasses(selectClass.class_id).unwrap();
     } catch (error) {
-      setSnackbarMessage('Failed to delete');
-      setSnackbarOpen(false);
+     console.log('error message :', error);
     }
   };
+
+  if (isError) {
+  }
 
   const handleEdit = (row) => {
     navigate(`/admin/classes/update/${row.class_id}`);
@@ -65,7 +75,6 @@ const ClassListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-
   const handleSelectedDelete = () => {
     console.log('Delete all');
   };
@@ -109,8 +118,8 @@ const ClassListPage = () => {
           <SearchComponent
             sx={{ width: '100%', maxWidth: '700px' }}
             placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={search}
+            onChange={(e) => dispatch(setSearch(e.target.value))}
             onClickIcon={() => console.log('click search icon')}
           />
         </Stack>
@@ -127,28 +136,22 @@ const ClassListPage = () => {
         emptySubTitle={'No Class Available'}
       />
       <DeleteConfirmationModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        open={model.open}
+        onClose={() => dispatch(setModel({ open: false }))}
         onConfirm={handleDeleteConfirmed}
         itemName="Class"
       />
       <Snackbar
-        open={snackbarOpen}
+        open={snackbar.open}
         autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
+        onClose={() => dispatch(setSnackbar({ open: false }))}
       >
         <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={
-            isDeleting
-              ? 'Class'
-              : snackbarMessage.includes('Failed')
-                ? 'error'
-                : 'success'
-          }
+          onClose={() => dispatch(setSnackbar({ open: false }))}
+          severity={snackbar.severity}
           sx={{ width: '100%' }}
         >
-          {isDeleting ? 'Deleting...' : snackbarMessage}
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </FormComponent>
