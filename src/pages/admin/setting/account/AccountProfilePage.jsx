@@ -12,7 +12,7 @@ import { Trash2, KeyRoundIcon } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
 import {
-  useGetUserProfileByIdQuery,
+  useGetUserProfileQuery,
   useDeleteUserAccountMutation,
 } from '../../../../services/userApi';
 
@@ -25,7 +25,7 @@ function AccountProfilePage() {
   const user_id = useSelector((state) => state.auth.user?.user_id);
   const formData = useSelector((state) => state.form); // Access form data from Redux
 
-  const { data: user, isLoading, error } = useGetUserProfileByIdQuery(user_id);
+  const { data: user, isLoading, error } = useGetUserProfileQuery(user_id);
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
   // Dispatch user data to form state
@@ -56,7 +56,7 @@ function AccountProfilePage() {
   };
 
   const clickEdit = () => {
-    navigate('/path-to-update-profile');
+    navigate('/admin/settings/account/update-me');
   };
 
   const clickDeleteAccount = async () => {

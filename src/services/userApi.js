@@ -4,17 +4,17 @@ import { baseApi } from './baseApi';
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get a usera admin by ID
-    getUserProfileById: builder.query({
+    getUserProfile: builder.query({
       query: () => ({
         url: `users/me`,
         method: 'GET',
         credentials: 'include',
       }),
-      providesTags: ['Admins'],
+      providesTags: ['Users'],
     }),
 
     // Update user info (including photo)
-    updateUserProfileById: builder.mutation({
+    updateUserProfile: builder.mutation({
       query: (formData) => ({
         url: `users/update-me`,
         method: 'PATCH',
@@ -38,7 +38,7 @@ export const userApi = baseApi.injectEndpoints({
 
 // Export the hooks for the custom endpoints
 export const {
-  useGetUserProfileByIdQuery,
-  useUpdateUserProfileByIdMutation,
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
   useDeleteUserAccountMutation,
 } = userApi;

@@ -281,15 +281,11 @@ const routesConfig = [
                 element: <PasswordChangePage />,
               },
               {
-                path: 'user/update/:id',
+                path: 'update-me',
                 element: <UserUpdatePage />,
               },
               {
                 path: 'school/:id',
-                element: <SchoolUpdatePage />,
-              },
-              {
-                path: 'school/update/:id',
                 element: <SchoolUpdatePage />,
               },
             ],
