@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-
+import ShortHeader from '../../components/layout/ShortHeader';
 import { useVerifyEmailMutation } from '../../services/authApi';
-
-// Material UI components
-import { Box, Typography, Button, Card } from '@mui/material';
-
-import verify from '../../assets/icon/verify.png';
+import { Box, Typography, Button, Card, CircularProgress } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import verifiedImage from '../../assets/images/authenticated-img.png';
+import failAuthenticatedImage from '../../assets/images/fail-authenticated-img.png';
 
 function VerifyEmailPage() {
   const { verificationToken } = useParams();
@@ -44,68 +44,76 @@ function VerifyEmailPage() {
   };
 
   return (
-    <Box sx={screen}>
-      <Card sx={content}>
-        <Box sx={head}>
-          <Box sx={img}>
-            <img src={verify} style={{ width: '100%' }} alt="Verification" />
-          </Box>
-
+    <>
+      <ShortHeader />
+      <Box sx={screen}>
+        <Card sx={content}>
           {isLoading ? (
-            <Typography
-              sx={{
-                fontSize: { xs: '24px', md: '36px' },
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}
-            >
-              Verifying...
-            </Typography>
+            <LoadingState />
           ) : isSuccess ? (
-            <Typography
-              sx={{
-                fontSize: { xs: '24px', md: '36px' },
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}
-            >
-              Verified Successfully
-            </Typography>
+            <SuccessState handleLoginRedirect={handleLoginRedirect} />
           ) : isError ? (
-            <Typography
-              sx={{
-                fontSize: { xs: '24px', md: '36px' },
-                fontWeight: 'bold',
-                textAlign: 'center',
-                color: 'red',
-              }}
-            >
-              Verification Failed
-            </Typography>
+            <ErrorState />
           ) : null}
-        </Box>
-
-        {isSuccess && (
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{ padding: { xs: 1, md: 2 } }}
-            onClick={handleLoginRedirect}
-          >
-            GO TO LOGIN
-          </Button>
-        )}
-      </Card>
-    </Box>
+        </Card>
+      </Box>
+    </>
   );
 }
 
-export default VerifyEmailPage;
+const LoadingState = () => (
+  <Box sx={centerContent}>
+    <CircularProgress size={60} />
+    <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }} color="success">
+      Verifying your email...
+    </Typography>
+  </Box>
+);
+
+const SuccessState = ({ handleLoginRedirect }) => (
+  <Box sx={centerContent}>
+    <img src={verifiedImage} alt="Verified" style={{ width: '250px' }} />
+    <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' }}>
+      Email Verified!
+    </Typography>
+    <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
+      Your email has been successfully verified. You can now log in to your
+      account.
+    </Typography>
+    <Button
+      variant="contained"
+      color="primary"
+      size="large"
+      onClick={handleLoginRedirect}
+    >
+      Go to Login
+    </Button>
+  </Box>
+);
+
+const ErrorState = () => (
+  <Box sx={centerContent}>
+    <img
+      src={failAuthenticatedImage}
+      alt="Verified"
+      style={{ width: '250px' }}
+    />
+    <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' }}>
+      Verification Failed
+    </Typography>
+    <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
+      We couldn't verify your email. The link may have expired or is invalid.
+    </Typography>
+    <Button variant="outlined" color="primary" size="large" href="/auth/login">
+      Try again
+    </Button>
+  </Box>
+);
 
 // Styles
 const screen = {
   width: '100%',
-  height: '100vh',
+  height: '80vh',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -114,9 +122,8 @@ const screen = {
 
 const content = {
   bgcolor: '#FFFFFF',
-  maxWidth: '550px',
+  maxWidth: '600px',
   width: '100%',
-  maxHeight: '384px',
   borderRadius: '16px',
   py: '32px',
   px: {
@@ -131,19 +138,15 @@ const content = {
   },
 };
 
-const head = {
+const centerContent = {
+  width: '100%',
   display: 'flex',
   flexDirection: 'column',
-  gap: {
-    xs: '0px',
-    md: '12px',
-  },
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  height: '100%',
+  padding: 3,
 };
 
-const img = {
-  mx: 'auto',
-  width: {
-    xs: '140px',
-    md: '160px',
-  },
-};
+export default VerifyEmailPage;
