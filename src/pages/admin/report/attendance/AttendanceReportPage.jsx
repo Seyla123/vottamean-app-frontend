@@ -59,6 +59,7 @@ const AttendanceReportPage = () => {
     subjectId: subjectValue,
     filter: filterValue,
   });
+  
   const [deleteAttendance, { isError, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
   useEffect(() => {
     if (isSuccess && allAttendanceData) {
