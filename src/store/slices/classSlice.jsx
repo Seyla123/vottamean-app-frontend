@@ -66,6 +66,7 @@ const classSlice = createSlice({
         (state) => {
           state.snackbar = { open: true, message: 'Failed to create', severity: 'error' };
         }
+<<<<<<< HEAD
       )
       .addMatcher(
         classApi.endpoints.updateClassesData.matchPending,
@@ -86,6 +87,9 @@ const classSlice = createSlice({
           state.snackbar = { open: true, message: 'Failed to create', severity: 'error' };
         }
       );
+=======
+      ); 
+>>>>>>> 37d677d (feature: Done on add snackbar to class Create)
   },
 });
 
