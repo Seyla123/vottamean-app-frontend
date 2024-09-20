@@ -19,6 +19,7 @@ const store = configureStore({
     attendance: attendanceReducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     class: classReducer,
+    [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
   },
