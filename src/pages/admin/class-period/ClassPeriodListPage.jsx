@@ -18,7 +18,6 @@ function ClassPeriodListPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");  
-
   const navigate = useNavigate();
   const { data, error, isLoading } = useViewListClassPeriodQuery();
   const [
