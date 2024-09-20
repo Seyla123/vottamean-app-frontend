@@ -1,28 +1,33 @@
-import { Box, TextField, Typography } from "@mui/material";
+import React, { forwardRef } from 'react';
+import { TextField } from '@mui/material';
 
-const TextFieldComponent = ({
-  label,
-  name,
-  value,
-  onChange,
-  type = "text",
-  placeholder,
-  customStyle
-}) => {
+const TextFieldComponent = forwardRef((props, ref) => {
+  const {
+    customStyle,
+    label,
+    name,
+    value,
+    onChange,
+    placeholder,
+    error,
+    helperText,
+  } = props;
+
   return (
-    <Box display="flex" flexDirection="column" gap="4px" sx={customStyle}>
-      <Typography sx={{ fontSize: "16px" }}>{label}</Typography>
-      <TextField
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        variant="outlined"
-        fullWidth
-      />
-    </Box>
+    <TextField
+      ref={ref}
+      fullWidth
+      variant="outlined"
+      label={label}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      error={error}
+      helperText={helperText}
+      sx={customStyle}
+    />
   );
-};
+});
 
 export default TextFieldComponent;

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import dayjs from 'dayjs';
 
 // Material UI components
 import {
@@ -26,6 +25,7 @@ import HeaderTitle from './HeaderTitle';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 // Validator
 import { PersonalInformationValidator } from '../../validators/validationSchemas';

@@ -212,3 +212,14 @@ export const ChangePasswordValidator = createFormSchema([
   'newPassword',
   'newPasswordConfirm',
 ]);
+
+// User profile information in the settings
+export const UserProfileValidator = createFormSchema([
+  'first_name',
+  'last_name',
+  'gender',
+  'email',
+  'phone_number',
+  'address',
+  'dob',
+]);
