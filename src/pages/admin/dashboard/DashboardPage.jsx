@@ -6,6 +6,7 @@ import WelcomeHandImage from '../../../assets/images/welcome-illustration.png';
 import ShortListTable from '../../../components/common/ShortListTable';
 import { shadow } from '../../../styles/global';
 import StaticTable from '../../../components/common/StaticTable';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -108,6 +109,12 @@ function Dashboard() {
 }
 
 const GreetingCard = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const userName =
+    user.adminProfile.Info.first_name + ' ' + user.adminProfile.Info.last_name;
+
   return (
     <Box
       sx={{
@@ -136,7 +143,7 @@ const GreetingCard = () => {
           Welcome Back 👋
         </Typography>
         <Typography variant="body1" sx={{ textShadow: '1px 1px 5px #344C64' }}>
-          Sokha Seng
+          {userName}
         </Typography>
       </Box>
       <Box
