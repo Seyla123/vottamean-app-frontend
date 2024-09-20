@@ -7,6 +7,9 @@ import {
   Avatar,
   Typography,
   Stack,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -22,13 +25,18 @@ const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   phoneNumber: yup.string().required('Phone number is required'),
-  gender: yup.string().required('Gender is required'),
-  dob: yup.date().required('Date of birth is required').nullable(),
+  gender: yup
+    .string()
+    .required('Gender is required'),
+  dob: yup
+    .date()
+    .required('Date of birth is required')
+    .max(new Date(), 'Date of birth cannot be in the future')
+    .nullable(),
   address: yup.string().required('Address is required'),
 });
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
-   const [date, setDate] = React.useState(dayjs());
   const {
     control,
     handleSubmit,
@@ -129,18 +137,27 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               name="gender"
               control={control}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  placeholder="Gender"
-                  error={!!errors.gender}
-                  helperText={errors.gender?.message}
-                  fullWidth
-                >
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">Female</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </TextField>
+                <FormControl fullWidth margin="normal" error={!!errors.gender}>
+                  <InputLabel id="gender-label">Gender</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="gender-label"
+                    label="Gender"
+                    displayEmpty
+                    error={!!errors.gender}
+                    onChange={(e) => {
+                      const value = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1); // Capitalize the first letter
+                      field.onChange(value);
+                    }}
+                  >
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </Select>
+                  <Typography variant="body2" color="error">
+                    {errors.gender?.message}
+                  </Typography>
+                </FormControl>
               )}
             />
           </Box>
@@ -152,7 +169,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               control={control}
               render={({ field }) => (
                 <DesktopDatePicker
-                  {...field}
                   inputFormat="MM/DD/YYYY"
                   renderInput={(params) => (
                     <TextField
@@ -162,8 +178,9 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                       fullWidth
                     />
                   )}
-                  value={field.value || null}
-                  onChange={(newDate) => setDate(newDate ? dayjs(newDate) : null)}
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(newDate) => field.onChange(newDate ? newDate.toISOString() : null)}
+                  maxDate={dayjs()} 
                 />
               )}
             />
@@ -186,7 +203,13 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             />
           </Box>
           {/* Buttons */}
-          <Stack direction={'row'} alignSelf={'flex-end'} justifyContent={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
+          <Stack
+            direction={'row'}
+            alignSelf={'flex-end'}
+            justifyContent={'flex-end'}
+            width={{ xs: '100%', sm: '340px' }}
+            gap={{ xs: 1, sm: 2 }}
+          >
             <Button fullWidth variant="outlined" color="inherit">
               Cancel
             </Button>

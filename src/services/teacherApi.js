@@ -4,7 +4,7 @@ export const teacherApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         signUpTeacher : builder.mutation({
             query: (teacher) => ({
-                url: 'teachers/',
+                url: 'teachers',
                 method: 'POST',
                 body: teacher
             }), 
@@ -12,7 +12,7 @@ export const teacherApi = baseApi.injectEndpoints({
         }),
         getAllTeachers : builder.mutation({
             query: () => ({
-                url: 'teachers/',
+                url: 'teachers',
                 method: 'GET'
             }),
             providesTags: ['Teachers']
