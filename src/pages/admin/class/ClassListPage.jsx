@@ -22,7 +22,7 @@ const ClassListPage = () => {
     return CircularIndeterminate;
   }
   // Ensure data is defined before mapping
-  const newClassesData = data?.data
+  const classesData = data?.data
   ?.filter((item) => {
     return (
       item.class_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -61,7 +61,7 @@ const ClassListPage = () => {
   const hideColumns = ['description'];
 
   return (
-    <FormComponent title="Class List" subTitle={`Total Classes: ${newClassesData.length}`}>
+    <FormComponent title="Class List" subTitle={`Total Classes: ${classesData.length}`}>
       {/* Button add class container */}
       <Stack direction="row" justifyContent="flex-end">
         <Link to="/admin/classes/create">
@@ -93,7 +93,7 @@ const ClassListPage = () => {
         </Stack>
       </Box>
       <DataTable
-        rows={newClassesData}
+        rows={classesData}
         columns={columns}
         onEdit={handleEdit}
         onDelete={handleDelete}

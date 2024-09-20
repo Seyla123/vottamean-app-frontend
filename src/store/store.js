@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApi } from '../services/authApi';
+import { classApi } from '../services/classApi';
 import formReducer from './slices/formSlice';
 import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
@@ -17,6 +18,7 @@ const store = configureStore({
     teachers: teacherReducer, 
     attendance: attendanceReducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
+    class: classReducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
   },

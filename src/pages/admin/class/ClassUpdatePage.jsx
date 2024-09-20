@@ -1,108 +1,120 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import CardComponent from "../../../components/common/CardComponent";
 import { Typography, Stack, TextField, Alert } from "@mui/material";
-import { fieldContainer } from "../../../styles/authStyle";
 import FormComponent from "../../../components/common/FormComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
-import { useUpdateClassesDataMutation, useGetClassesDataQuery } from "../../../services/classApi";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import {
+  useGetClassesByIdQuery,
+  useUpdateClassesDataMutation,
+} from "../../../services/classApi";
+import { resetFormData, updateFormData } from "../../../store/slices/formSlice";
 
 function ClassUpdatePage() {
-    const { id } = useParams();
-    const { data, fetchError, isLoading } = useGetClassesDataQuery(id);
-    const [updateClassesData] = useUpdateClassesDataMutation();
-    const navigate = useNavigate(); // Initialize navigate
+  const { id } = useParams(); // Extract ID from URL params
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        class_name: '',
-        description: '',
-    });
+  // Fetch class data by ID
+  const { data, isLoading, fetchError } = useGetClassesByIdQuery(id);
 
-    // Extract the class Data
-    const extractClassData = (data) => {
-        if (data && data.data) {
-            const { class_id, class_name, description } = data.data;
-            return { class_id, class_name, description };
-        }
-        console.log(data)
-        return null; // Return null if data is not valid
-    };
-    
-    const classData = extractClassData(data);
-    
-    useEffect(() => {
-        if (classData) {
-            setFormData({
-                class_name: classData.class_name || '', // Default to an empty string
-                description: classData.description || '', // Default to an empty string
-            });
-        }
-    }, [classData]);
+  // Local state for form data, initialized with the fetched class data
+  const [formData, setFormData] = useState({
+    class_name: "",
+    description: "",
+  });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+  // Mutation hook for updating class data
+  const [updateClassesData, { isUpdating,  updateError }] = useUpdateClassesDataMutation();
 
-    const onClickBack = () => {
-        navigate('/admin/classes'); 
+  // Update local state when class data is fetched
+  useEffect(() => {
+    if (data && data.data) {
+      setFormData({
+        class_name: data.data.class_name || "",
+        description: data.data.description || "",
+      });
     }
+      dispatch(resetFormData());
+    }, [data], [dispatch]);
 
-    const onClickNext = async () => {
-        try {
-            await updateClassesData({ id, ...formData }).unwrap();
-            console.log('Update successful');
-            // Optionally, redirect or provide success feedback
-            navigate('/classes'); // Redirect to the classes page or wherever appropriate
-        } catch (error) {
-            console.error('Update failed', error);
-        }
-    };
+  // Handle input change and update local state
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name);  
+    console.log(value);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
-    if (isLoading) return <div>Loading...</div>;
-    if (fetchError) {
-        return (
-            <Alert severity="error">
-                {fetchError?.data?.message || 'Error loading class data'}
-            </Alert>
-        );
+  // Handle cancel button click
+  const onClickBack = () => {
+    navigate("/admin/classes");
+  };
+  // Handle update (submit) button click
+  const onSubmit = async () => {
+    console.log(formData);
+    try {
+      await updateClassesData( id, formData ).unwrap();
+      navigate("/admin/classes");
+    } catch (error) {
+      console.error("Update failed", error);
     }
-
+  };
+  // Loading and error handling for fetching class data
+  if (isLoading) return <div>Loading class data...</div>;
+  if (fetchError) {
     return (
-        <>
-            <FormComponent title={"Update Class"} subTitle={"Please fill class information"}>
-                <CardComponent title={"Class Information"}>
-                    <Stack sx={fieldContainer}>
-                        <Typography variant="body1">Class&apos;s Name</Typography>
-                        <TextField
-                            name="class_name"
-                            value={formData.class_name} // Corrected to use class_name
-                            onChange={handleInputChange}
-                            placeholder="Class name"
-                        />
-                    </Stack>
-                    <Stack sx={fieldContainer}>
-                        <Typography variant="body1">Description</Typography>
-                        <TextField
-                            name="description"
-                            value={formData.description} // Corrected to use description
-                            onChange={handleInputChange}
-                            multiline
-                            minRows={5}
-                            placeholder="Description"
-                        />
-                    </Stack>
-                    <ButtonContainer
-                        leftBtn={onClickBack}
-                        rightBtn={onClickNext}
-                        leftBtnTitle={'Cancel'}
-                        rightBtnTitle={'Update'}
-                    />
-                </CardComponent>
-            </FormComponent>
-        </>
+      <Alert severity="error">
+        {fetchError?.data?.message || "Error loading class data"}
+      </Alert>
     );
+  }
+  // Loading and error handling for updating class data
+  if (isUpdating) return <div>Updating class data...</div>;
+  if (updateError) {
+    return (
+      <Alert severity="error">
+        {updateError?.data?.message || "Error updating class data"}
+      </Alert>
+    );
+  }
+
+  return (
+    <FormComponent title={"Update Class"} subTitle={"Please fill class information"}>
+      <CardComponent title={"Class Information"}>
+        <Stack>
+          <Typography variant="body1">Class's Name</Typography>
+          <TextField
+            name="class_name"
+            value={formData.class_name}
+            onChange={handleInputChange}
+            placeholder="Class name"
+          />
+        </Stack>
+        <Stack>
+          <Typography variant="body1">Description</Typography>
+          <TextField
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            multiline
+            minRows={5}
+            placeholder="Description"
+          />
+        </Stack>
+        <ButtonContainer
+          leftBtn={onClickBack}
+          rightBtn={onSubmit}
+          leftBtnTitle={"Cancel"}
+          rightBtnTitle={"Update"}
+        />
+      </CardComponent>
+    </FormComponent>
+  );
 }
 
 export default ClassUpdatePage;
