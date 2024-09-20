@@ -26,16 +26,26 @@ export const classPeriodApi = baseApi.injectEndpoints({
       providesTags: ['ClassPeriods'],
     }),
 
-//     // Create data
-//     createClassPeriod: builder.mutation({
-//       query: (classPeriod) => ({
-//         url: '/admin/class-periods/create',
-//         method: 'POST',
-//         body: classPeriod,
-//         credentials: 'include',
-//       }),
-//       invalidatesTags: ['ClassPeriods'],
-//     }),
+    // Create data
+    createClassPeriod: builder.mutation({
+      query: (classPeriod) => ({
+        url: 'periods',
+        method: 'POST',
+        body: classPeriod,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    }),
+
+    // Delete data a user by ID
+    deleteClassPeriod: builder.mutation({
+      query: (id) => ({
+        url: `periods/${id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    }),
 
 //     // Update data by Id
 //     updateClassPeriod: builder.mutation({
@@ -59,5 +69,9 @@ export const classPeriodApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useViewListClassPeriodQuery, useGetClassPeriodByIdQuery } =
-  classPeriodApi;
+export const {
+  useViewListClassPeriodQuery,
+  useGetClassPeriodByIdQuery,
+  useCreateClassPeriodMutation,
+  useDeleteClassPeriodMutation
+} = classPeriodApi;

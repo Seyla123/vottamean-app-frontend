@@ -88,9 +88,9 @@ function ClassPeriodListPage() {
       <DataTable
         rows={periodData}
         columns={tableTitles}
+        onView={handleView}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onView={handleView}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={hideColumns}
         emptyTitle={'No Class Periods'}
