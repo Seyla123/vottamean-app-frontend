@@ -6,9 +6,13 @@ import formReducer from './slices/formSlice';
 import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
 import { attendanceApi } from '../services/attendanceApi';
+<<<<<<< HEAD
 import { teacherApi } from '../services/teacherApi';
 import teacherReducer from './slices/teacherSlice';
 import uiReducer from './slices/uiSlice';
+=======
+import classReducer from './slices/classSlice';
+>>>>>>> a7df0ed (feature: rebase develop into class-fetch api)
 
 const store = configureStore({
   reducer: {
@@ -20,11 +24,19 @@ const store = configureStore({
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     class: classReducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
+    class: classReducer,
     [authApi.reducerPath]: authApi.reducer,
+<<<<<<< HEAD
     [teacherApi.reducerPath]: teacherApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware, attendanceApi.middleware, teacherApi.middleware),
+=======
+    [classApi.reducerPath]: classApi.reducer
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(authApi.middleware, attendanceApi.middleware,classApi.middleware),
+>>>>>>> a7df0ed (feature: rebase develop into class-fetch api)
 });
 
 setupListeners(store.dispatch);

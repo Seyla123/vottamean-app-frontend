@@ -20,6 +20,7 @@ export const classApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Classes'],
     }),
+<<<<<<< HEAD
     //Post Class
     postClassesData: builder.mutation({
       query: (data) => ({
@@ -49,6 +50,27 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Classes'],
     }),
+=======
+  //Post Class
+  postClassesData: builder.mutation({
+    query: (data) => ({
+      url: `classes`,
+      method: 'POST',
+      body: data,
+      credentials: 'include',
+    }), 
+    invalidatesTags: ['Classes'],
+  }),
+  //Update Class
+  updateClassesData: builder.mutation({
+    query: (id,data) => ({
+      url: `classes/${id}`,
+      method: 'PUT',
+      body: data,
+      credentials: 'include',
+    }), 
+    invalidatesTags: ['Classes'],
+>>>>>>> a7df0ed (feature: rebase develop into class-fetch api)
   }),
   //Delete Class
   deleteClassesData: builder.mutation({

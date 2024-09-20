@@ -28,9 +28,34 @@ const ClassListPage = () => {
   const { model } = useSelector((state) => state.ui);
 
   // Fetch classes using the API hook
+<<<<<<< HEAD
   const { data, isLoading } = useGetClassesDataQuery();
   const [deleteClasses, { isLoading: isDeleting, isSuccess, isError, error }] =
     useDeleteClassesDataMutation();
+=======
+  const { data, error, isLoading } = useGetClassesDataQuery();
+  if (isLoading) {
+    return ClassCardSkeleton;
+  }
+  if (error) {
+    return CircularIndeterminate;
+  }
+  // Ensure data is defined before mapping
+  const classesData = data?.data
+  ?.filter((item) => {
+    return (
+      item.class_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  })
+  .map((item) => {
+    const { class_id, class_name, description } = item;
+    return {
+      class_id,
+      class_name,
+      description,
+    };
+  });
+>>>>>>> a7df0ed (feature: rebase develop into class-fetch api)
 
   useEffect(() => {
     if (data) {
