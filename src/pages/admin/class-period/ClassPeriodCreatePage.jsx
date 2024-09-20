@@ -1,78 +1,131 @@
-import { useState } from "react";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { Typography, Box } from "@mui/material";
-import CardComponent from "../../../components/common/CardComponent";
-import FormComponent from "../../../components/common/FormComponent";
-import ButtonContainer from "../../../components/common/ButtonContainer";
-import { containerInput, timeInput } from "../../../styles/classPeriod";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { Typography, Box } from '@mui/material';
 
+import CardComponent from '../../../components/common/CardComponent';
+import FormComponent from '../../../components/common/FormComponent';
+import ButtonContainer from '../../../components/common/ButtonContainer';
+
+import { containerInput, timeInput } from '../../../styles/classPeriod';
+import { useNavigate } from 'react-router-dom';
+
+import { useCreateClassPeriodMutation } from '../../../services/classPeriodApi';
+
+// Validation schema
+import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 
 function ClassPeriodCreatePage() {
-  // form valiadation
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
+  // Redux hook for creating class period
+  const [createClass, { error: apiError }] = useCreateClassPeriodMutation();
 
-  const onClickNext = () => {
+  // Initialize useForm with yup validation schema
+  const {
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    clearErrors,
+  } = useForm({
+    resolver: yupResolver(ClassPeriodValidator),
+  });
+
+  const onSubmit = async (data) => {
+    // Additional validation for time picker fields
     if (!startTime || !endTime) {
-      setError(true)
-    } else {
-      navigate(`/dashboard/class-periods`);
+      return; // Handle required time validation
+    }
+
+    const formattedStartTime = startTime.format('HH:mm');
+    const formattedEndTime = endTime.format('HH:mm');
+
+    try {
+      const result = await createClass({
+        start_time: formattedStartTime,
+        end_time: formattedEndTime,
+        ...data, // Include other form data if needed
+      }).unwrap();
+
+      console.log('Class Period Created:', result);
+      navigate(`/admin/class-periods`);
+    } catch (error) {
+      console.log('Failed to create class period:', error);
     }
   };
 
   return (
     <>
       <FormComponent
-        title={"Add Class Period"}
-        subTitle={"Please Fill Class Period Information"}
+        title={'Add Class Period'}
+        subTitle={'Please Fill Class Period Information'}
       >
-        <CardComponent title={"Class Period Information"}>
+        <CardComponent title={'Class Period Information'}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer
-              components={["TimePicker", "TimePicker", "TimePicker"]}
-            >
+            <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
               <Box sx={containerInput}>
                 <Box>
-                  <Typography color={!startTime && error ? "red" : "inherit"}>
+                  <Typography
+                    color={!startTime && errors.start_time ? 'red' : 'inherit'}
+                  >
                     Start time
                   </Typography>
                   <TimePicker
                     sx={timeInput}
                     value={startTime}
-                    onChange={(newValue) => setStartTime(newValue)}
+                    onChange={(newValue) => {
+                      setStartTime(newValue);
+                      setValue(
+                        'start_time',
+                        newValue ? newValue.format('HH:mm') : '',
+                      );
+                      if (newValue) {
+                        clearErrors('start_time'); // Clear the error when a valid time is selected
+                      }
+                    }}
                     slotProps={{
                       textField: {
-                        placeholder: "select",
-                        helperText:
-                          !startTime && error ? "Start time is required" : "",
-                        error: !startTime && error,
+                        placeholder: 'Select start time',
+                        helperText: errors.start_time
+                          ? errors.start_time.message
+                          : '',
+                        error: !!errors.start_time,
                       },
                     }}
                   />
                 </Box>
                 <Box>
-                  <Typography color={!endTime && error ? "red" : "inherit"}>
+                  <Typography
+                    color={!endTime && errors.end_time ? 'red' : 'inherit'}
+                  >
                     End time
                   </Typography>
                   <TimePicker
                     sx={timeInput}
                     value={endTime}
-                    onChange={(newValue) => setEndTime(newValue)}
+                    onChange={(newValue) => {
+                      setEndTime(newValue);
+                      setValue(
+                        'end_time',
+                        newValue ? newValue.format('HH:mm') : '',
+                      ); // Register end time in form
+                      if (newValue) {
+                        clearErrors('end_time');
+                      }
+                    }}
                     slotProps={{
                       textField: {
-                        placeholder: "select",
-                        helperText:
-                          !endTime && error ? "End time is required" : "",
-                        error: !endTime && error,
-                        margin: "none",
-                        FormHelperTextProps: {},
+                        placeholder: 'Select end time',
+                        helperText: errors.end_time
+                          ? errors.end_time.message
+                          : '',
+                        error: !!errors.end_time,
                       },
                     }}
                   />
@@ -80,12 +133,20 @@ function ClassPeriodCreatePage() {
               </Box>
             </DemoContainer>
           </LocalizationProvider>
+
           {/* Button Container  */}
           <ButtonContainer
-            rightBtn={onClickNext}
-            leftBtnTitle={"Cancel"}
-            rightBtnTitle={"Add Period"}
+            leftBtnTitle={'Cancel'}
+            rightBtnTitle={'Add Period'}
+            rightBtn={handleSubmit(onSubmit)}
           />
+
+          {/* Display API error if any */}
+          {apiError && (
+            <Typography color="red">
+              Failed to create class period. Try again.
+            </Typography>
+          )}
         </CardComponent>
       </FormComponent>
     </>
