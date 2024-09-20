@@ -1,16 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Stack, Button, Box, Snackbar, Alert } from '@mui/material';
+<<<<<<< HEAD
 import { useNavigate, Link } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
+=======
+import { useNavigate } from 'react-router-dom';
+>>>>>>> ef360aa (feature: add delete to classs list)
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
+<<<<<<< HEAD
+=======
+import { PlusIcon } from 'lucide-react';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
+>>>>>>> ef360aa (feature: add delete to classs list)
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import {
   useDeleteClassesDataMutation,
   useGetClassesDataQuery,
 } from '../../../services/classApi';
+<<<<<<< HEAD
 import {
   setRows,
   setSearch,
@@ -56,6 +67,51 @@ const ClassListPage = () => {
     };
   });
 >>>>>>> a7df0ed (feature: rebase develop into class-fetch api)
+=======
+
+const ClassListPage = () => {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(' ');
+  const [rows, setRows] = useState([]);
+  // Fetch classes using the API hook
+  const { data, error, isLoading, refetch } = useGetClassesDataQuery();
+  const [ deleteClasses, { isLoading: isDeleting, isSuccess }] = useDeleteClassesDataMutation();
+  useEffect(() => {
+    if(data){
+      const classes = data.data;
+      setRows(classes)
+    }
+  }, [data,isSuccess]);
+  // Delete class using the API hook
+
+  // if (isLoading) {
+  //   return ClassCardSkeleton;
+  // }
+  // if (error) {
+  //   return CircularIndeterminate;
+  // }
+  // Handle delete confirmation
+  const handleDelete = (row) => {
+    setItemToDelete(row);
+    setIsOpen(true);
+  };
+  const handleDeleteConfirmed = async () => {
+    try {
+      setIsOpen(false);
+      setSnackbarOpen(true);
+      setSnackbarMessage('Class deleted successfully!');
+      await deleteClasses(itemToDelete.class_id).unwrap();
+      refetch();
+    } catch (error) {
+      setSnackbarMessage('Failed to delete');
+      setSnackbarOpen(false);
+    }
+  };
+>>>>>>> ef360aa (feature: add delete to classs list)
 
   useEffect(() => {
     if (data) {
@@ -87,6 +143,13 @@ const ClassListPage = () => {
   const handleEdit = (row) => {
     navigate(`/admin/classes/update/${row.class_id}`);
   };
+<<<<<<< HEAD
+=======
+
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+>>>>>>> ef360aa (feature: add delete to classs list)
 
   if (isLoading) {
     return <LoadingCircle />;
@@ -123,6 +186,10 @@ const ClassListPage = () => {
           </Button>
         </Link>
       </Stack>
+<<<<<<< HEAD
+=======
+
+>>>>>>> ef360aa (feature: add delete to classs list)
       <Box>
         <Stack
           direction="row"
@@ -151,12 +218,18 @@ const ClassListPage = () => {
         emptySubTitle={'No Class Available'}
       />
       <DeleteConfirmationModal
+<<<<<<< HEAD
         open={model.open}
         onClose={() => dispatch(setModel({ open: false }))}
+=======
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+>>>>>>> ef360aa (feature: add delete to classs list)
         onConfirm={handleDeleteConfirmed}
         itemName="Class"
       />
       <Snackbar
+<<<<<<< HEAD
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => dispatch(setSnackbar({ open: false }))}
@@ -167,6 +240,24 @@ const ClassListPage = () => {
           sx={{ width: '100%' }}
         >
           {snackbar.message}
+=======
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={
+            isDeleting
+              ? 'Class'
+              : snackbarMessage.includes('Failed')
+                ? 'error'
+                : 'success'
+          }
+          sx={{ width: '100%' }}
+        >
+          {isDeleting ? 'Deleting...' : snackbarMessage}
+>>>>>>> ef360aa (feature: add delete to classs list)
         </Alert>
       </Snackbar>
     </FormComponent>
