@@ -39,18 +39,19 @@ function UserUpdatePage() {
     dispatch(updateFormData({ dob: date }));
   };
 
-  // Handle form submission
+  // Handle form submission for both user and school updates
   const handleSubmit = async () => {
     try {
+      // Combine user and school data into the same API request
       await updateUserProfileById(formData).unwrap();
-      console.log('Profile updated successfully');
+      console.log('Profile and School updated successfully');
     } catch (error) {
-      console.error('Failed to update profile', error);
+      console.error('Failed to update profile and school', error);
     }
   };
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return <Typography>Loading...</Typography>; // You could replace this with a spinner
   }
 
   return (
@@ -59,7 +60,11 @@ function UserUpdatePage() {
         <CardComponent title="User Information">
           {/* Profile Avatar */}
           <Stack component={'div'} alignSelf={'center'}>
-            <Avatar sx={imgStyle} alt="user profile" src={userProfile} />
+            <Avatar
+              sx={imgStyle}
+              alt="user profile"
+              src={user?.image || userProfile}
+            />
           </Stack>
           <Stack direction="row" gap={1}>
             {/* First Name */}
@@ -122,7 +127,7 @@ function UserUpdatePage() {
           <ButtonContainer
             leftBtnTitle="Cancel"
             rightBtnTitle="Update"
-            rightBtn={handleSubmit}
+            rightBtnOnClick={handleSubmit} // Ensure ButtonContainer has rightBtnOnClick
           />
         </CardComponent>
       </FormComponent>
