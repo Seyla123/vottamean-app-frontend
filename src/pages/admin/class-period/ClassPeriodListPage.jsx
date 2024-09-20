@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Stack, Snackbar, Alert } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { Link, useNavigate } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
 import {
-  useViewListClassPeriodQuery,
+  useGetClassPeriodQuery,
   useDeleteClassPeriodMutation,
 } from '../../../services/classPeriodApi';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
-
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 
 function ClassPeriodListPage() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");  
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const navigate = useNavigate();
-  const { data, error, isLoading } = useViewListClassPeriodQuery();
-  const [
-    deleteClassPeriod,
-    { isError, isLoading: isDeleting, isSuccess: isDeleted },
-  ] = useDeleteClassPeriodMutation();
+
+  const { data, error, isLoading } = useGetClassPeriodQuery();
+
+  const [deleteClassPeriod, { isLoading: isDeleting }] =
+    useDeleteClassPeriodMutation();
+
+  // useEffect for loading data
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   // Handle loading state
   if (isLoading) {
@@ -135,8 +139,15 @@ function ClassPeriodListPage() {
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity={isDeleting ? 'info' : snackbarMessage.includes('Failed') ? 'error' : 'success'}
-          sx={{ width: '100%' }}>
+          severity={
+            isDeleting
+              ? 'info'
+              : snackbarMessage.includes('Failed')
+                ? 'error'
+                : 'success'
+          }
+          sx={{ width: '100%' }}
+        >
           {isDeleting ? 'Deleting...' : snackbarMessage}
         </Alert>
       </Snackbar>
