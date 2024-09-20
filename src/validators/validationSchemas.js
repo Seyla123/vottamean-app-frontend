@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import moment from 'moment';
 
 /**
  * Validation Schemas
@@ -140,6 +141,24 @@ export const ClassValidator = Yup.object().shape({
 });
 
 
+// Start Time & End Time Validator
+export const startTimeSchema = Yup.string()
+  .required('Start time is required')
+  .matches(/^\d{2}:\d{2}$/, 'Start time must be in the format HH:MM');
+
+export const endTimeSchema = Yup.string()
+  .required('End time is required')
+  .matches(/^\d{2}:\d{2}$/, 'End time must be in the format HH:MM')
+  .test('is-greater', 'End time must be after start time', function (value) {
+    const { start_time } = this.parent;
+    if (start_time && value) {
+      const startTimeMoment = moment(start_time, 'HH:mm');
+      const endTimeMoment = moment(value, 'HH:mm');
+      return endTimeMoment.isAfter(startTimeMoment);
+    }
+    return true;
+  });
+
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
   const schemaFields = {
@@ -158,6 +177,8 @@ export const createFormSchema = (fields) => {
     address: addressSchema,
     age: ageSchema,
     class_name: classSchema,
+    start_time: startTimeSchema,
+    end_time: endTimeSchema,
     // Add more schemas as needed
   };
 
@@ -223,6 +244,7 @@ export const ChangePasswordValidator = createFormSchema([
   'newPasswordConfirm',
 ]);
 
+<<<<<<< HEAD
 // User profile information in the settings
 export const UserProfileValidator = createFormSchema([
   'first_name',
@@ -239,3 +261,10 @@ export const  AccountInformation = createFormSchema([
   'passwordConfirm'
 ])
 
+=======
+// Start of Class Period Validation
+export const ClassPeriodValidator = createFormSchema([
+  'start_time',
+  'end_time',
+]);
+>>>>>>> 7c5407c (feature: import moment and create functions for start and end time schema)
