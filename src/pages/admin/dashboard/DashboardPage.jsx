@@ -82,6 +82,8 @@ const statusCard = [
 ];
 
 function Dashboard() {
+  const { user } = useSelector((state) => state.auth);
+  console.log(user);
   return (
     <FormComponent title="Dashboard Overview" subTitle="All Data">
       <Grid container spacing={2}>
