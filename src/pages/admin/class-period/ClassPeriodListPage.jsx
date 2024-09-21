@@ -39,11 +39,6 @@ function ClassPeriodListPage() {
     return <div>Error loading class periods: {error.message}</div>;
   }
 
-  // Handle EDIT action
-  const handleEdit = (row) => {
-    navigate(`/admin/class-periods/update/${row.id}`);
-  };
-
   // Handle DELETE action
   const handleDelete = (id) => {
     setItemToDelete(id.period_id);
@@ -70,6 +65,11 @@ function ClassPeriodListPage() {
   // Handle DETAIL action
   const handleView = (row) => {
     navigate(`/admin/class-periods/${row.period_id}`);
+  };
+
+  // Handle EDIT action
+  const handleEdit = (row) => {
+    navigate(`/admin/class-periods/update/${row.period_id}`);
   };
 
   // Define table columns title
