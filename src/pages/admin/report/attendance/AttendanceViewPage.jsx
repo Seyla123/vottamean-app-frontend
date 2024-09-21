@@ -7,54 +7,54 @@ import { useGetAttendanceQuery } from "../../../../services/attendanceApi";
 import { useParams } from "react-router-dom";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import NotFoundPage from "../../../../pages/NotFoundPage";
-import {formatAttendanceData} from '../../../../utils/formatData'
+import { formatAttendanceData } from "../../../../utils/formatData";
+
+const tabs = [
+  {
+    label: "ATTENDANCE",
+    value: "1",
+  },
+  {
+    label: "STUDENT",
+    value: "2",
+  },
+  {
+    label: "TEACHER",
+    value: "3",
+  },
+  {
+    label: "GUARDIAN",
+    value: "4",
+  },
+];
+
 function AttendanceViewPage() {
-  const [value, setValue] = useState("1");
-  const [attendanceData, setAttendanecData] = useState([])
   const { id } = useParams();
-  const { data : getAttendance, isLoading, isSuccess, isError, error } = useGetAttendanceQuery({id});
+  const [value, setValue] = useState(tabs[0].value);
+  const { data: getAttendance, isLoading, isSuccess, isError, error } = useGetAttendanceQuery({ id });
+  const [attendanceData, setAttendanecData] = useState({});
+
   useEffect(() => {
     if (isSuccess && getAttendance) {
-      const formattedData = formatAttendanceData(getAttendance.data)
-      setAttendanecData(formattedData)
+      const formattedData = formatAttendanceData(getAttendance.data);
+      setAttendanecData(formattedData);
     }
   }, [getAttendance]);
-  if(isLoading){
-    return <LoadingCircle/>
-  }
-  if(isError){
-    return <NotFoundPage/>;
+
+  if (isLoading) {
+    return <LoadingCircle />;
   }
 
-  console.log('data : ', attendanceData);
-  
-  
-  // --- handle --------
+  if (isError) {
+    return <NotFoundPage />;
+  }
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const handleAttendance = () => {
-    if (value === "1") {
-      setValue("2");
-    }
-  };
-  const handleStudent = () => {
-    if (value === "2") {
-      setValue("3");
-    }
-  };
-  const handleTeacher = () => {
-    if (value === "3") {
-      setValue("4");
-    }
-  };
-  const handleGuardian = () => {
-    if (value === "4") {
-      setValue("1");
-    }
-  };
-  const deleteButton = () => {
-    console.log("delete");
+
+  const handleDelete = () => {
+    console.log("delete", id);
   };
 
   return (
@@ -71,51 +71,43 @@ function AttendanceViewPage() {
           variant="scrollable"
           aria-label="tabs information"
         >
-          <Tab label="ATTENDANCE" value="1" sx={tab} />
-          <Tab label="STUDENT" value="2" sx={tab} />
-          <Tab label="TEACHER" value="3" sx={tab} />
-          <Tab label="GUARDIAN" value="4" sx={tab} />
+          {tabs.map((tab) => (
+            <Tab key={tab.value} label={tab.label} value={tab.value} />
+          ))}
         </Tabs>
         {/* Attendance */}
-        {value === "1" && (
+        {value === tabs[0].value && (
           <CardComponent
             title={"Attendance Information"}
-            handleDelete={deleteButton}
-            onChange={handleAttendance}
+            handleDelete={handleDelete}
           >
-            <CardInformation data={attendanceData.attendance}></CardInformation>
+            <CardInformation data={attendanceData.attendance} />
           </CardComponent>
         )}
-
         {/* Student */}
-        {value === "2" && (
+        {value === tabs[1].value && (
           <CardComponent
             title={"Student Information"}
-            imgUrl={"r"}
-            onChange={handleStudent}
+            imgUrl={attendanceData.studentImg}
           >
-            <CardInformation data={attendanceData.student}></CardInformation>
+            <CardInformation data={attendanceData.student} />
           </CardComponent>
         )}
-
         {/* Teacher */}
-        {value === "3" && (
+        {value === tabs[2].value && (
           <CardComponent
             title={"Teacher Information"}
-            imgUrl={"r"}
-            onChange={handleTeacher}
+            imgUrl={attendanceData.studentImg}
           >
-            <CardInformation data={attendanceData.teacher}></CardInformation>
+            <CardInformation data={attendanceData.teacher} />
           </CardComponent>
         )}
-
         {/* Guardian */}
-        {value === "4" && (
+        {value === tabs[3].value && (
           <CardComponent
             title={"Guardian Information"}
-            onChange={handleGuardian}
           >
-            <CardInformation data={attendanceData.guardian}></CardInformation>
+            <CardInformation data={attendanceData.guardian} />
           </CardComponent>
         )}
       </FormComponent>
@@ -125,4 +117,5 @@ function AttendanceViewPage() {
 
 export default AttendanceViewPage;
 
-const tab = { whiteSpace: "normal", wordBreak: "break-word"}
+const tab = { whiteSpace: "normal", wordBreak: "break-word" };
+
