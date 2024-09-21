@@ -8,8 +8,9 @@ import { useParams } from "react-router-dom";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import NotFoundPage from "../../../../pages/NotFoundPage";
 import { formatAttendanceData } from "../../../../utils/formatData";
-
-const tabs = [
+import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
+import DeleteConfirmationModal from '../../../../components/common/DeleteConfirmationModal';
+ const tabs = [
   {
     label: "ATTENDANCE",
     value: "1",
@@ -33,6 +34,7 @@ function AttendanceViewPage() {
   const [value, setValue] = useState(tabs[0].value);
   const { data: getAttendance, isLoading, isSuccess, isError, error } = useGetAttendanceQuery({ id });
   const [attendanceData, setAttendanecData] = useState({});
+  const [deleteAttendance, { isError: isErrorDelete, isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAttendanceMutation();
 
   useEffect(() => {
     if (isSuccess && getAttendance) {
@@ -53,10 +55,19 @@ function AttendanceViewPage() {
     setValue(newValue);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async() => {
+    await deleteAttendance({ id }).unwrap();
     console.log("delete", id);
   };
-
+  if(isLoadingDelete){
+    return <LoadingCircle />
+  }
+  if(isErrorDelete){
+    return <NotFoundPage />
+  }
+  if(isSuccessDelete){
+    window.location.replace('/admin/reports/attendance');
+  }
   return (
     <>
       {/* Header */}
