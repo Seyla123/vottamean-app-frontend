@@ -42,6 +42,17 @@ export const classPeriodApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['ClassPeriods'],
     }),
+
+    // Update data
+    updateClassPeriod: builder.mutation({
+      query: (classPeriodData) => ({
+        url: `periods/${classPeriodData.id}`,
+        method: 'PATCH',
+        body: classPeriodData,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    }),
   }),
 });
 
@@ -50,4 +61,5 @@ export const {
   useGetClassPeriodByIdQuery,
   useCreateClassPeriodMutation,
   useDeleteClassPeriodMutation,
+  useUpdateClassPeriodMutation
 } = classPeriodApi;
