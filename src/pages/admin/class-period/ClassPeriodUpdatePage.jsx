@@ -11,17 +11,29 @@ import { containerInput, timeInput } from '../../../styles/classPeriod';
 import { useNavigate, useParams } from 'react-router-dom';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import dayjs from 'dayjs';
-import {useGetClassPeriodByIdQuery} from '../../../services/classPeriodApi';
+import { useGetClassPeriodByIdQuery, useUpdateClassPeriodMutation } from '../../../services/classPeriodApi'; // Importing the correct mutation
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 
 function ClassPeriodUpdatePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
+  const [updateClassPeriod,{isSuccess,isError,isLoading:isUpdating}] = useUpdateClassPeriodMutation(); // Correct mutation to update class period
 
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  // Use useEffect to update state when data is available
+  // Initialize useForm with yup validation schema
+  const {
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    clearErrors,
+  } = useForm({
+    resolver: yupResolver(ClassPeriodValidator),
+  });
   useEffect(() => {
     if (data) {
       const formattedStartTime = dayjs(data.data.start_time, 'HH:mm:ss');
@@ -30,28 +42,49 @@ function ClassPeriodUpdatePage() {
       setEndTime(formattedEndTime);
     }
   }, [data]); // This effect runs when data changes
+  const onClickNext = async () => {
+    // Additional validation for time picker fields
+    if (!startTime || !endTime) {
+      return; // Handle required time validation
+    }
+      // Format times before sending the request
+      const formattedStartTime = startTime.format('HH:mm:ss');
+      const formattedEndTime = endTime.format('HH:mm:ss');
+      await updateClassPeriod({
+        id,
+        start_time: formattedStartTime,
+        end_time: formattedEndTime,
+      })
+  };
+
+  // Use useEffect to update state when data is available
+if(isUpdating){
+  console.log('updating....');
+}
+if(isError){
+  console.log('error');
+  
+}
+if(isSuccess){
+  console.log('success');
+  navigate(`/admin/class-periods`);
+}
 
   // Handle loading state
   if (isLoading) {
     return <CircularIndeterminate />;
   }
+
   // Handle error state
   if (error) {
     return <div>Error loading class periods: {error.message}</div>;
   }
 
-  const onClickNext = () => {
-    if (!startTime || !endTime) {
-      navigate(`/admin/class-periods`);
-    } else {
-      navigate(`/admin/class-periods`);
-    }
-  };
-
   const onClickBack = () => {
     navigate(`/admin/class-periods`);
   };
 
+  // Render the form
   return (
     <>
       <FormComponent
@@ -61,16 +94,27 @@ function ClassPeriodUpdatePage() {
         <CardComponent title={'Class Period Information'}>
           <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer
-                components={['TimePicker', 'TimePicker', 'TimePicker']}
-              >
+              <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
                 <Box sx={containerInput}>
                   <Box>
-                    <Typography>Start time</Typography>
+                    <Typography
+                      color={!startTime && errors.start_time ? 'red' : 'inherit'}
+                    >
+                      Start time
+                    </Typography>
                     <TimePicker
                       sx={timeInput}
                       value={startTime}
-                      onChange={(newValue) => setStartTime(newValue)}
+                      onChange={(newValue) => {
+                        setStartTime(newValue);
+                        setValue(
+                          'start_time',
+                          newValue ? newValue.format('HH:mm') : '',
+                        );
+                        if (newValue) {
+                          clearErrors('start_time'); // Clear the error when a valid time is selected
+                        }
+                      }}
                     />
                   </Box>
                   <Box>
@@ -78,7 +122,16 @@ function ClassPeriodUpdatePage() {
                     <TimePicker
                       sx={timeInput}
                       value={endTime}
-                      onChange={(newValue) => setEndTime(newValue)}
+                      onChange={(newValue) => {
+                        setEndTime(newValue);
+                        setValue(
+                          'end_time',
+                          newValue ? newValue.format('HH:mm') : '',
+                        ); // Register end time in form
+                        if (newValue) {
+                          clearErrors('end_time');
+                        }
+                      }}
                     />
                   </Box>
                 </Box>
@@ -87,7 +140,7 @@ function ClassPeriodUpdatePage() {
           </Box>
           <ButtonContainer
             leftBtn={onClickBack}
-            rightBtn={onClickNext}
+            rightBtn={onClickNext} // Correctly wrap with handleSubmit
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Update'}
           />
