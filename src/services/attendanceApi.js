@@ -33,4 +33,4 @@ export const attendanceApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation } = attendanceApi;
+export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery } = attendanceApi;
