@@ -18,52 +18,55 @@ export const transformAttendanceData = (apiResponse) => {
   };
 //
 export const formatAttendanceData = (apiResponse) => {
+  const teacherFullName = `${apiResponse.Sessions.Teacher.Info.first_name} ${apiResponse.Sessions.Teacher.Info.last_name}`;
+  const studentFullName = `${apiResponse.Student.Info.first_name} ${apiResponse.Student.Info.last_name}`;
+  const teacherImg = apiResponse.Sessions.Teacher.User.photo || "https://i.ibb.co/0y9GkFm/placeholder.png";
+  const studentImg = apiResponse.Student.Info.photo || "https://i.ibb.co/0y9GkFm/placeholder.png";
   // Attendance Information
   const attendance = {
-      "Student's Name": `${apiResponse.Student.Info.first_name} ${apiResponse.Student.Info.last_name}`,
-      Class: apiResponse.Sessions.class_id, // Adjust mapping for class name if needed
-      Subject: apiResponse.Sessions.Subject.name,
-      Time: `${apiResponse.Sessions.Period.start_time} - ${apiResponse.Sessions.Period.end_time}`,
-      Period: `${apiResponse.Sessions.Period.end_time} - ${apiResponse.Sessions.Period.start_time}`, // Adjust if needed
-      "Teacher's Name": apiResponse.Sessions.Teacher.name, // Ensure you get the teacher's name correctly
-      Status: apiResponse.Status.status,
-      Date: apiResponse.date,
+      "Student's Name": studentFullName || "N/A",
+      Class: apiResponse.Sessions.Class.class_name || "N/A", // Adjust mapping for class name if needed
+      Subject: apiResponse.Sessions.Subject.name || "N/A",
+      Time: `${apiResponse.Sessions.Period.start_time || "N/A"} - ${apiResponse.Sessions.Period.end_time || "N/A"}`,
+      Period: `${apiResponse.Sessions.Period.end_time || "N/A"} - ${apiResponse.Sessions.Period.start_time || "N/A"}`, // Adjust if needed
+      "Teacher's Name": teacherFullName || "N/A", // Ensure you get the teacher's name correctly
+      Status: apiResponse.Status.status || "N/A",
+      Date: apiResponse.date || "N/A",
   };
 
   // Student Information
   const student = {
-      "Student ID": apiResponse.student_id, // Ensure correct mapping
-      Name: `${apiResponse.Student.Info.first_name} ${apiResponse.Student.Info.last_name}`,
-      Class: apiResponse.Sessions.class_id, // Map this to the class name if needed
-      Age: new Date().getFullYear() - new Date(apiResponse.Student.Info.dob).getFullYear(),
-      Gender: apiResponse.Student.Info.gender,
-      "Date of Birth": apiResponse.Student.Info.dob,
-      Phone: apiResponse.Student.guardian_phone_number,
-      Email: apiResponse.Student.guardian_email,
-      Address: apiResponse.Student.Info.address,
+      "Student ID": apiResponse.student_id || "N/A", 
+      Name: studentFullName || "N/A",
+      Class: apiResponse.Sessions.Class.class_name || "N/A", 
+      Age: apiResponse.Student.Info.dob ? new Date().getFullYear() - new Date(apiResponse.Student.Info.dob).getFullYear() : "N/A",
+      Gender: apiResponse.Student.Info.gender || "N/A",
+      "Date of Birth": apiResponse.Student.Info.dob || "N/A",
+      Phone: apiResponse.Student.guardian_phone_number || "N/A",
+      Email: apiResponse.Student.guardian_email || "N/A",
+      Address: apiResponse.Student.Info.address || "N/A",
   };
 
   // Teacher Information
   const teacher = {
-      "Teacher ID": apiResponse.Sessions.Teacher.teacher_id, // Ensure correct mapping
-      Name: `${apiResponse.Sessions.Teacher.Info.first_name} ${apiResponse.Sessions.Teacher.Info.last_name}`, // Ensure you get the teacher's name correctly
-      Age: new Date().getFullYear() - new Date(apiResponse.Sessions.Teacher.Info.dob).getFullYear(), // If available
-      Gender: apiResponse.Sessions.Teacher.Info.gender, // If available
-      "Date of Birth": apiResponse.Sessions.Teacher.Info.dob, // If available
-      Phone: apiResponse.Sessions.Teacher.Info.phone_number, // If available
-      Email: apiResponse.Sessions.Teacher.User.email, // If available
-      Address: apiResponse.Sessions.Teacher.Info.address, // If available
+      "Teacher ID": apiResponse.Sessions.Teacher.teacher_id || "N/A", 
+      Name: teacherFullName || "N/A", 
+      Age: apiResponse.Sessions.Teacher.Info.dob ? new Date().getFullYear() - new Date(apiResponse.Sessions.Teacher.Info.dob).getFullYear() : "N/A", 
+      Gender: apiResponse.Sessions.Teacher.Info.gender || "N/A",	 
+      "Date of Birth": apiResponse.Sessions.Teacher.Info.dob || "N/A", 
+      Phone: apiResponse.Sessions.Teacher.Info.phone_number || "N/A", 
+      Email: apiResponse.Sessions.Teacher.User.email || "N/A", 
+      Address: apiResponse.Sessions.Teacher.Info.address || "N/A", 
   };
 
   // Guardian Information
   const guardian = {
-      "Guardian's Name": apiResponse.Student.guardian_name,
-      Relationship: apiResponse.Student.guardian_relationship,
-      Phone: apiResponse.Student.guardian_phone_number,
-      Email: apiResponse.Student.guardian_email,
+      "Guardian's Name": apiResponse.Student.guardian_name || "N/A",
+      Relationship: apiResponse.Student.guardian_relationship || "N/A",
+      Phone: apiResponse.Student.guardian_phone_number || "N/A",
+      Email: apiResponse.Student.guardian_email || "N/A",
   };
-
-  return { attendance, student, teacher, guardian };
+  return { attendance, student, teacher, guardian, teacherImg, studentImg };
 };
 
 // Calculation to get period of hour
