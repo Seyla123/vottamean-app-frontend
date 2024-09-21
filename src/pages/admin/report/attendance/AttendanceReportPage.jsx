@@ -7,11 +7,11 @@ import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
 import { useGetAllAttendanceQuery } from "../../../../services/attendanceApi";
 import { transformAttendanceData } from "../../../../utils/formatData";
-import { Box } from "@mui/material";
+import { Box, BottomNavigation } from "@mui/material";
 import FilterComponent from "../../../../components/common/FilterComponent";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
 import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
-
+import { useNavigate } from "react-router-dom";
 const subjects = [
   { value: '', label: "All" },
   { value: 1, label: "Math" },
@@ -53,6 +53,8 @@ const AttendanceReportPage = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const { data: allAttendanceData, isLoading, isSuccess } = useGetAllAttendanceQuery({
     classId: classValue,
@@ -103,7 +105,7 @@ const AttendanceReportPage = () => {
     }
   };
   const onView = (id) => {
-    console.log('View clicked', id);
+    navigate(`/admin/reports/attendance/${id}`);	
   };
 
   if (isLoading) {
