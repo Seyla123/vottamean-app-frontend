@@ -16,6 +16,55 @@ export const transformAttendanceData = (apiResponse) => {
       img:item.Student.Info.photo, // Photo
     }));
   };
+//
+export const formatAttendanceData = (apiResponse) => {
+  // Attendance Information
+  const attendance = {
+      "Student's Name": `${apiResponse.Student.Info.first_name} ${apiResponse.Student.Info.last_name}`,
+      Class: apiResponse.Sessions.class_id, // Adjust mapping for class name if needed
+      Subject: apiResponse.Sessions.Subject.name,
+      Time: `${apiResponse.Sessions.Period.start_time} - ${apiResponse.Sessions.Period.end_time}`,
+      Period: `${apiResponse.Sessions.Period.end_time} - ${apiResponse.Sessions.Period.start_time}`, // Adjust if needed
+      "Teacher's Name": apiResponse.Sessions.Teacher.name, // Ensure you get the teacher's name correctly
+      Status: apiResponse.Status.status,
+      Date: apiResponse.date,
+  };
+
+  // Student Information
+  const student = {
+      "Student ID": apiResponse.student_id, // Ensure correct mapping
+      Name: `${apiResponse.Student.Info.first_name} ${apiResponse.Student.Info.last_name}`,
+      Class: apiResponse.Sessions.class_id, // Map this to the class name if needed
+      Age: new Date().getFullYear() - new Date(apiResponse.Student.Info.dob).getFullYear(),
+      Gender: apiResponse.Student.Info.gender,
+      "Date of Birth": apiResponse.Student.Info.dob,
+      Phone: apiResponse.Student.guardian_phone_number,
+      Email: apiResponse.Student.guardian_email,
+      Address: apiResponse.Student.Info.address,
+  };
+
+  // Teacher Information
+  const teacher = {
+      "Teacher ID": apiResponse.Sessions.Teacher.teacher_id, // Ensure correct mapping
+      Name: `${apiResponse.Sessions.Teacher.Info.first_name} ${apiResponse.Sessions.Teacher.Info.last_name}`, // Ensure you get the teacher's name correctly
+      Age: new Date().getFullYear() - new Date(apiResponse.Sessions.Teacher.Info.dob).getFullYear(), // If available
+      Gender: apiResponse.Sessions.Teacher.Info.gender, // If available
+      "Date of Birth": apiResponse.Sessions.Teacher.Info.dob, // If available
+      Phone: apiResponse.Sessions.Teacher.Info.phone_number, // If available
+      Email: apiResponse.Sessions.Teacher.User.email, // If available
+      Address: apiResponse.Sessions.Teacher.Info.address, // If available
+  };
+
+  // Guardian Information
+  const guardian = {
+      "Guardian's Name": apiResponse.Student.guardian_name,
+      Relationship: apiResponse.Student.guardian_relationship,
+      Phone: apiResponse.Student.guardian_phone_number,
+      Email: apiResponse.Student.guardian_email,
+  };
+
+  return { attendance, student, teacher, guardian };
+};
 
 // Calculation to get period of hour
 export function calculatePeriod(startTime, endTime) {

@@ -1,13 +1,35 @@
 import { Box, Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
 import CardComponent from "../../../../components/common/CardComponent";
 import CardInformation from "../../../../components/common/CardInformation";
-
+import { useGetAttendanceQuery } from "../../../../services/attendanceApi";
+import { useParams } from "react-router-dom";
+import LoadingCircle from "../../../../components/loading/LoadingCircle";
+import NotFoundPage from "../../../../pages/NotFoundPage";
+import {formatAttendanceData} from '../../../../utils/formatData'
 function AttendanceViewPage() {
   const [value, setValue] = useState("1");
+  const [attendanceData, setAttendanecData] = useState([])
+  const { id } = useParams();
+  const { data : getAttendance, isLoading, isSuccess, isError, error } = useGetAttendanceQuery({id});
+  useEffect(() => {
+    if (isSuccess && getAttendance) {
+      const formattedData = formatAttendanceData(getAttendance.data)
+      setAttendanecData(formattedData)
+    }
+  }, [getAttendance]);
+  if(isLoading){
+    return <LoadingCircle/>
+  }
+  if(isError){
+    return <NotFoundPage/>;
+  }
 
-  // --- handle --------------
+  console.log('data : ', attendanceData);
+  
+  
+  // --- handle --------
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -35,44 +57,6 @@ function AttendanceViewPage() {
     console.log("delete");
   };
 
-  // -- data ----------------
-  const attendance = {
-    "Student's Name": "Potato Fried",
-    Class: "AnB",
-    Subject: "Web Development",
-    Time: "8:00 AM - 9:30 AM",
-    Period: "1h30min",
-    "Teacher's Name": "Teacher A",
-    Status: "Present",
-    Date: "22/02/2024",
-  };
-  const student = {
-    "Student ID": "ANB00101",
-    Name: "Potato Fried",
-    Class: "AnB",
-    Age: 18,
-    Gender: "Male",
-    "Date of Birth": "01/01/2002",
-    Phone: "01234567",
-    Email: "mrrseyl123@gmail.com",
-    Address: "Potato Chip City, FrenchFried Country",
-  };
-  const teacher = {
-    "Teacher ID": "ANB00101",
-    Name: "Teacher A",
-    Age: 18,
-    Gender: "Male",
-    "Date of Birth": "01/02/2002",
-    Phone: "01234567",
-    Email: "mrrseyl123@gmail.com",
-    Address: "Potato Chip City, FrenchFried Country",
-  };
-  const guardian = {
-    "Guardian's Name": "Potato",
-    Relationship: "Father",
-    Phone: "01234567",
-    Email: "mrrseyla123@gmail.com",
-  };
   return (
     <>
       {/* Header */}
@@ -99,7 +83,7 @@ function AttendanceViewPage() {
             handleDelete={deleteButton}
             onChange={handleAttendance}
           >
-            <CardInformation data={attendance}></CardInformation>
+            <CardInformation data={attendanceData.attendance}></CardInformation>
           </CardComponent>
         )}
 
@@ -110,7 +94,7 @@ function AttendanceViewPage() {
             imgUrl={"r"}
             onChange={handleStudent}
           >
-            <CardInformation data={student}></CardInformation>
+            <CardInformation data={attendanceData.student}></CardInformation>
           </CardComponent>
         )}
 
@@ -121,7 +105,7 @@ function AttendanceViewPage() {
             imgUrl={"r"}
             onChange={handleTeacher}
           >
-            <CardInformation data={teacher}></CardInformation>
+            <CardInformation data={attendanceData.teacher}></CardInformation>
           </CardComponent>
         )}
 
@@ -131,7 +115,7 @@ function AttendanceViewPage() {
             title={"Guardian Information"}
             onChange={handleGuardian}
           >
-            <CardInformation data={guardian}></CardInformation>
+            <CardInformation data={attendanceData.guardian}></CardInformation>
           </CardComponent>
         )}
       </FormComponent>
