@@ -1,34 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { Typography, Box } from '@mui/material';
-
-
-import dayjs from 'dayjs';
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-
 import { containerInput, timeInput } from '../../../styles/classPeriod';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, useParams } from 'react-router-dom';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import dayjs from 'dayjs';
+import {useGetClassPeriodByIdQuery} from '../../../services/classPeriodApi';
 
 function ClassPeriodUpdatePage() {
-  const [startTime, setStartTime] = useState(dayjs('2024-04-17T8:00'));
-  const [endTime, setEndTime] = useState(dayjs('2024-04-17T8:00'));
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
+
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+
+  // Use useEffect to update state when data is available
+  useEffect(() => {
+    if (data) {
+      const formattedStartTime = dayjs(data.data.start_time, 'HH:mm:ss');
+      const formattedEndTime = dayjs(data.data.end_time, 'HH:mm:ss');
+      setStartTime(formattedStartTime);
+      setEndTime(formattedEndTime);
+    }
+  }, [data]); // This effect runs when data changes
+
+  // Handle loading state
+  if (isLoading) {
+    return <CircularIndeterminate />;
+  }
+  // Handle error state
+  if (error) {
+    return <div>Error loading class periods: {error.message}</div>;
+  }
 
   const onClickNext = () => {
     if (!startTime || !endTime) {
-      navigate(`/dashboard/class-periods`);
+      navigate(`/admin/class-periods`);
     } else {
-      navigate(`/dashboard/class-periods`);
+      navigate(`/admin/class-periods`);
     }
   };
+
   const onClickBack = () => {
-    navigate(`/dashboard/class-periods`);
+    navigate(`/admin/class-periods`);
   };
 
   return (
