@@ -22,7 +22,7 @@
  */
 
 import { Box, Typography } from "@mui/material";
-function CardInformation({ data }) {
+function CardInformation({ data=[] }) {
   return (
     <>
       <Box sx={containerStyle}>
