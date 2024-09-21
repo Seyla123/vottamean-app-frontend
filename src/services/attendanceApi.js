@@ -23,6 +23,14 @@ export const attendanceApi = baseApi.injectEndpoints({
       invalidatesTags: ['Attendance'],
     })
   }),
+  getAttendance: builder.query({
+    query: (id) => ({
+      url: `attendance/${id}`,
+      method: 'GET',
+      credentials: 'include',
+    }),
+    providesTags: ['Attendance'],
+  }),
 });
 
 export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation } = attendanceApi;
