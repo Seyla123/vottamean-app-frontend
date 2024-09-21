@@ -23,11 +23,13 @@ function ClassPeriodUpdatePage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
-  const [updateClassPeriod, { isSuccess, isError, isLoading: isUpdating }] = useUpdateClassPeriodMutation();
+  const [updateClassPeriod, { isSuccess, isError, isLoading: isUpdating }] =
+    useUpdateClassPeriodMutation();
 
   // State for time picker
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const [errorTime, setErrorTime] = useState(''); // State for time error message
 
   // Initialize useForm with yup validation schema
   const {
@@ -49,13 +51,19 @@ function ClassPeriodUpdatePage() {
   }, [data]);
 
   const onClickNext = async () => {
-    // Additional validation avoid exact same time
-    if (!startTime || !endTime) {
-      return;
+    // Check if startTime is equal to endTime
+    if (startTime.isSame(endTime)) {
+      setErrorTime("End time can't be the same as start time");
+      return; // Prevent submission
     }
+    
+    // Clear the error if validation passes
+    setErrorTime('');
+
     // Format times before sending the request
     const formattedStartTime = startTime.format('HH:mm:ss');
     const formattedEndTime = endTime.format('HH:mm:ss');
+
     await updateClassPeriod({
       id,
       start_time: formattedStartTime,
@@ -67,14 +75,8 @@ function ClassPeriodUpdatePage() {
   if (isLoading) {
     return <CircularIndeterminate />;
   }
-  if (isUpdating) {
-    console.log('updating....');
-  }
-  if (isError) {
-    console.log('error');
-  }
+
   if (isSuccess) {
-    console.log('success');
     navigate(`/admin/class-periods`);
   }
 
@@ -91,47 +93,41 @@ function ClassPeriodUpdatePage() {
         <CardComponent title={'Class Period Information'}>
           <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer
-                components={['TimePicker', 'TimePicker', 'TimePicker']}
-              >
+              <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
                 <Box sx={containerInput}>
                   <Box>
-                    <Typography
-                      color={
-                        !startTime && errors.start_time ? 'red' : 'inherit'
-                      }
-                    >
-                      Start time
-                    </Typography>
+                    <Typography>Start time</Typography>
                     <TimePicker
                       sx={timeInput}
                       value={startTime}
                       onChange={(newValue) => {
                         setStartTime(newValue);
-                        setValue(
-                          'start_time',
-                          newValue ? newValue.format('HH:mm') : '',
-                        );
-                        if (newValue) {
-                          clearErrors('start_time');
-                        }
+                        setValue('start_time', newValue ? newValue.format('HH:mm') : '');
+                        clearErrors('start_time');
                       }}
                     />
                   </Box>
                   <Box>
-                    <Typography>End time</Typography>
+                    <Typography color={errorTime ? 'red' : 'inherit'}>
+                      End time
+                    </Typography>
                     <TimePicker
                       sx={timeInput}
                       value={endTime}
                       onChange={(newValue) => {
                         setEndTime(newValue);
-                        setValue(
-                          'end_time',
-                          newValue ? newValue.format('HH:mm') : '',
-                        );
-                        if (newValue) {
-                          clearErrors('end_time');
-                        }
+                        setValue('end_time', newValue ? newValue.format('HH:mm') : '');
+                        clearErrors('end_time');
+
+                        // Clear the error message if endTime changes
+                        setErrorTime('');
+                      }}
+                      slotProps={{
+                        textField: {
+                          placeholder: 'Select end time',
+                          helperText: errorTime || '', // Display error message if it exists
+                          error: !!errorTime, // Set error state based on errorTime
+                        },
                       }}
                     />
                   </Box>
