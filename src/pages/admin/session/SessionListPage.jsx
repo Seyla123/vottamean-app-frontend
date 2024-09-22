@@ -5,7 +5,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
-import { useGetSessionsQuery } from '../../../services/sessionApi';
+import { useGetSessionsQuery, useDeleteSessionMutation } from '../../../services/sessionApi';
 import { transformSessionsData } from '../../../utils/formatData';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 function SessionListPage() {
