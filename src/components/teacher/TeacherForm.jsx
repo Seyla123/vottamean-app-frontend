@@ -17,7 +17,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import { createFormSchema } from '../../validators/validationSchemas';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+
 function TeacherForm(handleNext, handleCancel, mode = 'create') {
   // Form validation
   const schema = createFormSchema([

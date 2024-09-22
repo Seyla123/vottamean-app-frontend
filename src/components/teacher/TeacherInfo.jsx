@@ -16,7 +16,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
 import dayjs from 'dayjs';
@@ -59,7 +59,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
 
   const handleCancel = () => {
     navigate('/teacher');
-  }
+  };
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
@@ -69,7 +69,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
 
   const onSubmit = (data) => {
     handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null });
-    // 
+    console.log(data);
   };
 
   return (
@@ -175,30 +175,42 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             <Controller
               name="dob"
               control={control}
-              rules={{ required: 'Date of birth is required' }}
+              rules={{
+                required: 'Date of birth is required',
+                validate: (value) => {
+                  if (!value) {
+                    return 'Date of birth is required';
+                  }
+                  if (dayjs(value).isAfter(dayjs())) {
+                    return 'Date of birth cannot be in the future';
+                  }
+                  return true;
+                },
+              }}
               render={({ field, fieldState: { error } }) => (
-                <DesktopDatePicker
+                <DatePicker
                   inputFormat="MM/DD/YYYY"
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={!!error}
-                      helperText={error ? error.message : ''}
-                      fullWidth
-                    />
-                  )}
                   value={dob}
                   onChange={(newValue) => {
                     setDob(newValue);
                     field.onChange(newValue);
                   }}
                   maxDate={dayjs()}
-                  onError={(error) => {
-                    if (error === 'invalidDate') {
-                      setDob(null);
-                      field.onChange(null);
-                    }
-                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                     
+                      fullWidth
+                      slotProps={{
+                        textField: {
+                          error: !!error,
+                          helperText: error ? error.message : '',
+                          fullWidth: true,
+                        },
+                      }}
+                    />
+                    
+                  )}
                 />
               )}
             />
@@ -252,7 +264,6 @@ const boxContainer = {
     sm: 3,
   },
 };
-
 const profileBox = {
   border: '1px solid',
   borderColor: '#E0E0E0',
@@ -273,7 +284,6 @@ const profileBox = {
   flexDirection: 'column',
   position: 'relative',
 };
-
 const valueBoxOne = {
   width: 100,
   height: 100,

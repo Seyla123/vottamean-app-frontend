@@ -10,7 +10,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(AccountInformation),
     defaultValues: {
@@ -45,6 +45,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
+              autoComplete='email'
             />
           </Box>
           {/* Password */}
@@ -59,6 +60,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
+              autoComplete='new-password'
             />
           </Box>
           {/* Confirm Password */}
@@ -73,6 +75,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('passwordConfirm')}
               error={!!errors.passwordConfirm}
               helperText={errors.passwordConfirm?.message}
+              autoComplete='new-password'
             />
           </Box>
           {/* Buttons */}

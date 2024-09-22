@@ -4,7 +4,7 @@ import TeacherInfo from "./TeacherInfo";
 import AccountInfo from "./AccountInfo";
 import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import dayjs from 'dayjs';
-
+import LoadingCircle from '../../components/loading/LoadingCircle';
 function FormInfo() {
   const [value, setValue] = useState("1");
   const [isTeacherInfoValid, setIsTeacherInfoValid] = useState(false);
@@ -86,6 +86,17 @@ function FormInfo() {
           teacherData={teacherData}
         />
       )}
+      {isLoading && <LoadingCircle />}
+      <Snackbar open={!!errorMessage} autoHideDuration={6000} onClose={() => setErrorMessage("")}>
+        <Alert onClose={() => setErrorMessage("")} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={!!successMessage} autoHideDuration={6000} onClose={() => setSuccessMessage("")}>
+        <Alert onClose={() => setSuccessMessage("")} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar> 
     </Box>
   );
 }

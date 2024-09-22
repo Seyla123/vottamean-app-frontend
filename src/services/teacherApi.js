@@ -10,15 +10,25 @@ export const teacherApi = baseApi.injectEndpoints({
             }),
             providesTags: ['Teachers']
         }),
-        getAllTeachers: builder.query({ 
-            query: () => 'teachers', 
-            method: 'GET',
-            providesTags: ['Teachers']
-        }),
+        getAllTeachers: builder.query({
+            query: (params) => ({
+              url: 'teachers',
+              params: params,
+            }),
+            providesTags: ['Teachers'],
+          }),
+        deleteTeacher: builder.mutation({
+            query: (id) => ({
+                url: `teachers/${id}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['Teachers'],
+        })
     })
 })
 
 export const {
     useSignUpTeacherMutation,
     useGetAllTeachersQuery, 
+    useDeleteTeacherMutation,
 } = teacherApi;
