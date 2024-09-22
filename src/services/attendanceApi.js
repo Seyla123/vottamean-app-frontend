@@ -7,8 +7,8 @@ export const attendanceApi = baseApi.injectEndpoints({
         url: `attendance`,
         method: 'GET',
         params: {
-          classId: data.classId,
-          subjectId: data.subjectId,
+          class_id: data.class,
+          subject_id: data.subject,
           filter: data.filter,
         },
       }),
