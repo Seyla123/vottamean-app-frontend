@@ -1,132 +1,109 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Snackbar, Alert } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
 import CardComponent from "../../../../components/common/CardComponent";
 import CardInformation from "../../../../components/common/CardInformation";
-import { useGetAttendanceQuery } from "../../../../services/attendanceApi";
-import { useParams } from "react-router-dom";
+import { useGetAttendanceQuery, useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
+import { useParams, useNavigate } from "react-router-dom";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import NotFoundPage from "../../../../pages/NotFoundPage";
 import { formatAttendanceData } from "../../../../utils/formatData";
-import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
+import { setAttendanceDetail, setModel, setSnackbar } from "../../../../store/slices/attendanceSlice";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteConfirmationModal from '../../../../components/common/DeleteConfirmationModal';
- const tabs = [
-  {
-    label: "ATTENDANCE",
-    value: "1",
-  },
-  {
-    label: "STUDENT",
-    value: "2",
-  },
-  {
-    label: "TEACHER",
-    value: "3",
-  },
-  {
-    label: "GUARDIAN",
-    value: "4",
-  },
+
+const tabs = [
+  { label: "ATTENDANCE", value: "1", field: "attendance", title: "Attendance Information" },
+  { label: "STUDENT", value: "2", field: "student", title: "Student Information", imgField: "studentImg" },
+  { label: "TEACHER", value: "3", field: "teacher", title: "Teacher Information", imgField: "teacherImg" },
+  { label: "GUARDIAN", value: "4", field: "guardian", title: "Guardian Information" },
 ];
 
-function AttendanceViewPage() {
+const AttendanceViewPage = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { attendanceDetail, snackbar, model } = useSelector((state) => state.attendance);
+
   const [value, setValue] = useState(tabs[0].value);
-  const { data: getAttendance, isLoading, isSuccess, isError, error } = useGetAttendanceQuery({ id });
-  const [attendanceData, setAttendanecData] = useState({});
-  const [deleteAttendance, { isError: isErrorDelete, isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAttendanceMutation();
+  const { data: attendanceData, isLoading, isSuccess, isError } = useGetAttendanceQuery({ id });
+  const [deleteAttendance, { isLoading: isDeleting, isSuccess: deleteSuccess, isError: deleteError, error }] = useDeleteAttendanceMutation();
 
   useEffect(() => {
-    if (isSuccess && getAttendance) {
-      const formattedData = formatAttendanceData(getAttendance.data);
-      setAttendanecData(formattedData);
+    if (isSuccess && attendanceData) {
+      const formattedData = formatAttendanceData(attendanceData.data);
+      dispatch(setAttendanceDetail(formattedData));
     }
-  }, [getAttendance]);
+  }, [isSuccess, attendanceData, dispatch]);
 
-  if (isLoading) {
-    return <LoadingCircle />;
-  }
+  useEffect(() => {
+    if (isDeleting) {
+      dispatch(setSnackbar({ open: true, message: "Deleting...", severity: "info" }));
+    } else if (deleteError) {
+      dispatch(setSnackbar({ open: true, message: error.data.message, severity: "error" }));
+    } else if (deleteSuccess) {
+      dispatch(setSnackbar({ open: true, message: "Deleted successfully", severity: "success" }));
+      navigate("/admin/reports/attendance");
+    }
+  }, [isDeleting, deleteError, deleteSuccess, dispatch, navigate]);
 
-  if (isError) {
-    return <NotFoundPage />;
-  }
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleDelete = async() => {
+  const confirmDelete = async () => {
+    dispatch(setModel({ open: false }));
     await deleteAttendance({ id }).unwrap();
-    console.log("delete", id);
-  };
-  if(isLoadingDelete){
-    return <LoadingCircle />
   }
-  if(isErrorDelete){
-    return <NotFoundPage />
+
+  const handleDelete = () => {
+    dispatch(setModel({ open: true }));
   }
-  if(isSuccessDelete){
-    window.location.replace('/admin/reports/attendance');
-  }
+
+  const handleChange = (event, newValue) => setValue(newValue);
+
+  if (isLoading) return <LoadingCircle />;
+  if (isError) return <NotFoundPage />;
+
   return (
-    <>
-      {/* Header */}
-      <FormComponent
-        title={"View Attendance"}
-        subTitle={"These are Attendance’s Detail Information"}
+    <FormComponent title="View Attendance" subTitle="These are Attendance’s Detail Information">
+      <Tabs value={value} onChange={handleChange} variant="scrollable" aria-label="tabs information">
+        {tabs.map((tab) => (
+          <Tab key={tab.value} label={tab.label} value={tab.value} sx={tabStyle} />
+        ))}
+      </Tabs>
+
+      {tabs.map((tab) => (
+        value === tab.value && (
+          <CardComponent
+            key={tab.value}
+            title={tab.title}
+            handleDelete={tab.value === "1" ? handleDelete : null}
+            imgUrl={attendanceDetail[tab.imgField] || ""}
+          >
+            <CardInformation data={attendanceDetail[tab.field]} />
+          </CardComponent>
+        )
+      ))}
+      <DeleteConfirmationModal
+        open={model.open}
+        onClose={() => dispatch(setModel({ open: false }))}
+        onConfirm={confirmDelete}
+        itemName="attendance"
+      />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => dispatch(setSnackbar({ open: false }))}
       >
-        {/* Tab */}
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          aria-label="tabs information"
+        <Alert
+          onClose={() => dispatch(setSnackbar({ open: false }))}
+          severity={snackbar.severity || "info"}
+          sx={{ width: '100%' }}
         >
-          {tabs.map((tab) => (
-            <Tab key={tab.value} label={tab.label} value={tab.value} />
-          ))}
-        </Tabs>
-        {/* Attendance */}
-        {value === tabs[0].value && (
-          <CardComponent
-            title={"Attendance Information"}
-            handleDelete={handleDelete}
-          >
-            <CardInformation data={attendanceData.attendance} />
-          </CardComponent>
-        )}
-        {/* Student */}
-        {value === tabs[1].value && (
-          <CardComponent
-            title={"Student Information"}
-            imgUrl={attendanceData.studentImg}
-          >
-            <CardInformation data={attendanceData.student} />
-          </CardComponent>
-        )}
-        {/* Teacher */}
-        {value === tabs[2].value && (
-          <CardComponent
-            title={"Teacher Information"}
-            imgUrl={attendanceData.studentImg}
-          >
-            <CardInformation data={attendanceData.teacher} />
-          </CardComponent>
-        )}
-        {/* Guardian */}
-        {value === tabs[3].value && (
-          <CardComponent
-            title={"Guardian Information"}
-          >
-            <CardInformation data={attendanceData.guardian} />
-          </CardComponent>
-        )}
-      </FormComponent>
-    </>
+          {snackbar.message || ""}
+        </Alert>
+      </Snackbar>
+    </FormComponent>
   );
-}
+};
 
 export default AttendanceViewPage;
 
-const tab = { whiteSpace: "normal", wordBreak: "break-word" };
-
+const tabStyle = { whiteSpace: "normal", wordBreak: "break-word" };
