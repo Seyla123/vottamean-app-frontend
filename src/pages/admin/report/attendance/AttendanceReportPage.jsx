@@ -12,6 +12,9 @@ import FilterComponent from "../../../../components/common/FilterComponent";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
 import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setRows, setFilter } from "../../../../store/slices/attendanceSlice";
+
 const subjects = [
   { value: '', label: "All" },
   { value: 1, label: "Math" },
@@ -44,42 +47,41 @@ const columns = [
 ];
 
 const AttendanceReportPage = () => {
-  const [subjectValue, setSubjectValue] = useState("");
-  const [classValue, setClassValue] = useState("");
-  const [filterValue, setFilterValue] = useState('today');
-  const [filterLabel, setFilterLabel] = useState('Daily');
-  const [rows, setRows] = useState([]);
+  const [filterLabel, setFilterLabel] = useState('All Attendance');
   const [isOpen, setIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  
+  const dispatch = useDispatch();
+  const {rows, filter} = useSelector((state) => state.attendance);
 
   const navigate = useNavigate();
-
-  const { data: allAttendanceData, isLoading, isSuccess } = useGetAllAttendanceQuery({
-    classId: classValue,
-    subjectId: subjectValue,
-    filter: filterValue,
-  });
+  const { data: allAttendanceData, isLoading, isSuccess, isFetching} = useGetAllAttendanceQuery(filter);
   
   const [deleteAttendance, { isError, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
   useEffect(() => {
     if (isSuccess && allAttendanceData) {
       const formattedData = transformAttendanceData(allAttendanceData.data);
-      setRows(formattedData);
+      dispatch(setRows(formattedData));
+      console.log('rows data :', rows);
+      console.log('filter :', filter);
     }
-  }, [allAttendanceData, isSuccess]);
+  }, [allAttendanceData, dispatch]);
+
+  // Call refetch whenever the filter changes
+  console.log(' filter outside : ', filter);
 
   const handleSubjectChange = (event) => {
-    setSubjectValue(event.target.value);
+    dispatch(setFilter({...filter, subject: event.target.value}));
   };
 
   const handleClassChange = (event) => {
-    setClassValue(event.target.value);
+    dispatch(setFilter({...filter,class: event.target.value}));
   };
 
   const handleFilterChange = (event) => {
-    setFilterValue(event.target.value);
+    dispatch(setFilter({...filter,filter: event.target.value}));
     const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
     setFilterLabel(selectedLabel);
   };
@@ -118,13 +120,13 @@ const AttendanceReportPage = () => {
       <Box sx={filterBoxStyle}>
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start" }}>
           <FilterComponent
-            value={subjectValue}
+            value={filter.subject}
             data={subjects}
             onChange={handleSubjectChange}
             placeholder={"By Subject"}
           />
           <FilterComponent
-            value={classValue}
+            value={filter.class}
             data={classes}
             onChange={handleClassChange}
             placeholder={"By Class"}
@@ -132,7 +134,7 @@ const AttendanceReportPage = () => {
         </Box>
         <Box alignSelf={"end"}>
           <FilterComponent
-            value={filterValue}
+            value={filter.filter}
             data={filterOptions}
             onChange={handleFilterChange}
             placeholder={"Filter"}
@@ -145,6 +147,7 @@ const AttendanceReportPage = () => {
         hideColumns={["id", "subject",'class', "address"]}
         handleDelete={onDelete}
         handleView={onView}
+        loading={isFetching}
       />
       <Button
         variant="contained"
