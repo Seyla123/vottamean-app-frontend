@@ -37,3 +37,14 @@ export function formatTimeTo12Hour(timeString) {
   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
   return `${hours}:${formattedMinutes} ${ampm}`;
 }
+
+export const transformSessionsData = (apiResponse) => {
+  return apiResponse.map((item) => ({
+    id : item.session_id , 
+    teacher : `${item.Teacher.first_name} ${item.Teacher.last_name}`,
+    class : item.Class.class_name,
+    subject : item.Subject.name,
+    time : calculatePeriod(item.Period.start_time, item.Period.end_time),
+    day : item.DayOfWeek.day
+}));
+}
