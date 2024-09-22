@@ -8,9 +8,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import NotFoundPage from "../../../../pages/NotFoundPage";
 import { formatAttendanceData } from "../../../../utils/formatData";
-import { setAttendanceDetail, setModel, setSnackbar } from "../../../../store/slices/attendanceSlice";
+import { setAttendanceDetail } from "../../../../store/slices/attendanceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteConfirmationModal from '../../../../components/common/DeleteConfirmationModal';
+import {setModal, setSnackbar} from "../../../../store/slices/uiSlice";
 
 const tabs = [
   { label: "ATTENDANCE", value: "1", field: "attendance", title: "Attendance Information" },
@@ -23,9 +24,10 @@ const AttendanceViewPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { attendanceDetail, snackbar, model } = useSelector((state) => state.attendance);
-
+  const { attendanceDetail } = useSelector((state) => state.attendance);
+  const {modal, snackbar} = useSelector((state) => state.ui);
   const [value, setValue] = useState(tabs[0].value);
+
   const { data: attendanceData, isLoading, isSuccess, isError } = useGetAttendanceQuery({ id });
   const [deleteAttendance, { isLoading: isDeleting, isSuccess: deleteSuccess, isError: deleteError, error }] = useDeleteAttendanceMutation();
 
@@ -48,12 +50,12 @@ const AttendanceViewPage = () => {
   }, [isDeleting, deleteError, deleteSuccess, dispatch, navigate]);
 
   const confirmDelete = async () => {
-    dispatch(setModel({ open: false }));
+    dispatch(setModal({ open: false }));
     await deleteAttendance({ id }).unwrap();
   }
 
   const handleDelete = () => {
-    dispatch(setModel({ open: true }));
+    dispatch(setModal({ open: true }));
   }
 
   const handleChange = (event, newValue) => setValue(newValue);
@@ -82,8 +84,8 @@ const AttendanceViewPage = () => {
         )
       ))}
       <DeleteConfirmationModal
-        open={model.open}
-        onClose={() => dispatch(setModel({ open: false }))}
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
         itemName="attendance"
       />
