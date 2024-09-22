@@ -25,46 +25,46 @@ export const formatAttendanceData = (apiResponse) => {
   // Attendance Information
   const attendance = {
       "Student's Name": studentFullName || "N/A",
-      Class: apiResponse.Sessions.Class.class_name || "N/A", // Adjust mapping for class name if needed
-      Subject: apiResponse.Sessions.Subject.name || "N/A",
-      Time: `${apiResponse.Sessions.Period.start_time || "N/A"} - ${apiResponse.Sessions.Period.end_time || "N/A"}`,
-      Period: `${apiResponse.Sessions.Period.end_time || "N/A"} - ${apiResponse.Sessions.Period.start_time || "N/A"}`, // Adjust if needed
-      "Teacher's Name": teacherFullName || "N/A", // Ensure you get the teacher's name correctly
-      Status: apiResponse.Status.status || "N/A",
-      Date: apiResponse.date || "N/A",
+      Class: apiResponse.Sessions.Class?.class_name ?? "N/A", 
+      Subject: apiResponse.Sessions.Subject.name ?? "N/A",
+      Time: `${apiResponse.Sessions.Period.start_time ?? "N/A"} - ${apiResponse.Sessions.Period.end_time ?? "N/A"}`,
+      Period: `${apiResponse.Sessions.Period.end_time ?? "N/A"} - ${apiResponse.Sessions.Period.start_time ?? "N/A"}`, 
+      "Teacher's Name": teacherFullName || "N/A", 
+      Status: apiResponse.Status.status ?? "N/A",
+      Date: apiResponse.date ?? "N/A",
   };
 
   // Student Information
   const student = {
-      "Student ID": apiResponse.student_id || "N/A", 
+      "Student ID": apiResponse.student_id ?? "N/A", 
       Name: studentFullName || "N/A",
-      Class: apiResponse.Sessions.Class.class_name || "N/A", 
+      Class: apiResponse.Sessions.Class?.class_name ?? "N/A", 
       Age: apiResponse.Student.Info.dob ? new Date().getFullYear() - new Date(apiResponse.Student.Info.dob).getFullYear() : "N/A",
-      Gender: apiResponse.Student.Info.gender || "N/A",
-      "Date of Birth": apiResponse.Student.Info.dob || "N/A",
-      Phone: apiResponse.Student.guardian_phone_number || "N/A",
-      Email: apiResponse.Student.guardian_email || "N/A",
-      Address: apiResponse.Student.Info.address || "N/A",
+      Gender: apiResponse.Student.Info.gender ?? "N/A",
+      "Date of Birth": apiResponse.Student.Info.dob ?? "N/A",
+      Phone: apiResponse.Student.guardian_phone_number ?? "N/A",
+      Email: apiResponse.Student.guardian_email ?? "N/A",
+      Address: apiResponse.Student.Info.address ?? "N/A",
   };
 
   // Teacher Information
   const teacher = {
-      "Teacher ID": apiResponse.Sessions.Teacher.teacher_id || "N/A", 
+      "Teacher ID": apiResponse.Sessions.Teacher.teacher_id ?? "N/A", 
       Name: teacherFullName || "N/A", 
       Age: apiResponse.Sessions.Teacher.Info.dob ? new Date().getFullYear() - new Date(apiResponse.Sessions.Teacher.Info.dob).getFullYear() : "N/A", 
-      Gender: apiResponse.Sessions.Teacher.Info.gender || "N/A",	 
-      "Date of Birth": apiResponse.Sessions.Teacher.Info.dob || "N/A", 
-      Phone: apiResponse.Sessions.Teacher.Info.phone_number || "N/A", 
-      Email: apiResponse.Sessions.Teacher.User.email || "N/A", 
-      Address: apiResponse.Sessions.Teacher.Info.address || "N/A", 
+      Gender: apiResponse.Sessions.Teacher.Info.gender ?? "N/A",	 
+      "Date of Birth": apiResponse.Sessions.Teacher.Info.dob ?? "N/A", 
+      Phone: apiResponse.Sessions.Teacher.Info.phone_number ?? "N/A", 
+      Email: apiResponse.Sessions.Teacher.User.email ?? "N/A", 
+      Address: apiResponse.Sessions.Teacher.Info.address ?? "N/A", 
   };
 
   // Guardian Information
   const guardian = {
-      "Guardian's Name": apiResponse.Student.guardian_name || "N/A",
-      Relationship: apiResponse.Student.guardian_relationship || "N/A",
-      Phone: apiResponse.Student.guardian_phone_number || "N/A",
-      Email: apiResponse.Student.guardian_email || "N/A",
+      "Guardian's Name": apiResponse.Student.guardian_name ?? "N/A",
+      Relationship: apiResponse.Student.guardian_relationship ?? "N/A",
+      Phone: apiResponse.Student.guardian_phone_number ?? "N/A",
+      Email: apiResponse.Student.guardian_email ?? "N/A",
   };
   return { attendance, student, teacher, guardian, teacherImg, studentImg };
 };
