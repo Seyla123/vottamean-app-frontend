@@ -62,7 +62,7 @@ function NotFoundPage() {
         </Typography>
         <Button
           component={Link}
-          to="admin/dashboard"
+          to="/admin/dashboard"
           variant="contained"
           color="primary"
           size="large"
