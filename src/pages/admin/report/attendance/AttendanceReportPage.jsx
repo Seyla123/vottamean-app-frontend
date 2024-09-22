@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
-import { Button, Snackbar, Alert } from "@mui/material";
+import { Button, Snackbar, Alert, Box } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import AttendanceTable from "../../../../components/attendance/AttendanceReportTable";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
-import { useGetAllAttendanceQuery } from "../../../../services/attendanceApi";
+import { useGetAllAttendanceQuery, useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
 import { transformAttendanceData } from "../../../../utils/formatData";
-import { Box, BottomNavigation } from "@mui/material";
 import FilterComponent from "../../../../components/common/FilterComponent";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
-import { useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setRows, setFilter } from "../../../../store/slices/attendanceSlice";
+import {setModal, setSnackbar} from "../../../../store/slices/uiSlice";
 
 const subjects = [
   { value: '', label: "All" },
@@ -48,66 +47,64 @@ const columns = [
 
 const AttendanceReportPage = () => {
   const [filterLabel, setFilterLabel] = useState('All Attendance');
-  const [isOpen, setIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  
+
   const dispatch = useDispatch();
-  const {rows, filter} = useSelector((state) => state.attendance);
+  const { rows, filter } = useSelector((state) => state.attendance);
+  const {modal , snackbar} = useSelector((state) => state.ui);
 
   const navigate = useNavigate();
-  const { data: allAttendanceData, isLoading, isSuccess, isFetching} = useGetAllAttendanceQuery(filter);
+  const { data: allAttendanceData, isLoading, isSuccess, isFetching } = useGetAllAttendanceQuery(filter);
   
-  const [deleteAttendance, { isError, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
+  const [deleteAttendance, { isError, error, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
+
   useEffect(() => {
     if (isSuccess && allAttendanceData) {
       const formattedData = transformAttendanceData(allAttendanceData.data);
       dispatch(setRows(formattedData));
-      console.log('rows data :', rows);
-      console.log('filter :', filter);
     }
-  }, [allAttendanceData, dispatch]);
+  }, [allAttendanceData, isDeleted]);
+console.log('modal :', modal.open);
+console.log('snackbar :', snackbar.open);
 
-  // Call refetch whenever the filter changes
-  console.log(' filter outside : ', filter);
 
   const handleSubjectChange = (event) => {
-    dispatch(setFilter({...filter, subject: event.target.value}));
+    dispatch(setFilter({ ...filter, subject: event.target.value }));
   };
 
   const handleClassChange = (event) => {
-    dispatch(setFilter({...filter,class: event.target.value}));
+    dispatch(setFilter({ ...filter, class: event.target.value }));
   };
 
   const handleFilterChange = (event) => {
-    dispatch(setFilter({...filter,filter: event.target.value}));
+    dispatch(setFilter({ ...filter, filter: event.target.value }));
     const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
     setFilterLabel(selectedLabel);
   };
 
-  const handleExport = () => {
-    console.log('Export clicked');
-  };
-
   const onDelete = (id) => {
     setItemToDelete(id);
-    setIsOpen(true);
+    dispatch(setModal({ open: true }));
   };
 
-  const confirmDelete = async () => {
-    try {
-      setIsOpen(false);
-      setSnackbarMessage("Deleted successfully");
-      setSnackbarOpen(true);
-      await deleteAttendance({ id: itemToDelete }).unwrap();
-    } catch (error) {
-      setSnackbarMessage("Failed to delete");
-      setSnackbarOpen(true);
+  useEffect(() => {
+    if (isDeleting) {
+      dispatch(setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }));
+    } else if (isError) {
+      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error' }));
+    } else if (isDeleted) {
+      dispatch(setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success' }));
+      navigate('/admin/reports/attendance');
     }
+  }, [isDeleting, isError, isDeleted, dispatch, navigate]);
+
+  const confirmDelete = async () => {
+    dispatch(setModal({ open: false } ));
+    await deleteAttendance({ id: itemToDelete }).unwrap();
   };
+
   const onView = (id) => {
-    navigate(`/admin/reports/attendance/${id}`);	
+    navigate(`/admin/reports/attendance/${id}`);
   };
 
   if (isLoading) {
@@ -144,7 +141,7 @@ const AttendanceReportPage = () => {
       <AttendanceTable
         rows={rows}
         columns={columns}
-        hideColumns={["id", "subject",'class', "address"]}
+        hideColumns={["id", "subject", 'class', "address"]}
         handleDelete={onDelete}
         handleView={onView}
         loading={isFetching}
@@ -152,33 +149,31 @@ const AttendanceReportPage = () => {
       <Button
         variant="contained"
         endIcon={<DownloadIcon size={16} />}
-        onClick={handleExport}
+        onClick={() => console.log('Export clicked')}
         sx={{ alignSelf: "flex-end" }}
       >
         Export List
       </Button>
       <DeleteConfirmationModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
-        itemName="Example Item"
+        itemName="Attendance Record" // Adjust item name if needed
       />
       <Snackbar
-        open={snackbarOpen}
+        open={snackbar.open}
         autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
+        onClose={() => dispatch(setSnackbar({ open: false }))}
       >
         <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={isDeleting ? "info" : (snackbarMessage.includes("Failed") ? "error" : "success")}
+          onClose={() => dispatch(setSnackbar({ open: false }))}
+          severity={snackbar.severity || 'info'} // Provide a default severity
           sx={{ width: '100%' }}
         >
-          {isDeleting ? "Deleting..." : snackbarMessage}
+          {snackbar.message}
         </Alert>
       </Snackbar>
-
     </FormComponent>
-
   );
 };
 
@@ -193,4 +188,3 @@ const filterBoxStyle = {
   width: "100%",
   gap: 2,
 };
-

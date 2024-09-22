@@ -7,9 +7,11 @@ import attendanceReducer from './slices/attendanceSlice';
 import { attendanceApi } from '../services/attendanceApi';
 import { teacherApi } from '../services/teacherApi';
 import teacherReducer from './slices/teacherSlice';
+import uiReducer from './slices/uiSlice';
 
 const store = configureStore({
   reducer: {
+    ui:uiReducer,
     form: formReducer,
     auth: authReducer,
     teachers: teacherReducer, 
