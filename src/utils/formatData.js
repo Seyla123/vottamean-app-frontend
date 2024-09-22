@@ -41,7 +41,7 @@ export function formatTimeTo12Hour(timeString) {
 export const transformSessionsData = (apiResponse) => {
   return apiResponse.map((item) => ({
     id : item.session_id , 
-    teacher : `${item.Teacher.first_name} ${item.Teacher.last_name}`,
+    teacher : `${item.Teacher.Info.first_name} ${item.Teacher.Info.last_name}`,
     class : item.Class.class_name,
     subject : item.Subject.name,
     time : calculatePeriod(item.Period.start_time, item.Period.end_time),
