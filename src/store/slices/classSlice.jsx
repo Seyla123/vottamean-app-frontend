@@ -66,9 +66,28 @@ const classSlice = createSlice({
         (state) => {
           state.snackbar = { open: true, message: 'Failed to create', severity: 'error' };
         }
-      ); 
+      )
+      .addMatcher(
+        classApi.endpoints.updateClassesData.matchPending,
+        (state) => {
+          state.snackbar = { open: true, message: 'Creating...', severity: 'info' };
+        }
+      )
+      .addMatcher(
+        classApi.endpoints.updateClassesData.matchFulfilled,
+        (state, action) => {
+          state.rows = state.rows.filter((row) => row.id !== action.payload);
+          state.snackbar = { open: true, message: 'Created successfully', severity: 'success' };
+        }
+      )
+      .addMatcher(
+        classApi.endpoints.updateClassesData.matchRejected,
+        (state) => {
+          state.snackbar = { open: true, message: 'Failed to create', severity: 'error' };
+        }
+      );
   },
 });
 
-export const { setRows, setSelectedClass, setSearch ,setSnackbar} = classSlice.actions;
+export const { setRows, setSelectedClass, setSearch ,setSnackbar,setClassDetail} = classSlice.actions;
 export default classSlice.reducer;

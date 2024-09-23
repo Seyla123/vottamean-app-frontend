@@ -47,11 +47,6 @@ const ClassListPage = () => {
     dispatch(setSelectedClass(row));
     dispatch(setModel({ open: true }));
   };
-  console.log('selectClass :', selectClass);
-  console.log('model :', model.open);
-  console.log('search :', search);
-  console.log('error :', isError);
-  console.log('snackbar :', snackbar);
 
   if (isError) {
     console.log('error message :', error.data.message);
@@ -64,10 +59,6 @@ const ClassListPage = () => {
      console.log('error message :', error);
     }
   };
-
-  if (isError) {
-  }
-
   const handleEdit = (row) => {
     navigate(`/admin/classes/update/${row.class_id}`);
   };

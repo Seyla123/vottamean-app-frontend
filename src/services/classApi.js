@@ -8,7 +8,7 @@ export const classApi = baseApi.injectEndpoints({
         url: 'classes',
         method: 'GET',
         credentials: 'include',
-      }), 
+      }),
       providesTags: ['Classes'],
     }),
     //GEt class by id
@@ -17,39 +17,39 @@ export const classApi = baseApi.injectEndpoints({
         url: `classes/${id}`,
         method: 'GET',
         credentials: 'include',
-      }), 
+      }),
       providesTags: ['Classes'],
     }),
-  //Post Class
-  postClassesData: builder.mutation({
-    query: (data) => ({
-      url: `classes`,
-      method: 'POST',
-      body: data,
-      credentials: 'include',
-    }), 
-    invalidatesTags: ['Classes'],
+    //Post Class
+    postClassesData: builder.mutation({
+      query: (data) => ({
+        url: `classes`,
+        method: 'POST',
+        body: data,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Classes'],
+    }),
+    //Update Class
+    updateClassesData: builder.mutation({
+      query: ({id, formData}) => ({
+        url: `classes/${id}`,
+        method: 'PUT',
+        body: formData,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Classes'],
+    }),
+    //Delete Class
+    deleteClassesData: builder.mutation({
+      query: (id) => ({
+        url: `classes/${id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Classes'],
+    }),
   }),
-  //Update Class
-  updateClassesData: builder.mutation({
-    query: (id,data) => ({
-      url: `classes/${id}`,
-      method: 'PUT',
-      body: data,
-      credentials: 'include',
-    }), 
-    invalidatesTags: ['Classes'],
-  }),
-  //Delete Class
-  deleteClassesData: builder.mutation({
-    query: (id) => ({
-      url: `classes/${id}`,
-      method: 'DELETE',
-      credentials: 'include',
-    }), 
-    invalidatesTags: ['Classes'],
-  }),
-}),
 });
 export const {
   useGetClassesDataQuery,

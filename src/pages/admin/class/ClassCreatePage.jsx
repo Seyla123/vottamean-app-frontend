@@ -17,18 +17,16 @@ import { fieldContainer } from '../../../styles/authStyle';
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 import { usePostClassesDataMutation } from '../../../services/classApi';
 import { ClassValidator } from '../../../validators/validationSchemas';
-// import { createClassData } from '../../../store/slices/classSlice';
 import { setSnackbar } from '../../../store/slices/classSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 function ClassCreatePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { snackbar } = useSelector((state) => state.classes);
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   const {
     control,
@@ -49,11 +47,13 @@ function ClassCreatePage() {
       dispatch(setSnackbar({ open: true }));
       // Dispatch the action to update the class data in Redux
       await addClass(formData).unwrap();
+      navigate("/admin/classes");
     } catch (err) {
       // On error, set an error message and open Snackbar to show error message
-      console.log('error message :', error);
+      console.log('error message :', err);
     }
   };
+
   return (
     <>
       <FormComponent
