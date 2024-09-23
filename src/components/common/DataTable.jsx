@@ -19,7 +19,7 @@ import {
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
-import NotFoundIcon from '../../assets/images/not-found.jpg';
+import EmptyDataImage from '../../assets/images/empty-data.svg';
 
 /**
  * DataTable Component
@@ -68,16 +68,15 @@ const DataTable = ({
   hideColumns,
   emptyTitle,
   emptySubTitle,
+  showNO,
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
-  
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
-
-
 
   const handleSelectAllClick = (event) => {
     const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
@@ -117,9 +116,9 @@ const DataTable = ({
   };
 
   const handleView = () => {
-    if (onView ) onView(menuRow);
+    if (onView) onView(menuRow);
     handleMenuClose();
-  }
+  };
 
   const handleSelectedDelete = () => {
     if (onSelectedDelete) {
@@ -129,8 +128,6 @@ const DataTable = ({
     }
     setSelected([]);
   };
-
-  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -149,13 +146,13 @@ const DataTable = ({
   return (
     <TableContainer
       component={Paper}
-      sx={{ boxShadow: '0px 5px 10px rgba(0,0,0,0.05)' }}
+      sx={{ boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px' }}
     >
-      <Table className="min-w-full" aria-label="reusable table">
+      <Table className="min-w-full" aria-label="reusable table" size="small">
         <TableHead
           sx={{
-            bgcolor: '#F3F3F5',
-            height: '80px',
+            bgcolor: '#f8f8f8',
+            height: '60px',
           }}
         >
           <TableRow>
@@ -168,6 +165,7 @@ const DataTable = ({
                 onChange={handleSelectAllClick}
               />
             </TableCell>
+            {showNO && <TableCell align="left">N/O</TableCell>}
             {columns.map((column) =>
               !isMobile || !hideColumns.includes(column.id) ? (
                 <TableCell key={column.id} align={column.align || 'left'}>
@@ -194,7 +192,7 @@ const DataTable = ({
               emptySubTitle={emptySubTitle}
             />
           ) : (
-            paginatedRows.map((row) => {
+            paginatedRows.map((row, index) => {
               const isItemSelected = isSelected(row.id);
               return (
                 <TableRow key={row.id} selected={isItemSelected}>
@@ -204,6 +202,7 @@ const DataTable = ({
                       onClick={(event) => handleCheckboxClick(event, row.id)}
                     />
                   </TableCell>
+                  {showNO && <TableCell>{index + 1}</TableCell>}
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
                       <TableCell key={column.id} align={column.align || 'left'}>
@@ -253,11 +252,11 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
     <TableRow sx={{ width: 1, height: '500px' }}>
       <TableCell colSpan={columns.length + 1} align="center" width={1}>
         <img
-          src={NotFoundIcon}
+          src={EmptyDataImage}
           alt="not found"
           style={{
             width: '100%',
-            maxWidth: '400px',
+            maxWidth: '200px',
             objectFit: 'contain',
           }}
         />
