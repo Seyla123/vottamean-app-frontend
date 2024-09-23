@@ -5,25 +5,17 @@ import { Stack } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useGetClassesByIdQuery } from '../../../services/classApi';
 import { useNavigate } from 'react-router-dom';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 
 function ClassDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const clickEdit = (row) => {
-    navigate(`/admin/classes/update/${row.class_id}`);
-  };
-  const clickDetele = () => {
-    console.log('delete');
-  };
   // Fetch class data using the API hook and Id
   const { data, error, isLoading } = useGetClassesByIdQuery(id);
-  console.log(data);
+
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error fetching data</div>;
+    return <LoadingCircle />;
   }
   //Extract the class Data
   const extractClassData = (data) => {
@@ -32,6 +24,12 @@ function ClassDetailPage() {
   };
   const classData = extractClassData(data);
 
+  const clickEdit = () => {
+    navigate(`/admin/classes/update/${classData.class_id}`);
+  };
+  const clickDetele = () => {
+    console.log('delete');
+  };
   return (
     <FormComponent
       title={`${classData.class_name} Class Detail`}
@@ -53,3 +51,6 @@ function ClassDetailPage() {
   );
 }
 export default ClassDetailPage;
+
+
+
