@@ -41,19 +41,23 @@ import { UserProfileUpdateData } from '../../../../utils/formatData';
 function UserUpdatePage() {
   const dispatch = useDispatch();
 
-  // Fetch user profile data from the API
-  const { data: user, isLoading } = useGetUserProfileQuery();
+  // Redux API calls to get user profile
+  const { data: user, isLoading, error } = useGetUserProfileQuery();
+  console.log('User Data Fetching : ', user);
 
-  // Prepare mutation for updating user profile
   const [updateUserProfile, { isLoading: isUpdating }] =
     useUpdateUserProfileMutation();
 
-  // Local state for transformed user data
+  // Local state for transformed data
   const [userData, setUserData] = useState({
     userProfile: {},
     img: '',
   });
   console.log('User Data Formatted : ', userData);
+
+  // Manage gender and date of birth state
+  const [gender, setGender] = useState(userData.gender || '');
+  const [dob, setDob] = useState(userData.dob ? dayjs(userData.dob) : null);
 
   // State management for gender and date of birth
   const [gender, setGender] = useState(userData.gender || '');
@@ -100,14 +104,8 @@ function UserUpdatePage() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setUserData((prev) => ({ ...prev, img: reader.result }));
-        dispatch(updateFormData({ image: reader.result }));
-      };
-
-      reader.readAsDataURL(file);
+      setUserData((prev) => ({ ...prev, img: file }));
+      dispatch(updateFormData({ image: file }));
     }
   };
 
@@ -131,7 +129,17 @@ function UserUpdatePage() {
     }
   };
 
-  // Display loading state
+  useEffect(() => {
+    if (user) {
+      const transformedData = UserProfileUpdateData(user);
+      console.log('Transformed Data:', transformedData);
+      setUserData(transformedData);
+      reset(transformedData.userProfile);
+      setDob(dayjs(transformedData.userProfile.dob));
+      setGender(transformedData.userProfile.gender || '');
+    }
+  }, [user, dispatch, reset]);
+
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
@@ -143,7 +151,11 @@ function UserUpdatePage() {
           <Avatar
             sx={imgStyle}
             alt="user profile"
-            src={userData.img || Profile}
+            src={
+              userData.img && userData.img instanceof File
+                ? URL.createObjectURL(userData.img)
+                : userData.img || Profile
+            }
           />
           <input
             accept="image/*"
@@ -172,7 +184,7 @@ function UserUpdatePage() {
               name="last_name"
               {...register('last_name')}
               onChange={handleInputChange}
-              placeholder="Last Name"
+              placeholder="First Name"
               error={Boolean(errors.last_name)}
               helperText={errors.last_name?.message}
             />
@@ -207,6 +219,7 @@ function UserUpdatePage() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Controller
               name="dob"
+              {...register('dob')}
               control={control}
               render={({ field }) => (
                 <DatePicker
@@ -233,7 +246,7 @@ function UserUpdatePage() {
             name="phone_number"
             {...register('phone_number')}
             onChange={handleInputChange}
-            placeholder="Number"
+            placeholder=" Number"
             error={Boolean(errors.phone_number)}
             helperText={errors.phone_number?.message}
             defaultValue={userData.userProfile.phone_number}
