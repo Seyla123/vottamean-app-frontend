@@ -14,6 +14,7 @@ const authSlice = createSlice({
       state.user = null;
     },
   },
+
   extraReducers: (builder) => {
     // Handle login success (uses credentials stored in cookies)
     builder.addMatcher(

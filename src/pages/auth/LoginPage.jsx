@@ -32,17 +32,15 @@ function LoginPage() {
         // Show success message
         setOpenSuccess(true);
 
-        // Wait 2 seconds before navigating
-        setTimeout(() => {
-          if (role === 'admin') {
-            navigate('/admin/dashboard');
-          } else if (role === 'teacher') {
-            navigate('/teacher/dashboard');
-          } else {
-            console.warn('Unhandled role:', role);
-            navigate('/default-dashboard');
-          }
-        }, 3000);
+        // Navigate based on the user role
+        if (role === 'admin') {
+          navigate('/admin/dashboard');
+        } else if (role === 'teacher') {
+          navigate('/teacher/dashboard');
+        } else {
+          console.warn('Unhandled role:', role);
+          navigate('/default-dashboard');
+        }
       } else {
         console.warn('Response data is missing');
         navigate('/default-dashboard');
