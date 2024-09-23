@@ -3,6 +3,16 @@ import { baseApi } from './baseApi';
 // Define your custom endpoints here
 export const sessionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // create session 
+    createSession : builder.mutation({
+        query: (data) => ({
+            url: 'sessions',
+            method: 'POST',
+            body: data,
+            credentials: 'include',
+        }),
+        invalidatesTags: ['Sessions'],
+    }),
 
     // delete session
     deleteSession: builder.mutation({
@@ -36,4 +46,4 @@ export const sessionApi = baseApi.injectEndpoints({
 });
 
 // Export the hooks for the custom endpoints
-export const { useGetSessionsQuery, useDeleteSessionMutation, useGetSessionByIdQuery } = sessionApi;
+export const { useGetSessionsQuery, useDeleteSessionMutation, useGetSessionByIdQuery, useCreateSessionMutation } = sessionApi;
