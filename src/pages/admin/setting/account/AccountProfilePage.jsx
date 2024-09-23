@@ -15,8 +15,6 @@ import profile from '../../../../assets/images/default-profile.png';
 import { useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
 
-import { useLogoutMutation } from '../../../../services/authApi';
-
 import {
   useGetUserProfileQuery,
   useDeleteUserAccountMutation,
@@ -33,9 +31,8 @@ function AccountProfilePage() {
   // Redux API calls to get user profile
   const { data: user, isLoading, error } = useGetUserProfileQuery();
 
-  // Redux API calls to delete user and logout
+  // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
-  const [logout] = useLogoutMutation(); // Correct placement of the hook
 
   // Local state for transformed data
   const [userData, setUserData] = useState({
@@ -58,9 +55,14 @@ function AccountProfilePage() {
     setValue(newValue);
   };
 
-  const clickEdit = () => {
+  const clickEditUser = () => {
     navigate('/admin/settings/account/update-me');
   };
+
+  const clickEditSchool = () => {
+    navigate('/admin/settings/account/update-school');
+  };
+
   const clickDeleteAccount = async () => {
     try {
       console.log('Deleting current user');
@@ -100,7 +102,7 @@ function AccountProfilePage() {
               <CardComponent
                 title={'User Information'}
                 imgUrl={userData.img || profile}
-                handleEdit={clickEdit}
+                handleEdit={clickEditUser}
               >
                 <CardInformation data={userData.userProfile} />
                 {/* Display user profile data */}
@@ -109,7 +111,7 @@ function AccountProfilePage() {
               {/* School information */}
               <CardComponent
                 title={'School Information'}
-                handleEdit={clickEdit}
+                handleEdit={clickEditSchool}
               >
                 <CardInformation data={userData.schoolProfile} />{' '}
                 {/* Display school data */}

@@ -285,7 +285,7 @@ const routesConfig = [
                 element: <UserUpdatePage />,
               },
               {
-                path: 'school/:id',
+                path: 'update-school',
                 element: <SchoolUpdatePage />,
               },
             ],

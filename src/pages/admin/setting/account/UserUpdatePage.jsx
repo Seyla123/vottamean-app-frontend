@@ -42,8 +42,12 @@ import { UserProfileData } from '../../../../utils/formatData';
 function UserUpdatePage() {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
+  console.log('Form Data : ', formData);
 
-  const { data: user, isLoading } = useGetUserProfileQuery(formData.id);
+  // Redux API calls to get user profile
+  const { data: user, isLoading, error } = useGetUserProfileQuery();
+
+  console.log('User Data : ', user);
   const [updateUserProfile, { isLoading: isUpdating }] =
     useUpdateUserProfileMutation();
 
@@ -55,7 +59,6 @@ function UserUpdatePage() {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm({
     resolver: yupResolver(UserProfileValidator),
     defaultValues: formData,
