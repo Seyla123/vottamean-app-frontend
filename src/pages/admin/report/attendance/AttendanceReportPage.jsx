@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import FormComponent from "../../../../components/common/FormComponent";
-import { Button, Snackbar, Alert, Box } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useGetAllAttendanceQuery, useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
+import { setModal, setSnackbar } from "../../../../store/slices/uiSlice";
+import { transformAttendanceData } from "../../../../utils/formatData";
+import { Button,Box } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
+import FormComponent from "../../../../components/common/FormComponent";
 import AttendanceTable from "../../../../components/attendance/AttendanceReportTable";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
-import { useGetAllAttendanceQuery, useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
-import { transformAttendanceData } from "../../../../utils/formatData";
 import FilterComponent from "../../../../components/common/FilterComponent";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setRows, setFilter } from "../../../../store/slices/attendanceSlice";
-import {setModal, setSnackbar} from "../../../../store/slices/uiSlice";
 
 const subjects = [
   { value: '', label: "All" },
@@ -46,47 +45,55 @@ const columns = [
 ];
 
 const AttendanceReportPage = () => {
+
+  // - rows: the attendance records that are currently being displayed on the page
+  // - filter: the current filter data attendance records
+  const [rows, setRows] = useState([]);
+  const [filter, setFilter] = useState({
+    subject: '',
+    class: '',
+    filter: '',
+  })
+  // - filterLabel: the label of the current filter that is displayed on the page
+  // - itemToDelete: the item that is currently being deleted
   const [filterLabel, setFilterLabel] = useState('All Attendance');
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  const dispatch = useDispatch();
-  const { rows, filter } = useSelector((state) => state.attendance);
-  const {modal , snackbar} = useSelector((state) => state.ui);
-
   const navigate = useNavigate();
-  const { data: allAttendanceData, isLoading, isSuccess, isFetching } = useGetAllAttendanceQuery(filter);
+  const dispatch = useDispatch();
+  const { modal, snackbar } = useSelector((state) => state.ui);
+  console.log('modal : ', modal);
+  console.log('snackbar :', snackbar);
   
+  // - useGetAllAttendanceQuery: a hook that returns a function to fetch all attendance records
+  // - useDeleteAttendanceMutation: a hook that returns a function to delete an attendance record
+  const { data: allAttendanceData, isLoading, isSuccess, isFetching } = useGetAllAttendanceQuery(filter);
   const [deleteAttendance, { isError, error, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
 
+  // Effects
+  // - when the attendance records are fetched successfully, transform the data and set the rows state
   useEffect(() => {
     if (isSuccess && allAttendanceData) {
       const formattedData = transformAttendanceData(allAttendanceData.data);
-      dispatch(setRows(formattedData));
+      setRows(formattedData);
     }
   }, [allAttendanceData, isDeleted]);
-console.log('modal :', modal.open);
-console.log('snackbar :', snackbar.open);
 
-
-  const handleSubjectChange = (event) => {
-    dispatch(setFilter({ ...filter, subject: event.target.value }));
+  // handle subject and class change
+  const handleSubjectClassChange = (event) => {
+    setFilter({ ...filter, subject: event.target.value });
   };
 
-  const handleClassChange = (event) => {
-    dispatch(setFilter({ ...filter, class: event.target.value }));
-  };
-
+  //handle filter change
   const handleFilterChange = (event) => {
-    dispatch(setFilter({ ...filter, filter: event.target.value }));
+    setFilter({ ...filter, filter: event.target.value });
     const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
     setFilterLabel(selectedLabel);
   };
 
-  const onDelete = (id) => {
-    setItemToDelete(id);
-    dispatch(setModal({ open: true }));
-  };
-
+  // when delete is in progress, show a snackbar with a message "Deleting..."
+  // when delete is failed, show a snackbar with an error message
+  // when delete is successful, show a snackbar with a success message and navigate to the attendance list page
   useEffect(() => {
     if (isDeleting) {
       dispatch(setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }));
@@ -97,12 +104,20 @@ console.log('snackbar :', snackbar.open);
       navigate('/admin/reports/attendance');
     }
   }, [isDeleting, isError, isDeleted, dispatch, navigate]);
+  
+  // handle delete action
+  const onDelete = (id) => {
+    setItemToDelete(id);
+    dispatch(setModal({ open: true }));
+  };
 
+  // confirm delete action
   const confirmDelete = async () => {
-    dispatch(setModal({ open: false } ));
+    dispatch(setModal({ open: false }));
     await deleteAttendance({ id: itemToDelete }).unwrap();
   };
 
+  // handle view action
   const onView = (id) => {
     navigate(`/admin/reports/attendance/${id}`);
   };
@@ -119,13 +134,13 @@ console.log('snackbar :', snackbar.open);
           <FilterComponent
             value={filter.subject}
             data={subjects}
-            onChange={handleSubjectChange}
+            onChange={handleSubjectClassChange}
             placeholder={"By Subject"}
           />
           <FilterComponent
             value={filter.class}
             data={classes}
-            onChange={handleClassChange}
+            onChange={handleSubjectClassChange}
             placeholder={"By Class"}
           />
         </Box>
@@ -158,21 +173,8 @@ console.log('snackbar :', snackbar.open);
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
-        itemName="Attendance Record" // Adjust item name if needed
+        itemName={modal.itemName}
       />
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => dispatch(setSnackbar({ open: false }))}
-      >
-        <Alert
-          onClose={() => dispatch(setSnackbar({ open: false }))}
-          severity={snackbar.severity || 'info'} // Provide a default severity
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </FormComponent>
   );
 };
