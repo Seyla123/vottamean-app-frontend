@@ -1,92 +1,96 @@
 import { useEffect, useState } from 'react';
-import { Stack, Button, Box, Snackbar, Alert } from '@mui/material';
+import { Stack, Button, Box } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from'react-redux';
 import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
+import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import {
   useDeleteClassesDataMutation,
   useGetClassesDataQuery,
 } from '../../../services/classApi';
 
-
+const columns = [
+  { id: 'class_id', label: 'Class ID' },
+  { id: 'class_name', label: 'Class Name' },
+  { id: 'description', label: 'Description' },
+];
 const ClassListPage = () => {
+  // - rows:
+  // - selectedClass : 
+  // - search :  
+  const [rows, setRows] = useState([]);
+  const [selectedClass , setSelectedClass ] = useState(null);
+  const [search , setSearch] = useState('');
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { modal, snackbar } = useSelector((state) => state.ui);
 
-  const { rows, selectClass, search,snackbar } = useSelector((state) => state.classes);
-  const { model } = useSelector((state) => state.ui);
+ // - useGetClassesDataQuery : 
+ // - useDeleteClassesDataMutation :
+  const { data, isLoading, isError } = useGetClassesDataQuery();
+  const [deleteClasses, { isLoading: isDeleting, isSuccess:isDeleteSuccess, isError:isDeleteError, error }] = useDeleteClassesDataMutation();
 
-  // Fetch classes using the API hook
-  const { data, isLoading } = useGetClassesDataQuery();
-  const [deleteClasses, { isLoading: isDeleting, isSuccess, isError, error }] =
-    useDeleteClassesDataMutation();
-
+  // - when the attendance records are fetched successfully, set the rows state
   useEffect(() => {
     if (data) {
       const classes = data.data;
-      dispatch(setRows(classes));
+      setRows(classes);
       console.log('data :', classes);
-    } else {
-      dispatch(setRows([]));
-      console.log('data is null');
-    }
-  }, [data, isSuccess, dispatch]);
+    } 
+  }, [data, dispatch]);
+  
   // Handle delete confirmation
   if (isError) {
     console.log('error message :', error.data.message);
   }
+  
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class list page
+  useEffect(()=>{
+    if(isDeleting){
+      dispatch(setSnackbar({ open:true , message: 'Deleting...' ,severity : 'info'}));
+    }else if(isDeleteError){
+      dispatch(setSnackbar({ open:true , message: error.data.message , severity : 'error'}));
+    }else if(isDeleteSuccess){
+      dispatch(setSnackbar({ open:true , message: 'Deleted successfully', severity :'success'}));
+      navigate('/admin/classes');
+    }
+  },[dispatch, isDeleteError, isDeleteSuccess, isDeleting])
+
+  // handle confirm deletion
   const handleDeleteConfirmed = async () => {
-    try {
-      dispatch(setModel({ open: false }));
-     await deleteClasses(selectClass.class_id).unwrap();
-    } catch (error) {
-     console.log('error message :', error);
-    }
+      dispatch(setModal({ open: false }));
+     await deleteClasses(selectedClass.class_id).unwrap();
   };
 
-  useEffect(() => {
-    if (data) {
-      const classes = data.data;
-      dispatch(setRows(classes));
-      console.log('data :', classes);
-    } else {
-      dispatch(setRows([]));
-      console.log('data is null');
-    }
-  }, [data, isSuccess, dispatch]);
-  // Handle delete confirmation
+  // Handle delete clicked
   const handleDelete = (row) => {
-    dispatch(setSelectedClass(row));
-    dispatch(setModel({ open: true }));
+    setSelectedClass(row);
+    dispatch(setModal({ open: true }));
   };
 
-  if (isError) {
-    console.log('error message :', error.data.message);
-  }
-
-  };
-
-  if (isLoading) {
-    return <LoadingCircle />;
-  }
   const handleSelectedDelete = () => {
     console.log('Delete all');
   };
   const handleView = (row) => {
     navigate(`/admin/classes/${row.class_id}`);
   };
-
-  const columns = [
-    { id: 'class_id', label: 'Class ID' },
-    { id: 'class_name', label: 'Class Name' },
-    { id: 'description', label: 'Description' },
-  ];
-  const hideColumns = ['description'];
-
+  const handleEdit = (row) => {
+    navigate(`/admin/classes/update/${row.class_id}`);
+  };
+  if (isError) {
+    console.log('error message :', error.data.message);
+  }
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
   return (
     <FormComponent
       title="Class List"
@@ -128,30 +132,18 @@ const ClassListPage = () => {
         onDelete={handleDelete}
         onView={handleView}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={hideColumns}
+        hideColumns={['description']}
         emptyTitle={'No Class'}
         emptySubTitle={'No Class Available'}
       />
       <DeleteConfirmationModal
-        open={model.open}
-        onClose={() => dispatch(setModel({ open: false }))}
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={handleDeleteConfirmed}
         itemName="Class"
       />
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => dispatch(setSnackbar({ open: false }))}
-      >
-        <Alert
-          onClose={() => dispatch(setSnackbar({ open: false }))}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </FormComponent>
   );
+}
 
 export default ClassListPage;
