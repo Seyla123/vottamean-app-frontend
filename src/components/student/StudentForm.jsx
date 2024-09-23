@@ -5,59 +5,17 @@ import TextFieldComponent from "../common/TextFieldComponent";
 import SelectField from "../common/SelectField";
 import { Box, Typography, Stack, Avatar } from "@mui/material";
 import userProfile from "../../assets/images/default-profile.png";
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { createFormSchema } from '../../validators/validationSchemas';
-import { usePostStudentsDataMutation } from '../../services/studentApi';
-
 function StudentFrom() {
-    const [newStudent,setNewStudent] =useState([]);
-    const schema = createFormSchema([
-        'firstName',
-        'lastName',
-       ' className',
-        'gender',
-        'dob',
-        'phoneNumber',
-        'email',
-        'address'
-      ]);
-
-    const {
-        register,
-        control,
-        handleSubmit,
-        formState: { errors, isValid },
-      } = useForm({
-        resolver: yupResolver(schema),
-        mode: 'onSubmit',
-      });
-      const [addStudent,{isloading,error}] = usePostStudentsDataMutation();
-
-        // Form submission
-    const onSubmit = async (data) => {
-        try {
-        const response = await addStudent(data).unwrap();
-        if (response) {
-            console.log('Teacher signed up successfully', response);
-        }
-        } catch (err) {
-        console.error('Signup failed:', err);
-        }
-    };
-      // This will only proceed to next if form is valid
-    const handleSubmitNext = async (data) => {
-        if (isValid) {
-        try {
-            await signUpTeacher(data);
-            handleNext();
-        } catch (error) {
-            console.error('Teacher info submission failed', error);
-        }
-        } else {
-        console.log('Form contains errors, cannot proceed');
-        }
-    };
+    const [newStudent, setNewStudent] = useState({
+        firstName: "",
+        lastName: "",
+        className: "",
+        gender: "",
+        dob: null,
+        phoneNumber: "",
+        email: "",
+        address: "",
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

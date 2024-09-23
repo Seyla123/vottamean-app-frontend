@@ -1,38 +1,54 @@
-import { useState,useEffect } from "react";
 import {Tabs, Tab } from "@mui/material";
-import { useParams ,useNavigate} from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useState ,useEffect} from "react";
 import FormComponent from "../../../components/common/FormComponent";
 import CardComponent from "../../../components/common/CardComponent";
 import CardInformation from "../../../components/common/CardInformation";
 import { useGetStudentsByIdQuery } from "../../../services/studentApi";
-import { studentsData } from '../../../utils/formatData';
-import { useDispatch} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { studentsData } from "../../../utils/formatData";
 
 const StudentDetailPage = () => {
-  const {id} =useParams()
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [rows, setRows] = useState([]);
-  const { data , isSuccess}  = useGetStudentsByIdQuery(id);
-console.log(data);
+  const { data, isLoading, isError, isSuccess } = useGetStudentsByIdQuery();
 
- // Only call `setRows` if the student data is successfully fetched
- useEffect(() => {
-  if (isSuccess && data && Array.isArray(data.students)) { 
-    const formattedStudents = studentsData(data.students);
-    setRows(formattedStudents);
-  } 
-}, [isSuccess, data]);
-
+  useEffect(() => {
+    if (isSuccess && data) {
+      const formattedStudents = studentsData(data.data);
+      setRows(formattedStudents);
+    }
+  }, [isSuccess, data,dispatch]);
+  if (isError) {
+    console.log('error message :', error.data.message);
+  }
 
   const handleUpdateStudent = (selectedPostId) => {
-    navigate(`/admin/students/update/${selectedPostId}`);
+    navigate(`/dashboard/students/update/${selectedPostId}`);
   };
   const clickDetele = () => {
     console.log("delete");
   };
   // State to track the active tab
   const [activeTab, setActiveTab] = useState(0);
+  const studentData = {
+    "Student ID": `${data.Info.id}`,
+    " Full Name": `${data.Info.name}`,
+    Class: `${data.class_id}`,
+    Age: `${data.Info.age}`,
+    Gender: `${data.Info.gender}`,
+    "Date of Birth": `${data.Info.date_of_birth}`,
+    "Phone Number": `${data.Info.phone_number}`,
+    Email: `${data.Info.email}`,
+    Address: `${data.Info.address}`,
+  };
+  const infoGuadian = {
+    " Guardian Name": "Potato Fried",
+    Relationship: "Father",
+    Email: "exampleusergmail.com",
+    "Phone Number": "01234567",
+  };
+  
 
   return (
     <>
@@ -56,7 +72,7 @@ console.log(data);
             handleEdit={handleUpdateStudent}
             handleDelete={clickDetele}
           >
-            <CardInformation data={rows} />
+            <CardInformation data={studentData} />
           </CardComponent>
         )}
         {activeTab === 1 && (
@@ -74,20 +90,3 @@ console.log(data);
 
 export default StudentDetailPage;
 
- const infoStudent = [
-  { id: 'id', label: 'Student ID' },
-  { id: 'name', label: ' Full Name' },
-  { id: 'class', label: 'Class' },
-  { id: 'age', label: 'Age' },
-  { id: 'dob', label: 'Date of Birth' },
-  { id: 'phone', label: 'Phone Number' },
-  { id: 'email', label: 'Email' },
-  { id: 'address', label: 'Address' },
- ];
-
-const infoGuadian = {
-  " Guardian Name": "Potato Fried",
-  Relationship: "Father",
-  Email: "exampleusergmail.com",
-  "Phone Number": "01234567",
-};

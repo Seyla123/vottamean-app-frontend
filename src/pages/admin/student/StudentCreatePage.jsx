@@ -16,7 +16,7 @@ const StudentCreatePage = () => {
 
   const handleCancel = () => {
     if (activeTab === 0) {
-      navigate("/admin/students");
+      navigate("/dashboard/students/create");
     } else if (activeTab === 1) {
       setActiveTab(0);
     }
@@ -26,14 +26,16 @@ const StudentCreatePage = () => {
     if (activeTab === 0) {
       setActiveTab(1);
     } else {
-      navigate("/admin/students");
+      navigate("/dashboard/students");
     }
   };
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
-  
+
+
+
   return (
     <FormComponent title="Add Student" subTitle="Please Fill Student information">
       {/* Tab  */}
@@ -61,7 +63,6 @@ const StudentCreatePage = () => {
         {/* buttons container */}
         <ButtonContainer
           rightBtn={handleNext}
-          leftBtn={handleCancel}
           leftBtnTitle="Cancel"
           rightBtnTitle={activeTab === 0 ? "Next" : "Submit"}
         />

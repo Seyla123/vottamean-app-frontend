@@ -50,7 +50,7 @@ export const formatAttendanceData = (apiResponse) => {
       : 'N/A',
     Gender: apiResponse.Student.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
-    Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
+    Phone: apiResponse.Student.Info.phone_number ?? 'N/A',
     Email: apiResponse.Student.guardian_email ?? 'N/A',
     Address: apiResponse.Student.Info.address ?? 'N/A',
   };

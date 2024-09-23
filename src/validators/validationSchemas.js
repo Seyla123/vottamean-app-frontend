@@ -133,6 +133,12 @@ export const ageSchema = Yup.number()
 export const genderSchema = Yup.string()
   .required('Gender is required')
   .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
+  //Class Valid
+export const ClassValidator = Yup.object().shape({
+  class_name: Yup.string().required('Class name is required'), 
+  description: Yup.string().optional(), 
+});
+
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
@@ -232,9 +238,4 @@ export const  AccountInformation = createFormSchema([
   'password',
   'passwordConfirm'
 ])
-//Class Valid
-export const ClassValidator = Yup.object().shape({
-  class_name: Yup.string().required('Class name is required'), // Custom message for required validation
-  description: Yup.string().optional(), // Optional field
-});
 
