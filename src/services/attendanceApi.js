@@ -7,8 +7,8 @@ export const attendanceApi = baseApi.injectEndpoints({
         url: `attendance`,
         method: 'GET',
         params: {
-          classId: data.classId,
-          subjectId: data.subjectId,
+          class_id: data.class,
+          subject_id: data.subject,
           filter: data.filter,
         },
       }),
@@ -21,8 +21,16 @@ export const attendanceApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['Attendance'],
-    })
+    }),
+    getAttendance: builder.query({
+      query: (data) => ({
+        url: `attendance/${data.id}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['Attendance'],
+    }),
   }),
 });
 
-export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation } = attendanceApi;
+export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery } = attendanceApi;
