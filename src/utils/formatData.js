@@ -133,17 +133,28 @@ export const transformSessionsData = (apiResponse) => {
 };  
 =======
 // Transform User Profile Data
-export const UserProfileData = (user) => {
+export const transformUserProfile = (user) => {
   if (!user || !user.data.adminProfile?.Info) {
     return {};
   }
 
+  // Utility function to capitalize the first letter of each word
+  const capitalize = (name) => {
+    return name
+      .split(' ')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   const info = user.data.adminProfile.Info;
-  const school = user.data.adminProfile?.Schools[0] || {};
+
+  // Combine first and last name and capitalize each part
+  const fullName = `${info.first_name} ${info.last_name}`;
+  const capitalizedFullName = capitalize(fullName);
 
   // Transform user profile data
-  const userProfile = {
-    'Full Name': `${info.first_name} ${info.last_name}`, // Combine first and last name
+  return {
+    'Full Name': capitalizedFullName,
     Age: info.dob
       ? new Date().getFullYear() - new Date(info.dob).getFullYear()
       : 'N/A',
@@ -153,18 +164,21 @@ export const UserProfileData = (user) => {
     Email: user.data.email,
     Address: info.address || 'N/A',
   };
+};
+
+// Transform School Profile Data
+export const transformSchoolProfile = (user) => {
+  if (!user || !user.data.adminProfile?.Schools) {
+    return {};
+  }
+
+  const school = user.data.adminProfile.Schools[0] || {};
 
   // Transform school data
-  const schoolProfile = {
+  return {
     'School Name': school.school_name || 'N/A',
     'Phone Number': formatPhoneNumber(school.school_phone_number) || 'N/A',
     'School Address': school.school_address || 'N/A',
-  };
-
-  return {
-    userProfile,
-    schoolProfile,
-    img: info.photo || '/default-profile.jpg', // Default profile image
   };
 };
 
@@ -173,6 +187,19 @@ export function formatDate(dateString) {
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   return new Date(dateString).toLocaleDateString(undefined, options);
 }
+
+// Combined User and School Profile Data
+export const UserProfileData = (user) => {
+  const info = user.data.adminProfile.Info;
+  const userProfile = transformUserProfile(user);
+  const schoolProfile = transformSchoolProfile(user);
+
+  return {
+    userProfile,
+    schoolProfile,
+    img: info.photo,
+  };
+};
 
 // Utility: Ensure phone number formatting
 export function formatPhoneNumber(phoneNumber) {

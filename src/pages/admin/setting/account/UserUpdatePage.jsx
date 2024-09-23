@@ -1,7 +1,10 @@
+// React and third-party libraries
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
+
+// Material UI
 import {
   Typography,
   Stack,
@@ -14,6 +17,8 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+// Components
 import CardComponent from '../../../../components/common/CardComponent';
 import TextFieldComponent from '../../../../components/common/TextFieldComponent';
 import FormComponent from '../../../../components/common/FormComponent';
@@ -21,11 +26,18 @@ import ButtonContainer from '../../../../components/common/ButtonContainer';
 import userProfile from '../../../../assets/images/default-profile.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
+
+// Redux hooks and API
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } from '../../../../services/userApi';
+
+// User Profile Data validation
 import { UserProfileValidator } from '../../../../validators/validationSchemas';
+
+// User Profile Data formatting
+import { UserProfileData } from '../../../../utils/formatData';
 
 function UserUpdatePage() {
   const dispatch = useDispatch();
@@ -85,22 +97,27 @@ function UserUpdatePage() {
     }
   };
 
+  // Use the formatted user data on mount
   useEffect(() => {
     if (user && user.data.adminProfile?.Info) {
-      const info = user.data.adminProfile.Info;
+      const { userProfile } = UserProfileData(user); // Get formatted data
+
+      // Update the form data with formatted values
       dispatch(
         updateFormData({
-          first_name: info.first_name,
-          last_name: info.last_name,
-          gender: info.gender,
-          dob: info.dob,
-          phone_number: info.phone_number,
-          address: info.address,
-          email: user.data.email,
+          first_name: userProfile['Full Name'].split(' ')[0],
+          last_name: userProfile['Full Name'].split(' ')[1],
+          gender: userProfile.Gender,
+          dob: userProfile['Date of Birth'],
+          phone_number: userProfile.Phone,
+          address: userProfile.Address,
+          email: userProfile.Email,
         }),
       );
-      setDob(dayjs(info.dob));
-      setGender(info.gender);
+
+      // Set additional local state for form controls
+      setDob(dayjs(userProfile['Date of Birth']));
+      setGender(userProfile.Gender);
     }
   }, [user, dispatch]);
 
