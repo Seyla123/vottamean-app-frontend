@@ -5,7 +5,7 @@ import { responsiveFontSizes } from '@mui/material/styles';
 let theme = createTheme({
     palette: {
         primary: {
-            main: '#2196F3',
+            main: '#6c63ff',
         },
         background: {
             default: '#F9FAFB', // Light gray background color

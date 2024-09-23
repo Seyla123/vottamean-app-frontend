@@ -146,13 +146,13 @@ const DataTable = ({
   return (
     <TableContainer
       component={Paper}
-      sx={{ boxShadow: '0px 5px 10px rgba(0,0,0,0.05)' }}
+      sx={{ boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px' }}
     >
-      <Table className="min-w-full" aria-label="reusable table">
+      <Table className="min-w-full" aria-label="reusable table" size="small">
         <TableHead
           sx={{
-            bgcolor: '#F3F3F5',
-            height: '80px',
+            bgcolor: '#f8f8f8',
+            height: '60px',
           }}
         >
           <TableRow>

@@ -8,7 +8,8 @@ import { logout as logoutAction } from '../../store/slices/authSlice';
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
 import Logo from '../../assets/images/Logo.svg';
 
-import { extendTheme, Box, Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import userProfile from '../../assets/images/user.png';
@@ -43,7 +44,13 @@ const Layout = ({ teacherSite, adminSite }) => {
   };
 
   // 5. Set up the Material UI theme for responsive design and custom breakpoints
-  const theme = extendTheme({
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#6c63ff',
+      },
+    },
     breakpoints: {
       values: {
         xs: 0,
@@ -51,6 +58,16 @@ const Layout = ({ teacherSite, adminSite }) => {
         md: 1200,
         lg: 1200,
         xl: 1536,
+      },
+    },
+
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            backgroundColor: '#F5F5F7',
+          },
+        },
       },
     },
   });
@@ -90,7 +107,10 @@ const Layout = ({ teacherSite, adminSite }) => {
       // 11. Set the session object, which includes current user details like name, email, and image
       session={{
         user: {
-          name: user?.name || 'Username',
+          name:
+            user?.adminProfile?.Info?.first_name +
+              ' ' +
+              user?.adminProfile?.Info?.last_name || 'Username',
           email: user?.email || 'Useremail001@gmail.com',
           image: user?.image || userProfile,
         },
@@ -103,6 +123,7 @@ const Layout = ({ teacherSite, adminSite }) => {
     >
       {teacherSite || adminSite ? (
         // 13. Conditional rendering of the dashboard layout for teacher or admin sites
+
         <Box paddingTop={2}>
           <DashboardLayout>
             <Container maxWidth="xl">

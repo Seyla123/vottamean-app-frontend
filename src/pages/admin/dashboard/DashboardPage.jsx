@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Box, CardContent, Chip, Grid } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { GraduationCap, UsersIcon } from 'lucide-react';
-import WelcomeHandImage from '../../../assets/images/welcome-illustration.png';
+import WelcomeHandImage from '../../../assets/images/welcome.svg';
 import ShortListTable from '../../../components/common/ShortListTable';
 import { shadow } from '../../../styles/global';
 import StaticTable from '../../../components/common/StaticTable';
@@ -85,7 +85,10 @@ function Dashboard() {
   const { user } = useSelector((state) => state.auth);
   console.log(user);
   return (
-    <FormComponent title="Dashboard Overview" subTitle="All Data">
+    <FormComponent
+      title="Dashboard Overview"
+      subTitle="Monitor Student and Teacher Attendance in Real-Time"
+    >
       <Grid container spacing={2}>
         <Grid item xs={12} lg={8}>
           <GreetingCard />
@@ -125,9 +128,9 @@ const GreetingCard = () => {
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
-        background: '#6499E9',
+        background: '#8E8FFA',
         color: 'white',
-        height: { xs: '120px', sm: '240px' },
+        height: { xs: '180px', sm: '240px' },
         overflow: 'hidden',
         p: { xs: 2, sm: 4 },
         ...shadow,
@@ -139,23 +142,22 @@ const GreetingCard = () => {
           sx={{
             fontWeight: 'bold',
             fontSize: { xs: '24px', sm: '32px', md: '48px' },
-            textShadow: '1px 1px 10px #344C64',
           }}
         >
-          Welcome Back 👋
+          Hi, {userName}👋
         </Typography>
-        <Typography variant="body1" sx={{ textShadow: '1px 1px 5px #344C64' }}>
-          {userName}
+        <Typography variant="body1" color="#F5F5F5">
+          Welcome to your admin dashboard
         </Typography>
       </Box>
       <Box
         sx={{
           width: {
-            xs: '200px',
-            sm: '240px',
-            lg: '300px',
+            xs: '160px',
+            sm: '200px',
+            lg: '260px',
             position: 'absolute',
-            bottom: -80,
+            bottom: 0,
             right: 4,
           },
         }}
@@ -184,6 +186,7 @@ const StatusCard = () => {
         flexDirection: 'column',
         gap: 2,
         height: 1,
+        background: '#FFFFFF',
       }}
     >
       {statusCard.map((item) => (
