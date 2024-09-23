@@ -88,7 +88,7 @@ const StudentListPage = () => {
     console.log('Delete all');
   };
   const handleView = (row) => {
-    navigate(`/dashboard/students/${row.id}`);
+    navigate(`/admin/students/${row.id}`);
   }
 
 //Loading Data
