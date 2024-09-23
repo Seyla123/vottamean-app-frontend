@@ -13,50 +13,91 @@
  * @returns JSX.Element
  */
 
-import { Container, Stack, Box, Typography } from '@mui/material';
+import { Container, Stack, Box, Typography, colors } from '@mui/material';
 import TestimonialCard from './TestimonialCard';
-import LogoWaveTrack from '../../assets/images/logoWaveTrack.png';
+
+import ImagePreviewCarousel from './ImagePreviewCarousel';
+
+import LogoWaveTrack from '../../assets/images/Logo.svg';
+import image1 from '../../assets/images/auth-illustrator-img-1.svg';
+import image2 from '../../assets/images/auth-illustrator-img-2.svg';
+import image3 from '../../assets/images/auth-illustrator-img-3.png';
 
 function AuthContainerCard({ sideCard, children }) {
   // Determine the flex direction based on the sideCard prop
-  const direction = sideCard === 'right' ? 'row-reverse' : 'row';
+  const direction = sideCard === 'right' ? 'row' : 'row-reverse';
 
-  // Set the alignment of the side card based on the sideCard prop
-  const flexDir = sideCard === 'right' ? 'flex-end' : 'flex-start';
+  const carouselImages = [image1, image2, image3];
 
   return (
     <>
       {/* Main container for the authentication card */}
-      <Container sx={{ ...gridContainer, flexDirection: direction }}>
+      <Box
+        sx={{
+          ...gridContainer,
+          flexDirection: direction,
+        }}
+      >
+        <img
+          src={LogoWaveTrack}
+          alt=""
+          style={{ width: '140px', position: 'absolute', top: 32, left: 32 }}
+        />
+
         {/* Side card container for branding and testimonials */}
         <Box sx={sideCardContainer}>
-          {/* Logo container with alignment based on flexDir */}
-          <Box display={'flex'} justifyContent={flexDir} sx={{ padding: 2 }}>
-            <Box
-              component={'img'}
-              src={LogoWaveTrack}
-              sx={{ maxWidth: '60px' }}
-            />
-          </Box>
           {/* Text container for title and description */}
-          <Box component={'div'}>
-            <Typography variant="h4" fontWeight={500}>
-              WaveTrack : <br />A New Hope for Attendance
+          <Box
+            component={'div'}
+            sx={{
+              borderRadius: 2,
+              backdropFilter: 'blur(26px)',
+            }}
+          >
+            <Typography variant="h4" fontWeight={'bold'}>
+              Welcome to WaveTrack! <br />A New Hope for Attendance
             </Typography>
             <Typography
-              fontWeight={400}
               variant="body1"
-              sx={{ paddingTop: 2, paddingBottom: 2 }}
+              sx={{
+                paddingTop: 2,
+                paddingBottom: 2,
+                color: 'text.secondary',
+              }}
             >
               Accurately record and monitor student attendance with
               WaveTrack&apos;s user-friendly platform. Improve efficiency and
               reduce paperwork, all while ensuring every student is accounted
               for.
             </Typography>
+            <Box
+              sx={{
+                bgcolor: '#ebeaff',
+                px: 1,
+                borderRadius: 1,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                color: '#111',
+                width: 'max-content',
+                fontSize: '14px',
+                color: 'text.secondary',
+              }}
+            >
+              <Box
+                component={'div'}
+                sx={{ width: '10px', height: '2px', background: '#aaa' }}
+              />
+              Developed by HexCode+
+              <Box
+                component={'div'}
+                sx={{ width: '10px', height: '2px', background: '#aaa' }}
+              />
+            </Box>
           </Box>
-          {/* Testimonial card component */}
+          {/* Image Carousel component */}
           <Box component={'div'}>
-            <TestimonialCard />
+            <ImagePreviewCarousel images={carouselImages} />
           </Box>
         </Box>
         {/* Main content area for the authentication form */}
@@ -73,7 +114,7 @@ function AuthContainerCard({ sideCard, children }) {
         >
           {children} {/* Render any children passed to the component */}
         </Stack>
-      </Container>
+      </Box>
     </>
   );
 }
@@ -82,23 +123,27 @@ export default AuthContainerCard;
 
 // Styles for the main grid container
 const gridContainer = {
+  position: 'relative',
   width: '100%',
-  padding: { xs: 3, sm: 3 },
+  height: '100%',
+  maxHeight: '800px',
+  padding: { xs: 2, sm: 1 },
   display: 'flex',
-  gap: 3,
   justifyContent: 'center',
-  borderRadius: '24px',
-  border: '0.3px solid #E0E0E0',
-  boxShadow: '0px 0px 24px rgba(0, 0, 0, 0.08)',
+  borderRadius: 4,
+  boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px',
+  background: '#fff',
 };
 
 // Styles for the side card container
 const sideCardContainer = {
-  display: { xs: 'none', md: 'flex' }, // Hide on extra small screens
+  display: { xs: 'none', md: 'flex' },
   width: '100%',
-  bgcolor: '#90CAF9',
-  borderRadius: '18px',
+  height: '100%',
+  background: ' linear-gradient(45deg, #cfcdfd 0%, #eef1f5  100%)',
+  borderRadius: 2,
   flexDirection: 'column',
-  padding: '24px 32px',
+  padding: '42px 32px 32px 32px',
   justifyContent: 'space-between',
+  overflow: 'hidden',
 };

@@ -58,13 +58,14 @@ function LoginPage() {
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Stack
         sx={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh',
+          py: 3,
         }}
       >
         <AuthContainerCard sideCard="left">

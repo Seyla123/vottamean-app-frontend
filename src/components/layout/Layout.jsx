@@ -46,6 +46,9 @@ const Layout = ({ teacherSite, adminSite }) => {
   // 5. Set up the Material UI theme for responsive design and custom breakpoints
 
   const theme = createTheme({
+    cssVariables: {
+      colorSchemeSelector: 'data-toolpad-color-scheme',
+    },
     palette: {
       primary: {
         main: '#6c63ff',
