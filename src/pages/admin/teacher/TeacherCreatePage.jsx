@@ -1,7 +1,8 @@
 import React from 'react';
-import TeacherInfo from '../../../components/teacher/TeacherInfo';
+import FormInfo from '../../../components/teacher/FormInfo';
 import FormComponent from '../../../components/common/FormComponent';
 function TeacherCreatePage() {
+  
   const handleCancel = () => {
     navigate('/teacher');
   };
@@ -13,8 +14,8 @@ function TeacherCreatePage() {
         title="ADD TEACHER"
         subTitle="Please Update Teacher Information"
       >
-        {/* Form edit */}
-        <TeacherInfo mode="create" handleCancel={handleCancel} />
+        {/* Form input */}
+        <FormInfo mode="create" handleCancel={handleCancel} />
       </FormComponent>
     </>
   );

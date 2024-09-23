@@ -223,3 +223,8 @@ export const UserProfileValidator = createFormSchema([
   'address',
   'dob',
 ]);
+export const  AccountInformation = createFormSchema([
+  'email',
+  'password',
+  'passwordConfirm'
+])
