@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs, Snackbar, Alert } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
 import CardComponent from "../../../../components/common/CardComponent";
@@ -8,10 +8,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import NotFoundPage from "../../../../pages/NotFoundPage";
 import { formatAttendanceData } from "../../../../utils/formatData";
-import { setAttendanceDetail } from "../../../../store/slices/attendanceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteConfirmationModal from '../../../../components/common/DeleteConfirmationModal';
-import {setModal, setSnackbar} from "../../../../store/slices/uiSlice";
+import { setModal, setSnackbar } from "../../../../store/slices/uiSlice";
 
 const tabs = [
   { label: "ATTENDANCE", value: "1", field: "attendance", title: "Attendance Information" },
@@ -21,23 +20,35 @@ const tabs = [
 ];
 
 const AttendanceViewPage = () => {
+  
+  // - value : Set the initial tab value
+  // - attendanceDetail : Get the attendance detail currently to be display on the page
+  const [value, setValue] = useState(tabs[0].value);
+  const [attendanceDetail, setAttendanceDetail] = useState(null);
+
+  // Get the id from the url parameter
   const { id } = useParams();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { attendanceDetail } = useSelector((state) => state.attendance);
-  const {modal, snackbar} = useSelector((state) => state.ui);
-  const [value, setValue] = useState(tabs[0].value);
+  const { modal } = useSelector((state) => state.ui);
 
+  // - useGetAttendanceQuery : Fetch the attendance data with the id
+  // - useDeleteAttendanceMutation: a hook that returns a function to delete an attendance record
   const { data: attendanceData, isLoading, isSuccess, isError } = useGetAttendanceQuery({ id });
   const [deleteAttendance, { isLoading: isDeleting, isSuccess: deleteSuccess, isError: deleteError, error }] = useDeleteAttendanceMutation();
 
+  // - When the attendance data is fetched, format the data and set the attendance detail in the state
   useEffect(() => {
     if (isSuccess && attendanceData) {
       const formattedData = formatAttendanceData(attendanceData.data);
-      dispatch(setAttendanceDetail(formattedData));
+      setAttendanceDetail(formattedData);
     }
   }, [isSuccess, attendanceData, dispatch]);
 
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the attendance list page
   useEffect(() => {
     if (isDeleting) {
       dispatch(setSnackbar({ open: true, message: "Deleting...", severity: "info" }));
@@ -49,17 +60,22 @@ const AttendanceViewPage = () => {
     }
   }, [isDeleting, deleteError, deleteSuccess, dispatch, navigate]);
 
+  // Confirm delete the attendance data
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
     await deleteAttendance({ id }).unwrap();
   }
 
+  // Handle delete action
   const handleDelete = () => {
     dispatch(setModal({ open: true }));
   }
 
+  // Handle tab change
   const handleChange = (event, newValue) => setValue(newValue);
 
+  // If the data is loading, show a loading circle
+  // If the data is error, show a not found page
   if (isLoading) return <LoadingCircle />;
   if (isError) return <NotFoundPage />;
 
@@ -87,21 +103,8 @@ const AttendanceViewPage = () => {
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
-        itemName="attendance"
+        itemName={"attendance"}
       />
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => dispatch(setSnackbar({ open: false }))}
-      >
-        <Alert
-          onClose={() => dispatch(setSnackbar({ open: false }))}
-          severity={snackbar.severity || "info"}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message || ""}
-        </Alert>
-      </Snackbar>
     </FormComponent>
   );
 };
