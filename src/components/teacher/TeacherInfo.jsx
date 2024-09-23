@@ -199,7 +199,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                     
                       fullWidth
                       slotProps={{
                         textField: {
@@ -209,7 +208,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                         },
                       }}
                     />
-                    
                   )}
                 />
               )}

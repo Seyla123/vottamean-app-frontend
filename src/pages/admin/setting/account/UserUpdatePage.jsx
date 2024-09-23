@@ -126,6 +126,7 @@ function UserUpdatePage() {
 
       await updateUserProfile(formDataToSend).unwrap();
       console.log('Profile updated successfully');
+      navigate('/admin/settings/account');
     } catch (error) {
       console.error('Failed to update profile', error);
     }
