@@ -83,7 +83,7 @@ function SessionListPage() {
 
   // Handle DETAIL action
   const handleView = (rows) => {
-    navigate(`/admin/sessions/${rows.session_id}`);
+    navigate(`/admin/sessions/${rows.id}`);
   };
 
   if (isLoading) {
@@ -119,7 +119,6 @@ function SessionListPage() {
         onEdit={handleEdit}
         onView={handleView}
         onDelete={handleDelete}
-        onView={handleView}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={['day', 'teacher']}
         emptyTitle={'No Session'}
