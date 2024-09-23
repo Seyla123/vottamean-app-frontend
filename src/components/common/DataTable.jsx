@@ -68,6 +68,7 @@ const DataTable = ({
   hideColumns,
   emptyTitle,
   emptySubTitle,
+  showNO,
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -164,6 +165,7 @@ const DataTable = ({
                 onChange={handleSelectAllClick}
               />
             </TableCell>
+            {showNO && <TableCell align="left">N/O</TableCell>}
             {columns.map((column) =>
               !isMobile || !hideColumns.includes(column.id) ? (
                 <TableCell key={column.id} align={column.align || 'left'}>
@@ -190,7 +192,7 @@ const DataTable = ({
               emptySubTitle={emptySubTitle}
             />
           ) : (
-            paginatedRows.map((row) => {
+            paginatedRows.map((row, index) => {
               const isItemSelected = isSelected(row.id);
               return (
                 <TableRow key={row.id} selected={isItemSelected}>
@@ -200,6 +202,7 @@ const DataTable = ({
                       onClick={(event) => handleCheckboxClick(event, row.id)}
                     />
                   </TableCell>
+                  {showNO && <TableCell>{index + 1}</TableCell>}
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
                       <TableCell key={column.id} align={column.align || 'left'}>

@@ -6,76 +6,70 @@ import { useNavigate } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
 
 function SubjectListPage() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleEdit = row => {
-        navigate(`/dashboard/subjects/update/${row.id}`);
-    };
+  const handleEdit = (row) => {
+    navigate(`/dashboard/subjects/update/${row.id}`);
+  };
 
-    const handleDelete = row => {
-        console.log('Delete row:', row);
-    };
+  const handleDelete = (row) => {
+    console.log('Delete row:', row);
+  };
 
-    const handleSelectedDelete = () => {
-        console.log('Delete all');
-    };
+  const handleSelectedDelete = () => {
+    console.log('Delete all');
+  };
 
-    const hideColumns = ['description'];
+  const hideColumns = ['description'];
 
-    const columns = [
-        { id: 'id', label: 'Subject ID' },
-        { id: 'name', label: 'Subject Name' },
-        { id: 'description', label: 'Subject Description' },
-    ];
+  const columns = [
+    // { id: 'id', label: 'Subject ID' },
+    { id: 'name', label: 'Subject Name' },
+    { id: 'description', label: 'Subject Description' },
+  ];
 
-    const rows = [
-        {
-            id: 1,
-            name: 'Potato Fried',
-            description:
-                'This is a subject for learning how to cook potato fried.',
-        },
-        {
-            id: 2,
-            name: 'Potato Chip',
-            description:
-                'This is a subject for learning how to cook potato chip.',
-        },
-    ];
+  const rows = [
+    {
+      id: 1,
+      name: 'Potato Fried',
+      description: 'This is a subject for learning how to cook potato fried.',
+    },
+    {
+      id: 2,
+      name: 'Potato Chip',
+      description: 'This is a subject for learning how to cook potato chip.',
+    },
+  ];
 
-    return (
-        <FormComponent
-            title='Subject List'
-            subTitle='There are total 12 Subjects'
-        >
-            {/* Subject Create Button */}
-            <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
-                <Link
-                    to={'/dashboard/subjects/create'}
-                >
-                <Button
-                    size='large'
-                    variant='contained'
-                    color='primary'
-                    startIcon={<PlusIcon size={20} />}
-                >
-                        Add subject
-                    </Button>
-                </Link>
-            </Stack>
-            {/* List Subject */}
-            <DataTable
-                columns={columns}
-                rows={rows}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onSelectedDelete={handleSelectedDelete}
-                hideColumns={hideColumns}
-                emptyTitle={'No Subject'}
-                emptySubTitle={'No Subject Available'}
-            />
-        </FormComponent>
-    );
+  return (
+    <FormComponent title="Subject List" subTitle="There are total 12 Subjects">
+      {/* Subject Create Button */}
+      <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
+        <Link to={'/dashboard/subjects/create'}>
+          <Button
+            size="large"
+            variant="contained"
+            color="primary"
+            startIcon={<PlusIcon size={20} />}
+          >
+            Add subject
+          </Button>
+        </Link>
+      </Stack>
+      {/* List Subject */}
+      <DataTable
+        columns={columns}
+        rows={rows}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onSelectedDelete={handleSelectedDelete}
+        hideColumns={hideColumns}
+        emptyTitle={'No Subject'}
+        emptySubTitle={'No Subject Available'}
+        showNO={true}
+      />
+    </FormComponent>
+  );
 }
 
 export default SubjectListPage;
