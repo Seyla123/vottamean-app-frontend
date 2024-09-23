@@ -12,7 +12,6 @@ import {
   Box,
   Select,
   MenuItem,
-  Button,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -115,7 +114,7 @@ function UserUpdatePage() {
   // Handle form submission to update user profile
   const onSubmit = async (data) => {
     try {
-      const formDataToSend = new FormData(); // Use FormData for file upload
+      const formDataToSend = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         if (key !== 'image' && value) {
           formDataToSend.append(key, value);
