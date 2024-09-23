@@ -19,7 +19,7 @@ import {
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
-import NotFoundIcon from '../../assets/images/not-found.jpg';
+import EmptyDataImage from '../../assets/images/empty-data.svg';
 
 /**
  * DataTable Component
@@ -72,12 +72,10 @@ const DataTable = ({
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
-  
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
-
-
 
   const handleSelectAllClick = (event) => {
     const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
@@ -117,9 +115,9 @@ const DataTable = ({
   };
 
   const handleView = () => {
-    if (onView ) onView(menuRow);
+    if (onView) onView(menuRow);
     handleMenuClose();
-  }
+  };
 
   const handleSelectedDelete = () => {
     if (onSelectedDelete) {
@@ -129,8 +127,6 @@ const DataTable = ({
     }
     setSelected([]);
   };
-
-  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -253,11 +249,11 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
     <TableRow sx={{ width: 1, height: '500px' }}>
       <TableCell colSpan={columns.length + 1} align="center" width={1}>
         <img
-          src={NotFoundIcon}
+          src={EmptyDataImage}
           alt="not found"
           style={{
             width: '100%',
-            maxWidth: '400px',
+            maxWidth: '200px',
             objectFit: 'contain',
           }}
         />

@@ -6,7 +6,7 @@ import { useLogoutMutation } from '../../services/authApi';
 import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
-import Logo from '../../assets/images/Logo.png';
+import Logo from '../../assets/images/Logo.svg';
 
 import { extendTheme, Box, Container } from '@mui/material';
 import { AppProvider } from '@toolpad/core/AppProvider';
