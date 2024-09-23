@@ -23,16 +23,15 @@ function ClassPeriodUpdatePage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
-  const [updateClassPeriod, { isSuccess, isError, isLoading: isUpdating }] =
-    useUpdateClassPeriodMutation();
+  const [updateClassPeriod, { isSuccess, isError, isLoading: isUpdating }] = useUpdateClassPeriodMutation();
 
   // State for time picker
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [errorTime, setErrorTime] = useState(''); // State for time error message
 
   // Initialize useForm with yup validation schema
   const {
+    handleSubmit,
     formState: { errors },
     setValue,
     clearErrors,
@@ -47,28 +46,33 @@ function ClassPeriodUpdatePage() {
       const formattedEndTime = dayjs(data.data.end_time, 'HH:mm:ss');
       setStartTime(formattedStartTime);
       setEndTime(formattedEndTime);
+
+      // Ensure form values are set when data is loaded
+      setValue('start_time', formattedStartTime.format('HH:mm'), {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setValue('end_time', formattedEndTime.format('HH:mm'), {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     }
-  }, [data]);
+  }, [data, setValue]);
 
   const onClickNext = async () => {
-    // Check if startTime is equal to endTime
-    if (startTime.isSame(endTime)) {
-      setErrorTime("End time can't be the same as start time");
-      return; // Prevent submission
-    }
-    
-    // Clear the error if validation passes
-    setErrorTime('');
-
-    // Format times before sending the request
     const formattedStartTime = startTime.format('HH:mm:ss');
     const formattedEndTime = endTime.format('HH:mm:ss');
-
-    await updateClassPeriod({
-      id,
-      start_time: formattedStartTime,
-      end_time: formattedEndTime,
-    });
+    try {
+      await updateClassPeriod({
+        id,
+        start_time: formattedStartTime,
+        end_time: formattedEndTime,
+      });
+      console.log('Class Period Created:', result);
+      navigate(`/admin/class-periods`);
+    } catch (error) {
+      console.log('Failed to update class period:', error);
+    }
   };
 
   // Handle stages
@@ -80,10 +84,6 @@ function ClassPeriodUpdatePage() {
     navigate(`/admin/class-periods`);
   }
 
-  const onClickBack = () => {
-    navigate(`/admin/class-periods`);
-  };
-
   return (
     <>
       <FormComponent
@@ -93,22 +93,38 @@ function ClassPeriodUpdatePage() {
         <CardComponent title={'Class Period Information'}>
           <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
+              <DemoContainer
+                components={['TimePicker', 'TimePicker', 'TimePicker']}
+              >
                 <Box sx={containerInput}>
                   <Box>
-                    <Typography>Start time</Typography>
+                    <Typography>
+                      Start time
+                    </Typography>
                     <TimePicker
                       sx={timeInput}
                       value={startTime}
                       onChange={(newValue) => {
                         setStartTime(newValue);
-                        setValue('start_time', newValue ? newValue.format('HH:mm') : '');
-                        clearErrors('start_time');
+                        setValue(
+                          'start_time',
+                          newValue ? newValue.format('HH:mm') : '',
+                        );
+                      }}
+                      slotProps={{
+                        textField: {
+                          helperText: errors.start_time
+                            ? errors.start_time.message
+                            : '',
+                          error: !!errors.start_time,
+                        },
                       }}
                     />
                   </Box>
                   <Box>
-                    <Typography color={errorTime ? 'red' : 'inherit'}>
+                    <Typography
+                      color={!!errors.end_time ? 'red' : 'inherit'}
+                    >
                       End time
                     </Typography>
                     <TimePicker
@@ -116,17 +132,20 @@ function ClassPeriodUpdatePage() {
                       value={endTime}
                       onChange={(newValue) => {
                         setEndTime(newValue);
-                        setValue('end_time', newValue ? newValue.format('HH:mm') : '');
-                        clearErrors('end_time');
-
-                        // Clear the error message if endTime changes
-                        setErrorTime('');
+                        setValue(
+                          'end_time',
+                          newValue ? newValue.format('HH:mm') : '',
+                        );
+                        if (newValue) {
+                          clearErrors('end_time');
+                        }
                       }}
                       slotProps={{
                         textField: {
-                          placeholder: 'Select end time',
-                          helperText: errorTime || '', // Display error message if it exists
-                          error: !!errorTime, // Set error state based on errorTime
+                          helperText: errors.end_time
+                            ? errors.end_time.message
+                            : '',
+                          error: !!errors.end_time,
                         },
                       }}
                     />
@@ -136,8 +155,7 @@ function ClassPeriodUpdatePage() {
             </LocalizationProvider>
           </Box>
           <ButtonContainer
-            leftBtn={onClickBack}
-            rightBtn={onClickNext}
+            rightBtn={handleSubmit(onClickNext)}
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Update'}
           />

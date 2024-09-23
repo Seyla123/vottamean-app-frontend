@@ -24,11 +24,6 @@ function ClassPeriodListPage() {
   const [deleteClassPeriod, { isLoading: isDeleting }] =
     useDeleteClassPeriodMutation();
 
-  // useEffect for loading data
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   // Handle loading state
   if (isLoading) {
     return <CircularIndeterminate />;

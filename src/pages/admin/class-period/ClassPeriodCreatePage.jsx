@@ -50,7 +50,7 @@ function ClassPeriodCreatePage() {
       const result = await createClass({
         start_time: formattedStartTime,
         end_time: formattedEndTime,
-        ...data, // Include other form data if needed
+        ...data,
       }).unwrap();
 
       console.log('Class Period Created:', result);
@@ -86,7 +86,7 @@ function ClassPeriodCreatePage() {
                         newValue ? newValue.format('HH:mm') : '',
                       );
                       if (newValue) {
-                        clearErrors('start_time'); // Clear the error when a valid time is selected
+                        clearErrors('start_time');
                       }
                     }}
                     slotProps={{
@@ -114,7 +114,7 @@ function ClassPeriodCreatePage() {
                       setValue(
                         'end_time',
                         newValue ? newValue.format('HH:mm') : '',
-                      ); // Register end time in form
+                      );
                       if (newValue) {
                         clearErrors('end_time');
                       }
@@ -134,11 +134,10 @@ function ClassPeriodCreatePage() {
             </DemoContainer>
           </LocalizationProvider>
 
-          {/* Button Container  */}
           <ButtonContainer
+            rightBtn={handleSubmit(onSubmit)}
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Add Period'}
-            rightBtn={handleSubmit(onSubmit)}
           />
 
           {/* Display API error if any */}
