@@ -6,8 +6,8 @@ export const sessionApi = baseApi.injectEndpoints({
 
     // delete session
     deleteSession: builder.mutation({
-      query: (rows) => ({
-        url: `sessions/${rows.id}`,
+      query: (id) => ({
+        url: `sessions/${id}`,
         method: 'DELETE',
         credentials: 'include',
       }),

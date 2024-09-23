@@ -5,41 +5,97 @@ import FormComponent from '../../../components/common/FormComponent';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
-import { useGetSessionsQuery, useDeleteSessionMutation } from '../../../services/sessionApi';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  useGetSessionsQuery,
+  useDeleteSessionMutation,
+} from '../../../services/sessionApi';
 import { transformSessionsData } from '../../../utils/formatData';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
+import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import { setModal,setSnackbar } from '../../../store/slices/uiSlice';
+
 function SessionListPage() {
+  // navigation page
   const navigate = useNavigate();
-  const [removedRows, setRemovedRows] = useDeleteSessionMutation();
-  const { data, error, isLoading } = useGetSessionsQuery();
-  const [rows , setRows] = useState([]);
+  const dispatch = useDispatch();
+  // state
+  const [rows, setRows] = useState([]);
+  const [selectSession, setSelectSession] = useState(null);
+  
+  const { modal } = useSelector((state) => state.ui);
+  // api hooks
+  const { data, isError, isLoading } = useGetSessionsQuery();
+  
+  const [
+    deleteSession,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error,
+    },
+  ] = useDeleteSessionMutation();
+
+
   useEffect(() => {
     if (data) {
       const transformedData = transformSessionsData(data.data);
       setRows(transformedData);
+      console.log(data)
     }
-  }, [data]);
-  if (isLoading) {
-    return <LoadingCircle/>;
-  }
-  if (error) {
-    return <div>Error loading session: {error.message}</div>;
-  }
+  }, [data,dispatch]);
+
+
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class list page
+  useEffect(() => {
+    if (isDeleting) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data.message,
+          severity: 'error',
+        }),
+      );
+    } else if (isDeleteSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/sessions');
+    }
+  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
+
 
   // Handle EDIT action
   const handleEdit = (row) => {
     navigate(`/admin/class-periods/update/${row.id}`);
   };
 
+  // handle confirm deletion
+  const handleDeleteConfirmed = async () => {
+    dispatch(setModal({ open: false }));
+    await deleteSession(selectSession.id).unwrap();
+  };
+  console.log(selectSession)
+
   // Handle DELETE action
   const handleDelete = (rows) => {
-    removedRows(rows)
+    setSelectSession(rows);
+    dispatch(setModal({ open: true }));
   };
 
   // Handle DELETE ALL action
-  const handleSelectedDelete = () => {
-    
-  };
+  const handleSelectedDelete = () => {};
 
   // Handle DETAIL action
   const handleView = (row) => {
@@ -56,6 +112,14 @@ function SessionListPage() {
   ];
 
   const hideColumns = ['day', 'teacher'];
+  
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+
+  if (isError) {
+    console.log('error message :', error.data.message);
+  }
 
   return (
     <FormComponent
@@ -85,6 +149,12 @@ function SessionListPage() {
         hideColumns={hideColumns}
         emptyTitle={'No Session'}
         emptySubTitle={'No Session Available'}
+      />
+      <DeleteConfirmationModal
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleDeleteConfirmed}
+        itemName="Session"
       />
     </FormComponent>
   );
