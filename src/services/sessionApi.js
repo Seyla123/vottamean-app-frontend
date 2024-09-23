@@ -36,4 +36,4 @@ export const sessionApi = baseApi.injectEndpoints({
 });
 
 // Export the hooks for the custom endpoints
-export const { useGetSessionsQuery, useDeleteSessionMutation } = sessionApi;
+export const { useGetSessionsQuery, useDeleteSessionMutation, useGetSessionByIdQuery } = sessionApi;
