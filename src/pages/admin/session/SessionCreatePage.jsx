@@ -5,6 +5,8 @@ import CardComponent from "../../../components/common/CardComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 import SelectField from "../../../components/common/SelectField";
 import { useGetDayQuery } from "../../../services/daysApi";
+import { useCreateSessionMutation } from "../../../services/sessionApi";
+import { useGetClassPeriodByIdQuery } from "../../../services/classPeriodApi";
 
 
 // Main Component
@@ -17,21 +19,20 @@ const SessionCreatePage = () => {
     dayOfWeek: "",
   });
 
-
-  const {data} = useGetDayQuery();
-  useEffect(() => {
-    if (data) {
-      console.log(data)
-    }
-  }, [data])
+  const [createSession, {isLoading , isError, isSuccess}] = useCreateSessionMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNextClick = () => {
-    console.log("add");
+  const handleCreate = async() => {
+    try {
+      const result = await createSession(form);
+      console.log("session create success", result)
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -89,7 +90,7 @@ const SessionCreatePage = () => {
         </Box>
         {/* Button Container */}
         <ButtonContainer
-          rightBtn={handleNextClick}
+          rightBtn={handleCreate}
           leftBtnTitle="Cancel"
           rightBtnTitle="Add Subject"
         />
