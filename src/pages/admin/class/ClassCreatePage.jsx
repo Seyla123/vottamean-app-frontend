@@ -1,33 +1,29 @@
-import React from 'react';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 //import marterial ui
 import {
   Typography,
   Stack,
   TextField,
-  Snackbar,
-  IconButton,
-  Alert,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 //Import component
 import { useForm, Controller } from 'react-hook-form';
 import { fieldContainer } from '../../../styles/authStyle';
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-import LoadingCircle from '../../../components/loading/LoadingCircle';
 import { usePostClassesDataMutation } from '../../../services/classApi';
 import { ClassValidator } from '../../../validators/validationSchemas';
-import { setSnackbar } from '../../../store/slices/classSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { setSnackbar } from '../../../store/slices/uiSlice';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 function ClassCreatePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { snackbar } = useSelector((state) => state.classes);
 
+
+  //
   const {
     control,
     handleSubmit,
@@ -36,18 +32,31 @@ function ClassCreatePage() {
   } = useForm({
     resolver: yupResolver(ClassValidator),
   });
-  const [addClass, isLoading, isSuccess, isError] = usePostClassesDataMutation();
+
+  // usePostClassesDataMutation : 
+  const [addClass, {isLoading:isCreating, isError:isUpdateError, isSuccess:isCreateSuccess, error:updateError}] = usePostClassesDataMutation();
+
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class list page
+  useEffect(()=>{
+    if(isCreating){
+      dispatch(setSnackbar({ open:true , message: 'Deleting...' ,severity : 'info'}));
+    }else if(isUpdateError){
+      dispatch(setSnackbar({ open:true , message: updateError.data.message , severity : 'error'}));
+    }else if(isCreateSuccess){
+      dispatch(setSnackbar({ open:true , message: 'Deleted successfully', severity :'success'}));
+      navigate('/admin/classes');
+    }
+  },[dispatch, isUpdateError, isCreating, isCreateSuccess])
+
+  //handle Submit
   const onSubmit = async () => {
     try {
       const { class_name, description } = getValues();
-      const formData = {
-        class_name,
-        description,
-      };
-      dispatch(setSnackbar({ open: true }));
+      const formData = { class_name, description};
       // Dispatch the action to update the class data in Redux
       await addClass(formData).unwrap();
-      navigate("/admin/classes");
     } catch (err) {
       // On error, set an error message and open Snackbar to show error message
       console.log('error message :', err);
@@ -101,20 +110,6 @@ function ClassCreatePage() {
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Add Class'}
           />
-          {/*  Display Snackbar for notifications */}
-          <Snackbar
-            open={snackbar.open}
-            autoHideDuration={6000}
-            onClose={() => dispatch(setSnackbar({ open: false }))}
-          >
-            <Alert
-              onClose={() => dispatch(setSnackbar({ open: false }))}
-              severity={snackbar.severity}
-              sx={{ width: '100%' }}
-            >
-              {snackbar.message}
-            </Alert>
-          </Snackbar>
         </CardComponent>
       </FormComponent>
     </>
