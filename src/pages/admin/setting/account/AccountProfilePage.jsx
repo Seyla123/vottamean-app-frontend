@@ -12,8 +12,11 @@ import CardInformation from '../../../../components/common/CardInformation';
 import profile from '../../../../assets/images/default-profile.png';
 
 // Redux hooks and API
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
+
+import { useLogoutMutation } from '../../../../services/authApi';
+
 import {
   useGetUserProfileQuery,
   useDeleteUserAccountMutation,
@@ -27,12 +30,12 @@ function AccountProfilePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Fetch user_id from auth slice
-  const user_id = useSelector((state) => state.auth.user?.user_id);
+  // Redux API calls to get user profile
+  const { data: user, isLoading, error } = useGetUserProfileQuery();
 
-  // Redux API calls
-  const { data: user, isLoading, error } = useGetUserProfileQuery(user_id);
+  // Redux API calls to delete user and logout
   const [deleteUserAccount] = useDeleteUserAccountMutation();
+  const [logout] = useLogoutMutation(); // Correct placement of the hook
 
   // Local state for transformed data
   const [userData, setUserData] = useState({
@@ -45,6 +48,7 @@ function AccountProfilePage() {
   useEffect(() => {
     if (user) {
       const transformedData = UserProfileData(user);
+      console.log(transformedData);
       setUserData(transformedData); // Store transformed data locally
       dispatch(updateFormData(transformedData)); // Dispatch to form state
     }
@@ -57,11 +61,13 @@ function AccountProfilePage() {
   const clickEdit = () => {
     navigate('/admin/settings/account/update-me');
   };
-
   const clickDeleteAccount = async () => {
     try {
-      await deleteUserAccount(user_id).unwrap();
+      console.log('Deleting current user');
+      await deleteUserAccount().unwrap();
       console.log('Account deleted successfully');
+
+      navigate('/auth/login');
     } catch (error) {
       console.error('Failed to delete account:', error);
     }
@@ -93,10 +99,10 @@ function AccountProfilePage() {
               {/* User profile information */}
               <CardComponent
                 title={'User Information'}
-                imgUrl={userData.img || profile} // Display the profile image
+                imgUrl={userData.img || profile}
                 handleEdit={clickEdit}
               >
-                <CardInformation data={userData.userProfile} />{' '}
+                <CardInformation data={userData.userProfile} />
                 {/* Display user profile data */}
               </CardComponent>
 
