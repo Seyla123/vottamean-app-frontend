@@ -220,7 +220,7 @@ export const UserProfileUpdateData = (user) => {
       phone_number: info.phone_number,
       address: info.address,
       School_name: school.school_name,
-      phone_number: school.school_phone_number,
+      school_phone_number: school.school_phone_number,
       school_address: school.school_address,
     },
     img: info.photo,
