@@ -204,16 +204,16 @@ export function formatPhoneNumber(phoneNumber) {
 export function studentsData(students) {
   return students.map((student) => ({
     id: student.student_id,
-    name: `${student.first_name || 'N/A'} ${student.last_name || 'N/A'}`, // Assuming first_name and last_name are in the root object
+    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`, // Assuming first_name and last_name are in the root object
     class: student.class_name || 'N/A', // Assuming class_name is a root property
-    age: student.dob
-      ? new Date().getFullYear() - new Date(student.dob).getFullYear()
+    age: student.Info.dob
+      ? new Date().getFullYear() - new Date(student.Info.dob).getFullYear()
       : 'N/A', // Calculating age based on dob
-    gender: student.gender || 'N/A',
-    'Date of Birth': student.dob ? formatDate(student.dob) : 'N/A',
-    phone: formatPhoneNumber(student.guardian_phone_number),
+    gender: student.Info.gender || 'N/A',
+    'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
+    phone: formatPhoneNumber(student.Info.phone_number),
     email: student.guardian_email,
-    address: student.address || 'N/A', // Assuming address is a root property
+    address: student.Info.address || 'N/A', // Assuming address is a root property
   }));
 }
 

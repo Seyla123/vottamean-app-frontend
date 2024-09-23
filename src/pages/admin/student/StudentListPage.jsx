@@ -20,7 +20,7 @@ const columns = [
   { id: 'name', label: 'Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'email', label: 'Email' },
-  { id: 'phoneNumber', label: 'Phone Number' },
+  { id: 'phone', label: 'Phone Number' },
 ];
 
 const StudentListPage = () => {
