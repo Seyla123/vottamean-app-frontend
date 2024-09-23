@@ -62,7 +62,7 @@ const LoginForm = ({ onSubmit }) => {
 
     try {
       const result = await onSubmit(data);
-      if (result.success) {
+      if (result && result.success) {
         // Simulate a delay before redirecting (you can remove this in production)
         setTimeout(() => {
           setIsLoading(false);
