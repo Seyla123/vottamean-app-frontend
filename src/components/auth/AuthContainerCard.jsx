@@ -15,7 +15,7 @@
 
 import { Container, Stack, Box, Typography } from '@mui/material';
 import TestimonialCard from './TestimonialCard';
-import LogoWaveTrack from '../../assets/images/logoWaveTrack.png';
+import LogoWaveTrack from '../../assets/images/Logo.svg';
 
 function AuthContainerCard({ sideCard, children }) {
   // Determine the flex direction based on the sideCard prop
@@ -35,7 +35,7 @@ function AuthContainerCard({ sideCard, children }) {
             <Box
               component={'img'}
               src={LogoWaveTrack}
-              sx={{ maxWidth: '60px' }}
+              sx={{ maxWidth: '200px' }}
             />
           </Box>
           {/* Text container for title and description */}

@@ -14,6 +14,7 @@ import {
   IconButton,
   InputAdornment,
   CircularProgress,
+  Checkbox,
 } from '@mui/material';
 
 // Custom components
@@ -143,11 +144,17 @@ const LoginForm = ({ onSubmit }) => {
             />
           </Box>
 
-          <Link to="/auth/forgot-password" style={styles.forgotPassword}>
-            <Typography variant="body2" color="primary">
-              Forgot Password?
-            </Typography>
-          </Link>
+          <Box sx={styles.rememberMeContainer}>
+            <Box component="span" sx={styles.rememberMe}>
+              <Checkbox />
+              <Typography variant="body2">Remember me</Typography>
+            </Box>
+            <Link to="/auth/forgot-password" style={styles.forgotPassword}>
+              <Typography variant="body2" color="primary">
+                Forgot Password?
+              </Typography>
+            </Link>
+          </Box>
 
           <Button
             variant="contained"
@@ -210,20 +217,29 @@ const styles = {
     color: 'red',
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
-    textDecoration: 'none',
+    textDecoration: 'underline',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
   },
   submitButton: {
-    mt: 2,
-    py: 1.5,
-    height: '48px', // Add a fixed height to prevent layout shift
+    height: '48px',
   },
   signupText: {
-    mt: 2,
+    mt: 1,
   },
   signupLink: {
     color: 'primary.main',
     textDecoration: 'none',
     fontWeight: 'bold',
+  },
+  rememberMeContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  rememberMe: {
+    display: 'flex',
+    alignItems: 'center',
   },
 };
