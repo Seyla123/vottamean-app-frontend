@@ -10,6 +10,7 @@ import { transformSessionsData } from '../../../utils/formatData';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 function SessionListPage() {
   const navigate = useNavigate();
+  const [removedRows, setRemovedRows] = useDeleteSessionMutation();
   const { data, error, isLoading } = useGetSessionsQuery();
   const [rows , setRows] = useState([]);
   useEffect(() => {
@@ -31,13 +32,13 @@ function SessionListPage() {
   };
 
   // Handle DELETE action
-  const handleDelete = (row) => {
-    console.log('Delete row:', row);
+  const handleDelete = (rows) => {
+    removedRows(rows)
   };
 
   // Handle DELETE ALL action
   const handleSelectedDelete = () => {
-    console.log('Delete all');
+    
   };
 
   // Handle DETAIL action
