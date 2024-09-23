@@ -119,7 +119,7 @@ function SessionListPage() {
         onEdit={handleEdit}
         onView={handleView}
         onDelete={handleDelete}
-        onSelectedDelete={handleSelectedDelete}
+        onSelectedDelete={{}}
         hideColumns={['day', 'teacher']}
         emptyTitle={'No Session'}
         emptySubTitle={'No Session Available'}
