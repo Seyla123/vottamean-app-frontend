@@ -1,16 +1,32 @@
+import { useState,useEffect } from "react";
 import {Tabs, Tab } from "@mui/material";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useParams ,useNavigate} from "react-router-dom";
 import FormComponent from "../../../components/common/FormComponent";
 import CardComponent from "../../../components/common/CardComponent";
 import CardInformation from "../../../components/common/CardInformation";
+import { useGetStudentsByIdQuery } from "../../../services/studentApi";
+import { studentsData } from '../../../utils/formatData';
+import { useDispatch} from "react-redux";
 
 const StudentDetailPage = () => {
+  const {id} =useParams()
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [rows, setRows] = useState([]);
+  const { data , isSuccess}  = useGetStudentsByIdQuery(id);
+console.log(data);
+
+ // Only call `setRows` if the student data is successfully fetched
+ useEffect(() => {
+  if (isSuccess && data && Array.isArray(data.students)) { 
+    const formattedStudents = studentsData(data.students);
+    setRows(formattedStudents);
+  } 
+}, [isSuccess, data]);
+
 
   const handleUpdateStudent = (selectedPostId) => {
-    navigate(`/dashboard/students/update/${selectedPostId}`);
+    navigate(`/admin/students/update/${selectedPostId}`);
   };
   const clickDetele = () => {
     console.log("delete");
@@ -40,7 +56,7 @@ const StudentDetailPage = () => {
             handleEdit={handleUpdateStudent}
             handleDelete={clickDetele}
           >
-            <CardInformation data={infoStudent} />
+            <CardInformation data={rows} />
           </CardComponent>
         )}
         {activeTab === 1 && (
@@ -58,17 +74,17 @@ const StudentDetailPage = () => {
 
 export default StudentDetailPage;
 
-const infoStudent = {
-  "Student ID": "ANB1000",
-  "  Full Name": "Potato Fried",
-  Class: "Classs 5",
-  Age: 18,
-  Gender: "Female",
-  "Date of Birth": "01/01/2000",
-  "Phone Number": "01234567",
-  Email: "mrpotato@123gmail.com",
-  Address: "Potatoes village, french fried city",
-};
+ const infoStudent = [
+  { id: 'id', label: 'Student ID' },
+  { id: 'name', label: ' Full Name' },
+  { id: 'class', label: 'Class' },
+  { id: 'age', label: 'Age' },
+  { id: 'dob', label: 'Date of Birth' },
+  { id: 'phone', label: 'Phone Number' },
+  { id: 'email', label: 'Email' },
+  { id: 'address', label: 'Address' },
+ ];
+
 const infoGuadian = {
   " Guardian Name": "Potato Fried",
   Relationship: "Father",
