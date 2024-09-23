@@ -5,7 +5,7 @@ const uiSlice = createSlice({
     initialState: {
         modal: {
             open: false,
-            title: "",
+            itemName: "",
             message: ""
         },
         snackbar: {
@@ -16,10 +16,10 @@ const uiSlice = createSlice({
     },
     reducers: {
         setSnackbar(state, action) {
-            state.snackbar = action.payload;
+            state.snackbar = {...state.snackbar, ...action.payload};
         },
         setModal(state, action) {
-            state.modal = action.payload;
+            state.modal = {...state.modal, ...action.payload};
         },
     },
 });
