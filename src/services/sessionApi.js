@@ -14,6 +14,15 @@ export const sessionApi = baseApi.injectEndpoints({
       invalidatesTags: ['Sessions'],
     }),
 
+    // get session by id 
+    getSessionById : builder.query({
+      query: (id) => ({
+        url: `sessions/${id}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['Sessions'], 
+    }),
     // Fetch data into list
     getSessions: builder.query({
       query: () => ({
