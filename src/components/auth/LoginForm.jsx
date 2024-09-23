@@ -92,8 +92,8 @@ const LoginForm = ({ onSubmit }) => {
     <Box sx={styles.container}>
       <Box sx={styles.formWrapper}>
         <HeaderTitle
-          title="Welcome Back!"
-          subTitle="Please log in your account to manage attendance efficiently."
+          title="Sign In"
+          subTitle="Welcome back! Please sign in your account."
         />
 
         <Box
@@ -186,18 +186,16 @@ export default LoginForm;
 
 const styles = {
   container: {
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
+
   formWrapper: {
     width: '100%',
-    maxWidth: '400px',
-    padding: 4,
-    backgroundColor: 'white',
+    maxWidth: '380px',
     borderRadius: 2,
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   },
   form: {
     display: 'flex',
