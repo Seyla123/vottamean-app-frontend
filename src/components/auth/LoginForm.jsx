@@ -1,19 +1,29 @@
 // React and third-party libraries
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Eye, EyeOff, Mail } from 'lucide-react';
 
 // Material UI components
-import { Box, Stack, Typography, TextField, Button } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  IconButton,
+  InputAdornment,
+  CircularProgress,
+} from '@mui/material';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
 import { Link } from 'react-router-dom';
-import WaveTrackLogo from '../../assets/images/logoWaveTrack.png';
 
 // Redux hooks and actions
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
+import { useNavigate } from 'react-router-dom';
 
 // Validation schema
 import { LoginValidator } from '../../validators/validationSchemas';
@@ -45,83 +55,118 @@ const LoginForm = ({ onSubmit }) => {
   }, [formData, setValue]);
 
   // 5. Handle form submission
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = async (data) => {
+    setIsLoading(true);
     dispatch(updateFormData(data));
-    onSubmit(data);
+
+    try {
+      const result = await onSubmit(data);
+      if (result.success) {
+        // Simulate a delay before redirecting (you can remove this in production)
+        setTimeout(() => {
+          setIsLoading(false);
+          navigate('/dashboard');
+        }, 2000);
+      } else {
+        setIsLoading(false);
+        // Handle login failure (e.g., show an error message)
+      }
+    } catch (error) {
+      setIsLoading(false);
+      // Handle any errors that occur during login
+      console.error('Login error:', error);
+    }
+  };
+
+  // 6. Toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
-    <Box sx={containerStyles}>
-      {/* Header Title */}
-      <HeaderTitle
-        title="WaveTrack Welcome!"
-        subTitle="Log in to manage attendance efficiently and effectively."
-        center
-      >
-        {/* Image container */}
-        <Box
-          component="img"
-          src={WaveTrackLogo}
-          sx={{
-            display: { xs: 'flex', md: 'none' },
-            alignSelf: 'center',
-            maxWidth: '80px',
-          }}
+    <Box sx={styles.container}>
+      <Box sx={styles.formWrapper}>
+        <HeaderTitle
+          title="Welcome Back!"
+          subTitle="Please log in your account to manage attendance efficiently."
         />
-      </HeaderTitle>
 
-      {/* Form Container */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit(handleFormSubmit)}
-        sx={formContainerStyles}
-      >
-        {/* Email Input */}
-        <Box sx={inputContainerStyles}>
-          <Typography variant="body1">Email</Typography>
-          <TextField
-            placeholder="email"
-            {...register('email')}
-            error={!!errors.email}
-            helperText={errors.email?.message}
-          />
-        </Box>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(handleFormSubmit)}
+          sx={styles.form}
+        >
+          <Box sx={styles.inputContainer}>
+            <Typography variant="body2" sx={styles.inputLabel}>
+              Email <span style={styles.requiredStar}>*</span>
+            </Typography>
+            <TextField
+              variant="outlined"
+              fullWidth
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              placeholder="Enter your email"
+              InputProps={{ endAdornment: <Mail size={20} /> }}
+            />
+          </Box>
 
-        {/* Password Input */}
-        <Box sx={inputContainerStyles}>
-          <Typography variant="body1">Password</Typography>
-          <TextField
-            placeholder="password"
-            type="password"
-            {...register('password')}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-          />
-        </Box>
+          <Box sx={styles.inputContainer}>
+            <Typography variant="body2" sx={styles.inputLabel}>
+              Password <span style={styles.requiredStar}>*</span>
+            </Typography>
+            <TextField
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              fullWidth
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              placeholder="Password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
 
-        {/* Button Container */}
-        <Box sx={buttonContainerStyles}>
-          {/* Forgot password */}
-          <Stack alignSelf="flex-end">
-            <Link to="/auth/forgot-password">
-              <Typography variant="body2" component="span" color="primary">
-                Forgot Password?
-              </Typography>
-            </Link>
-          </Stack>
+          <Link to="/auth/forgot-password" style={styles.forgotPassword}>
+            <Typography variant="body2" color="primary">
+              Forgot Password?
+            </Typography>
+          </Link>
 
-          {/* Submit Button */}
-          <Button variant="contained" type="submit">
-            LOGIN
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            sx={styles.submitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'LOGIN'
+            )}
           </Button>
 
-          {/* Sign Up Link */}
-          <Typography variant="body1">
-            Don't you have an account?
-            <Link to="/auth/signup">
-              <Typography variant="body1" component="span" color="primary">
-                Sign Up
-              </Typography>
+          <Typography variant="body2" align="center" sx={styles.signupText}>
+            Don't have an account?{' '}
+            <Link to="/auth/signup" style={styles.signupLink}>
+              Sign Up
             </Link>
           </Typography>
         </Box>
@@ -132,29 +177,53 @@ const LoginForm = ({ onSubmit }) => {
 
 export default LoginForm;
 
-// Styles for the component
-const containerStyles = {
-  gap: 3,
-  justifyContent: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-};
-
-const formContainerStyles = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: { xs: 3, md: 4 },
-};
-
-const inputContainerStyles = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 0.5,
-};
-
-const buttonContainerStyles = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 1,
-  textAlign: 'center',
+const styles = {
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  formWrapper: {
+    width: '100%',
+    maxWidth: '400px',
+    padding: 4,
+    backgroundColor: 'white',
+    borderRadius: 2,
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 3,
+    mt: 3,
+  },
+  inputContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+  },
+  inputLabel: {
+    fontWeight: 'bold',
+  },
+  requiredStar: {
+    color: 'red',
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    textDecoration: 'none',
+  },
+  submitButton: {
+    mt: 2,
+    py: 1.5,
+    height: '48px', // Add a fixed height to prevent layout shift
+  },
+  signupText: {
+    mt: 2,
+  },
+  signupLink: {
+    color: 'primary.main',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
 };
