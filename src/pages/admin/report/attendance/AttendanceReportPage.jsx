@@ -70,7 +70,6 @@ const AttendanceReportPage = () => {
   const { data: allAttendanceData, isLoading, isSuccess, isFetching } = useGetAllAttendanceQuery(filter);
   const [deleteAttendance, { isError, error, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
 
-  // Effects
   // - when the attendance records are fetched successfully, transform the data and set the rows state
   useEffect(() => {
     if (isSuccess && allAttendanceData) {
@@ -173,7 +172,7 @@ const AttendanceReportPage = () => {
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
-        itemName={modal.itemName}
+        itemName={"attendance"}
       />
     </FormComponent>
   );
