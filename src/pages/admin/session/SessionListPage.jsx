@@ -86,7 +86,6 @@ function SessionListPage() {
     dispatch(setModal({ open: false }));
     await deleteSession(selectSession.id).unwrap();
   };
-  console.log(selectSession)
 
   // Handle DELETE action
   const handleDelete = (rows) => {
@@ -99,7 +98,7 @@ function SessionListPage() {
 
   // Handle DETAIL action
   const handleView = (row) => {
-    navigate(`/admin/class-periods/${row.period_id}`);
+    navigate(`/admin/sessions/${row.id}`);
   };
 
   const columns = [
@@ -112,7 +111,7 @@ function SessionListPage() {
   ];
 
   const hideColumns = ['day', 'teacher'];
-  
+
   if (isLoading) {
     return <LoadingCircle />;
   }
@@ -145,6 +144,7 @@ function SessionListPage() {
         columns={columns}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onView = {handleView}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={hideColumns}
         emptyTitle={'No Session'}
