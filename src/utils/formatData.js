@@ -123,6 +123,22 @@ export function teacherData(teachers) {
   }));
 }
 
+// Utility: Format Date to a more readable format ("DD/MM/YYYY")
+export function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Utility: Ensure phone number formatting
+export function formatPhoneNumber(phoneNumber) {
+  const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  return phoneNumber;
+}
+
 // Transform User Profile Data
 export const transformUserProfile = (user) => {
   if (!user || !user.data.adminProfile?.Info) {
@@ -150,8 +166,8 @@ export const transformUserProfile = (user) => {
       ? new Date().getFullYear() - new Date(info.dob).getFullYear()
       : 'N/A',
     Gender: info.gender || 'N/A',
-    'Date of Birth': info.dob ? formatDate(info.dob) : 'N/A',
-    Phone: formatPhoneNumber(info.phone_number),
+    'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
+    'Phone Number': formatPhoneNumber(info.phone_number),
     Email: user.data.email,
     Address: info.address || 'N/A',
   };
@@ -173,12 +189,6 @@ export const transformSchoolProfile = (user) => {
   };
 };
 
-// Utility: Format Date to a more readable format ("DD/MM/YYYY")
-export function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-}
-
 // Combined User and School Profile Data
 export const UserProfileData = (user) => {
   const info = user.data.adminProfile.Info;
@@ -192,12 +202,27 @@ export const UserProfileData = (user) => {
   };
 };
 
-// Utility: Ensure phone number formatting
-export function formatPhoneNumber(phoneNumber) {
-  const cleaned = ('' + phoneNumber).replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return `(${match[1]}) ${match[2]}-${match[3]}`;
+// Combined User Profile Update Data excluding the date of birth formatted
+export const UserProfileUpdateData = (user) => {
+  if (!user || !user.data.adminProfile?.Info) {
+    return {};
   }
-  return phoneNumber;
-}
+
+  const info = user.data.adminProfile.Info;
+  const school = user.data.adminProfile.Schools[0] || {};
+
+  return {
+    userProfile: {
+      first_name: info.first_name,
+      last_name: info.last_name,
+      gender: info.gender,
+      dob: info.dob,
+      phone_number: info.phone_number,
+      address: info.address,
+      School_name: school.school_name,
+      phone_number: school.school_phone_number,
+      school_address: school.school_address,
+    },
+    img: info.photo,
+  };
+};
