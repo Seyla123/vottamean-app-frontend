@@ -201,3 +201,19 @@ export function formatPhoneNumber(phoneNumber) {
   }
   return phoneNumber;
 }
+export function studentsData(students){
+  return students.map((student) => ({
+    id: student.student_id,
+    name: `${student.Info.first_name} ${student.Info.last_name}`,
+    class: student.Class.class_name,
+    age: student.Info.dob
+     ? new Date().getFullYear() -
+        new Date(student.Info.dob).getFullYear()
+      : 'N/A',
+    gender: student.Info.gender,
+    'Date of Birth': student.Info.dob? formatDate(student.Info.dob) : 'N/A',
+    phone: formatPhoneNumber(student.guardian_phone_number),
+    email: student.guardian_email,
+    address: student.Info.address || 'N/A',
+  }));
+}
