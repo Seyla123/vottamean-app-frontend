@@ -29,6 +29,7 @@ const TeacherListPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  // Get all teachers
   const {
     data: allTeachersData,
     isLoading,
@@ -36,41 +37,39 @@ const TeacherListPage = () => {
   } = useGetAllTeachersQuery({
     search: searchTerm,
   });
-
+  // Delete teacher
   const [deleteTeacher, { isLoading: isDeleting, isSuccess: isDeleteSuccess }] =
     useDeleteTeacherMutation();
-
+  // Format data with conditions
   useEffect(() => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
     }
   }, [allTeachersData, isSuccess, isDeleteSuccess]);
-
+  // search function
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
+  // handle edit
   const handleEdit = (row) => {
     navigate(`/admin/teachers/update/${row.id}`);
   };
-
+  // handle delete by row
   const handleDelete = (row) => {
     setItemToDelete(row.id);
     setIsOpen(true);
   };
-
+  // handle view
   const handleView = (row) => {
     navigate(`/admin/teachers/${row.id}`);
   };
-
+  // confirm delete
   const confirmDelete = async () => {
     try {
       setIsOpen(false);
-      setSnackbarMessage('Deleting teacher...');
+      setSnackbarMessage('Deleting teacher');
       setSnackbarOpen(true);
-      console.log(' this is id :', itemToDelete);
-
       await deleteTeacher(itemToDelete).unwrap();
       setSnackbarMessage('Teacher deleted successfully');
     } catch (error) {
@@ -80,11 +79,13 @@ const TeacherListPage = () => {
     }
   };
 
+  // loading state
   if (isLoading) {
     return <LoadingCircle />;
   }
 
   return (
+    // header
     <FormComponent
       title="Teacher List"
       subTitle={`There are ${rows.length} Teachers`}
@@ -102,6 +103,7 @@ const TeacherListPage = () => {
           </Button>
         </Link>
       </Stack>
+      {/* search by name */}
       <Box>
         <Stack
           direction="row"
@@ -118,6 +120,7 @@ const TeacherListPage = () => {
         />
         </Stack>
       </Box>
+      {/* data table */}
       <DataTable
         rows={rows}
         columns={columns}
@@ -128,12 +131,14 @@ const TeacherListPage = () => {
         emptyTitle="No Teachers"
         emptySubTitle="No Teachers Available"
       />
+      {/* delete confirmation modal */}
       <DeleteConfirmationModal
         open={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={confirmDelete}
         itemName="Teacher"
       />
+      {/* snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
