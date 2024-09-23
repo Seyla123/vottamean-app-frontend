@@ -244,7 +244,6 @@ export const ChangePasswordValidator = createFormSchema([
   'newPasswordConfirm',
 ]);
 
-<<<<<<< HEAD
 // User profile information in the settings
 export const UserProfileValidator = createFormSchema([
   'first_name',
@@ -261,10 +260,8 @@ export const  AccountInformation = createFormSchema([
   'passwordConfirm'
 ])
 
-=======
 // Start of Class Period Validation
 export const ClassPeriodValidator = createFormSchema([
   'start_time',
   'end_time',
 ]);
->>>>>>> 7c5407c (feature: import moment and create functions for start and end time schema)
