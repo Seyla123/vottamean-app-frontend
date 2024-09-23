@@ -12,7 +12,7 @@ import { extendTheme, Box, Container } from '@mui/material';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import userProfile from '../../assets/images/user.png';
-import SnackbarMessage from '../common/SnackbarMessage';
+import SnackbarComponent from '../common/SnackbarComponent';
 const Layout = ({ teacherSite, adminSite }) => {
   // 1. Initialize navigation and location hooks for routing
   const navigate = useNavigate();
@@ -114,7 +114,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         // 14. Render the Outlet for any other routes or layouts
         <Outlet />
       )}
-      <SnackbarMessage />
+      <SnackbarComponent />
     </AppProvider>
   );
 };

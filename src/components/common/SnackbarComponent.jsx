@@ -2,7 +2,7 @@ import { Snackbar, Alert } from "@mui/material";
 import { setSnackbar } from '../../store/slices/uiSlice';
 import { useDispatch, useSelector } from "react-redux";
 
-function SnackbarMessage() {
+function SnackbarComponent() {
   const dispatch = useDispatch();
   const { snackbar } = useSelector((state) => state.ui);
 
@@ -23,4 +23,4 @@ function SnackbarMessage() {
   )
 }
 
-export default SnackbarMessage;
+export default SnackbarComponent;
