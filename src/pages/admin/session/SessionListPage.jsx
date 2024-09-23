@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Stack } from '@mui/material';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
@@ -6,46 +6,45 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  useGetSessionsQuery,
-  useDeleteSessionMutation,
-} from '../../../services/sessionApi';
+import {useGetSessionsQuery,useDeleteSessionMutation } from '../../../services/sessionApi';
 import { transformSessionsData } from '../../../utils/formatData';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import { setModal,setSnackbar } from '../../../store/slices/uiSlice';
+import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
+
+const columns = [
+  { id: 'id', label: 'ID' },
+  { id: 'time', label: 'Time' },
+  { id: 'day', label: 'Day' },
+  { id: 'subject', label: 'Subject' },
+  { id: 'class', label: 'Class' },
+  { id: 'teacher', label: 'Teacher' },
+];
 
 function SessionListPage() {
-  // navigation page
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // state
+
+  // rows : Array of objects representing the data to be displayed in the table
+  // selectSesion : The selected session to be deleted
   const [rows, setRows] = useState([]);
   const [selectSession, setSelectSession] = useState(null);
-  
+
   const { modal } = useSelector((state) => state.ui);
-  // api hooks
-  const { data, isError, isLoading } = useGetSessionsQuery();
-  
-  const [
-    deleteSession,
-    {
-      isLoading: isDeleting,
-      isSuccess: isDeleteSuccess,
-      isError: isDeleteError,
-      error,
-    },
-  ] = useDeleteSessionMutation();
 
+  // useGetSessionsQuery : a hook that returns a function to fetch all session records
+  // useDeleteSessionMutation : a hook that returns a function to delete an session record
+  const { data, isError, isLoading, isSuccess } = useGetSessionsQuery();
+  const [deleteSession, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError, error }] = useDeleteSessionMutation();
 
+  // when the session records are fetched successfully, transform the data and set the rows state
   useEffect(() => {
-    if (data) {
+    if (data && isSuccess) {
       const transformedData = transformSessionsData(data.data);
       setRows(transformedData);
-      console.log(data)
+      console.log(data);
     }
-  }, [data,dispatch]);
-
+  }, [data, isSuccess, isDeleteSuccess]);
 
   // When the delete is in progress, show a snackbar with a message "Deleting..."
   // When the delete is failed, show a snackbar with an error message
@@ -56,29 +55,18 @@ function SessionListPage() {
         setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
       );
     } else if (isDeleteError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data.message,
-          severity: 'error',
-        }),
-      );
+      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error', }),);
     } else if (isDeleteSuccess) {
       dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Deleted successfully',
-          severity: 'success',
-        }),
+        setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success', }),
       );
       navigate('/admin/sessions');
     }
   }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
 
-
-  // Handle EDIT action
+  // handle edit action
   const handleEdit = (row) => {
-    navigate(`/admin/class-periods/update/${row.id}`);
+    navigate(`/admin/sessions/update/${row.id}`);
   };
 
   // handle confirm deletion
@@ -87,30 +75,19 @@ function SessionListPage() {
     await deleteSession(selectSession.id).unwrap();
   };
 
-  // Handle DELETE action
+  // handle delete action
   const handleDelete = (rows) => {
     setSelectSession(rows);
     dispatch(setModal({ open: true }));
   };
 
-  // Handle DELETE ALL action
-  const handleSelectedDelete = () => {};
+  // handle delete all action
+  const handleSelectedDelete = () => { };
 
-  // Handle DETAIL action
+  // handle view detail action
   const handleView = (row) => {
     navigate(`/admin/sessions/${row.id}`);
   };
-
-  const columns = [
-    { id: 'id', label: 'ID' },
-    { id: 'time', label: 'Time' },
-    { id: 'day', label: 'Day' },
-    { id: 'subject', label: 'Subject' },
-    { id: 'class', label: 'Class' },
-    { id: 'teacher', label: 'Teacher' },
-  ];
-
-  const hideColumns = ['day', 'teacher'];
 
   if (isLoading) {
     return <LoadingCircle />;
@@ -144,9 +121,9 @@ function SessionListPage() {
         columns={columns}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onView = {handleView}
+        onView={handleView}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={hideColumns}
+        hideColumns={['day', 'teacher']}
         emptyTitle={'No Session'}
         emptySubTitle={'No Session Available'}
       />
