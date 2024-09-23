@@ -114,7 +114,7 @@ function UserUpdatePage() {
   // Handle form submission to update user profile
   const onSubmit = async (data) => {
     try {
-      const formDataToSend = new FormData();
+      const formDataToSend = new FormData(); // Use FormData for file upload
       Object.entries(data).forEach(([key, value]) => {
         if (key !== 'image' && value) {
           formDataToSend.append(key, value);
