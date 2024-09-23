@@ -43,8 +43,7 @@ function UserUpdatePage() {
   const dispatch = useDispatch();
 
   // Redux API calls to get user profile
-  const { data: user, isLoading, error } = useGetUserProfileQuery();
-  console.log('User Data Fetching : ', user);
+  const { data: user, isLoading } = useGetUserProfileQuery();
 
   const [updateUserProfile, { isLoading: isUpdating }] =
     useUpdateUserProfileMutation();
@@ -71,6 +70,17 @@ function UserUpdatePage() {
     defaultValues: userData,
   });
 
+  useEffect(() => {
+    if (user) {
+      const transformedData = UserProfileUpdateData(user);
+      console.log('Transformed Data:', transformedData);
+      setUserData(transformedData);
+      reset(transformedData.userProfile);
+      setDob(dayjs(transformedData.userProfile.dob));
+      setGender(transformedData.userProfile.gender || '');
+    }
+  }, [user, dispatch, reset]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     dispatch(updateFormData({ [name]: value }));
@@ -84,14 +94,20 @@ function UserUpdatePage() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setUserData((prev) => ({ ...prev, img: file }));
-      dispatch(updateFormData({ image: file }));
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setUserData((prev) => ({ ...prev, img: reader.result }));
+        dispatch(updateFormData({ image: reader.result }));
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 
   const onSubmit = async (data) => {
     try {
-      const formDataToSend = new FormData();
+      const formDataToSend = new userData();
       Object.entries(data).forEach(([key, value]) => {
         if (key !== 'image' && value) {
           formDataToSend.append(key, value);
@@ -108,17 +124,6 @@ function UserUpdatePage() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      const transformedData = UserProfileUpdateData(user);
-      console.log('Transformed Data:', transformedData);
-      setUserData(transformedData);
-      reset(transformedData.userProfile);
-      setDob(dayjs(transformedData.userProfile.dob));
-      setGender(transformedData.userProfile.gender || '');
-    }
-  }, [user, dispatch, reset]);
-
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
@@ -130,11 +135,7 @@ function UserUpdatePage() {
           <Avatar
             sx={imgStyle}
             alt="user profile"
-            src={
-              userData.img && userData.img instanceof File
-                ? URL.createObjectURL(userData.img)
-                : userData.img || Profile
-            }
+            src={userData.img || Profile}
           />
           <input
             accept="image/*"
@@ -198,7 +199,6 @@ function UserUpdatePage() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Controller
               name="dob"
-              {...register('dob')}
               control={control}
               render={({ field }) => (
                 <DatePicker
