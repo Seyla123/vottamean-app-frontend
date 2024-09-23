@@ -5,10 +5,13 @@ import { PlusIcon } from 'lucide-react';
 import FormComponent from '../../../components/common/FormComponent';
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
-import { useGetAllTeachersQuery, useDeleteTeacherMutation } from '../../../services/teacherApi';
+import {
+  useGetAllTeachersQuery,
+  useDeleteTeacherMutation,
+} from '../../../services/teacherApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import { transformTeacherData } from '../../../utils/formatData';
+import { teacherData } from '../../../utils/formatData';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -26,15 +29,20 @@ const TeacherListPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const { data: allTeachersData, isLoading, isSuccess } = useGetAllTeachersQuery({
+  const {
+    data: allTeachersData,
+    isLoading,
+    isSuccess,
+  } = useGetAllTeachersQuery({
     search: searchTerm,
   });
 
-  const [deleteTeacher, { isLoading: isDeleting , isSuccess: isDeleteSuccess}] = useDeleteTeacherMutation();
+  const [deleteTeacher, { isLoading: isDeleting, isSuccess: isDeleteSuccess }] =
+    useDeleteTeacherMutation();
 
   useEffect(() => {
     if (isSuccess && allTeachersData) {
-      const formattedData = transformTeacherData(allTeachersData.data);
+      const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
     }
   }, [allTeachersData, isSuccess, isDeleteSuccess]);
@@ -62,8 +70,8 @@ const TeacherListPage = () => {
       setSnackbarMessage('Deleting teacher...');
       setSnackbarOpen(true);
       console.log(' this is id :', itemToDelete);
-      
-      await deleteTeacher(itemToDelete ).unwrap();
+
+      await deleteTeacher(itemToDelete).unwrap();
       setSnackbarMessage('Teacher deleted successfully');
     } catch (error) {
       setSnackbarMessage('Failed to delete teacher');
@@ -77,15 +85,12 @@ const TeacherListPage = () => {
   }
 
   return (
-    <FormComponent title="Teacher List" subTitle={`There are ${rows.length} Teachers`}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-        <SearchComponent
-          sx={{ width: '100%', maxWidth: '300px' }}
-          placeholder="Search"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          onClickIcon={() => console.log('search icon clicked')}
-        />
+    <FormComponent
+      title="Teacher List"
+      subTitle={`There are ${rows.length} Teachers`}
+    >
+      <Stack direction="row" justifyContent="flex-end">
+        {/* add student button */}
         <Link to="/admin/teachers/create">
           <Button
             size="large"
@@ -97,6 +102,22 @@ const TeacherListPage = () => {
           </Button>
         </Link>
       </Stack>
+      <Box>
+        <Stack
+          direction="row"
+          justifyContent={'flex-end'}  
+          width={'100%'}
+          gap={2}
+        >
+         <SearchComponent
+          sx={{ width: '100%', maxWidth: '300px' }}
+          placeholder="Search"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          onClickIcon={() => console.log('search icon clicked')}
+        />
+        </Stack>
+      </Box>
       <DataTable
         rows={rows}
         columns={columns}
@@ -120,7 +141,13 @@ const TeacherListPage = () => {
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity={isDeleting ? 'info' : (snackbarMessage.includes('Failed') ? 'error' : 'success')}
+          severity={
+            isDeleting
+              ? 'info'
+              : snackbarMessage.includes('Failed')
+                ? 'error'
+                : 'success'
+          }
           sx={{ width: '100%' }}
         >
           {isDeleting ? 'Deleting...' : snackbarMessage}

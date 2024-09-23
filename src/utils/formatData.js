@@ -50,7 +50,7 @@ export const transformSessionsData = (apiResponse) => {
 }
 
 // Teacher list format
- export const transformTeacherData = (teachers) => {
+ export function teacherData (teachers){
   return teachers.map((teacher) => ({
     id: teacher.teacher_id,
     name: `${teacher.Info.first_name} ${teacher.Info.last_name}`,
