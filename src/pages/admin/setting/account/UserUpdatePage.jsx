@@ -23,8 +23,8 @@ import CardComponent from '../../../../components/common/CardComponent';
 import TextFieldComponent from '../../../../components/common/TextFieldComponent';
 import FormComponent from '../../../../components/common/FormComponent';
 import ButtonContainer from '../../../../components/common/ButtonContainer';
-import userProfile from '../../../../assets/images/default-profile.png';
-import { useSelector, useDispatch } from 'react-redux';
+import Profile from '../../../../assets/images/default-profile.png';
+import { useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
 
 // Redux hooks and API
@@ -37,31 +37,38 @@ import {
 import { UserProfileValidator } from '../../../../validators/validationSchemas';
 
 // User Profile Data formatting
-import { UserProfileData } from '../../../../utils/formatData';
+import { UserProfileUpdateData } from '../../../../utils/formatData';
 
 function UserUpdatePage() {
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form);
-  console.log('Form Data : ', formData);
 
   // Redux API calls to get user profile
   const { data: user, isLoading, error } = useGetUserProfileQuery();
+  console.log('User Data Fetching : ', user);
 
-  console.log('User Data : ', user);
   const [updateUserProfile, { isLoading: isUpdating }] =
     useUpdateUserProfileMutation();
 
-  const [gender, setGender] = useState(formData.gender || '');
-  const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
+  // Local state for transformed data
+  const [userData, setUserData] = useState({
+    userProfile: {},
+    img: '',
+  });
+  console.log('User Data Formatted : ', userData);
+
+  // Manage gender and date of birth state
+  const [gender, setGender] = useState(userData.gender || '');
+  const [dob, setDob] = useState(userData.dob ? dayjs(userData.dob) : null);
 
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(UserProfileValidator),
-    defaultValues: formData,
+    defaultValues: userData,
   });
 
   const handleInputChange = (e) => {
@@ -77,6 +84,7 @@ function UserUpdatePage() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUserData((prev) => ({ ...prev, img: file }));
       dispatch(updateFormData({ image: file }));
     }
   };
@@ -89,8 +97,8 @@ function UserUpdatePage() {
           formDataToSend.append(key, value);
         }
       });
-      if (formData.image) {
-        formDataToSend.append('image', formData.image);
+      if (userData.img) {
+        formDataToSend.append('image', userData.img);
       }
 
       await updateUserProfile(formDataToSend).unwrap();
@@ -100,29 +108,16 @@ function UserUpdatePage() {
     }
   };
 
-  // Use the formatted user data on mount
   useEffect(() => {
-    if (user && user.data.adminProfile?.Info) {
-      const { userProfile } = UserProfileData(user); // Get formatted data
-
-      // Update the form data with formatted values
-      dispatch(
-        updateFormData({
-          first_name: userProfile['Full Name'].split(' ')[0],
-          last_name: userProfile['Full Name'].split(' ')[1],
-          gender: userProfile.Gender,
-          dob: userProfile['Date of Birth'],
-          phone_number: userProfile.Phone,
-          address: userProfile.Address,
-          email: userProfile.Email,
-        }),
-      );
-
-      // Set additional local state for form controls
-      setDob(dayjs(userProfile['Date of Birth']));
-      setGender(userProfile.Gender);
+    if (user) {
+      const transformedData = UserProfileUpdateData(user);
+      console.log('Transformed Data:', transformedData);
+      setUserData(transformedData);
+      reset(transformedData.userProfile);
+      setDob(dayjs(transformedData.userProfile.dob));
+      setGender(transformedData.userProfile.gender || '');
     }
-  }, [user, dispatch]);
+  }, [user, dispatch, reset]);
 
   if (isLoading) {
     return <Typography>Loading...</Typography>;
@@ -136,9 +131,9 @@ function UserUpdatePage() {
             sx={imgStyle}
             alt="user profile"
             src={
-              formData.image
-                ? URL.createObjectURL(formData.image)
-                : user?.image || userProfile
+              userData.img && userData.img instanceof File
+                ? URL.createObjectURL(userData.img)
+                : userData.img || Profile
             }
           />
           <input
@@ -153,10 +148,8 @@ function UserUpdatePage() {
           <Box flexGrow={1}>
             <Typography variant="body1">First Name</Typography>
             <TextFieldComponent
-              customStyle={{ flexGrow: 1 }}
               name="first_name"
               {...register('first_name')}
-              value={formData.first_name}
               onChange={handleInputChange}
               placeholder="First Name"
               error={Boolean(errors.first_name)}
@@ -167,12 +160,10 @@ function UserUpdatePage() {
           <Box flexGrow={1}>
             <Typography variant="body1">Last Name</Typography>
             <TextFieldComponent
-              customStyle={{ flexGrow: 1 }}
               name="last_name"
               {...register('last_name')}
-              value={formData.last_name}
               onChange={handleInputChange}
-              placeholder="Last Name"
+              placeholder="First Name"
               error={Boolean(errors.last_name)}
               helperText={errors.last_name?.message}
             />
@@ -207,6 +198,7 @@ function UserUpdatePage() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Controller
               name="dob"
+              {...register('dob')}
               control={control}
               render={({ field }) => (
                 <DatePicker
@@ -232,11 +224,11 @@ function UserUpdatePage() {
           <TextFieldComponent
             name="phone_number"
             {...register('phone_number')}
-            value={formData.phone_number}
             onChange={handleInputChange}
-            placeholder="Phone Number"
+            placeholder=" Number"
             error={Boolean(errors.phone_number)}
             helperText={errors.phone_number?.message}
+            defaultValue={userData.userProfile.phone_number}
           />
         </Box>
 
@@ -245,7 +237,6 @@ function UserUpdatePage() {
           <TextFieldComponent
             name="address"
             {...register('address')}
-            value={formData.address}
             onChange={handleInputChange}
             placeholder="Address"
             error={Boolean(errors.address)}

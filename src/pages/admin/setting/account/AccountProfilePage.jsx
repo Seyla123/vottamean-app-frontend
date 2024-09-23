@@ -46,8 +46,8 @@ function AccountProfilePage() {
     if (user) {
       const transformedData = UserProfileData(user);
       console.log(transformedData);
-      setUserData(transformedData); // Store transformed data locally
-      dispatch(updateFormData(transformedData)); // Dispatch to form state
+      setUserData(transformedData);
+      dispatch(updateFormData(transformedData));
     }
   }, [user, dispatch]);
 
