@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Stack, Snackbar, Alert } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { Link, useNavigate } from 'react-router-dom';
@@ -86,9 +86,6 @@ function ClassPeriodListPage() {
     };
   });
 
-  // Columns to hide within mobile screen
-  const hideColumns = ['period_id'];
-
   return (
     <FormComponent
       title={'Class Period List'}
@@ -122,9 +119,9 @@ function ClassPeriodListPage() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={hideColumns}
-        emptyTitle={'No Class Periods'}
-        emptySubTitle={'No class periods available. Add some to see them here.'}
+        hideColumns={'period_id'}
+        emptyTitle="No Class Periods"
+        emptySubTitle="No class periods available"
       />
 
       <Snackbar
