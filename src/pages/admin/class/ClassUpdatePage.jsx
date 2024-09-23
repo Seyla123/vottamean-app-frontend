@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import CardComponent from '../../../components/common/CardComponent';
-import { Typography, Stack, TextField, Alert, Snackbar } from '@mui/material';
+import { Typography, Stack, TextField } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -10,25 +10,26 @@ import {
   useGetClassesByIdQuery,
   useUpdateClassesDataMutation,
 } from '../../../services/classApi';
-import { setSnackbar } from '../../../store/slices/classSlice';
+import { setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassUpdatePage() {
-  const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { snackbar } = useSelector((state) => state.classes);
-  // Fetch class data by ID
+   // Get the id from the url parameter
+  const { id } = useParams();
+  
+  // useGetClassesByIdQuery : 
   const { data, isLoading, fetchError } = useGetClassesByIdQuery(id);
 
-  // Local state for form data, initialized with the fetched class data
+  // formdata : 
   const [formData, setFormData] = useState({
     class_name: '',
     description: '',
   });
 
-  // Mutation hook for updating class data
-  const [updateClassesData, { isUpdating, updateError }] =
+  //useUpdateClassesDataMutation : 
+  const [updateClassesData, { isLoading:isUpdating, isError:isUpdateError,isSuccess:isUpdatedSuccess,error:updateError }] =
     useUpdateClassesDataMutation();
 
   // Update local state when class data is fetched
@@ -40,6 +41,20 @@ function ClassUpdatePage() {
       });
     }
   }, [data]);
+
+  // When the update is in progress, show a snackbar with a message "Updating..."
+  // When the update is failed, show a snackbar with an error message
+  // When the update is successful, show a snackbar with a success message and navigate to the class list page
+  useEffect(()=>{
+    if(isUpdating){
+      dispatch(setSnackbar({ open:true , message: 'Updating...' ,severity : 'info'}));
+    }else if(isUpdateError){
+      dispatch(setSnackbar({ open:true , message: updateError.data.message , severity : 'error'}));
+    }else if(isUpdatedSuccess){
+      dispatch(setSnackbar({ open:true , message: 'Updated successfully', severity :'success'}));
+      navigate('/admin/classes');
+    }
+  },[dispatch, isUpdateError, isUpdatedSuccess, isUpdating])
 
   // Handle input change and update local state
   const handleInputChange = (e) => {
@@ -53,17 +68,16 @@ function ClassUpdatePage() {
   const onClickBack = () => {
     navigate('/admin/classes');
   };
-  // Handle update (submit) button click
 
+  // Handle update submit
   const onSubmit = async () => {
     try {
-      dispatch(setSnackbar({ open: true }));
       await updateClassesData({ id, formData }).unwrap();
-      navigate('/admin/classes');
     } catch (error) {
       console.error('Update failed', error);
     }
   };
+
   if (isLoading) {
     return <LoadingCircle />;
   }
@@ -101,19 +115,6 @@ function ClassUpdatePage() {
           leftBtnTitle={'Cancel'}
           rightBtnTitle={'Update'}
         />
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={() => dispatch(setSnackbar({ open: false }))}
-        >
-          <Alert
-            onClose={() => dispatch(setSnackbar({ open: false }))}
-            severity={snackbar.severity}
-            sx={{ width: '100%' }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </CardComponent>
     </FormComponent>
   );
