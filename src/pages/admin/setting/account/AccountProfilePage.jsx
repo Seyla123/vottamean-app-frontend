@@ -1,12 +1,15 @@
+// React and third-party libraries
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Tab, Box, Stack, Typography, Button } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Trash2, KeyRoundIcon } from 'lucide-react';
+
+// Components
 import FormComponent from '../../../../components/common/FormComponent';
 import CardComponent from '../../../../components/common/CardComponent';
 import CardInformation from '../../../../components/common/CardInformation';
 import profile from '../../../../assets/images/default-profile.png';
-import { Trash2, KeyRoundIcon } from 'lucide-react';
 
 // Redux hooks and API
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,6 +19,9 @@ import {
   useDeleteUserAccountMutation,
 } from '../../../../services/userApi';
 
+// User Profile Data formatting
+import { UserProfileData } from '../../../../utils/formatData';
+
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
   const dispatch = useDispatch();
@@ -23,31 +29,24 @@ function AccountProfilePage() {
 
   // Fetch user_id from auth slice
   const user_id = useSelector((state) => state.auth.user?.user_id);
-  const formData = useSelector((state) => state.form); // Access form data from Redux
 
+  // Redux API calls
   const { data: user, isLoading, error } = useGetUserProfileQuery(user_id);
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
+  // Local state for transformed data
+  const [userData, setUserData] = useState({
+    userProfile: {},
+    schoolProfile: {},
+    img: '',
+  });
+
   // Dispatch user data to form state
   useEffect(() => {
-    if (user && user.data.adminProfile?.Info) {
-      const info = user.data.adminProfile.Info;
-      const school = user.data.adminProfile?.Schools[0] || {};
-
-      dispatch(
-        updateFormData({
-          first_name: info.first_name,
-          last_name: info.last_name,
-          gender: info.gender,
-          dob: info.dob,
-          phone_number: info.phone_number,
-          address: info.address || 'N/A',
-          email: user.data.email,
-          school_name: school.school_name,
-          school_address: school.school_address,
-          school_phone_number: school.school_phone_number,
-        }),
-      );
+    if (user) {
+      const transformedData = UserProfileData(user);
+      setUserData(transformedData); // Store transformed data locally
+      dispatch(updateFormData(transformedData)); // Dispatch to form state
     }
   }, [user, dispatch]);
 
@@ -76,26 +75,6 @@ function AccountProfilePage() {
     return <Typography>Error loading user data</Typography>;
   }
 
-  const user_profile = {
-    'Full Name': `${formData.first_name} ${formData.last_name}`,
-    Age: formData.dob
-      ? new Date().getFullYear() - new Date(formData.dob).getFullYear()
-      : 'N/A',
-    Gender: formData.gender,
-    'Date of Birth': formData.dob
-      ? new Date(formData.dob).toLocaleDateString()
-      : 'N/A',
-    Phone: formData.phone_number,
-    Email: formData.email,
-    Address: formData.address,
-  };
-
-  const school = {
-    'School Name': formData.school_name,
-    'Phone Number': formData.school_phone_number,
-    Address: formData.school_address,
-  };
-
   return (
     <FormComponent
       title={'Account Profile'}
@@ -114,10 +93,11 @@ function AccountProfilePage() {
               {/* User profile information */}
               <CardComponent
                 title={'User Information'}
-                imgUrl={profile}
+                imgUrl={userData.img || profile} // Display the profile image
                 handleEdit={clickEdit}
               >
-                <CardInformation data={user_profile} />
+                <CardInformation data={userData.userProfile} />{' '}
+                {/* Display user profile data */}
               </CardComponent>
 
               {/* School information */}
@@ -125,7 +105,8 @@ function AccountProfilePage() {
                 title={'School Information'}
                 handleEdit={clickEdit}
               >
-                <CardInformation data={school} />
+                <CardInformation data={userData.schoolProfile} />{' '}
+                {/* Display school data */}
               </CardComponent>
             </Stack>
           </TabPanel>
