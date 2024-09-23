@@ -8,7 +8,6 @@ import attendanceReducer from './slices/attendanceSlice';
 import { attendanceApi } from '../services/attendanceApi';
 import { teacherApi } from '../services/teacherApi';
 import teacherReducer from './slices/teacherSlice';
-import uiReducer from './slices/uiSlice';
 import classReducer from './slices/classSlice';
 import uiReducer from './slices/uiSlice';
 
@@ -17,16 +16,10 @@ const store = configureStore({
     ui:uiReducer,
     form: formReducer,
     auth: authReducer,
-<<<<<<< HEAD
     teachers: teacherReducer, 
     attendance: attendanceReducer,
     classes: classReducer,
     [classApi.reducerPath]: classApi.reducer,
-=======
-    attendance : attendanceReducer,
-    classes: classReducer,
-    ui: uiReducer,
->>>>>>> cd8235e (feature: Done on using ui slice in ClassList)
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
