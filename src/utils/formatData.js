@@ -192,6 +192,7 @@ export const UserProfileData = (user) => {
   };
 };
 
+
 // Utility: Ensure phone number formatting
 export function formatPhoneNumber(phoneNumber) {
   const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -201,20 +202,21 @@ export function formatPhoneNumber(phoneNumber) {
   }
   return phoneNumber;
 }
-export function studentsData(students) {
-  return students.map((student) => ({
+//Function for Formatted Student Data
+export function studentsData(student) {
+  return  ({
     id: student.student_id,
-    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`, // Assuming first_name and last_name are in the root object
-    class: student.class_name || 'N/A', // Assuming class_name is a root property
+    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`, // Corrected this line
+    class: student.Class.class_name || 'N/A', 
     age: student.Info.dob
       ? new Date().getFullYear() - new Date(student.Info.dob).getFullYear()
-      : 'N/A', // Calculating age based on dob
+      : 'N/A', 
     gender: student.Info.gender || 'N/A',
     'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
-    phone: formatPhoneNumber(student.Info.phone_number),
-    email: student.guardian_email,
-    address: student.Info.address || 'N/A', // Assuming address is a root property
-  }));
+    phone: student.Info.phone_number || 'N/A', // Added default value
+    email: student.guardian_email || 'N/A', // Added default value
+    address: student.Info.address || 'N/A',
+  });
 }
 
 export function guardianData(guardian) {
@@ -225,3 +227,15 @@ export function guardianData(guardian) {
     Email: guardian.guardian_email,
   };
 }
+// Combined User and School Profile Data
+export const StudentProfile = (student) => {
+  // const info = student.Info;
+  const studentProfile = studentsData(student);
+  const guardianProfile = guardianData(student);
+
+  return {
+    studentProfile,
+    guardianProfile,
+    // img: info.photo,
+  };
+};
