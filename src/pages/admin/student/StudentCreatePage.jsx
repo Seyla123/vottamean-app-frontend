@@ -16,7 +16,7 @@ const StudentCreatePage = () => {
 
   const handleCancel = () => {
     if (activeTab === 0) {
-      navigate("/dashboard/students/create");
+      navigate("/admin/students/create");
     } else if (activeTab === 1) {
       setActiveTab(0);
     }
@@ -26,7 +26,7 @@ const StudentCreatePage = () => {
     if (activeTab === 0) {
       setActiveTab(1);
     } else {
-      navigate("/dashboard/students");
+      navigate("/admin/students");
     }
   };
 
