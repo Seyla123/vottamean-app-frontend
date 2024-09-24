@@ -5,20 +5,26 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import FormComponent from "../../../components/common/FormComponent";
 import CardComponent from "../../../components/common/CardComponent";
 import CardInformation from "../../../components/common/CardInformation";
-import { useGetStudentsByIdQuery } from "../../../services/studentApi";
-import { useDispatch } from "react-redux";
+import { useGetStudentsByIdQuery,useDeleteStudentsDataMutation} from "../../../services/studentApi";
+import { useDispatch,useSelector } from "react-redux";
 import { updateFormData } from "../../../store/slices/formSlice";
-import { studentsData } from "../../../utils/formatData";
+import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { StudentProfile } from "../../../utils/formatData";
+import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
+
 
 const StudentDetailPage = () => {
   const {id} = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { modal, snackbar } = useSelector((state) => state.ui);
   const [value, setValue] = useState("1");
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   // Redux API call to get student details
-  const { data: student, isLoading, error } = useGetStudentsByIdQuery(id);
+  const { data: student, isLoading } = useGetStudentsByIdQuery(id);
+  const [deleteStudent, {isLoading: isDeleting, isSuccess: isDeleteSuccess,  isError: isDeleteError,  error } ] = useDeleteStudentsDataMutation();
+ 
 
   // Local state for transformed student data
   const [studentData, setStudentData] = useState({
@@ -46,8 +52,31 @@ const StudentDetailPage = () => {
     navigate(`/dashboard/students/update/${student?.data?.id}`);
   };
 
-  const clickDeleteStudent = () => {
-    console.log("Deleting student...");
+    // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class list page
+  useEffect(()=>{
+    if(isDeleting){
+      dispatch(setSnackbar({ open:true , message: 'Deleting...' ,severity : 'info'}));
+    }else if(isDeleteError){
+      dispatch(setSnackbar({ open:true , message: error.data.message , severity : 'error'}));
+    }else if(isDeleteSuccess){
+      dispatch(setSnackbar({ open:true , message: 'Deleted successfully', severity :'success'}));
+      navigate('/admin/students');
+    }
+  },[dispatch, isDeleteError, isDeleteSuccess, isDeleting])
+
+
+  const clickDeleteStudent = (id) => {
+    setSelectedStudent({id});
+    dispatch(setModal({ open: true }));
+  };
+
+  // handle confirm deletion
+  const handleDeleteConfirmed = async () => {
+    dispatch(setModal({ open: false }));
+    await deleteStudent(selectedStudent).unwrap();
+
   };
 
   if (isLoading) {
@@ -80,6 +109,12 @@ const StudentDetailPage = () => {
                  <CardInformation data={studentData.studentProfile} />
               </CardComponent>
             </Stack>
+            <DeleteConfirmationModal
+              open={modal.open}
+              onClose={() => dispatch(setModal({ open: false }))}
+              onConfirm={handleDeleteConfirmed}
+              itemName="Student"
+            />
           </TabPanel>
 
           {/* Guardian Information Tab */}
