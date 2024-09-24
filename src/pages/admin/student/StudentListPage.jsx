@@ -55,7 +55,7 @@ const StudentListPage = () => {
   };
   // Handle for goes to edit page
   const handleEdit = (row) => {
-    navigate(`/dashboard/students/update/${row.student_id}`);
+    navigate(`/admin/students/update/${row.id}`);
   };
 
    // When the delete is in progress, show a snackbar with a message "Deleting..."

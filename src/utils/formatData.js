@@ -191,8 +191,6 @@ export const UserProfileData = (user) => {
     img: info.photo,
   };
 };
-
-
 // Utility: Ensure phone number formatting
 export function formatPhoneNumber(phoneNumber) {
   const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -218,6 +216,7 @@ export function studentsData(student) {
     address: student.Info.address || 'N/A',
   });
 }
+// Format guardian Data
 export function guardianData(guardian) {
   return {
     "Guardian's Name": guardian.guardian_name || 'N/A',
@@ -226,7 +225,7 @@ export function guardianData(guardian) {
     Email: guardian.guardian_email,
   };
 }
-// Combined User and School Profile Data
+// Combined Student and Guardian Data
 export const StudentProfile = (student) => {
   // const info = student.Info;
   const studentProfile = studentsData(student);
@@ -238,6 +237,7 @@ export const StudentProfile = (student) => {
     // img: info.photo,
   };
 };
+// Use map to format student For Student List
 export function formatStudentsList(students) {
-  return students.map(student => studentsData(student)); // Use map to format each student
+  return students.map(student => studentsData(student)); 
 }
