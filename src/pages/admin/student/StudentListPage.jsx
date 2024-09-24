@@ -13,7 +13,7 @@ import {
 } from '../../../services/studentApi';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
-import { studentsData } from '../../../utils/formatData';
+import { formatStudentsList } from '../../../utils/formatData';
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 
 const columns = [
@@ -41,7 +41,7 @@ const StudentListPage = () => {
  
   useEffect(() => {
     if (isSuccess && data) {
-      const formattedStudents = studentsData(data.data);
+      const formattedStudents = formatStudentsList(data.data);
       setRows(formattedStudents);
     }
   }, [isSuccess, data,dispatch]);

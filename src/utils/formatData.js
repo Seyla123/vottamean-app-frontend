@@ -218,7 +218,6 @@ export function studentsData(student) {
     address: student.Info.address || 'N/A',
   });
 }
-
 export function guardianData(guardian) {
   return {
     "Guardian's Name": guardian.guardian_name || 'N/A',
@@ -239,3 +238,6 @@ export const StudentProfile = (student) => {
     // img: info.photo,
   };
 };
+export function formatStudentsList(students) {
+  return students.map(student => studentsData(student)); // Use map to format each student
+}
