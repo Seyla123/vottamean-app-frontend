@@ -4,7 +4,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import { useCreateSessionMutation } from '../../../services/sessionApi';
-import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
+import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 import { useGetDayQuery } from '../../../services/daysApi';
@@ -23,7 +23,7 @@ const SessionCreatePage = () => {
 
   // handle periods data for select field
   const [periods, setPeriods] = useState([]);
-  const { data } = useViewListClassPeriodQuery();
+  const { data } = useGetClassPeriodQuery();
   useEffect(() => {
     if (data) {
       const transformPeriod = data.data.map((item) => ({
