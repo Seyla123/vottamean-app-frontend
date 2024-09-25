@@ -160,7 +160,7 @@ const LoginForm = ({ onSubmit }) => {
             variant="contained"
             type="submit"
             fullWidth
-            sx={styles.submitButton}
+            size="large"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -220,9 +220,7 @@ const styles = {
       textDecoration: 'underline',
     },
   },
-  submitButton: {
-    height: '48px',
-  },
+
   signupText: {
     mt: 1,
   },

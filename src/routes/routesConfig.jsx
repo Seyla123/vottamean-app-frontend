@@ -62,6 +62,7 @@ import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage'
 // Layout
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
+import RegisterPage from '../pages/auth/RegisterPage';
 // Routes configuration
 const routesConfig = [
   {
@@ -74,7 +75,11 @@ const routesConfig = [
       },
       {
         path: 'signup',
-        element: <SignupPage />,
+        element: <RegisterPage />,
+      },
+      {
+        path: 'register',
+        element: <RegisterPage />,
       },
       {
         path: 'verify-email/:verificationToken',

@@ -1,3 +1,8 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import SchoolIcon from '@mui/icons-material/School';
+
 // Redux hooks
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -104,6 +109,7 @@ function SignupPage() {
       );
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
+      
     } catch (err) {
       // 9.4 On error, set an error message and open Snackbar
       setSnackbarMessage(
@@ -143,6 +149,29 @@ function SignupPage() {
     />,
   ];
 
+  // Define step icons
+  const stepIcons = {
+    1: AccountCircleIcon,
+    2: PersonIcon,
+    3: ContactMailIcon,
+    4: SchoolIcon,
+  };
+
+  // Custom StepIcon component
+  function CustomStepIcon(props) {
+    const { active, completed, className, icon } = props;
+    const IconComponent = stepIcons[icon];
+
+    return (
+      <IconComponent
+        className={className}
+        style={{
+          color: active ? '#6c63ff' : completed ? '#bdbdbd' : '#bdbdbd',
+        }}
+      />
+    );
+  }
+
   return (
     <Container
       maxWidth="lg"
@@ -151,9 +180,9 @@ function SignupPage() {
       {/* 12. Display Stepper at the top to show current step */}
       <Box sx={{ width: 1, paddingTop: { xs: 3, md: 4 } }}>
         <Stepper activeStep={stepActive} alternativeLabel>
-          {steps.map((label) => (
+          {steps.map((label, index) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel  StepIconComponent={CustomStepIcon}>{label}</StepLabel>
             </Step>
           ))}
         </Stepper>
