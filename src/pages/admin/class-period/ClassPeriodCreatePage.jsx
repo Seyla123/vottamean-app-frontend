@@ -47,7 +47,7 @@ function ClassPeriodCreatePage() {
     const formattedEndTime = endTime.format('HH:mm');
 
     try {
-      const result = await createClass({
+      await createClass({
         start_time: formattedStartTime,
         end_time: formattedEndTime,
         ...data,
