@@ -209,7 +209,6 @@ export const UserProfileUpdateData = (user) => {
   }
 
   const info = user.data.adminProfile.Info;
-  const school = user.data.adminProfile.Schools[0] || {};
 
   return {
     userProfile: {
@@ -219,10 +218,21 @@ export const UserProfileUpdateData = (user) => {
       dob: info.dob,
       phone_number: info.phone_number,
       address: info.address,
-      school_name: school.school_name,
-      school_phone_number: school.school_phone_number,
-      school_address: school.school_address,
     },
     photo: info.photo,
+  };
+};
+
+// Combined School Data
+export const transformSchoolData = (user) => {
+  if (!user || !user.data.adminProfile?.Info) {
+    return {};
+  }
+  const school = user.data.adminProfile.Schools[0] || {};
+
+  return {
+    school_name: school.school_name,
+    school_phone_number: school.school_phone_number,
+    school_address: school.school_address,
   };
 };
