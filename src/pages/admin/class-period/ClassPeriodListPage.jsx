@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 function ClassPeriodListPage() {
   const [rows, setRows] = useState([]);
-  const [itemToDelete, setItemToDelete] = useState(null);
+  const [classPeriodToDelete, setclassPeriodToDelete] = useState(null);
   // const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,15 +68,15 @@ function ClassPeriodListPage() {
 
   // Handle DELETE action
   const handleDelete = (rows) => {
-    setItemToDelete(rows);
+    setclassPeriodToDelete(rows);
     dispatch(setModal({ open: true }));
-    // setItemToDelete(id.period_id);
+    // setclassPeriodToDelete(id.period_id);
     // setIsOpen(true);
   };
 
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
-    await deleteClassPeriod(itemToDelete.period_id).unwrap();
+    await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
   };
 
   // Handle DELETE ALL action
@@ -135,7 +135,7 @@ function ClassPeriodListPage() {
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
-        itemName="Example Item"
+        itemName="Class Period"
       />
 
       {/* Data table to display class periods */}
