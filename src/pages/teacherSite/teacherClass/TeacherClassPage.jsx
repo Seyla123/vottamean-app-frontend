@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import FormComponent from '../../../components/common/FormComponent';
 import ClassCard from '../../../components/teacherSite/ClassCard';
 import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
-import { Grid2, Box } from '@mui/material';
+import { Grid2, Box, Typography } from '@mui/material';
 import teacher from '../../../assets/icon/teacher.png';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGetTeacherClassesQuery } from '../../../services/teacherApi';
 import { formatTimeTo12Hour } from '../../../utils/formatData';
+import ClassNotFound from '../../../components/teacherSite/ClassNotFound';
 // data
 // const classesData = [
 //   {
@@ -90,20 +91,16 @@ function TeacherClassPage() {
   }, [getTeacherClasses, isSuccess]);
 
   console.log(' classesData :', classesData);
-  if (classesData.length === 0) {
-    return (
-      <div>
-        <h1>No classes available</h1>
-        <p>
-          You don't have any classes scheduled yet. Please check back later or contact your teacher for more information.
-        </p>
-      </div>
-    )
-  }
   if (isError) {
     return <div>Error loading class data: {error.data.message}</div>;
   }
-
+  
+  // Handle no class found
+  if (classesData.length > 0) {
+    return (
+      <ClassNotFound/>
+    )
+  }
   // Handle loading state 
   const renderedSkeleton = () => (
     [...Array(6)].map((_, i) => (
@@ -121,32 +118,36 @@ function TeacherClassPage() {
             // Render skeleton while loading
             renderedSkeleton()
             :
-            // Render actual class cards once loading is complete
-            classesData.map((classData, index) => {
-              const cardColor = colors[index % colors.length];
-              // const randomBorder = border[index % border.length];
-              const time = `${formatTimeTo12Hour(classData.start_time)} - ${formatTimeTo12Hour(classData.end_time)}`;
-              return (
-                <Grid2 size={{ xs: 12, md: 6 }} key={classData.session_id}>
-                  <p>testing :{classData.Class.class_name}</p>
-                  <Box
-                    component={Link}
-                    to={`/teacher/dashboard/class/${classData.Class.class_id}`}
-                    sx={{ color: 'black' }}
-                  >
-                    <ClassCard
-                      className={classData.Class.class_name}
-                      day={classData.day}
-                      subject={classData.subject}
-                      students={classData.students}
-                      time={time}
-                      classIcon={teacher}
-                      randomColor={cardColor}
-                    />
-                  </Box>
-                </Grid2>
-              );
-            })}
+            classesData.length > 0 ?
+              // Render actual class cards once loading is complete
+              classesData.map((classData, index) => {
+                const cardColor = colors[index % colors.length];
+                // const randomBorder = border[index % border.length];
+                const time = `${formatTimeTo12Hour(classData.start_time)} - ${formatTimeTo12Hour(classData.end_time)}`;
+                return (
+                  <Grid2 size={{ xs: 12, md: 6 }} key={classData.session_id}>
+                    <Box
+                      component={Link}
+                      to={`/teacher/dashboard/class/${classData.Class.class_id}`}
+                      sx={{ color: 'black' }}
+                    >
+                      <ClassCard
+                        className={classData.Class.class_name}
+                        day={classData.day}
+                        subject={classData.subject}
+                        students={classData.students}
+                        time={time}
+                        classIcon={teacher}
+                        randomColor={cardColor}
+                      />
+                    </Box>
+                  </Grid2>
+                );
+              })
+              :
+              // Handle no class found
+              <ClassNotFound/>
+          }
         </Grid2>
       </FormComponent>
     </>
