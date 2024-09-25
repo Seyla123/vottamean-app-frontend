@@ -1,47 +1,68 @@
-import { useEffect, useState } from "react";
-import {Box} from "@mui/material";
-import FormComponent from "../../../components/common/FormComponent";
-import CardComponent from "../../../components/common/CardComponent";
-import ButtonContainer from "../../../components/common/ButtonContainer";
-import SelectField from "../../../components/common/SelectField";
-import { useGetDayQuery } from "../../../services/daysApi";
-import { useCreateSessionMutation } from "../../../services/sessionApi";
-import { useGetClassPeriodByIdQuery } from "../../../services/classPeriodApi";
-
+import { useEffect, useState } from 'react';
+import { Box } from '@mui/material';
+import FormComponent from '../../../components/common/FormComponent';
+import CardComponent from '../../../components/common/CardComponent';
+import ButtonContainer from '../../../components/common/ButtonContainer';
+import SelectField from '../../../components/common/SelectField';
+import { useCreateSessionMutation } from '../../../services/sessionApi';
+import {
+  useGetClassPeriodByIdQuery,
+  useViewListClassPeriodQuery,
+} from '../../../services/classPeriodApi';
+import { useGetClassesDataQuery } from '../../../services/classApi';
+import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 
 // Main Component
 const SessionCreatePage = () => {
   const [form, setForm] = useState({
-    teacher: "",
-    classPeriod: "",
-    classes: "",
-    subject: "",
-    dayOfWeek: "",
+    teacher: '',
+    classPeriod: '',
+    classes: '',
+    subject: '',
+    dayOfWeek: '',
   });
 
-  const [createSession, {isLoading , isError, isSuccess}] = useCreateSessionMutation();
+  const [createSession, { isLoading, isError, isSuccess }] =
+    useCreateSessionMutation();
+
+  const [periods, setPeriods] = useState([]);
+  const { data } = useViewListClassPeriodQuery();
+  useEffect(() => {
+    if (data) {
+      const transformPeriod = data.data.map((item) => {
+        return {
+          value: `${item.start_time} - ${item.end_time}`,
+          label: `${item.start_time} - ${item.end_time}`,
+        };
+      });
+      setPeriods(transformPeriod);
+      console.log(data);
+    }
+  }, [data]);
+
+  const periodsData = periods;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCreate = async() => {
+  const handleCreate = async () => {
     try {
       const result = await createSession(form);
-      console.log("session create success", result)
+      console.log('session create success', result);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
   return (
-    <FormComponent title="Add session" subTitle="Please Fill session information">
+    <FormComponent
+      title="Add session"
+      subTitle="Please Fill session information"
+    >
       <CardComponent title="Session Information">
-        <Box
-          component="form"
-          sx={containerStyle}
-        >
+        <Box component="form" sx={containerStyle}>
           {/* Teacher field */}
           <SelectField
             label="Teacher"
@@ -82,7 +103,7 @@ const SessionCreatePage = () => {
           <SelectField
             label="Day of Week"
             name="dayOfWeek"
-            placeholder={"Day of Week"}
+            placeholder={'Day of Week'}
             value={form.dayOfWeek}
             onChange={handleChange}
             options={dowData}
@@ -101,43 +122,37 @@ const SessionCreatePage = () => {
 
 export default SessionCreatePage;
 const containerStyle = {
-  "& .MuiTextField-root": { width: 1 },
-  width: "100%",
-  display: "grid",
-  gap: { xs: "12px", md: "24px" },
-  margin: "0 auto",
+  '& .MuiTextField-root': { width: 1 },
+  width: '100%',
+  display: 'grid',
+  gap: { xs: '12px', md: '24px' },
+  margin: '0 auto',
   gridTemplateColumns: {
-    xs: "repeat(1, 1fr)",
-    md: "repeat(2, 1fr)",
+    xs: 'repeat(1, 1fr)',
+    md: 'repeat(2, 1fr)',
   },
-}
+};
 // Data for the select options
 const teachersData = [
-  { value: "Smey", label: "Smey" },
-  { value: "Mary", label: "Mary" },
-  { value: "Berry", label: "Berry" },
-];
-
-const periodsData = [
-  { value: "7:00 - 8:00", label: "7:00 - 8:00" },
-  { value: "8:10 - 9:00", label: "8:10 - 9:00" },
-  { value: "9:10 - 10:00", label: "9:10 - 10:00" },
+  { value: 'Smey', label: 'Smey' },
+  { value: 'Mary', label: 'Mary' },
+  { value: 'Berry', label: 'Berry' },
 ];
 
 const classesData = [
-  { value: "12A", label: "12A" },
-  { value: "12B", label: "12B" },
-  { value: "12C", label: "12C" },
+  { value: '12A', label: '12A' },
+  { value: '12B', label: '12B' },
+  { value: '12C', label: '12C' },
 ];
 
 const subjectsData = [
-  { value: "Math", label: "Math" },
-  { value: "Khmer", label: "Khmer" },
-  { value: "English", label: "English" },
+  { value: 'Math', label: 'Math' },
+  { value: 'Khmer', label: 'Khmer' },
+  { value: 'English', label: 'English' },
 ];
 
 const dowData = [
-  { value: "Monday", label: "Monday" },
-  { value: "Tuesday", label: "Tuesday" },
-  { value: "Wednesday", label: "Wednesday" },
+  { value: 'Monday', label: 'Monday' },
+  { value: 'Tuesday', label: 'Tuesday' },
+  { value: 'Wednesday', label: 'Wednesday' },
 ];
