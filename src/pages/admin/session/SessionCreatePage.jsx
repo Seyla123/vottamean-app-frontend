@@ -25,6 +25,7 @@ const SessionCreatePage = () => {
   const [createSession, { isLoading, isError, isSuccess }] =
     useCreateSessionMutation();
 
+    // handle periods data for select field
   const [periods, setPeriods] = useState([]);
   const { data } = useViewListClassPeriodQuery();
   useEffect(() => {
@@ -41,6 +42,24 @@ const SessionCreatePage = () => {
   }, [data]);
 
   const periodsData = periods;
+
+  // handle class data for select field
+  const [classes, setClass] = useState([])
+const { data: classData } = useGetClassesDataQuery();
+useEffect(() => {
+  if (classData) { 
+    const classFormat = classData.data.map((item) => {
+      return { 
+        value : item.class_name , 
+        label : item.class_name
+      }
+    })
+    setClass(classFormat)
+    console.log(classFormat)
+  }
+}, [classData])
+
+const classesData = classes; 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -137,12 +156,6 @@ const teachersData = [
   { value: 'Smey', label: 'Smey' },
   { value: 'Mary', label: 'Mary' },
   { value: 'Berry', label: 'Berry' },
-];
-
-const classesData = [
-  { value: '12A', label: '12A' },
-  { value: '12B', label: '12B' },
-  { value: '12C', label: '12C' },
 ];
 
 const subjectsData = [
