@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import DataTable from '../../../components/common/DataTable';
 import { useNavigate } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
+import { useGetSubjectsQuery } from '../../../services/subjectApi';
 
 function SubjectListPage() {
   const navigate = useNavigate();
+  const { data, isError, isLoading, isSuccess } = useGetSubjectsQuery();
+
 
   const handleEdit = (row) => {
     navigate(`/dashboard/subjects/update/${row.id}`);
