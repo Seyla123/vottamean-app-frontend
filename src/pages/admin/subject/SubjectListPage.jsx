@@ -14,10 +14,14 @@ function SubjectListPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // rows : Array of objects representing the data to be displayed in the table
+  // subjectToDelete : a selected subject to be deleted
   const [rows, setRows] = useState([]);
   const [subjectToDelete, setSubjectToDelete] = useState(null);
   const { modal } = useSelector((state) => state.ui);
 
+  // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
+  // useDeleteSubjectMutation : a hook that returns a function to delete an class period record
   const { data, isError, isLoading, isSuccess } = useGetSubjectsQuery();
   const [
     deleteSubject,
@@ -29,12 +33,16 @@ function SubjectListPage() {
     },
   ] = useDeleteSubjectMutation();
 
+  // when the subject records are fetched successfully, then set the rows state
   useEffect(() => {
     if (data && isSuccess) {
       setRows(subjectData);
     }
   }, [data, isSuccess, isDeleteSuccess]);
 
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class period list page
   useEffect(() => {
     if (isDeleting) {
       dispatch(
@@ -64,33 +72,46 @@ function SubjectListPage() {
   if (isLoading) {
     return <CircularIndeterminate />;
   }
+
+  // Handle error state
   if (isError) {
     console.log('error message :', error.data.message);
   }
+
+  // Handle DELETE action
   const handleDelete = (rows) => {
     setSubjectToDelete(rows);
     dispatch(setModal({ open: true }));
   };
+
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
     await deleteSubject(subjectToDelete.subject_id).unwrap();
   };
+
+  // Handle DELETE ALL action
   const handleSelectedDelete = () => {
     console.log('Delete all');
   };
+
+  // Handle DETAIL action
   const handleView = (row) => {
     navigate(`/admin/subjects/${row.subject_id}`);
   }
+
+  // Handle EDIT action
   const handleEdit = (row) => {
     navigate(`/admin/subjects/update/${row.subject_id}`);
   };
 
+  // Define table columns title
   const tableTiles = [
     { id: 'subject_id', label: 'Subject ID' },
     { id: 'name', label: 'Subject Name' },
     { id: 'description', label: 'Subject Description' },
   ];
 
+  // Define formatted data to display
   const subjectData = data.data.map((item) => {
     const { subject_id, name, description } = item;
     return {
@@ -102,7 +123,7 @@ function SubjectListPage() {
 
   return (
     <FormComponent title="Subject List" subTitle={`There are total ${rows.length} Subjects`}>
-      {/* Subject Create Button */}
+      {/* Button to add a new class period */}
       <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
         <Link to={'/admin/subjects/create'}>
           <Button
