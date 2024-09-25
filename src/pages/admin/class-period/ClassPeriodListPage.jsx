@@ -11,14 +11,18 @@ import {
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ClassPeriodListPage() {
   const [rows, setRows] = useState([]);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  // const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { modal } = useSelector((state) => state.ui);
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
   const [
@@ -37,6 +41,21 @@ function ClassPeriodListPage() {
     }
   }, [data, isSuccess, isDeleteSuccess]);
 
+  useEffect(() => {
+    if (isDeleting) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteError) {
+      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error', }),);
+    } else if (isDeleteSuccess) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success', }),
+      );
+      navigate('/admin/class-periods');
+    }
+  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
+
   // Handle loading state
   if (isLoading) {
     return <CircularIndeterminate />;
@@ -48,21 +67,16 @@ function ClassPeriodListPage() {
   }
 
   // Handle DELETE action
-  const handleDelete = (id) => {
-    setItemToDelete(id.period_id);
-    setIsOpen(true);
+  const handleDelete = (rows) => {
+    setItemToDelete(rows);
+    dispatch(setModal({ open: true }));
+    // setItemToDelete(id.period_id);
+    // setIsOpen(true);
   };
 
   const confirmDelete = async () => {
-    try {
-      setIsOpen(false);
-      setSnackbarMessage('Deleted successfully');
-      setSnackbarOpen(true);
-      await deleteClassPeriod(itemToDelete).unwrap();
-    } catch (error) {
-      setSnackbarMessage('Failed to delete');
-      setSnackbarOpen(true);
-    }
+    dispatch(setModal({ open: false }));
+    await deleteClassPeriod(itemToDelete.period_id).unwrap();
   };
 
   // Handle DELETE ALL action
@@ -118,8 +132,8 @@ function ClassPeriodListPage() {
         </Link>
       </Stack>
       <DeleteConfirmationModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
         itemName="Example Item"
       />
@@ -137,7 +151,7 @@ function ClassPeriodListPage() {
         emptySubTitle="No class periods available"
       />
 
-      <Snackbar
+      {/* <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
@@ -155,7 +169,7 @@ function ClassPeriodListPage() {
         >
           {isDeleting ? 'Deleting...' : snackbarMessage}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </FormComponent>
   );
 }
