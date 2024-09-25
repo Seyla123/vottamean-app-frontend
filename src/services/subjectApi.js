@@ -20,8 +20,16 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subjects'],
     }),
+    createSubject: builder.mutation({
+      query: (subjectData) => ({
+        url: 'subjects',
+        method: 'POST',
+        body: subjectData,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Subjects'],
+    }),
   }),
-
 });
 
-export const { useGetSubjectsQuery, useDeleteSubjectMutation } = subjectApi;
+export const { useGetSubjectsQuery, useDeleteSubjectMutation, useCreateSubjectMutation } = subjectApi;
