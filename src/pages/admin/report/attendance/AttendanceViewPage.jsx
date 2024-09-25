@@ -20,7 +20,7 @@ const tabs = [
 ];
 
 const AttendanceViewPage = () => {
-  
+
   // - value : Set the initial tab value
   // - attendanceDetail : Get the attendance detail currently to be display on the page
   const [value, setValue] = useState(tabs[0].value);
@@ -35,8 +35,8 @@ const AttendanceViewPage = () => {
 
   // - useGetAttendanceQuery : Fetch the attendance data with the id
   // - useDeleteAttendanceMutation: a hook that returns a function to delete an attendance record
-  const { data: attendanceData, isLoading, isSuccess, isError } = useGetAttendanceQuery({ id });
-  const [deleteAttendance, { isLoading: isDeleting, isSuccess: deleteSuccess, isError: deleteError, error }] = useDeleteAttendanceMutation();
+  const { data: attendanceData, isLoading, isSuccess, isError, error } = useGetAttendanceQuery({ id });
+  const [deleteAttendance, { isLoading: isDeleting, isSuccess: deleteSuccess, isError: isDeleteError, error: deleteError }] = useDeleteAttendanceMutation();
 
   // - When the attendance data is fetched, format the data and set the attendance detail in the state
   useEffect(() => {
@@ -52,8 +52,8 @@ const AttendanceViewPage = () => {
   useEffect(() => {
     if (isDeleting) {
       dispatch(setSnackbar({ open: true, message: "Deleting...", severity: "info" }));
-    } else if (deleteError) {
-      dispatch(setSnackbar({ open: true, message: error.data.message, severity: "error" }));
+    } else if (isDeleteError) {
+      dispatch(setSnackbar({ open: true, message: deleteError.data.message, severity: "error" }));
     } else if (deleteSuccess) {
       dispatch(setSnackbar({ open: true, message: "Deleted successfully", severity: "success" }));
       navigate("/admin/reports/attendance");
@@ -93,9 +93,9 @@ const AttendanceViewPage = () => {
             key={tab.value}
             title={tab.title}
             handleDelete={tab.value === "1" ? handleDelete : null}
-            imgUrl={attendanceDetail[tab.imgField] || ""}
+            imgUrl={attendanceDetail?.[tab.imgField] || ""}
           >
-            <CardInformation data={attendanceDetail[tab.field]} />
+            <CardInformation data={attendanceDetail?.[tab.field]} />
           </CardComponent>
         )
       ))}
