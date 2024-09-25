@@ -116,7 +116,7 @@ function ClassPeriodListPage() {
   return (
     <FormComponent
       title={'Class Period List'}
-      subTitle={`There are ${rows.length} Class Periods`}
+      subTitle={`There are total ${rows.length} Class Periods`}
     >
       {/* Button to add a new class period */}
       <Stack direction="row" justifyContent="flex-end">
