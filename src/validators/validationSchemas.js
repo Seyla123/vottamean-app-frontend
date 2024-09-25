@@ -157,6 +157,9 @@ export const createFormSchema = (fields) => {
     dob: dobSchema,
     phone_number: phoneSchema,
     address: addressSchema,
+    school_name: nameSchema,
+    school_address: addressSchema,
+    school_phone_number: phoneSchema,
     age: ageSchema,
     class_name: classSchema,
     // Add more schemas as needed
@@ -237,9 +240,9 @@ export const UserProfileValidator = createFormSchema([
 
 // User School validator
 export const SchoolValidator = createFormSchema([
-  'name',
-  'phone_number',
-  'address',
+  'school_name',
+  'school_address',
+  'school_phone_number',
 ]);
 
 // Account Information
