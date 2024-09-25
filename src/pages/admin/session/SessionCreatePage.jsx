@@ -5,10 +5,7 @@ import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import SelectField from '../../../components/common/SelectField';
 import { useCreateSessionMutation } from '../../../services/sessionApi';
-import {
-  useGetClassPeriodByIdQuery,
-  useViewListClassPeriodQuery,
-} from '../../../services/classPeriodApi';
+import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 
@@ -25,7 +22,7 @@ const SessionCreatePage = () => {
   const [createSession, { isLoading, isError, isSuccess }] =
     useCreateSessionMutation();
 
-    // handle periods data for select field
+  // handle periods data for select field
   const [periods, setPeriods] = useState([]);
   const { data } = useViewListClassPeriodQuery();
   useEffect(() => {
@@ -44,22 +41,41 @@ const SessionCreatePage = () => {
   const periodsData = periods;
 
   // handle class data for select field
-  const [classes, setClass] = useState([])
-const { data: classData } = useGetClassesDataQuery();
-useEffect(() => {
-  if (classData) { 
-    const classFormat = classData.data.map((item) => {
-      return { 
-        value : item.class_name , 
-        label : item.class_name
-      }
-    })
-    setClass(classFormat)
-    console.log(classFormat)
-  }
-}, [classData])
+  const [classes, setClass] = useState([]);
+  const { data: classData } = useGetClassesDataQuery();
+  useEffect(() => {
+    if (classData) {
+      const classFormat = classData.data.map((item) => {
+        return {
+          value: item.class_name,
+          label: item.class_name,
+        };
+      });
+      setClass(classFormat);
+      console.log(classFormat);
+    }
+  }, [classData]);
 
-const classesData = classes; 
+  const classesData = classes;
+
+  // handle teachers data for select field
+  const [teacher, setTeacher] = useState([]);
+  const { data: teacherData } = useGetAllTeachersQuery();
+  useEffect(() => {
+    if (teacherData) {
+      const teacherFormat = teacherData.data.map((item) => {
+        return {
+          value: `${item.Info.first_name} ${item.Info.last_name}`,
+          label: `${item.Info.first_name} ${item.Info.last_name}`,
+        };
+      });
+      setTeacher(teacherFormat);
+      console.log(teacherFormat);
+    }
+  }, [teacherData]);
+
+  // Data for the select options
+  const teachersData = teacher;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -151,12 +167,6 @@ const containerStyle = {
     md: 'repeat(2, 1fr)',
   },
 };
-// Data for the select options
-const teachersData = [
-  { value: 'Smey', label: 'Smey' },
-  { value: 'Mary', label: 'Mary' },
-  { value: 'Berry', label: 'Berry' },
-];
 
 const subjectsData = [
   { value: 'Math', label: 'Math' },
