@@ -1,6 +1,5 @@
 import FormComponent from '../../../components/common/FormComponent';
 import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
-
 function TeacherUpdatePage() {
   return (
     <>
@@ -9,9 +8,9 @@ function TeacherUpdatePage() {
         title="UPDATE TEACHER"
         subTitle="Please Update Teacher Information"
       >
-        {/* Form edit */}
-        <UpdateTeacherForm/>
+       < UpdateTeacherForm/>
       </FormComponent>
+
     </>
   );
 }
