@@ -11,12 +11,13 @@ import {
   FormControl,
   InputLabel,
   Select,
+  FormHelperText,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
 import dayjs from 'dayjs';
@@ -28,10 +29,9 @@ const validationSchema = yup.object({
   phoneNumber: yup.string().required('Phone number is required'),
   gender: yup.string().required('Gender is required'),
   dob: yup
-    .date()
+    .string()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
-    .nullable()
     .typeError('Invalid date format'),
   address: yup.string().required('Address is required'),
 });
@@ -42,7 +42,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -50,7 +49,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
       lastName: '',
       phoneNumber: '',
       gender: '',
-      dob: null,
+      dob: '',
       address: '',
     },
   });
@@ -173,47 +172,44 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Date of Birth</Typography>
             <Controller
-              name="dob"
-              control={control}
-              rules={{
-                required: 'Date of birth is required',
-                validate: (value) => {
-                  if (!value) {
-                    return 'Date of birth is required';
-                  }
-                  if (dayjs(value).isAfter(dayjs())) {
-                    return 'Date of birth cannot be in the future';
-                  }
-                  return true;
-                },
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <DatePicker
-                  inputFormat="MM/DD/YYYY"
-                  value={dob}
-                  onChange={(newValue) => {
-                    setDob(newValue);
-                    field.onChange(newValue);
-                  }}
-                  maxDate={dayjs()}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                     
-                      fullWidth
-                      slotProps={{
-                        textField: {
-                          error: !!error,
-                          helperText: error ? error.message : '',
-                          fullWidth: true,
-                        },
-                      }}
-                    />
-                    
-                  )}
-                />
-              )}
-            />
+            name="dob"
+            control={control}
+            rules={{
+              required: 'Date of birth is required',
+              validate: (value) => {
+                if (!value) {
+                  return 'Date of birth is required';
+                }
+                if (dayjs(value).isAfter(dayjs())) {
+                  return 'Date of birth cannot be in the future';
+                }
+                return true;
+              }
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <DatePicker
+                inputFormat="MM/DD/YYYY"
+                value={dob}
+                onChange={(newValue) => {
+                  setDob(newValue);
+                  field.onChange(newValue);
+                }}
+                maxDate={dayjs()}
+                slotProps={{
+                  textField: {
+                    error: !!error,
+                    helperText: errors.dob?.message,
+                    fullWidth: true,
+                  },
+                }}
+              /> 
+              
+            )}
+            
+          /> 
+           {/* <Typography variant="caption" color="error">
+                    {errors.dateOfBirth?.message}
+                  </Typography> */}
           </Box>
           {/* Address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>

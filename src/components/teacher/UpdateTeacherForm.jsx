@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 import { useGetTeacherQuery, useUpdateTeacherMutation } from '../../services/teacherApi';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { UpdateTeacherInfo } from '../../validators/validationSchemas';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { setSnackbar } from "../../store/slices/uiSlice"
 import SubHeader from './SubHeader';
 import {
   TextField,
@@ -21,53 +21,96 @@ import {
   FormControl,
   Select,
 } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
-const TeacherInfo = ({ teacherId }) => {
-  const [dob, setDob] = useState(null);
+const validationSchema = yup.object({
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
+  phone_number: yup.string().required('Phone number is required'),
+  gender: yup.string().required('Gender is required'),
+  dob: yup
+    .date()
+    .required('Date of birth is required')
+    .max(new Date(), 'Date of birth cannot be in the future')
+    .typeError('Invalid date format'),
+  address: yup.string().required('Address is required'),
+});
+const TeacherInfo = () => {
+
+  const { id } = useParams();
   const navigate = useNavigate();
-
-  const { data: teacherData, isLoading, isError } = useGetTeacherQuery(teacherId);
-  const [updateTeacher, { isLoading: isUpdating }] = useUpdateTeacherMutation();
+  const dispatch = useDispatch();
+  
+  // - useGetTeacherQuery : fetch the teacher data with the id
+  // - useUpdateTeacherMutation : a hook that returns a function to update the teacher data
+  const { data: teacherData, isLoading, isError, isSuccess } = useGetTeacherQuery(id);
+  const [updateTeacher, { isLoading: isUpdating, isError : isUpdateError, isSuccess: isUpdateSuccess, error : updateError }] = useUpdateTeacherMutation();
+  
+  // dob : data date of birth
+  const [dob, setDob] = useState(null);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm({
-    resolver: yupResolver(UpdateTeacherInfo),
+    resolver: yupResolver(validationSchema),
     defaultValues: {
       first_name: '',
       last_name: '',
       phone_number: '',
       gender: '',
-      dob: null,
+      dob: '',
       address: '',
     },
   });
 
+  // - when the teacherData records are fetched successfully,and set the form state
+  useEffect(() => {
+    if (teacherData && isSuccess) {
+      console.log('this data in useEffect : ', teacherData);
+      const formattedDate = dayjs(teacherData.data.Info.dob);
+      reset({
+        ...teacherData.data.Info,
+        dob: formattedDate,
+      });
+      setDob(formattedDate);
+      console.log('this dob :', formattedDate);
+    }
+  }, [teacherData, isSuccess]);
 
+  // when update is in progress, show a snackbar with a message "updating.."
+  // when update is failed, show a snackbar with an error message
+  // when update is successful, show a snackbar with a success message and navigate to the teacher list page
+  useEffect(() => {
+    if (isUpdating) {
+      dispatch(setSnackbar({ open: true, message: 'Updating...', severity: 'info' }));
+    } else if (isUpdateError) {
+      dispatch(setSnackbar({ open: true, message: updateError.data.message, severity: 'error' }));
+    } else if (isUpdateSuccess) {
+      dispatch(setSnackbar({ open: true, message: 'Updated successfully', severity: 'success' }));
+      navigate('/admin/teachers');
+    }
+  }, [isUpdating, isUpdateError, isUpdateSuccess, dispatch, navigate]);
 
+// handle cancel
   const handleCancel = () => {
     navigate(`/admin/teachers`);
   };
-
+  // handle onSubmit
   const onSubmit = async (data) => {
-    try {
-      await updateTeacher({
-        id: teacherId,
-        ...data,
-      });
-      navigate(`/admin/teachers`);
-    } catch (error) {
-      console.error('Failed to update teacher:', error);
-    }
+   console.log('this submit!!!!! : ', data);
+   console.log(' this is id :', id);
+   await updateTeacher(id , data);
   };
+  const testing =async () =>{
+    await updateTeacher(6 , {});
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <Box sx={profileBox}>
           <Box sx={valueBoxOne}>
             <Avatar sx={imgStyle} alt="profile picture" src="r" />
@@ -233,7 +276,7 @@ const TeacherInfo = ({ teacherId }) => {
             >
               Cancel
             </Button>
-            <Button fullWidth type="submit" variant="contained" color="primary">
+            <Button fullWidth type="submit" variant="contained" color="primary" onClick={testing}>
               Update
             </Button>
           </Stack>
