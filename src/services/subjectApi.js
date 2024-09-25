@@ -12,6 +12,16 @@ export const subjectApi = baseApi.injectEndpoints({
       providesTags: ['Subjects'],
     }),
   }),
+
+  // Delete data a user by ID
+  deleteSubject: builder.mutation({
+    query: (id) => ({
+      url: `subjects/${id}`,
+      method: 'DELETE',
+      credentials: 'include',
+    }),
+    invalidatesTags: ['Subjects'],
+  }),
 });
 
-export const { useGetSubjectsQuery } = subjectApi;
+export const { useGetSubjectsQuery, useDeleteSubjectMutation } = subjectApi;
