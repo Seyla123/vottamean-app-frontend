@@ -1,43 +1,77 @@
-import { useState } from "react";
-import { Box, Tabs, Tab, Snackbar, Alert } from "@mui/material";
-import TeacherInfo from "./TeacherInfo";
-import AccountInfo from "./AccountInfo";
+import { useState, useEffect } from 'react';
+import { Box, Tabs, Tab } from '@mui/material';
+import TeacherInfo from './TeacherInfo';
+import AccountInfo from './AccountInfo';
+import { setSnackbar } from '../../store/slices/uiSlice';
 import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import LoadingCircle from '../../components/loading/LoadingCircle';
+
 function FormInfo() {
-  const [value, setValue] = useState("1");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [value, setValue] = useState('1');
   const [isTeacherInfoValid, setIsTeacherInfoValid] = useState(false);
   const [teacherData, setTeacherData] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  
-  // add teacher api 
-  const [signUpTeacher, { isLoading }] = useSignUpTeacherMutation();
 
-  // handle next tab click to account information
-  const handleNextClick = (isValid, data) => {
-    if (isValid) {
-      setTeacherData(data);
-      setValue("2");
-      setIsTeacherInfoValid(true);
+  // Add teacher API mutation
+  const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
+    useSignUpTeacherMutation();
+
+  // Effect to handle loading, success, and error states
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Signing up...',
+          severity: 'info',
+          autoHideDuration: 6000,
+        }),
+      );
+    } else if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'An error occurred during signup',
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            'Signup successful. Please check your email for verification.',
+          severity: 'success',
+          autoHideDuration: 6000,
+        }),
+      );
+      navigate('/admin/teachers');
     }
-  };
+  }, [dispatch, isLoading, isError, error, isSuccess]);
 
-  // navigate back to teacher information tab
-  const handleBack = () => {
-    setValue("1");
-  };
-
-  // Handle form check dob validation
+  // Handle form check for date of birth validation and submit data
   const handleAccountSubmit = async (data) => {
     const today = dayjs();
     const dob = dayjs(data.dob);
+    // Check if date of birth is valid or is in the past
     if (!dob.isValid() || dob.isAfter(today)) {
-      setErrorMessage("Date of birth cannot be in the future");
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Date of birth cannot be in the future',
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
       return;
     }
-  
+
+    // Validate and format the date of birth
     const payload = {
       email: data.email,
       password: data.password,
@@ -49,54 +83,56 @@ function FormInfo() {
       gender: data.gender || '',
       phone_number: data.phoneNumber || '',
     };
-  
+    // Call the API to sign up the teacher with the provided data
     try {
-      // Validate and process the teacher data
-      const response = await signUpTeacher(payload).unwrap();
-      console.log("Signup successful:", response);
-      //  messages
-      // setErrorMessage("");
-      setSuccessMessage(response.message || "Signup successful. Please check your email for verification.");
+      await signUpTeacher(payload).unwrap();
     } catch (err) {
       console.error('Signup failed:', err);
-      setErrorMessage(err.data?.message || "An error occurred during signup");
     }
   };
-  
+
+  // Handle next tab click to account information
+  const handleNextClick = (isValid, data) => {
+    if (isValid) {
+      setTeacherData(data);
+      setValue('2');
+      setIsTeacherInfoValid(true);
+    }
+  };
+
+  // Navigate back to teacher information tab
+  const handleBack = () => {
+    setValue('1');
+  };
+
+  // loading and error states
+  if (isLoading) return <LoadingCircle />;
+  if (isError) return <p>Error loading teacher data.</p>;
+
   return (
     <Box>
       <Tabs value={value} onChange={(event, newValue) => setValue(newValue)}>
         <Tab label="TEACHER INFORMATION" value="1" />
-        <Tab label="ACCOUNT INFORMATION" value="2" disabled={!isTeacherInfoValid} /> 
-        {/* disable account info when teacher info is not valid */}
+        <Tab
+          label="ACCOUNT INFORMATION"
+          value="2"
+          disabled={!isTeacherInfoValid}
+        />
       </Tabs>
-      {value === "1" && (
+
+      {value === '1' && (
         <TeacherInfo
           handleNextClick={handleNextClick}
-          // save current form data 
           defaultValues={teacherData}
         />
       )}
-      {value === "2" && (
+      {value === '2' && (
         <AccountInfo
           handleBack={handleBack}
-          // check dob info 
           handleAccountSubmit={handleAccountSubmit}
-          // pass current teacher data
           teacherData={teacherData}
         />
       )}
-      {isLoading && <LoadingCircle />}
-      <Snackbar open={!!errorMessage} autoHideDuration={6000} onClose={() => setErrorMessage("")}>
-        <Alert onClose={() => setErrorMessage("")} severity="error" sx={{ width: '100%' }}>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
-      <Snackbar open={!!successMessage} autoHideDuration={6000} onClose={() => setSuccessMessage("")}>
-        <Alert onClose={() => setSuccessMessage("")} severity="success" sx={{ width: '100%' }}>
-          {successMessage}
-        </Alert>
-      </Snackbar> 
     </Box>
   );
 }
