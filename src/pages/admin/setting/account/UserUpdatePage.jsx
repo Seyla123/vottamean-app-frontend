@@ -19,24 +19,14 @@ import profile from '../../../../assets/images/default-profile.png';
 // Redux hooks and API
 import { useUpdateUserProfileMutation } from '../../../../services/userApi';
 
-function UserUpdatePage() {
+function UserUpdatePersonalInfoPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [updateUserProfile] = useUpdateUserProfileMutation();
 
-  // Get the initial user profile data from the Redux store
-  const {
-    first_name,
-    last_name,
-    dob,
-    gender,
-    phone_number,
-    address,
-    photo,
-    school_name,
-    school_address,
-    school_phone_number,
-  } = useSelector((state) => state.form);
+  // Get the initial personal info from the Redux store
+  const { first_name, last_name, dob, gender, phone_number, address, photo } =
+    useSelector((state) => state.form);
 
   // Local state for form data
   const [formData, setFormData] = useState({
@@ -47,9 +37,6 @@ function UserUpdatePage() {
     dob: dob || '',
     gender: gender || '',
     photo: photo || '',
-    school_name: school_name || '',
-    school_address: school_address || '',
-    school_phone_number: school_phone_number || '',
   });
 
   // Handle input change
@@ -65,7 +52,7 @@ function UserUpdatePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Call API to update user profile
+      // Call API to update user personal information
       const updatedProfile = await updateUserProfile(formData).unwrap();
 
       // Update the Redux store
@@ -73,16 +60,16 @@ function UserUpdatePage() {
 
       // Navigate back to the account profile page
       navigate('/admin/settings/account');
-      console.log('Profile updated successfully');
+      console.log('Personal information updated successfully');
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error('Failed to update personal information:', error);
     }
   };
 
   return (
     <FormComponent
-      title={'Update Profile'}
-      subTitle={'Update your personal information'}
+      title={'Update Personal Information'}
+      subTitle={'Update your personal details'}
     >
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
@@ -160,36 +147,9 @@ function UserUpdatePage() {
             <MenuItem value="Other">Other</MenuItem>
           </TextField>
 
-          {/* School Name */}
-          <TextField
-            label="School Name"
-            name="school_name"
-            value={formData.school_name}
-            onChange={handleChange}
-            fullWidth
-          />
-
-          {/* School Address */}
-          <TextField
-            label="School Address"
-            name="school_address"
-            value={formData.school_address}
-            onChange={handleChange}
-            fullWidth
-          />
-
-          {/* School Phone Number */}
-          <TextField
-            label="School Phone Number"
-            name="school_phone_number"
-            value={formData.school_phone_number}
-            onChange={handleChange}
-            fullWidth
-          />
-
           {/* Submit button */}
           <Button type="submit" variant="contained" fullWidth>
-            Update Profile
+            Update Personal Info
           </Button>
 
           {/* Cancel button */}
@@ -197,7 +157,7 @@ function UserUpdatePage() {
             type="button"
             variant="outlined"
             fullWidth
-            onClick={() => navigate('/admin/settings/account/profile')}
+            onClick={() => navigate('/admin/settings/account')}
           >
             Cancel
           </Button>
@@ -207,4 +167,4 @@ function UserUpdatePage() {
   );
 }
 
-export default UserUpdatePage;
+export default UserUpdatePersonalInfoPage;
