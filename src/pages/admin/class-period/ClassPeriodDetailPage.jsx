@@ -11,23 +11,34 @@ import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodDetailPage() {
-
-  const [rows, setRows] = useState([]);
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { data, error, isLoading, isSuccess } = useGetClassPeriodByIdQuery(id);
-  const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
-  const [deleteClassPeriod, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError }] =
-    useDeleteClassPeriodMutation(id);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // rows : Array of objects representing the data to be displayed in the table
+  // classPeriodToDelete : a selected class period to be deleted
+  const [details, setDetails] = useState([]);
+  const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
   const { modal } = useSelector((state) => state.ui);
 
+  // useGetClassPeriodByIdQuery : a hook that returns a function to fetch a class period record by its id
+  // useDeleteClassPeriodMutation : a hook that returns a function to delete an class period record
+  const { data, error, isLoading, isSuccess } = useGetClassPeriodByIdQuery(id);
+  const [deleteClassPeriod, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError }] = useDeleteClassPeriodMutation();
+
+  // destrusturing specific data
+  const { period_id, start_time, end_time } = data.data;
+
+  // when the class period records are fetched successfully, then set the rows state
   useEffect(() => {
     if (data && isSuccess) {
-      setRows(periodDetail);
+      setDetails(periodDetail);
     }
   }, [data, isSuccess, isDeleteSuccess]);
 
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class period list page
   useEffect(() => {
     if (isDeleting) {
       dispatch(
@@ -58,7 +69,6 @@ function ClassPeriodDetailPage() {
     navigate(`/admin/class-periods/update/${id}`);
   };
 
-  const { period_id, start_time, end_time } = data.data;
 
   // Handle DELETE action
   const clickDetele = () => {
@@ -89,7 +99,7 @@ function ClassPeriodDetailPage() {
         handleEdit={clickEdit}
         handleDelete={clickDetele}
       >
-        <CardInformation data={rows} />
+        <CardInformation data={details} />
       </CardComponent>
       <DeleteConfirmationModal
         open={modal.open}
