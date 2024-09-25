@@ -50,7 +50,7 @@ export const formatAttendanceData = (apiResponse) => {
       : 'N/A',
     Gender: apiResponse.Student.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
-    Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
+    Phone: apiResponse.Student.Info.phone_number ?? 'N/A',
     Email: apiResponse.Student.guardian_email ?? 'N/A',
     Address: apiResponse.Student.Info.address ?? 'N/A',
   };
@@ -191,7 +191,6 @@ export const UserProfileData = (user) => {
     img: info.photo,
   };
 };
-
 // Utility: Ensure phone number formatting
 export function formatPhoneNumber(phoneNumber) {
   const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -200,4 +199,45 @@ export function formatPhoneNumber(phoneNumber) {
     return `(${match[1]}) ${match[2]}-${match[3]}`;
   }
   return phoneNumber;
+}
+//Function for Formatted Student Data
+export function studentsData(student) {
+  return  ({
+    id: student.student_id,
+    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`, // Corrected this line
+    class: student.Class.class_name || 'N/A', 
+    age: student.Info.dob
+      ? new Date().getFullYear() - new Date(student.Info.dob).getFullYear()
+      : 'N/A', 
+    gender: student.Info.gender || 'N/A',
+    'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
+    phone: student.Info.phone_number || 'N/A', // Added default value
+    email: student.guardian_email || 'N/A', // Added default value
+    address: student.Info.address || 'N/A',
+  });
+}
+// Format guardian Data
+export function guardianData(guardian) {
+  return {
+    "Guardian's Name": guardian.guardian_name || 'N/A',
+    Relationship: guardian.guardian_relationship || 'N/A',
+    Phone: formatPhoneNumber(guardian.guardian_phone_number),
+    Email: guardian.guardian_email,
+  };
+}
+// Combined Student and Guardian Data
+export const StudentProfile = (student) => {
+  // const info = student.Info;
+  const studentProfile = studentsData(student);
+  const guardianProfile = guardianData(student);
+
+  return {
+    studentProfile,
+    guardianProfile,
+    // img: info.photo,
+  };
+};
+// Use map to format student For Student List
+export function formatStudentsList(students) {
+  return students.map(student => studentsData(student)); 
 }
