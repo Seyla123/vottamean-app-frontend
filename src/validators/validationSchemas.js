@@ -61,9 +61,6 @@ export const dobSchema = Yup.string()
     /^\d{4}-\d{2}-\d{2}$/,
     'Date of birth must be in the format YYYY-MM-DD',
   );
-  //class validation
-  export const classSchema = Yup.string()
-   .required('Class is required')
 
 // Email validator for admin, teacher, student, and guardian
 export const emailSchema = Yup.string()
@@ -133,6 +130,16 @@ export const ageSchema = Yup.number()
 export const genderSchema = Yup.string()
   .required('Gender is required')
   .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
+
+// Class validation
+export const classSchema = Yup.string().required('Class is required');
+
+// Description validator
+export const descriptionSchema = Yup.string()
+  .trim()
+  .nullable()
+  .notRequired()
+  .max(200, 'Description must be less than 200 characters');
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
@@ -234,3 +241,6 @@ export const AccountInformation = createFormSchema([
   'password',
   'passwordConfirm',
 ]);
+
+// Class Information
+export const ClassValidator = createFormSchema(['class_name', 'description']);
