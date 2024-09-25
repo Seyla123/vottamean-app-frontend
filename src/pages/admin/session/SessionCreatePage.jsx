@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {Box} from "@mui/material";
 import FormComponent from "../../../components/common/FormComponent";
 import CardComponent from "../../../components/common/CardComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 import SelectField from "../../../components/common/SelectField";
+import { useGetDayQuery } from "../../../services/daysApi";
 
 
 // Main Component
@@ -15,6 +16,14 @@ const SessionCreatePage = () => {
     subject: "",
     dayOfWeek: "",
   });
+
+
+  const {data} = useGetDayQuery();
+  useEffect(() => {
+    if (data) {
+      console.log(data)
+    }
+  }, [data])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
