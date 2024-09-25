@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Stack, Snackbar, Alert } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import { Link, useNavigate } from 'react-router-dom';
@@ -13,16 +13,29 @@ import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 
 function ClassPeriodListPage() {
+  const [rows, setRows] = useState([]);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const navigate = useNavigate();
 
-  const { data, error, isLoading } = useGetClassPeriodQuery();
+  const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
+  const [
+    deleteClassPeriod,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error
+    },
+  ] = useDeleteClassPeriodMutation();
 
-  const [deleteClassPeriod, { isLoading: isDeleting }] =
-    useDeleteClassPeriodMutation();
+  useEffect(() => {
+    if (data && isSuccess) {
+      setRows(periodData);
+    }
+  }, [data, isSuccess, isDeleteSuccess]);
 
   // Handle loading state
   if (isLoading) {
@@ -30,7 +43,7 @@ function ClassPeriodListPage() {
   }
 
   // Handle error state
-  if (error) {
+  if (isError) {
     return <div>Error loading class periods: {error.message}</div>;
   }
 
@@ -89,7 +102,7 @@ function ClassPeriodListPage() {
   return (
     <FormComponent
       title={'Class Period List'}
-      subTitle={`There are ${periodData.length} Class Periods`}
+      subTitle={`There are ${rows.length} Class Periods`}
     >
       {/* Button to add a new class period */}
       <Stack direction="row" justifyContent="flex-end">
@@ -113,7 +126,7 @@ function ClassPeriodListPage() {
 
       {/* Data table to display class periods */}
       <DataTable
-        rows={periodData}
+        rows={rows}
         columns={tableTitles}
         onView={handleView}
         onEdit={handleEdit}
