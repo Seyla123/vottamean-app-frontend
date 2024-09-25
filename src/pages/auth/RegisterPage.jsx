@@ -19,10 +19,10 @@ import {
 import { User, Users, Contact, School } from 'lucide-react';
 // IMAGES & ICONS
 import Logo from '../../assets/images/Logo.svg';
-import illustrationImg1 from '../../assets/images/illustration-img-1.svg';
-import illustrationImg2 from '../../assets/images/illustration-img-2.svg';
-import illustrationImg3 from '../../assets/images/illustration-img-3.svg';
-import illustrationImg4 from '../../assets/images/illustration-img-4.svg';
+import image1 from '../../assets/images/image-1.jpg';
+import image2 from '../../assets/images/image-2.jpg';
+import image3 from '../../assets/images/image-3.webp';
+import image4 from '../../assets/images/image-4.webp';
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -108,14 +108,26 @@ const RegisterPage = () => {
 
   const stepFormComponents = [
     <GetStartedNowForm
+      handleFormChange={handleFormChange}
+      handleNext={handleNext}
+    />,
+    <YourDetailsForm
       formData={formData}
       handleFormChange={handleFormChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
     />,
-    <YourDetailsForm formData={formData} handleFormChange={handleFormChange} />,
-    <ContactForm formData={formData} handleFormChange={handleFormChange} />,
+    <ContactForm
+      formData={formData}
+      handleFormChange={handleFormChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
+    />,
     <CreateSchoolForm
       formData={formData}
       handleFormChange={handleFormChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
     />,
   ];
 
@@ -130,7 +142,7 @@ const RegisterPage = () => {
         borderRadius: 2,
         backgroundColor: '#6c63ff',
         padding: '8px',
-        color: 'white',
+        color: 'common.white',
       }}
     >
       {icon}
@@ -144,18 +156,20 @@ const RegisterPage = () => {
         height: '100vh',
         width: '100vw',
         display: 'flex',
+        flexDirection: 'row-reverse',
         justifyContent: 'space-between',
         alignItems: 'center',
         p: 2,
         bgcolor: 'white',
       }}
     >
-      {/* LEFT CONTAINER */}
+      {/* RIGHT CONTAINER */}
       <Box
         component={'div'}
         sx={{
+          display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
           position: 'relative',
-          width: '30%',
+          width: '100%',
           height: '100%',
           bgcolor: '#F5F5F7',
           borderRadius: 2,
@@ -163,32 +177,37 @@ const RegisterPage = () => {
           overflow: 'hidden',
         }}
       >
-        {/* LOGO */}
-        <img src={Logo} alt="wavetrack logo" style={{ width: '200px' }} />
         {/* STEPPER */}
-        <Box component={'div'} sx={{ px: { xs: 0, md: 4 } }}>
+        <Box
+          component={'div'}
+          sx={{ px: { xs: 0, md: 4 }, position: 'relative', zIndex: 10 }}
+        >
           <Stepper
             activeStep={activeStep}
             orientation="vertical"
-            sx={{ mt: 8 }}
+            sx={{ mt: 4 }}
           >
             {steps.map((step, index) => (
               <Step
                 key={index}
                 sx={{
                   opacity: activeStep === index ? 1 : 0.5,
-                  transform: activeStep === index ? 'scale(1)' : 'scale(0.98)',
-                  transition:
-                    'opacity 0.5s cubic-bezier(0.5, 1, 0.89, 1), transform 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
+                  transition: 'opacity 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
                 }}
               >
                 <StepLabel
                   icon={<CustomIconBox icon={step.icon} />}
                   optional={
-                    <Typography variant="body2">{step.description}</Typography>
+                    <Typography variant="body2" color="grey.300">
+                      {step.description}
+                    </Typography>
                   }
                 >
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: 'bold' }}
+                    color="common.white"
+                  >
                     {step.label}
                   </Typography>
                 </StepLabel>
@@ -197,29 +216,24 @@ const RegisterPage = () => {
           </Stepper>
         </Box>
 
-        {/* ILLUSTRATION CONTAINER */}
+        {/* IMAGE CONTAINER */}
         <Box
           component={'div'}
           sx={{
             position: 'absolute',
-            bottom: -50,
+            bottom: 0,
             left: 0,
-            zIndex: 0,
+            zIndex: 1,
             width: '100%',
-            height: '50%',
+            height: '100%',
             overflow: 'hidden',
           }}
         >
-          {[
-            illustrationImg1,
-            illustrationImg2,
-            illustrationImg3,
-            illustrationImg4,
-          ].map((img, index) => (
+          {[image1, image2, image3, image4].map((img, index) => (
             <img
               key={index}
               src={img}
-              alt={`Illustration ${index + 1}`}
+              alt={`Image ${index + 1}`}
               style={{
                 position: 'absolute',
                 width: '100%',
@@ -232,31 +246,46 @@ const RegisterPage = () => {
               }}
             />
           ))}
+
+          {/* IMAGE OVERLAY */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background:
+                ' linear-gradient(145deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
         </Box>
       </Box>
 
-      {/* RIGHT CONTAINER */}
-      <Box component={'div'} sx={{ width: '70%', padding: '2rem' }}>
-        {stepFormComponents[activeStep]}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: '2rem',
+      {/* LEFT CONTAINER */}
+      <Box
+        component={'div'}
+        sx={{
+          width: { xs: '100%', sm: '100%', md: '100%', lg: '65%' },
+          height: '100%',
+          position: 'relative',
+        }}
+      >
+        {/* LOGO */}
+        <img
+          src={Logo}
+          alt="wavetrack logo"
+          style={{
+            width: '150px',
+            position: 'absolute',
+            top: '10px',
+            left: '10px',
+            zIndex: 10,
           }}
-        >
-          <Button onClick={handleBack} disabled={activeStep === 0}>
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            onClick={
-              activeStep === steps.length - 1 ? handleSubmit : handleNext
-            }
-          >
-            {activeStep === steps.length - 1 ? 'Get Started' : 'Next'}
-          </Button>
-        </Box>
+        />
+        {/* FORM COMPONENTs */}
+        {stepFormComponents[activeStep]}
       </Box>
 
       <Snackbar
