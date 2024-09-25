@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Stack, Snackbar, Alert } from '@mui/material';
-import FormComponent from '../../../components/common/FormComponent';
+import { Button, Stack } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import DataTable from '../../../components/common/DataTable';
 import { PlusIcon } from 'lucide-react';
-import {
-  useGetClassPeriodQuery,
-  useDeleteClassPeriodMutation,
-} from '../../../services/classPeriodApi';
+import { useDispatch, useSelector } from 'react-redux';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
+import DataTable from '../../../components/common/DataTable';
+import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 function ClassPeriodListPage() {
   const [rows, setRows] = useState([]);
   const [classPeriodToDelete, setclassPeriodToDelete] = useState(null);
-  // const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
   const [
