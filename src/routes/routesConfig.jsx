@@ -75,7 +75,7 @@ const routesConfig = [
       },
       {
         path: 'signup',
-        element: <SignupPage />,
+        element: <RegisterPage />,
       },
       {
         path: 'register',
