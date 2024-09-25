@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-import SelectField from '../../../components/common/SelectField';
 import { useCreateSessionMutation } from '../../../services/sessionApi';
 import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
@@ -20,83 +19,81 @@ const SessionCreatePage = () => {
     dayOfWeek: '',
   });
 
-  const [createSession, { isLoading, isError, isSuccess }] = useCreateSessionMutation();
+  const [createSession] = useCreateSessionMutation();
 
   // handle periods data for select field
   const [periods, setPeriods] = useState([]);
   const { data } = useViewListClassPeriodQuery();
   useEffect(() => {
     if (data) {
-      const transformPeriod = data.data.map((item) => {
-        return {
-          value: `${item.start_time} - ${item.end_time}`,
-          label: `${item.start_time} - ${item.end_time}`,
-        };
-      });
+      const transformPeriod = data.data.map((item) => ({
+        value: item.period_id, // Store period_id
+        label: `${item.start_time} - ${item.end_time}`, // Display time range
+      }));
       setPeriods(transformPeriod);
     }
   }, [data]);
-
 
   // handle class data for select field
   const [classes, setClass] = useState([]);
   const { data: classData } = useGetClassesDataQuery();
   useEffect(() => {
     if (classData) {
-      const classFormat = classData.data.map((item) => {
-        return {
-          value: item.class_name,
-          label: item.class_name,
-        };
-      });
+      const classFormat = classData.data.map((item) => ({
+        value: item.class_id, // Store class_id
+        label: item.class_name, // Display class name
+      }));
       setClass(classFormat);
     }
   }, [classData]);
 
-
   // handle teachers data for select field
-  const [teacher, setTeacher] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const { data: teacherData } = useGetAllTeachersQuery();
   useEffect(() => {
     if (teacherData) {
-      const teacherFormat = teacherData.data.map((item) => {
-        return {
-          value: `${item.Info.first_name} ${item.Info.last_name}`,
-          label: `${item.Info.first_name} ${item.Info.last_name}`,
-        };
-      });
-      setTeacher(teacherFormat);
+      const teacherFormat = teacherData.data.map((item) => ({
+        value: item.teacher_id, // Store teacher_id
+        label: `${item.Info.first_name} ${item.Info.last_name}`, // Display full name
+      }));
+      setTeachers(teacherFormat);
     }
   }, [teacherData]);
 
-
   // handle days data for select field 
   const [days, setDays] = useState([]);
-  const {data : dayData} = useGetDayQuery(); 
+  const { data: dayData } = useGetDayQuery(); 
   useEffect(() => {
-    if(dayData) {
-      const dayFormat = dayData.data.map((item) => {
-        return {
-          value: item.day,
-          label: item.day
-        }
-      })
+    if (dayData) {
+      const dayFormat = dayData.data.map((item) => ({
+        value: item.day_id, // Store day_id
+        label: item.day, // Display day name
+      }));
       setDays(dayFormat);
     }
-  }, [dayData])
-  
+  }, [dayData]);
 
+  // Form change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission
   const handleCreate = async () => {
+    const sessionData = {
+      class_id: form.classes,
+      subject_id: form.subject,
+      day_id: form.dayOfWeek,
+      teacher_id: form.teacher,
+      period_id: form.classPeriod,
+    };
+
     try {
-      const result = await createSession(form);
-      console.log('session create success', result);
+      const result = await createSession(sessionData);
+      console.log('Session created successfully', result);
     } catch (error) {
-      console.log(error);
+      console.log('Error creating session', error);
     }
   };
 
@@ -108,52 +105,86 @@ const SessionCreatePage = () => {
       <CardComponent title="Session Information">
         <Box component="form" sx={containerStyle}>
           {/* Teacher field */}
-          <SelectField
-            label="Teacher"
-            name="teacher"
-            placeholder="Teacher"
-            value={form.teacher}
-            onChange={handleChange}
-            options={teacher}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Teacher</InputLabel>
+            <Select
+              name="teacher"
+              value={form.teacher}
+              onChange={handleChange}
+              label="Teacher"
+            >
+              {teachers.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Class Period */}
-          <SelectField
-            label="Class Period"
-            name="classPeriod"
-            placeholder="class Period"
-            value={form.classPeriod}
-            onChange={handleChange}
-            options={periods}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Class Period</InputLabel>
+            <Select
+              name="classPeriod"
+              value={form.classPeriod}
+              onChange={handleChange}
+              label="Class Period"
+            >
+              {periods.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Classes */}
-          <SelectField
-            label="Class"
-            name="classes"
-            placeholder="Class"
-            value={form.classes}
-            onChange={handleChange}
-            options={classes}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Class</InputLabel>
+            <Select
+              name="classes"
+              value={form.classes}
+              onChange={handleChange}
+              label="Class"
+            >
+              {classes.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Subject */}
-          <SelectField
-            label="Subject"
-            name="subject"
-            placeholder="Subject"
-            value={form.subject}
-            onChange={handleChange}
-            options={subjectsData}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Subject</InputLabel>
+            <Select
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              label="Subject"
+            >
+              {subjectsData.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Day of Week */}
-          <SelectField
-            label="Day of Week"
-            name="dayOfWeek"
-            placeholder={'Day of Week'}
-            value={form.dayOfWeek}
-            onChange={handleChange}
-            options={days}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Day of Week</InputLabel>
+            <Select
+              name="dayOfWeek"
+              value={form.dayOfWeek}
+              onChange={handleChange}
+              label="Day of Week"
+            >
+              {days.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
-        {/* Button Container */}
         <ButtonContainer
           rightBtn={handleCreate}
           leftBtnTitle="Cancel"
@@ -165,6 +196,7 @@ const SessionCreatePage = () => {
 };
 
 export default SessionCreatePage;
+
 const containerStyle = {
   '& .MuiTextField-root': { width: 1 },
   width: '100%',
@@ -178,8 +210,7 @@ const containerStyle = {
 };
 
 const subjectsData = [
-  { value: 'Math', label: 'Math' },
-  { value: 'Khmer', label: 'Khmer' },
-  { value: 'English', label: 'English' },
+  { value: '1', label: 'Math' },
+  { value: '2', label: 'Khmer' },
+  { value: '3', label: 'English' },
 ];
-
