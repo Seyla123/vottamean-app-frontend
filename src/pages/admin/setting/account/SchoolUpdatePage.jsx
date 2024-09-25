@@ -1,20 +1,19 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { Button, TextField, Stack } from '@mui/material';
 import {
   useUpdateUserProfileMutation,
   useGetUserProfileQuery,
 } from '../../../../services/userApi';
 import { useDispatch } from 'react-redux';
-import { updateFormData } from '../../../../store/slices/formSlice';
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 import { transformSchoolData } from '../../../../utils/formatData';
 import { SchoolValidator } from '../../../../validators/validationSchemas';
 
 function SchoolUpdatePage() {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Fetch user profile data
   const { data: userProfile, isLoading, error } = useGetUserProfileQuery();
@@ -27,6 +26,13 @@ function SchoolUpdatePage() {
   // Transform user profile data
   const transformedData = transformSchoolData(userProfile);
   console.log('transformedData', transformedData);
+
+  // onClickBack
+  const onClickBack = () => {
+    console.log('cancel');
+
+    navigate('/admin/settings/account');
+  };
 
   // Form setup with react-hook-form
   const {
@@ -58,22 +64,25 @@ function SchoolUpdatePage() {
   // Submit handler
   const onSubmit = async (data) => {
     try {
-      await updateUserProfile(data).unwrap();
-      dispatch(
-        setSnackbar({
-          message: 'School info updated successfully!',
-          severity: 'success',
-        }),
-      );
-      dispatch(updateFormData(data)); // Update Redux state
+      // Access info_id correctly
+      const infoId = userProfile.data.adminProfile?.info_id;
+
+      // Confirm info_id in console
+      console.log('Extracted info_id:', infoId);
+
+      const updatedData = {
+        ...data,
+        info_id: infoId,
+      };
+
+      // Log the updated data
+      console.log('Updated Data:', updatedData);
+
+      await updateUserProfile(updatedData).unwrap(); // This should be your API call
+      // Dispatch success message
     } catch (err) {
       console.error('Failed to update profile:', err);
-      dispatch(
-        setSnackbar({
-          message: updateError?.data?.message || 'Failed to update school info',
-          severity: 'error',
-        }),
-      );
+      // Dispatch error message
     }
   };
 
@@ -133,6 +142,16 @@ function SchoolUpdatePage() {
           disabled={isUpdating}
         >
           {isUpdating ? 'Updating...' : 'Update School Info'}
+        </Button>
+
+        {/* Cancel button */}
+        <Button
+          type="button"
+          variant="outlined"
+          fullWidth
+          onClick={onClickBack}
+        >
+          Cancel
         </Button>
       </Stack>
     </form>
