@@ -15,18 +15,24 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodDetailPage() {
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [rows, setRows] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useGetClassPeriodByIdQuery(id);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
   const [deleteClassPeriod, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError }] =
-    useDeleteClassPeriodMutation();
+    useDeleteClassPeriodMutation(id);
   const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
 
+  useEffect(() => {
+    if (data && isSuccess) {
+      setRows(periodDetail);
+    }
+  }, [data, isSuccess, isDeleteSuccess]);
 
   useEffect(() => {
     if (isDeleting) {
@@ -34,10 +40,10 @@ function ClassPeriodDetailPage() {
         setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
       );
     } else if (isDeleteError) {
-      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error', }),);
+      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error' }));
     } else if (isDeleteSuccess) {
       dispatch(
-        setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success', }),
+        setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success' }),
       );
       navigate('/admin/class-periods');
     }
@@ -62,10 +68,10 @@ function ClassPeriodDetailPage() {
 
   // Handle DELETE action
   const clickDetele = () => {
-    setItemToDelete(data.data.period_id);
+    setClassPeriodToDelete(data.data);
     dispatch(setModal({ open: true }));
   };
-  
+
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
     await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
@@ -101,7 +107,7 @@ function ClassPeriodDetailPage() {
         handleEdit={clickEdit}
         handleDelete={clickDetele}
       >
-        <CardInformation data={periodDetail} />
+        <CardInformation data={rows} />
       </CardComponent>
       <DeleteConfirmationModal
         open={modal.open}
