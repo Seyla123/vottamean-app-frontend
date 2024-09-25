@@ -9,15 +9,15 @@ import {
   Typography,
   Stack,
   FormControl,
-  InputLabel,
   Select,
-  FormHelperText,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import {
+  DatePicker,
+  LocalizationProvider,
+} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
 import dayjs from 'dayjs';
@@ -26,7 +26,15 @@ import dayjs from 'dayjs';
 const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
-  phoneNumber: yup.string().required('Phone number is required'),
+  phoneNumber: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^\d{9,15}$/, 'Phone number must be between 9 and 15 digits and numeric.')
+    .test(
+      'length',
+      'Phone number must be between 9 and 15 digits',
+      (value) => value && value.length >= 9 && value.length <= 15,
+    ),
   gender: yup.string().required('Gender is required'),
   dob: yup
     .string()
@@ -37,6 +45,7 @@ const validationSchema = yup.object({
 });
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -56,9 +65,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
 
   const [dob, setDob] = useState(null);
 
-  const handleCancel = () => {
-    navigate('/teacher');
-  };
+
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
@@ -70,7 +77,10 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null });
     console.log(data);
   };
-
+  // handle back to list page
+  const handleCancel = () => {
+    navigate('/admin/teachers');
+  };
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -172,42 +182,40 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Date of Birth</Typography>
             <Controller
-            name="dob"
-            control={control}
-            rules={{
-              required: 'Date of birth is required',
-              validate: (value) => {
-                if (!value) {
-                  return 'Date of birth is required';
-                }
-                if (dayjs(value).isAfter(dayjs())) {
-                  return 'Date of birth cannot be in the future';
-                }
-                return true;
-              }
-            }}
-            render={({ field, fieldState: { error } }) => (
-              <DatePicker
-                inputFormat="MM/DD/YYYY"
-                value={dob}
-                onChange={(newValue) => {
-                  setDob(newValue);
-                  field.onChange(newValue);
-                }}
-                maxDate={dayjs()}
-                slotProps={{
-                  textField: {
-                    error: !!error,
-                    helperText: errors.dob?.message,
-                    fullWidth: true,
-                  },
-                }}
-              /> 
-              
-            )}
-            
-          /> 
-           {/* <Typography variant="caption" color="error">
+              name="dob"
+              control={control}
+              rules={{
+                required: 'Date of birth is required',
+                validate: (value) => {
+                  if (!value) {
+                    return 'Date of birth is required';
+                  }
+                  if (dayjs(value).isAfter(dayjs())) {
+                    return 'Date of birth cannot be in the future';
+                  }
+                  return true;
+                },
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <DatePicker
+                  inputFormat="MM/DD/YYYY"
+                  value={dob}
+                  onChange={(newValue) => {
+                    setDob(newValue);
+                    field.onChange(newValue);
+                  }}
+                  maxDate={dayjs()}
+                  slotProps={{
+                    textField: {
+                      error: !!error,
+                      helperText: errors.dob?.message,
+                      fullWidth: true,
+                    },
+                  }}
+                />
+              )}
+            />
+            {/* <Typography variant="caption" color="error">
                     {errors.dateOfBirth?.message}
                   </Typography> */}
           </Box>
@@ -224,6 +232,8 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                   error={!!errors.address}
                   helperText={errors.address?.message}
                   fullWidth
+                  multiline
+                  minRows={2}
                 />
               )}
             />
@@ -236,7 +246,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 1, sm: 2 }}
           >
-            <Button fullWidth variant="outlined" color="inherit">
+            <Button fullWidth variant="outlined" color="inherit" onClick={handleCancel}>
               Cancel
             </Button>
             <Button fullWidth type="submit" variant="contained" color="primary">
