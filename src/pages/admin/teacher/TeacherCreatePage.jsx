@@ -15,7 +15,7 @@ function TeacherCreatePage() {
         subTitle="Please Update Teacher Information"
       >
         {/* Form input */}
-        <FormInfo mode="create" handleCancel={handleCancel} />
+        <FormInfo handleCancel={handleCancel} />
       </FormComponent>
     </>
   );

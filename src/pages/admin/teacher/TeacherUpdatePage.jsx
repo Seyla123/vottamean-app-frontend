@@ -1,12 +1,11 @@
-import { Box } from '@mui/material';
 import React from 'react';
 import Header from '../../../components/teacher/Header';
-import TeacherInfo from '../../../components/teacher/TeacherInfo';
 import FormComponent from '../../../components/common/FormComponent';
+import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
+import { useParams } from 'react-router-dom';
+
 function TeacherUpdatePage() {
-  const handleCancel = () => {
-    navigate('/teacher');
-  };
+  const { id } = useParams();
 
   return (
     <>
@@ -16,7 +15,7 @@ function TeacherUpdatePage() {
         subTitle="Please Update Teacher Information"
       >
         {/* Form edit */}
-        <TeacherInfo mode="update" handleCancel={handleCancel} />
+        <UpdateTeacherForm teacherId={id} />
       </FormComponent>
     </>
   );

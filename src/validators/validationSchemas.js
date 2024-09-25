@@ -265,3 +265,13 @@ export const ClassPeriodValidator = createFormSchema([
   'start_time',
   'end_time',
 ]);
+
+export const UpdateTeacherInfo = createFormSchema([
+  'first_name',
+  'last_name',
+  'gender',
+  'email',
+  'phone_number',
+  'address',
+  'dob',
+])
