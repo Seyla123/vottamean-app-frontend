@@ -5,11 +5,26 @@ import DataTable from '../../../components/common/DataTable';
 import { useNavigate } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
 import { useGetSubjectsQuery } from '../../../services/subjectApi';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 
 function SubjectListPage() {
   const navigate = useNavigate();
   const { data, isError, isLoading, isSuccess } = useGetSubjectsQuery();
 
+  // loading the data until it successfully fetched
+  if (isLoading) {
+    return <CircularIndeterminate />;
+  }
+  console.log(data.data);
+
+  const subjectData = data.data.map((item) => {
+    const { subject_id, name, description } = item;
+    return {
+      subject_id,
+      name,
+      description
+    };
+  });
 
   const handleEdit = (row) => {
     navigate(`/dashboard/subjects/update/${row.id}`);
@@ -23,25 +38,10 @@ function SubjectListPage() {
     console.log('Delete all');
   };
 
-  const hideColumns = ['description'];
-
-  const columns = [
-    // { id: 'id', label: 'Subject ID' },
+  const tableTiles = [
+    { id: 'subject_id', label: 'Subject ID' },
     { id: 'name', label: 'Subject Name' },
     { id: 'description', label: 'Subject Description' },
-  ];
-
-  const rows = [
-    {
-      id: 1,
-      name: 'Potato Fried',
-      description: 'This is a subject for learning how to cook potato fried.',
-    },
-    {
-      id: 2,
-      name: 'Potato Chip',
-      description: 'This is a subject for learning how to cook potato chip.',
-    },
   ];
 
   return (
@@ -61,12 +61,12 @@ function SubjectListPage() {
       </Stack>
       {/* List Subject */}
       <DataTable
-        columns={columns}
-        rows={rows}
+        columns={tableTiles}
+        rows={subjectData}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={hideColumns}
+        hideColumns={'description'}
         emptyTitle={'No Subject'}
         emptySubTitle={'No Subject Available'}
         showNO={true}
