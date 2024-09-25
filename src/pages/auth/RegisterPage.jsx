@@ -29,7 +29,7 @@ const RegisterPage = () => {
   const formData = useSelector((state) => state.form);
   const [signup] = useSignupMutation();
 
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -243,7 +243,7 @@ const RegisterPage = () => {
                 opacity: activeStep === index ? 1 : 0,
                 transform: `translateX(${(index - activeStep) * 100}%)`,
                 transition:
-                  'opacity 0.8s ease-in-out, transform 0.8s cubic-bezier(0.65, 0, 0.35, 1)',
+                  'opacity 0.8s ease-in-out, transform 0.8s cubic-bezier(0.83, 0, 0.17, 1)',
               }}
             />
           ))}
