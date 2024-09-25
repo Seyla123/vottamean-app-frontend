@@ -1,113 +1,132 @@
-// React and third-party libraries
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Button, TextField, Alert } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData } from '../../../../store/slices/formSlice';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-// Components
+import {
+  Box,
+  Stack,
+  Button,
+  TextField,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
+
 import FormComponent from '../../../../components/common/FormComponent';
 
-// Redux hooks and API
-import { useUpdateUserProfileMutation } from '../../../../services/userApi';
+import {
+  useUpdateUserProfileMutation,
+  useGetUserProfileQuery,
+} from '../../../../services/userApi';
 
-function UserUpdateSchoolInfoPage() {
+import { useDispatch } from 'react-redux';
+import { updateFormData } from '../../../../store/slices/formSlice';
+
+// User Profile Data formatting
+import { UserProfileUpdateData } from '../../../../utils/formatData';
+
+// Validator for form validation
+import { SchoolValidator } from '../../../../validators/validationSchemas';
+
+import { setSnackbar } from '../../../../store/slices/uiSlice';
+
+function SchoolUpdatePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [updateUserProfile] = useUpdateUserProfileMutation();
 
-  // Get the initial school info from the Redux store
-  const { school_name, school_address, school_phone_number } = useSelector(
-    (state) => state.form,
-  );
+  const [
+    updateUserProfile,
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      error: updateError,
+    },
+  ] = useUpdateUserProfileMutation();
 
-  // Local state for school form data
+  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
+
+  // Initialize formData with empty strings to avoid uncontrolled warning
   const [formData, setFormData] = useState({
-    school_name: school_name || '',
-    school_address: school_address || '',
-    school_phone_number: school_phone_number || '',
+    school_name: '',
+    school_address: '',
+    school_phone_number: '',
   });
 
-  // Local state for error handling and loading
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  useEffect(() => {
+    if (isSuccess && userProfile) {
+      const transformedData = UserProfileUpdateData(userProfile);
+      setFormData({
+        ...transformedData.userProfile,
+      });
+    }
+  }, [isSuccess, userProfile]);
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    // Reset error message when user changes input
-    setError('');
   };
 
-  // Handle school info update
-  // Handle school info update
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess(false);
-
-    // Input validation
-    if (
-      !formData.school_name ||
-      !formData.school_address ||
-      !formData.school_phone_number
-    ) {
-      setError('All fields are required.');
-      setLoading(false);
-      return;
-    }
 
     try {
-      // Call API to update user school information
-      const updatedProfile = await updateUserProfile(formData).unwrap();
-
-      // If the API call succeeds, update the Redux store
-      if (updatedProfile) {
-        dispatch(updateFormData(updatedProfile));
-
-        // Show success message
-        setSuccess(true);
-
-        // Navigate back to the account profile page after a short delay
-        setTimeout(() => {
-          navigate('/admin/settings/account');
-        }, 2000);
-
-        console.log('School information updated successfully');
-      }
+      await updateUserProfile(formData).unwrap();
     } catch (error) {
-      // This should only catch API errors, not the successful response
-      const errorMessage =
-        error.data?.message ||
-        'Failed to update school information. Please try again later.';
-      setError(errorMessage);
-      console.error('Error updating school information:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error updating profile: ', error);
     }
   };
+
+  useEffect(() => {
+    if (isUpdateLoading) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
+      );
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError.data.message,
+          severity: 'error',
+        }),
+      );
+    } else if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/settings/account');
+    }
+  }, [
+    dispatch,
+    isUpdateError,
+    isUpdateLoading,
+    isUpdateSuccess,
+    navigate,
+    updateError,
+  ]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (!isSuccess || !userProfile) {
+    return <Typography variant="h6">No user data found</Typography>;
+  }
 
   return (
     <FormComponent
-      title={'Update School Information'}
-      subTitle={'Update your school details'}
+      title="Update Personal Information"
+      subTitle="Update your personal details"
     >
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          {/* Error Message */}
-          {error && <Alert severity="error">{error}</Alert>}
-          {success && (
-            <Alert severity="success">
-              School information updated successfully!
-            </Alert>
-          )}
-
           {/* School Name */}
           <TextField
             label="School Name"
@@ -115,17 +134,6 @@ function UserUpdateSchoolInfoPage() {
             value={formData.school_name}
             onChange={handleChange}
             fullWidth
-            required
-          />
-
-          {/* School Address */}
-          <TextField
-            label="School Address"
-            name="school_address"
-            value={formData.school_address}
-            onChange={handleChange}
-            fullWidth
-            required
           />
 
           {/* School Phone Number */}
@@ -135,17 +143,20 @@ function UserUpdateSchoolInfoPage() {
             value={formData.school_phone_number}
             onChange={handleChange}
             fullWidth
-            required
+          />
+
+          {/* School Address */}
+          <TextField
+            label="School Address"
+            name="school_address"
+            value={formData.school_address}
+            onChange={handleChange}
+            fullWidth
           />
 
           {/* Submit button */}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            disabled={loading}
-          >
-            {loading ? 'Updating...' : 'Update School Info'}
+          <Button type="submit" variant="contained" fullWidth>
+            Update School Info
           </Button>
 
           {/* Cancel button */}
@@ -163,4 +174,4 @@ function UserUpdateSchoolInfoPage() {
   );
 }
 
-export default UserUpdateSchoolInfoPage;
+export default SchoolUpdatePage;

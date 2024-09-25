@@ -235,6 +235,13 @@ export const UserProfileValidator = createFormSchema([
   'dob',
 ]);
 
+// User School validator
+export const SchoolValidator = createFormSchema([
+  'name',
+  'phone_number',
+  'address',
+]);
+
 // Account Information
 export const AccountInformationValidator = createFormSchema([
   'email',

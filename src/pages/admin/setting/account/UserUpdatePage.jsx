@@ -1,45 +1,64 @@
-// React and third-party libraries
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Stack,
-  Typography,
   Button,
   TextField,
   MenuItem,
+  CircularProgress,
+  Typography,
 } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
-
-// Components
 import FormComponent from '../../../../components/common/FormComponent';
 import profile from '../../../../assets/images/default-profile.png';
 
-// Redux hooks and API
-import { useUpdateUserProfileMutation } from '../../../../services/userApi';
+import {
+  useUpdateUserProfileMutation,
+  useGetUserProfileQuery,
+} from '../../../../services/userApi';
+
+// User Profile Data formatting
+import { UserProfileUpdateData } from '../../../../utils/formatData';
+
+// Ui Slice for snackbar
+import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function UserUpdatePersonalInfoPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [updateUserProfile] = useUpdateUserProfileMutation();
+  const [
+    updateUserProfile,
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      error: updateError,
+    },
+  ] = useUpdateUserProfileMutation();
 
-  // Get the initial personal info from the Redux store
-  const { first_name, last_name, dob, gender, phone_number, address, photo } =
-    useSelector((state) => state.form);
+  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
 
-  // Local state for form data
+  // Use formSlice data to store form state
   const [formData, setFormData] = useState({
-    first_name: first_name || '',
-    last_name: last_name || '',
-    phone_number: phone_number || '',
-    address: address || '',
-    dob: dob || '',
-    gender: gender || '',
-    photo: photo || '',
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    address: '',
+    dob: '',
+    gender: '',
   });
 
-  // Handle input change
+  useEffect(() => {
+    if (isSuccess && userProfile) {
+      const transformedData = UserProfileUpdateData(userProfile);
+      setFormData({
+        ...transformedData.userProfile,
+      });
+    }
+  }, [isSuccess, userProfile]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -48,35 +67,67 @@ function UserUpdatePersonalInfoPage() {
     }));
   };
 
-  // Handle profile update
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      // Call API to update user personal information
-      const updatedProfile = await updateUserProfile(formData).unwrap();
-
-      // Update the Redux store
-      dispatch(updateFormData(updatedProfile));
-
-      // Navigate back to the account profile page
-      navigate('/admin/settings/account');
-      console.log('Personal information updated successfully');
+      await updateUserProfile(formData).unwrap();
     } catch (error) {
-      console.error('Failed to update personal information:', error);
+      console.error('Error updating profile: ', error);
     }
   };
 
+  useEffect(() => {
+    if (isUpdateLoading) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
+      );
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError.data.message,
+          severity: 'error',
+        }),
+      );
+    } else if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/settings/account');
+    }
+  }, [
+    dispatch,
+    isUpdateError,
+    isUpdateLoading,
+    isUpdateSuccess,
+    navigate,
+    updateError,
+  ]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (!isSuccess || !userProfile) {
+    return <Typography variant="h6">No user data found</Typography>;
+  }
+
   return (
     <FormComponent
-      title={'Update Personal Information'}
-      subTitle={'Update your personal details'}
+      title="Update Personal Information"
+      subTitle="Update your personal details"
     >
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
           {/* Profile picture */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
             <img
-              src={formData.photo || profile}
+              src={profile}
               alt="Profile"
               style={{ width: '120px', borderRadius: '50%' }}
             />
@@ -91,7 +142,6 @@ function UserUpdatePersonalInfoPage() {
             fullWidth
             required
           />
-
           {/* Last Name */}
           <TextField
             label="Last Name"
@@ -101,16 +151,14 @@ function UserUpdatePersonalInfoPage() {
             fullWidth
             required
           />
-
-          {/* Phone Number */}
+          {/* Phone */}
           <TextField
-            label="Phone Number"
+            label="Phone"
             name="phone_number"
             value={formData.phone_number}
             onChange={handleChange}
             fullWidth
           />
-
           {/* Address */}
           <TextField
             label="Address"
@@ -119,7 +167,6 @@ function UserUpdatePersonalInfoPage() {
             onChange={handleChange}
             fullWidth
           />
-
           {/* Date of Birth */}
           <TextField
             label="Date of Birth"
@@ -132,7 +179,6 @@ function UserUpdatePersonalInfoPage() {
               shrink: true,
             }}
           />
-
           {/* Gender */}
           <TextField
             select
@@ -146,12 +192,10 @@ function UserUpdatePersonalInfoPage() {
             <MenuItem value="Female">Female</MenuItem>
             <MenuItem value="Other">Other</MenuItem>
           </TextField>
-
           {/* Submit button */}
           <Button type="submit" variant="contained" fullWidth>
             Update Personal Info
           </Button>
-
           {/* Cancel button */}
           <Button
             type="button"

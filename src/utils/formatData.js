@@ -219,7 +219,7 @@ export const UserProfileUpdateData = (user) => {
       dob: info.dob,
       phone_number: info.phone_number,
       address: info.address,
-      School_name: school.school_name,
+      school_name: school.school_name,
       school_phone_number: school.school_phone_number,
       school_address: school.school_address,
     },
