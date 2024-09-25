@@ -236,7 +236,7 @@ export const UserProfileValidator = createFormSchema([
 ]);
 
 // Account Information
-export const AccountInformation = createFormSchema([
+export const AccountInformationValidator = createFormSchema([
   'email',
   'password',
   'passwordConfirm',

@@ -1,283 +1,210 @@
 // React and third-party libraries
-import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import dayjs from 'dayjs';
-
-// Material UI
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Typography,
-  Stack,
-  Avatar,
   Box,
-  Select,
-  MenuItem,
+  Stack,
+  Typography,
   Button,
+  TextField,
+  MenuItem,
 } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
-// Components
-import CardComponent from '../../../../components/common/CardComponent';
-import TextFieldComponent from '../../../../components/common/TextFieldComponent';
-import FormComponent from '../../../../components/common/FormComponent';
-import ButtonContainer from '../../../../components/common/ButtonContainer';
-import Profile from '../../../../assets/images/default-profile.png';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
 
+// Components
+import FormComponent from '../../../../components/common/FormComponent';
+import profile from '../../../../assets/images/default-profile.png';
+
 // Redux hooks and API
-import {
-  useGetUserProfileQuery,
-  useUpdateUserProfileMutation,
-} from '../../../../services/userApi';
-
-// User Profile Data validation
-import { UserProfileValidator } from '../../../../validators/validationSchemas';
-
-// User Profile Data formatting
-import { UserProfileUpdateData } from '../../../../utils/formatData';
+import { useUpdateUserProfileMutation } from '../../../../services/userApi';
 
 function UserUpdatePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [updateUserProfile] = useUpdateUserProfileMutation();
 
-  // Fetch user profile data from the API
-  const { data: user, isLoading } = useGetUserProfileQuery();
-
-  // Prepare mutation for updating user profile
-  const [updateUserProfile, { isLoading: isUpdating }] =
-    useUpdateUserProfileMutation();
-
-  // Local state for transformed user data
-  const [userData, setUserData] = useState({
-    userProfile: {},
-    photo: '',
-  });
-  console.log('User Data Formatted : ', userData);
-
-  // State management for gender and date of birth
-  const [gender, setGender] = useState(userData.gender || '');
-  const [dob, setDob] = useState(userData.dob ? dayjs(userData.dob) : null);
-
-  // Setup form handling with validation
+  // Get the initial user profile data from the Redux store
   const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: yupResolver(UserProfileValidator),
-    defaultValues: userData,
+    first_name,
+    last_name,
+    dob,
+    gender,
+    phone_number,
+    address,
+    photo,
+    school_name,
+    school_address,
+    school_phone_number,
+  } = useSelector((state) => state.form);
+
+  // Local state for form data
+  const [formData, setFormData] = useState({
+    first_name: first_name || '',
+    last_name: last_name || '',
+    phone_number: phone_number || '',
+    address: address || '',
+    dob: dob || '',
+    gender: gender || '',
+    photo: photo || '',
+    school_name: school_name || '',
+    school_address: school_address || '',
+    school_phone_number: school_phone_number || '',
   });
 
-  // Effect to transform and set user data when fetched
-  useEffect(() => {
-    if (user) {
-      const transformedData = UserProfileUpdateData(user);
-      console.log('Transformed Data:', transformedData);
-      setUserData(transformedData);
-      reset(transformedData.userProfile);
-
-      setDob(dayjs(transformedData.userProfile.dob));
-      setGender(transformedData.userProfile.gender || '');
-    }
-  }, [user, dispatch, reset]);
-
-  // Onclick back
-  const onClickBack = () => {
-    window.history.back();
-  };
-
-  // Handle input change and dispatch to Redux
-  const handleInputChange = (e) => {
+  // Handle input change
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    dispatch(updateFormData({ [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  // Handle date change and dispatch to Redux
-  const handleDateChange = (date) => {
-    setDob(date);
-    dispatch(updateFormData({ dob: date?.toISOString() }));
-  };
-
-  // Handle image upload and read file data
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setUserData((prev) => ({ ...prev, img: reader.result }));
-        dispatch(updateFormData({ image: reader.result }));
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Handle form submission to update user profile
-  const onSubmit = async (data) => {
+  // Handle profile update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const formDataToSend = new FormData(); // Use FormData for file upload
-      Object.entries(data).forEach(([key, value]) => {
-        if (key !== 'photo' && value) {
-          formDataToSend.append(key, value);
-        }
-      });
-      if (userData.photo) {
-        formDataToSend.append('photo', userData.photo);
-      }
+      // Call API to update user profile
+      const updatedProfile = await updateUserProfile(formData).unwrap();
 
-      await updateUserProfile(formDataToSend).unwrap();
-      console.log('Profile updated successfully');
+      // Update the Redux store
+      dispatch(updateFormData(updatedProfile));
+
+      // Navigate back to the account profile page
       navigate('/admin/settings/account');
+      console.log('Profile updated successfully');
     } catch (error) {
-      console.error('Failed to update profile', error);
+      console.error('Failed to update profile:', error);
     }
   };
-
-  // Display loading state
-  if (isLoading) {
-    return <Typography>Loading...</Typography>;
-  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack component={'div'} alignSelf={'center'}>
-        <Avatar
-          sx={imgStyle}
-          alt="user profile"
-          src={userData.photo || Profile}
-        />
-        <input
-          accept="image/*"
-          type="file"
-          onChange={handleImageUpload}
-          style={{ marginTop: '10px' }}
-        />
-      </Stack>
+    <FormComponent
+      title={'Update Profile'}
+      subTitle={'Update your personal information'}
+    >
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          {/* Profile picture */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <img
+              src={formData.photo || profile}
+              alt="Profile"
+              style={{ width: '120px', borderRadius: '50%' }}
+            />
+          </Box>
 
-      <Stack direction="row" gap={2}>
-        <Box flexGrow={1}>
-          <Typography variant="body1">First Name</Typography>
-          <TextFieldComponent
+          {/* First Name */}
+          <TextField
+            label="First Name"
             name="first_name"
-            {...register('first_name')}
-            onChange={handleInputChange}
-            placeholder="First Name"
-            error={Boolean(errors.first_name)}
-            helperText={errors.first_name?.message}
+            value={formData.first_name}
+            onChange={handleChange}
+            fullWidth
+            required
           />
-        </Box>
 
-        <Box flexGrow={1}>
-          <Typography variant="body1">Last Name</Typography>
-          <TextFieldComponent
+          {/* Last Name */}
+          <TextField
+            label="Last Name"
             name="last_name"
-            {...register('last_name')}
-            onChange={handleInputChange}
-            placeholder="Last Name"
-            error={Boolean(errors.last_name)}
-            helperText={errors.last_name?.message}
+            value={formData.last_name}
+            onChange={handleChange}
+            fullWidth
+            required
           />
-        </Box>
-      </Stack>
 
-      <Box>
-        <Typography variant="body1">Gender</Typography>
-        <Select
-          fullWidth
-          value={gender}
-          onChange={(e) => {
-            setGender(e.target.value);
-            dispatch(updateFormData({ gender: e.target.value }));
-          }}
-          displayEmpty
-          renderValue={(selected) => {
-            if (!selected) {
-              return <Box sx={{ color: '#B5B5B5' }}>Select gender</Box>;
-            }
-            return selected;
-          }}
-        >
-          <MenuItem value="Male">Male</MenuItem>
-          <MenuItem value="Female">Female</MenuItem>
-          <MenuItem value="Other">Other</MenuItem>
-        </Select>
-      </Box>
+          {/* Phone Number */}
+          <TextField
+            label="Phone Number"
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleChange}
+            fullWidth
+          />
 
-      <Box>
-        <Typography variant="body1">Date of Birth</Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Controller
+          {/* Address */}
+          <TextField
+            label="Address"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            fullWidth
+          />
+
+          {/* Date of Birth */}
+          <TextField
+            label="Date of Birth"
             name="dob"
-            control={control}
-            render={({ field }) => (
-              <DatePicker
-                {...field}
-                value={dob}
-                onChange={handleDateChange}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    placeholder: 'Date of Birth',
-                    error: Boolean(errors.dob),
-                    helperText: errors.dob?.message,
-                  },
-                }}
-              />
-            )}
+            type="date"
+            value={formData.dob}
+            onChange={handleChange}
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
-        </LocalizationProvider>
-      </Box>
 
-      <Box>
-        <Typography variant="body1">Phone Number</Typography>
-        <TextFieldComponent
-          name="phone_number"
-          {...register('phone_number')}
-          onChange={handleInputChange}
-          placeholder="Number"
-          error={Boolean(errors.phone_number)}
-          helperText={errors.phone_number?.message}
-          defaultValue={userData.userProfile.phone_number}
-        />
-      </Box>
+          {/* Gender */}
+          <TextField
+            select
+            label="Gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            fullWidth
+          >
+            <MenuItem value="Male">Male</MenuItem>
+            <MenuItem value="Female">Female</MenuItem>
+            <MenuItem value="Other">Other</MenuItem>
+          </TextField>
 
-      <Box>
-        <Typography variant="body1">Address</Typography>
-        <TextFieldComponent
-          name="address"
-          {...register('address')}
-          onChange={handleInputChange}
-          placeholder="Address"
-          error={Boolean(errors.address)}
-          helperText={errors.address?.message}
-        />
-      </Box>
-      <Button onClick={onClickBack} variant="outlined">
-        Cancel
-      </Button>
+          {/* School Name */}
+          <TextField
+            label="School Name"
+            name="school_name"
+            value={formData.school_name}
+            onChange={handleChange}
+            fullWidth
+          />
 
-      <Button type="submit" variant="contained">
-        Update
-      </Button>
-    </form>
+          {/* School Address */}
+          <TextField
+            label="School Address"
+            name="school_address"
+            value={formData.school_address}
+            onChange={handleChange}
+            fullWidth
+          />
+
+          {/* School Phone Number */}
+          <TextField
+            label="School Phone Number"
+            name="school_phone_number"
+            value={formData.school_phone_number}
+            onChange={handleChange}
+            fullWidth
+          />
+
+          {/* Submit button */}
+          <Button type="submit" variant="contained" fullWidth>
+            Update Profile
+          </Button>
+
+          {/* Cancel button */}
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            onClick={() => navigate('/admin/settings/account/profile')}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </form>
+    </FormComponent>
   );
 }
 
 export default UserUpdatePage;
-
-const imgStyle = {
-  width: {
-    xs: 120,
-    sm: 160,
-  },
-  height: {
-    xs: 120,
-    sm: 160,
-  },
-  display: 'flex',
-};
