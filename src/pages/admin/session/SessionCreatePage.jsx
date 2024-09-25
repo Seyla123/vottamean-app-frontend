@@ -8,6 +8,7 @@ import { useCreateSessionMutation } from '../../../services/sessionApi';
 import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
+import { useGetDayQuery } from '../../../services/daysApi';
 
 // Main Component
 const SessionCreatePage = () => {
@@ -76,6 +77,24 @@ const SessionCreatePage = () => {
 
   // Data for the select options
   const teachersData = teacher;
+
+  // handle days data for select field 
+  const [days, setDays] = useState([]);
+  const {data : dayData} = useGetDayQuery(); 
+  useEffect(() => {
+    if(dayData) {
+      const dayFormat = dayData.data.map((item) => {
+        return {
+          value: item.day,
+          label: item.day
+        }
+      })
+      setDays(dayFormat);
+      console.log(dayFormat);
+    }
+  }, [dayData])
+  
+  const dowData = days;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -174,8 +193,3 @@ const subjectsData = [
   { value: 'English', label: 'English' },
 ];
 
-const dowData = [
-  { value: 'Monday', label: 'Monday' },
-  { value: 'Tuesday', label: 'Tuesday' },
-  { value: 'Wednesday', label: 'Wednesday' },
-];
