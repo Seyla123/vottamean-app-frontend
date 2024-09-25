@@ -1,138 +1,250 @@
-import { useState } from "react";
-import {Box} from "@mui/material";
-import FormComponent from "../../../components/common/FormComponent";
-import CardComponent from "../../../components/common/CardComponent";
-import ButtonContainer from "../../../components/common/ButtonContainer";
-import SelectField from "../../../components/common/SelectField";
+import { useEffect, useState } from 'react';
+import { Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import FormComponent from '../../../components/common/FormComponent';
+import CardComponent from '../../../components/common/CardComponent';
+import ButtonContainer from '../../../components/common/ButtonContainer';
+import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
+import { useGetClassesDataQuery } from '../../../services/classApi';
+import { useGetAllTeachersQuery } from '../../../services/teacherApi';
+import { useGetDayQuery } from '../../../services/daysApi';
+import { useGetSubjectsQuery } from '../../../services/subjectApi';
+import { useNavigate, useParams } from 'react-router-dom';
+import { calculatePeriod } from '../../../utils/formatData';
+import {
+  useUpdateSessionMutation,
+  useGetSessionByIdQuery,
+} from '../../../services/sessionApi';
 
 
-// Main Component
-const SessionCreatePage = () => {
+const SessionUpdatePage = () => {
+  // Hooks
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Form state
   const [form, setForm] = useState({
-    teacher: "Smey",
-    classPeriod: "7:00 - 8:00",
-    classes: "12A",
-    subject: "Math",
-    dayOfWeek: "Monday",
+    teacher: '',
+    classPeriod: '',
+    classes: '',
+    subject: '',
+    dayOfWeek: '',
   });
 
+  // get the session data
+  const { data: session } = useGetSessionByIdQuery(id);
+
+  // set form state for first load into the screen
+  useEffect(() => {
+    if (session) {
+      setForm({
+        teacher: session.data.Teacher.teacher_id,
+        classPeriod: session.data.Period.period_id,
+        classes: session.data.Class.class_id,
+        subject: session.data.Subject.subject_id,
+        dayOfWeek: session.data.DayOfWeek.day_id,
+      });
+    }
+  }, [session]);
+
+  // Handle periods data for select field
+  const [periods, setPeriods] = useState([]);
+  const { data } = useGetClassPeriodQuery();
+  useEffect(() => {
+    if (data) {
+      const transformPeriod = data.data.map((item) => ({
+        value: item.period_id, // Store period_id
+        label: `${item.start_time} - ${item.end_time}`, // Display time range
+      }));
+      setPeriods(transformPeriod);
+    }
+  }, [data]);
+
+  // Handle class data for select field
+  const [classes, setClass] = useState([]);
+  const { data: classData } = useGetClassesDataQuery();
+  useEffect(() => {
+    if (classData) {
+      const classFormat = classData.data.map((item) => ({
+        value: item.class_id, // Store class_id
+        label: item.class_name, // Display class name
+      }));
+      setClass(classFormat);
+    }
+  }, [classData]);
+
+  // Handle teachers data for select field
+  const [teachers, setTeachers] = useState([]);
+  const { data: teacherData } = useGetAllTeachersQuery();
+  useEffect(() => {
+    if (teacherData) {
+      const teacherFormat = teacherData.data.map((item) => ({
+        value: item.teacher_id, // Store teacher_id
+        label: `${item.Info.first_name} ${item.Info.last_name}`, // Display full name
+      }));
+      setTeachers(teacherFormat);
+    }
+  }, [teacherData]);
+
+  // Handle days data for select field
+  const [days, setDays] = useState([]);
+  const { data: dayData } = useGetDayQuery();
+  useEffect(() => {
+    if (dayData) {
+      const dayFormat = dayData.data.map((item) => ({
+        value: item.day_id, // Store day_id
+        label: item.day, // Display day name
+      }));
+      setDays(dayFormat);
+    }
+  }, [dayData]);
+
+  // Handle subjects data for select field
+  const [subjects, setSubjects] = useState([]);
+  const { data: subjectData } = useGetSubjectsQuery();
+  useEffect(() => {
+    if (subjectData) {
+      const subjectFormat = subjectData.data.map((item) => ({
+        value: item.subject_id, // Store subject_id
+        label: item.name, // Display subject name
+      }));
+      setSubjects(subjectFormat);
+    }
+  }, [subjectData]);
+
+  // Form change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleBackClick = () => {
-    console.log("cancel");
-  };
+  // Handle form submission for updating session
+  const [updateSession] = useUpdateSessionMutation();
+  const handleUpdate = async () => {
+    const sessionData = {
+      class_id: form.classes,
+      subject_id: form.subject,
+      day_id: form.dayOfWeek,
+      teacher_id: form.teacher,
+      period_id: form.classPeriod,
+    };
 
-  const handleNextClick = () => {
-    console.log("add");
+    try {
+      const result = await updateSession({ id, sessionData }).unwrap();
+      console.log('Session updated successfully:', result);
+      navigate('/admin/sessions');
+    } catch (error) {
+      console.error('Error updating session:', error);
+    }
   };
 
   return (
-    <FormComponent title="Update session" subTitle="Please Fill session information">
+    <FormComponent
+      title="Update Session"
+      subTitle="Please fill session information"
+    >
       <CardComponent title="Session Information">
-        <Box
-          component="form"
-          sx={containerStyle}
-        >
+        <Box component="form" sx={containerStyle}>
           {/* Teacher field */}
-          <SelectField
-            label="Teacher"
-            name="teacher"
-            placeholder="Teacher"
-            value={form.teacher}
-            onChange={handleChange}
-            options={teachersData}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Teacher</InputLabel>
+            <Select
+              name="teacher"
+              value={form.teacher}
+              onChange={handleChange}
+              label="Teacher"
+            >
+              {teachers.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Class Period */}
-          <SelectField
-            label="Class Period"
-            name="classPeriod"
-            placeholder="class Period"
-            value={form.classPeriod}
-            onChange={handleChange}
-            options={periodsData}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Class Period</InputLabel>
+            <Select
+              name="classPeriod"
+              value={form.classPeriod}
+              onChange={handleChange}
+              label="Class Period"
+            >
+              {periods.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Classes */}
-          <SelectField
-            label="Class"
-            name="classes"
-            placeholder="Class"
-            value={form.classes}
-            onChange={handleChange}
-            options={classesData}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Class</InputLabel>
+            <Select
+              name="classes"
+              value={form.classes}
+              onChange={handleChange}
+              label="Class"
+            >
+              {classes.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Subject */}
-          <SelectField
-            label="Subject"
-            name="subject"
-            placeholder="Subject"
-            value={form.subject}
-            onChange={handleChange}
-            options={subjectsData}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Subject</InputLabel>
+            <Select
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              label="Subject"
+            >
+              {subjects.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Day of Week */}
-          <SelectField
-            label="Day of Week"
-            name="dayOfWeek"
-            placeholder={"Day of Week"}
-            value={form.dayOfWeek}
-            onChange={handleChange}
-            options={dowData}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Day of Week</InputLabel>
+            <Select
+              name="dayOfWeek"
+              value={form.dayOfWeek}
+              onChange={handleChange}
+              label="Day of Week"
+            >
+              {days.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
-        {/* Button Container */}
         <ButtonContainer
-          leftBtn={handleBackClick}
-          rightBtn={handleNextClick}
+          rightBtn={handleUpdate}
           leftBtnTitle="Cancel"
-          rightBtnTitle="update"
+          rightBtnTitle="Update Session"
         />
       </CardComponent>
     </FormComponent>
   );
 };
 
-export default SessionCreatePage;
+export default SessionUpdatePage;
+
 const containerStyle = {
-  "& .MuiTextField-root": { width: 1 },
-  width: "100%",
-  display: "grid",
-  gap: { xs: "12px", md: "24px" },
-  margin: "0 auto",
+  '& .MuiTextField-root': { width: 1 },
+  width: '100%',
+  display: 'grid',
+  gap: { xs: '12px', md: '24px' },
+  margin: '0 auto',
   gridTemplateColumns: {
-    xs: "repeat(1, 1fr)",
-    md: "repeat(2, 1fr)",
+    xs: 'repeat(1, 1fr)',
+    md: 'repeat(2, 1fr)',
   },
-}
-// Data for the select options
-const teachersData = [
-  { value: "Smey", label: "Smey" },
-  { value: "Mary", label: "Mary" },
-  { value: "Berry", label: "Berry" },
-];
-
-const periodsData = [
-  { value: "7:00 - 8:00", label: "7:00 - 8:00" },
-  { value: "8:10 - 9:00", label: "8:10 - 9:00" },
-  { value: "9:10 - 10:00", label: "9:10 - 10:00" },
-];
-
-const classesData = [
-  { value: "12A", label: "12A" },
-  { value: "12B", label: "12B" },
-  { value: "12C", label: "12C" },
-];
-
-const subjectsData = [
-  { value: "Math", label: "Math" },
-  { value: "Khmer", label: "Khmer" },
-  { value: "English", label: "English" },
-];
-
-const dowData = [
-  { value: "Monday", label: "Monday" },
-  { value: "Tuesday", label: "Tuesday" },
-  { value: "Wednesday", label: "Wednesday" },
-];
+};
