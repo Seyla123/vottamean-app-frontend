@@ -32,9 +32,6 @@ function ClassPeriodDetailPage() {
       }
     ] = useDeleteClassPeriodMutation();
 
-  // destrusturing specific data
-  const { period_id, start_time, end_time } = data.data;
-
   // when the class period records are fetched successfully, then set the rows state
   useEffect(() => {
     if (data && isSuccess) {
@@ -86,6 +83,9 @@ function ClassPeriodDetailPage() {
     dispatch(setModal({ open: false }));
     await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
   };
+  
+  // destrusturing specific data
+  const { period_id, start_time, end_time } = data.data;
 
   // Define formatted data to display
   const periodDetail = {
