@@ -167,7 +167,7 @@ const SessionCreatePage = () => {
         <ButtonContainer
           rightBtn={handleCreate}
           leftBtnTitle="Cancel"
-          rightBtnTitle="Add Subject"
+          rightBtnTitle="Add Session"
         />
       </CardComponent>
     </FormComponent>
