@@ -24,7 +24,13 @@ function ClassPeriodDetailPage() {
   // useGetClassPeriodByIdQuery : a hook that returns a function to fetch a class period record by its id
   // useDeleteClassPeriodMutation : a hook that returns a function to delete an class period record
   const { data, error, isLoading, isSuccess } = useGetClassPeriodByIdQuery(id);
-  const [deleteClassPeriod, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError }] = useDeleteClassPeriodMutation();
+  const [
+    deleteClassPeriod,{
+       isLoading: isDeleting, 
+       isSuccess: isDeleteSuccess, 
+       isError: isDeleteError
+      }
+    ] = useDeleteClassPeriodMutation();
 
   // destrusturing specific data
   const { period_id, start_time, end_time } = data.data;

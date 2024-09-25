@@ -1,40 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Stack } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { PlusIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
-import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Stack } from '@mui/material';
+import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodListPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // rows : Array of objects representing the data to be displayed in the table
+  // classPeriodToDelete : a selected class period to be deleted
   const [rows, setRows] = useState([]);
   const [classPeriodToDelete, setclassPeriodToDelete] = useState(null);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
 
+  // useGetClassPeriodByIdQuery : a hook that returns a function to fetch a class period record by its id
+  // useDeleteClassPeriodMutation : a hook that returns a function to delete an class period record
   const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
   const [
-    deleteClassPeriod,
-    {
+    deleteClassPeriod, {
       isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
       error
-    },
+    }
   ] = useDeleteClassPeriodMutation();
 
+  // when the class period records are fetched successfully, then set the rows state
   useEffect(() => {
     if (data && isSuccess) {
       setRows(periodData);
     }
   }, [data, isSuccess, isDeleteSuccess]);
 
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class period list page
   useEffect(() => {
     if (isDeleting) {
       dispatch(
@@ -57,15 +65,13 @@ function ClassPeriodListPage() {
 
   // Handle error state
   if (isError) {
-    return <div>Error loading class periods: {error.message}</div>;
+    console.log('error message :', error.data.message);
   }
 
   // Handle DELETE action
   const handleDelete = (rows) => {
     setclassPeriodToDelete(rows);
     dispatch(setModal({ open: true }));
-    // setclassPeriodToDelete(id.period_id);
-    // setIsOpen(true);
   };
 
   const confirmDelete = async () => {
@@ -144,26 +150,6 @@ function ClassPeriodListPage() {
         emptyTitle="No Class Periods"
         emptySubTitle="No class periods available"
       />
-
-      {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={
-            isDeleting
-              ? 'info'
-              : snackbarMessage.includes('Failed')
-                ? 'error'
-                : 'success'
-          }
-          sx={{ width: '100%' }}
-        >
-          {isDeleting ? 'Deleting...' : snackbarMessage}
-        </Alert>
-      </Snackbar> */}
     </FormComponent>
   );
 }
