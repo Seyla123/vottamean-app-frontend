@@ -1,322 +1,317 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate,useParams } from 'react-router-dom';
-import { useGetTeacherQuery, useUpdateTeacherMutation } from '../../services/teacherApi';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { setSnackbar } from "../../store/slices/uiSlice"
-import SubHeader from './SubHeader';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useGetTeacherQuery,
+  useUpdateTeacherMutation,
+} from '../../services/teacherApi';
 import {
   TextField,
-  MenuItem,
-  Button,
   Box,
   Avatar,
   Typography,
   Stack,
-  FormControl,
+  Button,
   Select,
+  MenuItem,
 } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import LoadingCircle from '../../components/loading/LoadingCircle';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers';
+import { setSnackbar } from '../../store/slices/uiSlice';
 import { useDispatch } from 'react-redux';
+import SubHeader from './SubHeader';
+import dayjs from 'dayjs';
 
-const validationSchema = yup.object({
-  first_name: yup.string().required('First name is required'),
-  last_name: yup.string().required('Last name is required'),
-  phone_number: yup.string().required('Phone number is required'),
-  gender: yup.string().required('Gender is required'),
-  dob: yup
-    .date()
-    .required('Date of birth is required')
-    .max(new Date(), 'Date of birth cannot be in the future')
-    .typeError('Invalid date format'),
-  address: yup.string().required('Address is required'),
-});
-const TeacherInfo = () => {
-
+const UpdateTeacherForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  // - useGetTeacherQuery : fetch the teacher data with the id
-  // - useUpdateTeacherMutation : a hook that returns a function to update the teacher data
-  const { data: teacherData, isLoading, isError, isSuccess } = useGetTeacherQuery(id);
-  const [updateTeacher, { isLoading: isUpdating, isError : isUpdateError, isSuccess: isUpdateSuccess, error : updateError }] = useUpdateTeacherMutation();
-  
-  // dob : data date of birth
-  const [dob, setDob] = useState(null);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-    defaultValues: {
-      first_name: '',
-      last_name: '',
-      phone_number: '',
-      gender: '',
-      dob: '',
-      address: '',
-    },
+  // Get the teacher data
+  const { data: teacherData, isLoading, fetchError } = useGetTeacherQuery(id);
+
+  // Initialize formData with empty strings and nulls
+  // We use this state to store the updated teacher information
+  // and then pass it to the updateTeacher mutation when the form is submitted
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    gender: '',
+    dob: null,
+    address: '',
   });
 
-  // - when the teacherData records are fetched successfully,and set the form state
-  useEffect(() => {
-    if (teacherData && isSuccess) {
-      console.log('this data in useEffect : ', teacherData);
-      const formattedDate = dayjs(teacherData.data.Info.dob);
-      reset({
-        ...teacherData.data.Info,
-        dob: formattedDate,
-      });
-      setDob(formattedDate);
-      console.log('this dob :', formattedDate);
-    }
-  }, [teacherData, isSuccess]);
+  // Update the teacher information and show a snackbar status of updating teacher
+  const [
+    updateTeacher,
+    {
+      isLoading: isUpdating,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      error: updateError,
+    },
+  ] = useUpdateTeacherMutation();
 
-  // when update is in progress, show a snackbar with a message "updating.."
-  // when update is failed, show a snackbar with an error message
-  // when update is successful, show a snackbar with a success message and navigate to the teacher list page
+  // we want the form to be pre-filled with the existing information
+  useEffect(() => {
+    if (teacherData) {
+      const { Info } = teacherData.data;
+      setFormData({
+        // avoid undefined by provide a default value in case of empty
+        first_name: Info.first_name || '',
+        last_name: Info.last_name || '',
+        phone_number: Info.phone_number || '',
+        gender: Info.gender || '',
+        // convert the dob string to a date object since the DatePicker expects a date object
+        dob: Info.dob ? dayjs(Info.dob) : null,
+        address: Info.address || '',
+      });
+    }
+  }, [teacherData]);
+
+  // show the teacher update status in the snackbar
   useEffect(() => {
     if (isUpdating) {
-      dispatch(setSnackbar({ open: true, message: 'Updating...', severity: 'info' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updating...',
+          severity: 'info',
+          autoHideDuration: 6000,
+        }),
+      );
     } else if (isUpdateError) {
-      dispatch(setSnackbar({ open: true, message: updateError.data.message, severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError.message,
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
     } else if (isUpdateSuccess) {
-      dispatch(setSnackbar({ open: true, message: 'Updated successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+          autoHideDuration: 6000,
+        }),
+      );
       navigate('/admin/teachers');
     }
-  }, [isUpdating, isUpdateError, isUpdateSuccess, dispatch, navigate]);
+  }, [dispatch, isUpdateError, isUpdateSuccess, isUpdating]);
 
-// handle cancel
+  // Handle input changes with validation
+  const handleInputChange = ({ target: { name, value } }) => {
+    // Prevent numeric input for first_name and last_name
+    if ((name === 'first_name' || name === 'last_name') && /\d/.test(value)) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Names cannot contain numbers.',
+          severity: 'error',
+        }),
+      );
+      return;
+    }
+    setFormData((data) => ({ ...data, [name]: value }));
+  };
+
+  // Handle Date Change
+  const handleDateChange = (date) => {
+    setFormData((data) => ({ ...data, dob: date }));
+  };
+  // Handle Change Gender
+  const handleGenderChange = (gender) => {
+    const value = gender.target.value;
+    setFormData((data) => ({ ...data, gender: value }));
+    // Update the gender in the formData along with the input value
+  };
+
+  const validateForm = () => {
+    const { phone_number, first_name, last_name, gender, dob, address } =
+      formData;
+    // Check if all fields are filled
+    if (
+      !first_name ||
+      !last_name ||
+      !phone_number ||
+      !gender ||
+      !dob ||
+      !address
+    ) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'All fields are required.',
+          severity: 'error',
+        }),
+      );
+      return false;
+    }
+
+    // Check if phone number is valid (9-15 digits)
+    if (!/^\d{9,15}$/.test(phone_number)) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Phone Number must be between 9 and 15 digits and numeric.',
+          severity: 'error',
+        }),
+      );
+      return false;
+    }
+    return true;
+  };
+
+  // Handle form submission
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    // avoid page reloading when form is submitted
+
+    if (!validateForm()) {
+      return;
+      // Don't proceed if validation fails
+    }
+    try {
+      // Call the updateTeacher mutation
+      await updateTeacher({
+        id, // get the id of the teacher to update
+        updates: {
+          ...formData,
+          dob: formData.dob ? formData.dob.format('YYYY-MM-DD') : null,
+        },
+      }).unwrap();
+    } catch (error) {
+      console.error('Update failed', error);
+    }
+  };
+
+  // handle cancel back to list page
   const handleCancel = () => {
-    navigate(`/admin/teachers`);
+    navigate('/admin/teachers');
   };
-  // handle onSubmit
-  const onSubmit = async (data) => {
-   console.log('this submit!!!!! : ', data);
-   console.log(' this is id :', id);
-   await updateTeacher(id , data);
-  };
-  const testing =async () =>{
-    await updateTeacher(6 , {});
-  }
+
+  // loading and error states
+  if (isLoading) return <LoadingCircle />;
+  if (fetchError) return <p>Error loading teacher data.</p>;
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <form>
-        <Box sx={profileBox}>
-          <Box sx={valueBoxOne}>
-            <Avatar sx={imgStyle} alt="profile picture" src="r" />
-          </Box>
-          <SubHeader title={'Teacher Information'} />
-          <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-            {/* First Name */}
-            <Box sx={{ flex: 1, width: '100%' }}>
-              <Box sx={textFieldGap}>
-                <Typography>First Name</Typography>
-                <Controller
-                  name="first_name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      placeholder="First Name"
-                      error={!!errors.first_name}
-                      helperText={errors.first_name?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Box>
-            </Box>
-            {/* Last Name */}
-            <Box sx={{ flex: 1, width: '100%' }}>
-              <Box sx={textFieldGap}>
-                <Typography>Last Name</Typography>
-                <Controller
-                  name="last_name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      placeholder="Last Name"
-                      error={!!errors.last_name}
-                      helperText={errors.last_name?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Box>
-            </Box>
-          </Box>
-          {/* Phone Number */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Phone Number</Typography>
-            <Controller
-              name="phone_number"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Phone Number"
-                  error={!!errors.phone_number}
-                  helperText={errors.phone_number?.message}
-                  fullWidth
-                />
-              )}
+    <Box sx={profileBox}>
+      <Box sx={valueBoxOne}>
+        <Avatar sx={imgStyle} alt="profile picture" src="r" />
+      </Box>
+      <SubHeader title={'Teacher Information'} />
+      <Box sx={boxContainer}>
+        {/* Names */}
+        <Stack spacing={2} direction={'row'}>
+          <Box sx={textFieldGap} flex={1} width={'100%'}>
+            <Typography>First Name</Typography>
+            <TextField
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleInputChange}
+              placeholder="First Name"
             />
           </Box>
-          {/* Gender */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Gender</Typography>
-            <Controller
-              name="gender"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth error={!!errors.gender}>
-                  <Select
-                    {...field}
-                    displayEmpty
-                    error={!!errors.gender}
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return (
-                          <Box sx={{ color: '#B5B5B5' }}>Select Gender</Box>
-                        );
-                      }
-                      return selected;
-                    }}
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                    <MenuItem value="Other">Other</MenuItem>
-                  </Select>
-                  <Typography variant="caption" color="error">
-                    {errors.gender?.message}
-                  </Typography>
-                </FormControl>
-              )}
+          <Box sx={textFieldGap} flex={1} width={'100%'}>
+            <Typography>Last Name</Typography>
+            <TextField
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleInputChange}
+              placeholder="Last Name"
             />
           </Box>
-          {/* Date of Birth */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Date of Birth</Typography>
-            <Controller
-              name="dob"
-              control={control}
-              rules={{
-                required: 'Date of birth is required',
-                validate: (value) => {
-                  if (!value) {
-                    return 'Date of birth is required';
-                  }
-                  if (dayjs(value).isAfter(dayjs())) {
-                    return 'Date of birth cannot be in the future';
-                  }
-                  return true;
-                },
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <DesktopDatePicker
-                  inputFormat="MM/DD/YYYY"
-                  value={dob}
-                  onChange={(newValue) => {
-                    setDob(newValue);
-                    field.onChange(newValue);
-                  }}
-                  maxDate={dayjs()}
-                  slotProps={{
-                    textField: {
-                      error: !!error,
-                      helperText: error ? error.message : '',
-                      fullWidth: true,
-                    },
-                  }}
-                />
-              )}
-            />
-          </Box>
-          {/* Address */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Address</Typography>
-            <Controller
-              name="address"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Address"
-                  error={!!errors.address}
-                  helperText={errors.address?.message}
-                  fullWidth
-                />
-              )}
-            />
-          </Box>
-          {/* Buttons */}
-          <Stack
-            direction={'row'}
-            alignSelf={'flex-end'}
-            justifyContent={'flex-end'}
-            width={{ xs: '100%', sm: '340px' }}
-            gap={{ xs: 1, sm: 2 }}
-          >
-            <Button
-              fullWidth
-              variant="outlined"
-              color="inherit"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-            <Button fullWidth type="submit" variant="contained" color="primary" onClick={testing}>
-              Update
-            </Button>
-          </Stack>
+        </Stack>
+        {/* Phone Number */}
+        <Box sx={textFieldGap}>
+          <Typography>Phone Number</Typography>
+          <TextField
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleInputChange}
+            placeholder="Phone Number"
+          />
         </Box>
-      </form>
-    </LocalizationProvider>
+        {/* Gender */}
+        <Box sx={textFieldGap}>
+          <Typography>Gender</Typography>
+          <Select
+            value={formData.gender}
+            onChange={handleGenderChange}
+            renderValue={(selected) => {
+              if (!selected) {
+                return <Box sx={{ color: '#B5B5B5' }}>Select Gender</Box>;
+              }
+              return selected;
+            }}
+          >
+            <MenuItem value="Male">Male</MenuItem>
+            <MenuItem value="Female">Female</MenuItem>
+            <MenuItem value="Other">Other</MenuItem>
+          </Select>
+        </Box>
+        {/* Date of Birth */}
+        <Box sx={textFieldGap}>
+          <Typography>Date of Birth</Typography>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              name="dob"
+              value={formData.dob}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </Box>
+        {/* Address */}
+        <Box sx={textFieldGap}>
+          <Typography>Address</Typography>
+          <TextField
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
+            placeholder="Address"
+            multiline
+            minRows={2}
+          />
+        </Box>
+        {/* Buttons */}
+        <Stack sx={buttons}>
+          <Button fullWidth variant="outlined" color="" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+          >
+            Update
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 
-export default TeacherInfo;
-
-// Styles
-const boxContainer = {
-  width: '100%',
-  marginTop: '16px',
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-};
+// Styles remain unchanged
 const profileBox = {
   border: '1px solid',
   borderColor: '#E0E0E0',
   borderRadius: '8px',
   bgcolor: '#ffffff',
   marginTop: '32px',
-  padding: {
-    xs: 2,
-    sm: 3,
-  },
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
+  padding: 3,
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
   flexDirection: 'column',
-  position: 'relative',
+  alignItems: 'center',
 };
+
 const valueBoxOne = {
   width: 100,
   height: 100,
@@ -326,13 +321,6 @@ const valueBoxOne = {
   alignItems: 'center',
   justifyContent: 'center',
   mb: 2,
-  position: 'relative',
-};
-
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
-  flexDirection: 'column',
 };
 
 const imgStyle = {
@@ -345,3 +333,29 @@ const imgStyle = {
     sm: 160,
   },
 };
+
+const textFieldGap = {
+  display: 'flex',
+  gap: 0.5,
+  flexDirection: 'column',
+};
+
+const boxContainer = {
+  width: '100%',
+  marginY: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: {
+    xs: '12px',
+    sm: 3,
+  },
+};
+const buttons = {
+  display: 'flex',
+  flexDirection:"row",
+  alignSelf:"flex-end",
+  gap: 2  ,
+  marginTop:2,
+  width:{ xs: '100%', sm: '340px' }
+}
+export default UpdateTeacherForm;
