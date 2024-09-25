@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSignupMutation } from '../../services/authApi';
 import { updateFormData } from '../../store/slices/formSlice';
 import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
-import YourDetailsForm from '../../components/auth/YourDetailsForm';
+import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
 import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
 import {
@@ -111,7 +111,7 @@ const RegisterPage = () => {
       handleFormChange={handleFormChange}
       handleNext={handleNext}
     />,
-    <YourDetailsForm
+    <PersonalDetailsForm
       formData={formData}
       handleFormChange={handleFormChange}
       handleNext={handleNext}
@@ -160,6 +160,7 @@ const RegisterPage = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         p: 2,
+        gap: 2,
         bgcolor: 'white',
       }}
     >

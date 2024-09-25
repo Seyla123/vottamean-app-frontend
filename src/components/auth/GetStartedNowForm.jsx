@@ -19,7 +19,6 @@ import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
 const GetStartedNowForm = ({ handleNext }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
@@ -180,7 +179,7 @@ const GetStartedNowForm = ({ handleNext }) => {
               sx={{ display: 'flex', alignItems: 'center' }}
             >
               <Checkbox />
-              <Typography variant="body2">
+              <Typography variant="body2" component={'span'}>
                 I agree with the{' '}
                 <Link
                   href="/auth/term"
@@ -196,21 +195,11 @@ const GetStartedNowForm = ({ handleNext }) => {
           </Box>
 
           {/* SUBMIT BUTTON */}
-          <Button
-            variant="contained"
-            type="submit"
-            fullWidth
-            size="large"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              'Continue'
-            )}
+          <Button variant="contained" type="submit" fullWidth size="large">
+            Continue
           </Button>
 
-          {/* GO TO SIGN UP */}
+          {/* GO TO SIGN IN */}
           <Box
             component={'span'}
             sx={{
@@ -219,7 +208,7 @@ const GetStartedNowForm = ({ handleNext }) => {
               justifyContent: 'center',
             }}
           >
-            <Typography variant="body2">
+            <Typography variant="body2" component={'span'}>
               Already have an account?{' '}
               <Link
                 href="/auth/login"
