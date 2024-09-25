@@ -3,13 +3,9 @@ import { baseApi } from './baseApi';
 export const classPeriodApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch data into list
-    viewListClassPeriod: builder.query({
+    getClassPeriod: builder.query({
       query: () => ({
         url: 'periods',
-        // params:{
-        //   limit:5,
-        //   page:1
-        // },
         method: 'GET',
         credentials: 'include',
       }),
@@ -26,38 +22,44 @@ export const classPeriodApi = baseApi.injectEndpoints({
       providesTags: ['ClassPeriods'],
     }),
 
-//     // Create data
-//     createClassPeriod: builder.mutation({
-//       query: (classPeriod) => ({
-//         url: '/admin/class-periods/create',
-//         method: 'POST',
-//         body: classPeriod,
-//         credentials: 'include',
-//       }),
-//       invalidatesTags: ['ClassPeriods'],
-//     }),
+    // Create data
+    createClassPeriod: builder.mutation({
+      query: (classPeriodData) => ({
+        url: 'periods',
+        method: 'POST',
+        body: classPeriodData,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    }),
 
-//     // Update data by Id
-//     updateClassPeriod: builder.mutation({
-//       query: (id) => ({
-//         url: `/admin/class-periods/${id}`,
-//         method: 'PATCH',
-//         credentails: 'include',
-//       }),
-//       invalidatesTags: ['ClassPeriods'],
-//     }),
+    // Delete data a user by ID
+    deleteClassPeriod: builder.mutation({
+      query: (id) => ({
+        url: `periods/${id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    }),
 
-//     // Update data by Id
-//     deleteClassPeriod: builder.mutation({
-//       query: (id) => ({
-//         url: `/admin/class-periods/${id}`,
-//         method: 'PATCH',
-//         credentails: 'include',
-//       }),
-//       invalidatesTags: ['ClassPeriods'],
-//     }),
+    // Update data
+    updateClassPeriod: builder.mutation({
+      query: (classPeriodData) => ({
+        url: `periods/${classPeriodData.id}`,
+        method: 'PATCH',
+        body: classPeriodData,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    }),
   }),
 });
 
-export const { useViewListClassPeriodQuery, useGetClassPeriodByIdQuery } =
-  classPeriodApi;
+export const {
+  useGetClassPeriodQuery,
+  useGetClassPeriodByIdQuery,
+  useCreateClassPeriodMutation,
+  useDeleteClassPeriodMutation,
+  useUpdateClassPeriodMutation
+} = classPeriodApi;

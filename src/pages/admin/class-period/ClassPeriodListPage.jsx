@@ -1,36 +1,82 @@
-import React from 'react';
-import { Button, Stack } from '@mui/material';
-import FormComponent from '../../../components/common/FormComponent';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import DataTable from '../../../components/common/DataTable';
+import { Button, Stack } from '@mui/material';
 import { PlusIcon } from 'lucide-react';
-import { useViewListClassPeriodQuery } from '../../../services/classPeriodApi';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import DataTable from '../../../components/common/DataTable';
+import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
-
+import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodListPage() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data, error, isLoading } = useViewListClassPeriodQuery();
+
+  // rows : Array of objects representing the data to be displayed in the table
+  // classPeriodToDelete : a selected class period to be deleted
+  const [rows, setRows] = useState([]);
+  const [classPeriodToDelete, setclassPeriodToDelete] = useState(null);
+  const { modal } = useSelector((state) => state.ui);
+
+  // useGetClassPeriodByIdQuery : a hook that returns a function to fetch a class period record by its id
+  // useDeleteClassPeriodMutation : a hook that returns a function to delete an class period record
+  const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
+  const [
+    deleteClassPeriod, {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error
+    }
+  ] = useDeleteClassPeriodMutation();
+
+  // when the class period records are fetched successfully, then set the rows state
+  useEffect(() => {
+    if (data && isSuccess) {
+      setRows(periodData);
+    }
+  }, [data, isSuccess, isDeleteSuccess]);
+
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is failed, show a snackbar with an error message
+  // When the delete is successful, show a snackbar with a success message and navigate to the class period list page
+  useEffect(() => {
+    if (isDeleting) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteError) {
+      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error', }),);
+    } else if (isDeleteSuccess) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success', }),
+      );
+      navigate('/admin/class-periods');
+    }
+  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
 
   // Handle loading state
   if (isLoading) {
-    return <CircularIndeterminate/>;
+    return <CircularIndeterminate />;
   }
 
   // Handle error state
-  if (error) {
-    return <div>Error loading class periods: {error.message}</div>;
+  if (isError) {
+    console.log('error message :', error.data.message);
   }
 
-  // Handle EDIT action
-  const handleEdit = (row) => {
-    navigate(`/admin/class-periods/update/${row.id}`);
+  // Handle DELETE action
+  const handleDelete = (rows) => {
+    setclassPeriodToDelete(rows);
+    dispatch(setModal({ open: true }));
   };
 
-  // Handle DELETE action
-  const handleDelete = (row) => {
-    console.log('Delete row:', row);
+  const confirmDelete = async () => {
+    dispatch(setModal({ open: false }));
+    await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
   };
 
   // Handle DELETE ALL action
@@ -41,6 +87,11 @@ function ClassPeriodListPage() {
   // Handle DETAIL action
   const handleView = (row) => {
     navigate(`/admin/class-periods/${row.period_id}`);
+  };
+
+  // Handle EDIT action
+  const handleEdit = (row) => {
+    navigate(`/admin/class-periods/update/${row.period_id}`);
   };
 
   // Define table columns title
@@ -62,13 +113,10 @@ function ClassPeriodListPage() {
     };
   });
 
-  // Columns to hide within mobile screen
-  const hideColumns = ['period_id'];
-
   return (
     <FormComponent
       title={'Class Period List'}
-      subTitle={`There are ${periodData.length} Class Periods`}
+      subTitle={`There are ${rows.length} Class Periods`}
     >
       {/* Button to add a new class period */}
       <Stack direction="row" justifyContent="flex-end">
@@ -83,18 +131,24 @@ function ClassPeriodListPage() {
           </Button>
         </Link>
       </Stack>
+      <DeleteConfirmationModal
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={confirmDelete}
+        itemName="Class Period"
+      />
 
       {/* Data table to display class periods */}
       <DataTable
-        rows={periodData}
+        rows={rows}
         columns={tableTitles}
+        onView={handleView}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onView={handleView}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={hideColumns}
-        emptyTitle={'No Class Periods'}
-        emptySubTitle={'No class periods available. Add some to see them here.'}
+        hideColumns={'period_id'}
+        emptyTitle="No Class Periods"
+        emptySubTitle="No class periods available"
       />
     </FormComponent>
   );
