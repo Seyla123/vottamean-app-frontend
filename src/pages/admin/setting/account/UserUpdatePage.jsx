@@ -51,7 +51,7 @@ function UserUpdatePage() {
   // Local state for transformed user data
   const [userData, setUserData] = useState({
     userProfile: {},
-    img: '',
+    photo: '',
   });
   console.log('User Data Formatted : ', userData);
 
@@ -116,12 +116,12 @@ function UserUpdatePage() {
     try {
       const formDataToSend = new FormData(); // Use FormData for file upload
       Object.entries(data).forEach(([key, value]) => {
-        if (key !== 'image' && value) {
+        if (key !== 'photo' && value) {
           formDataToSend.append(key, value);
         }
       });
-      if (userData.img) {
-        formDataToSend.append('image', userData.img);
+      if (userData.photo) {
+        formDataToSend.append('photo', userData.photo);
       }
 
       await updateUserProfile(formDataToSend).unwrap();
@@ -144,7 +144,7 @@ function UserUpdatePage() {
           <Avatar
             sx={imgStyle}
             alt="user profile"
-            src={userData.img || Profile}
+            src={userData.photo || Profile}
           />
           <input
             accept="image/*"

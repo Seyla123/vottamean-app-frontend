@@ -38,7 +38,7 @@ function AccountProfilePage() {
   const [userData, setUserData] = useState({
     userProfile: {},
     schoolProfile: {},
-    img: '',
+    photo: '',
   });
 
   // Dispatch user data to form state
@@ -101,7 +101,7 @@ function AccountProfilePage() {
               {/* User profile information */}
               <CardComponent
                 title={'User Information'}
-                imgUrl={userData.img || profile}
+                imgUrl={userData.photo || profile}
                 handleEdit={clickEditUser}
               >
                 <CardInformation data={userData.userProfile} />

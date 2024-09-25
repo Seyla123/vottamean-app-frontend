@@ -1,4 +1,3 @@
-import { Description } from '@mui/icons-material';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -11,11 +10,12 @@ const initialState = {
   gender: '',
   phone_number: '',
   address: '',
+  photo: '',
   school_name: '',
   school_address: '',
   school_phone_number: '',
   class_name: '',
-  Description:'',
+  Description: '',
 };
 
 export const formSlice = createSlice({

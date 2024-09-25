@@ -198,7 +198,7 @@ export const UserProfileData = (user) => {
   return {
     userProfile,
     schoolProfile,
-    img: info.photo,
+    photo: info.photo,
   };
 };
 
@@ -223,6 +223,6 @@ export const UserProfileUpdateData = (user) => {
       school_phone_number: school.school_phone_number,
       school_address: school.school_address,
     },
-    img: info.photo,
+    photo: info.photo,
   };
 };
