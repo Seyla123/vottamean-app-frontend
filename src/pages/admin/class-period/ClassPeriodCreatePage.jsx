@@ -53,7 +53,6 @@ function ClassPeriodCreatePage() {
         ...data,
       }).unwrap();
 
-      console.log('Class Period Created:', result);
       navigate(`/admin/class-periods`);
     } catch (error) {
       console.log('Failed to create class period:', error);
