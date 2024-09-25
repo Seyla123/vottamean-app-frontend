@@ -20,8 +20,7 @@ const SessionCreatePage = () => {
     dayOfWeek: '',
   });
 
-  const [createSession, { isLoading, isError, isSuccess }] =
-    useCreateSessionMutation();
+  const [createSession, { isLoading, isError, isSuccess }] = useCreateSessionMutation();
 
   // handle periods data for select field
   const [periods, setPeriods] = useState([]);
@@ -35,11 +34,9 @@ const SessionCreatePage = () => {
         };
       });
       setPeriods(transformPeriod);
-      console.log(data);
     }
   }, [data]);
 
-  const periodsData = periods;
 
   // handle class data for select field
   const [classes, setClass] = useState([]);
@@ -53,11 +50,9 @@ const SessionCreatePage = () => {
         };
       });
       setClass(classFormat);
-      console.log(classFormat);
     }
   }, [classData]);
 
-  const classesData = classes;
 
   // handle teachers data for select field
   const [teacher, setTeacher] = useState([]);
@@ -71,12 +66,9 @@ const SessionCreatePage = () => {
         };
       });
       setTeacher(teacherFormat);
-      console.log(teacherFormat);
     }
   }, [teacherData]);
 
-  // Data for the select options
-  const teachersData = teacher;
 
   // handle days data for select field 
   const [days, setDays] = useState([]);
@@ -90,11 +82,9 @@ const SessionCreatePage = () => {
         }
       })
       setDays(dayFormat);
-      console.log(dayFormat);
     }
   }, [dayData])
   
-  const dowData = days;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -124,7 +114,7 @@ const SessionCreatePage = () => {
             placeholder="Teacher"
             value={form.teacher}
             onChange={handleChange}
-            options={teachersData}
+            options={teacher}
           />
           {/* Class Period */}
           <SelectField
@@ -133,7 +123,7 @@ const SessionCreatePage = () => {
             placeholder="class Period"
             value={form.classPeriod}
             onChange={handleChange}
-            options={periodsData}
+            options={periods}
           />
           {/* Classes */}
           <SelectField
@@ -142,7 +132,7 @@ const SessionCreatePage = () => {
             placeholder="Class"
             value={form.classes}
             onChange={handleChange}
-            options={classesData}
+            options={classes}
           />
           {/* Subject */}
           <SelectField
@@ -160,7 +150,7 @@ const SessionCreatePage = () => {
             placeholder={'Day of Week'}
             value={form.dayOfWeek}
             onChange={handleChange}
-            options={dowData}
+            options={days}
           />
         </Box>
         {/* Button Container */}
