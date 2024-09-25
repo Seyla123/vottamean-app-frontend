@@ -259,10 +259,27 @@ const PersonalDetailsForm = ({ handleNext }) => {
             </Box>
           </Box>
 
-          {/* Submit Button */}
-          <Button variant="contained" type="submit" fullWidth size="large">
-            Continue
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+            <Button
+              type="submit"
+              variant="outlined"
+              color="primary"
+              size="large"
+              fullWidth
+            >
+              Back
+            </Button>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+            >
+              Continue
+            </Button>
+          </Box>
 
           {/* GO TO SIGN IN */}
           <Box

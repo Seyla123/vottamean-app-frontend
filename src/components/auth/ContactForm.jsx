@@ -14,6 +14,7 @@ import {
   Typography,
   Button,
   InputAdornment,
+  Link,
 } from '@mui/material';
 
 // Custom components
@@ -142,6 +143,29 @@ const ContactForm = ({ handleNext, handleBack }) => {
             >
               Continue
             </Button>
+          </Box>
+
+          {/* GO TO SIGN IN */}
+          <Box
+            component={'span'}
+            sx={{
+              display: 'flex',
+              alignItems: 'start',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="body2" component={'span'}>
+              Already have an account?{' '}
+              <Link
+                href="/auth/login"
+                sx={{ display: 'inline-block' }}
+                underline="hover"
+              >
+                <Typography variant="body2" color="primary">
+                  Login
+                </Typography>
+              </Link>
+            </Typography>
           </Box>
         </Box>
       </form>
