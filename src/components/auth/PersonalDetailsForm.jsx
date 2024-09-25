@@ -41,7 +41,7 @@ import dayjs from 'dayjs';
 // Validator
 import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
-const PersonalDetailsForm = ({ handleNext }) => {
+const PersonalDetailsForm = ({ handleNext, handleBack }) => {
   // Initialize dispatch and form data from Redux
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
@@ -261,11 +261,11 @@ const PersonalDetailsForm = ({ handleNext }) => {
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
             <Button
-              type="submit"
               variant="outlined"
               color="primary"
               size="large"
               fullWidth
+              onClick={handleBack}
             >
               Back
             </Button>

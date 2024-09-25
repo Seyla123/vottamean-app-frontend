@@ -6,6 +6,7 @@ import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
 import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
 import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Stepper,
@@ -28,8 +29,9 @@ const RegisterPage = () => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
   const [signup] = useSignupMutation();
+  const navigate = useNavigate();
 
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
@@ -74,6 +76,7 @@ const RegisterPage = () => {
       );
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
+        // navigate('/auth/login');
     } catch (err) {
       setSnackbarMessage(
         'There was an issue with your signup. Please try again.',
@@ -126,8 +129,9 @@ const RegisterPage = () => {
     <CreateSchoolForm
       formData={formData}
       handleFormChange={handleFormChange}
-      handleNext={handleNext}
       handleBack={handleBack}
+      onSubmit={handleSubmit}
+      onFormChange={handleFormChange}
     />,
   ];
 
@@ -140,9 +144,8 @@ const RegisterPage = () => {
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 2,
-        backgroundColor: '#6c63ff',
+        backgroundColor: '#fff',
         padding: '8px',
-        color: 'common.white',
       }}
     >
       {icon}

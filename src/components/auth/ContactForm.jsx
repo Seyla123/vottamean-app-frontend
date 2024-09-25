@@ -105,7 +105,7 @@ const ContactForm = ({ handleNext, handleBack }) => {
             />
           </Box>
 
-          {/* ADRESS INPUT */}
+          {/* ADDRESS INPUT */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Typography variant="body2" fontWeight="bold">
               Street Address{' '}
@@ -125,11 +125,11 @@ const ContactForm = ({ handleNext, handleBack }) => {
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
             <Button
-              type="submit"
               variant="outlined"
               color="primary"
               size="large"
               fullWidth
+              onClick={handleBack}
             >
               Back
             </Button>
