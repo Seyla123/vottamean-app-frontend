@@ -81,12 +81,9 @@ function SessionListPage() {
     dispatch(setModal({ open: true }));
   };
 
-  // handle delete all action
-  const handleSelectedDelete = () => { };
-
-  // handle view detail action
-  const handleView = (row) => {
-    navigate(`/admin/sessions/${row.id}`);
+  // Handle DETAIL action
+  const handleView = (rows) => {
+    navigate(`/admin/sessions/${rows.id}`);
   };
 
   if (isLoading) {
@@ -120,9 +117,9 @@ function SessionListPage() {
         rows={rows}
         columns={columns}
         onEdit={handleEdit}
-        onDelete={handleDelete}
         onView={handleView}
-        onSelectedDelete={handleSelectedDelete}
+        onDelete={handleDelete}
+        onSelectedDelete={{}}
         hideColumns={['day', 'teacher']}
         emptyTitle={'No Session'}
         emptySubTitle={'No Session Available'}
