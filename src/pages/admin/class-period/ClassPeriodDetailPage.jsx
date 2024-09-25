@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react';
-// import { Snackbar, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
-import {
-  useGetClassPeriodByIdQuery,
-  useDeleteClassPeriodMutation,
-} from '../../../services/classPeriodApi';
-import { useNavigate, useParams } from 'react-router-dom';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import { useGetClassPeriodByIdQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodDetailPage() {
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState('');
+
   const [rows, setRows] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -76,18 +70,6 @@ function ClassPeriodDetailPage() {
     dispatch(setModal({ open: false }));
     await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
   };
-  // const confirmDelete = async () => {
-  //   try {
-  //     setIsOpen(false);
-  //     setSnackbarMessage('Deleted successfully');
-  //     setSnackbarOpen(true);
-  //     await deleteClassPeriod(itemToDelete).unwrap();
-  //     navigate(`/admin/class-periods`);
-  //   } catch (error) {
-  //     setSnackbarMessage('Failed to delete');
-  //     setSnackbarOpen(true);
-  //   }
-  // };
 
   // Define formatted data to display
   const periodDetail = {
@@ -115,25 +97,7 @@ function ClassPeriodDetailPage() {
         onConfirm={confirmDelete}
         itemName="Class Period"
       />
-      {/*<Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={
-            isDeleting
-              ? 'info'
-              : snackbarMessage.includes('Failed')
-                ? 'error'
-                : 'success'
-          }
-          sx={{ width: '100%' }}
-        >
-          {isDeleting ? 'Deleting...' : snackbarMessage}
-        </Alert>
-      </Snackbar> */}
+
     </FormComponent>
   );
 }
