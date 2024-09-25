@@ -159,12 +159,16 @@ export const endTimeSchema = Yup.string()
 // Class validation
 export const classSchema = Yup.string().required('Class is required');
 
-// Description validator
+export const subjectSchema = Yup.string()
+  .trim()
+  .required('Subject is required')
+  .min(3, 'Subject name must be at least 3 characters long')
+  .max(50, 'Subject name must be less than 50 characters');
+
 export const descriptionSchema = Yup.string()
   .trim()
-  .nullable()
-  .notRequired()
-  .max(200, 'Description must be less than 200 characters');
+  .required('Description cannot be empty')
+  .max(255, 'Description must be less than 255 characters');
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
@@ -189,6 +193,8 @@ export const createFormSchema = (fields) => {
     class_name: classSchema,
     start_time: startTimeSchema,
     end_time: endTimeSchema,
+    subjectName: subjectSchema,
+    description: descriptionSchema,
     // Add more schemas as needed
   };
 
@@ -285,6 +291,7 @@ export const ClassPeriodValidator = createFormSchema([
   'end_time',
 ]);
 
+<<<<<<< HEAD
 export const UpdateTeacherInfo = createFormSchema([
   'first_name',
   'last_name',
@@ -293,3 +300,9 @@ export const UpdateTeacherInfo = createFormSchema([
   'address',
   'dob'
 ])
+=======
+export const SubjectValidator = createFormSchema([
+  'subjectName',
+  'description',
+]);
+>>>>>>> 96fc530 (feature: create schema for subject)
