@@ -8,9 +8,13 @@ import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 import { useGetDayQuery } from '../../../services/daysApi';
+import { useGetSubjectsQuery } from '../../../services/subjectApi';
+import { useNavigate } from 'react-router-dom';
 
 // Main Component
 const SessionCreatePage = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     teacher: '',
     classPeriod: '',
@@ -73,6 +77,19 @@ const SessionCreatePage = () => {
     }
   }, [dayData]);
 
+  // handle subjects data for select field
+  const [subjects, setSubjects] = useState([]);
+  const { data: subjectData } = useGetSubjectsQuery();
+  useEffect(() => {
+    if (subjectData){
+      const subjectFormat = subjectData.data.map((item) => ({
+        value: item.subject_id, // Store subject_id
+        label: item.name, // Display subject name
+      }));
+      setSubjects(subjectFormat);
+    }
+  }, [subjectData])
+
   // Form change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,6 +109,7 @@ const SessionCreatePage = () => {
     try {
       const result = await createSession(sessionData);
       console.log('Session created successfully', result);
+      navigate('/admin/sessions');
     } catch (error) {
       console.log('Error creating session', error);
     }
@@ -161,7 +179,7 @@ const SessionCreatePage = () => {
               onChange={handleChange}
               label="Subject"
             >
-              {subjectsData.map((option) => (
+              {subjects.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -208,9 +226,3 @@ const containerStyle = {
     md: 'repeat(2, 1fr)',
   },
 };
-
-const subjectsData = [
-  { value: '1', label: 'Math' },
-  { value: '2', label: 'Khmer' },
-  { value: '3', label: 'English' },
-];
