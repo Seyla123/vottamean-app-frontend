@@ -30,6 +30,7 @@ const UpdateTeacherForm = () => {
 
   // Get the teacher data
   const { data: teacherData, isLoading, fetchError } = useGetTeacherQuery(id);
+  const [profileImg, setProfileImg] = useState('')
 
   // Initialize formData with empty strings and nulls
   // We use this state to store the updated teacher information
@@ -58,6 +59,7 @@ const UpdateTeacherForm = () => {
   useEffect(() => {
     if (teacherData) {
       const { Info } = teacherData.data;
+      setProfileImg(Info.photo)
       setFormData({
         // avoid undefined by provide a default value in case of empty
         first_name: Info.first_name || '',
@@ -202,7 +204,7 @@ const UpdateTeacherForm = () => {
   return (
     <Box sx={profileBox}>
       <Box sx={valueBoxOne}>
-        <Avatar sx={imgStyle} alt="profile picture" src="r" />
+        <Avatar sx={imgStyle} alt="profile picture" src={profileImg} />
       </Box>
       <SubHeader title={'Teacher Information'} />
       <Box sx={boxContainer}>
