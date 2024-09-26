@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Stack, Box, Button, Snackbar, Alert } from '@mui/material';
-import { PlusIcon } from 'lucide-react';
+import { Stack, Box, Button, IconButton } from '@mui/material';
+import { PlusIcon, Trash2 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 import FormComponent from '../../../components/common/FormComponent';
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -12,6 +13,7 @@ import {
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { teacherData } from '../../../utils/formatData';
+import { setSnackbar } from '../../../store/slices/uiSlice';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -22,12 +24,11 @@ const columns = [
 
 const TeacherListPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
 
   // Get all teachers
   const {
@@ -38,44 +39,99 @@ const TeacherListPage = () => {
     search: searchTerm,
   });
   // Delete teacher
-  const [deleteTeacher, { isLoading: isDeleting, isSuccess: isDeleteSuccess }] =
-    useDeleteTeacherMutation();
-  // Format data with conditions
+  const [deleteTeacher] = useDeleteTeacherMutation();
+
+  // Format teacher data and set it in the state
   useEffect(() => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
     }
-  }, [allTeachersData, isSuccess, isDeleteSuccess]);
-  // search function
+  }, [allTeachersData, isSuccess]);
+
+  // Handle Search by teacher name
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
-  // handle edit
+
+  // Handle Edit action
   const handleEdit = (row) => {
     navigate(`/admin/teachers/update/${row.id}`);
   };
-  // handle delete by row
-  const handleDelete = (row) => {
-    setItemToDelete(row.id);
-    setIsOpen(true);
-  };
-  // handle view
+
+  // Handle View action
   const handleView = (row) => {
     navigate(`/admin/teachers/${row.id}`);
   };
-  // confirm delete
+
+
+  // Handle Delete a single teacher
+  const handleDelete = (row) => {
+    setSelectedItems([row.id]);
+    setIsOpen(true);
+  };
+
+  // Handle delete multiple teachers
+  const handleMultiDelete = (selected) => {
+    if (selected.length > 0) {
+      setSelectedItems(selected); 
+      setIsOpen(true);
+    }
+  };
+
+  // Handle Confirm Delete for both single and multiple teachers
   const confirmDelete = async () => {
+    setIsOpen(false);
     try {
-      setIsOpen(false);
-      setSnackbarMessage('Deleting teacher');
-      setSnackbarOpen(true);
-      await deleteTeacher(itemToDelete).unwrap();
-      setSnackbarMessage('Teacher deleted successfully');
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
+          severity: 'info',
+        }),
+      );
+      // Delete each selected teacher row
+      let newRows = [...rows];
+      // Access the item of the selected rows
+      for (const id of selectedItems) {
+        try {
+          await deleteTeacher(id).unwrap();
+          // Remove the deleted teacher from the list of rows
+          newRows = newRows.filter((row) => row.id !== id);
+          // create a new aray of rows excluding the deleted teachers
+        } catch (error) {
+          console.error('Error deleting teacher:', error);
+          dispatch(
+            setSnackbar({
+              open: true,
+              message: `Error deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
+              severity: 'error',
+            }),
+          );
+          // Stop the deletion process
+          return;
+        }
+      }
+      // Update the state with the new list of rows
+      setRows(newRows);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Deleted successfully ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
+          severity: 'success',
+        }),
+      );
     } catch (error) {
-      setSnackbarMessage('Failed to delete teacher');
+      console.error('Error deleting teachers:', error);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Failed to delete ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
+          severity: 'error',
+        }),
+      );
     } finally {
-      setSnackbarOpen(true);
+      setSelectedItems([]); // Clear selectedItems
     }
   };
 
@@ -83,15 +139,22 @@ const TeacherListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
+  // error state
+  if (!isSuccess) {
+    return <div>Error fetching data</div>;
+  }
 
   return (
-    // header
     <FormComponent
       title="Teacher List"
       subTitle={`There are ${rows.length} Teachers`}
     >
-      <Stack direction="row" justifyContent="flex-end">
-        {/* add student button */}
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        alignItems="center"
+        mb={2}
+      >
         <Link to="/admin/teachers/create">
           <Button
             size="large"
@@ -103,24 +166,14 @@ const TeacherListPage = () => {
           </Button>
         </Link>
       </Stack>
-      {/* search by name */}
-      <Box>
-        <Stack
-          direction="row"
-          justifyContent={'flex-end'}  
-          width={'100%'}
-          gap={2}
-        >
-         <SearchComponent
+      <Stack direction="row" justifyContent={'flex-end'} width={'100%'} gap={2}>
+        <SearchComponent
           sx={{ width: '100%', maxWidth: '300px' }}
           placeholder="Search"
           value={searchTerm}
           onChange={handleSearchChange}
-          onClickIcon={() => console.log('search icon clicked')}
         />
-        </Stack>
-      </Box>
-      {/* data table */}
+      </Stack>
       <DataTable
         rows={rows}
         columns={columns}
@@ -130,34 +183,14 @@ const TeacherListPage = () => {
         hideColumns={['phoneNumber', 'email']}
         emptyTitle="No Teachers"
         emptySubTitle="No Teachers Available"
+        onSelectedDelete={handleMultiDelete}
       />
-      {/* delete confirmation modal */}
       <DeleteConfirmationModal
         open={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={confirmDelete}
-        itemName="Teacher"
+        itemName={` Teacher${selectedItems.length > 1 ? 's' : ''} `}
       />
-      {/* snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={
-            isDeleting
-              ? 'info'
-              : snackbarMessage.includes('Failed')
-                ? 'error'
-                : 'success'
-          }
-          sx={{ width: '100%' }}
-        >
-          {isDeleting ? 'Deleting...' : snackbarMessage}
-        </Alert>
-      </Snackbar>
     </FormComponent>
   );
 };
