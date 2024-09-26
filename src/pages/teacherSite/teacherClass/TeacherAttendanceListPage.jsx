@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AttendanceTable from '../../../components/teacherSite/AttendanceTable';
 import FormComponent from '../../../components/common/FormComponent';
 import { Box, Button, Grid2 } from '@mui/material';
 import { SendIcon, DownloadIcon } from 'lucide-react';
-import StatusCard from '../../../components/teacherSite/StatusCard';
+import { useGetAllStudentsByClassInSessionQuery } from '../../../services/teacherApi';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 
 const columns = [
   {
@@ -33,34 +34,45 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    id: 21,
-    img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Kunthea Chhum',
-    gender: 'F',
-    phone: '011223344',
-    address: 'Takeo',
-    dob: '2004-08-17',
-    status: 'Present',
-  },
-
-  {
-    id: 39,
-    img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Ratana Yim',
-    gender: 'M',
-    phone: '016789012',
-    address: 'Prey Veng',
-    dob: '2003-01-25',
-    status: 'Absent',
-  },
-];
-
+// Function to transform the data
+const transformStudentData = (apiResponse) => {
+  return apiResponse.map((item) => ({
+    id: `ANB0${item.student_id}`,
+    img: item.Info.photo || '', // Adjust the URL as needed
+    name: `${item.Info.first_name} ${item.Info.last_name}`,
+    gender: item.Info.gender === "Male" ? 'M' : 'F', // Convert to 'M' or 'F'
+    phone: item.Info.phone_number,
+    address: item.Info.address,
+    dob: item.Info.dob,
+    status: null, // Adjust status based on active field
+  }))
+};
 function TeacherAttendanceListPage() {
-  const [rows, setRows] = useState(data);
+  const  { data: studentsData, isLoading , isError , isSuccess, error } = useGetAllStudentsByClassInSessionQuery(6);
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    if(studentsData && isSuccess){
+      const formattedData = transformStudentData(studentsData.data);
+      setRows(formattedData)
+      console.log('this data : ', formattedData);
+    }
+  },[studentsData, isSuccess])
+
+  
+  
   const status = ['Present', 'Absent', 'Late', 'Permission'];
   const hideColumns = ['dob', 'address', 'phone'];
+  console.log('this is : ', );
+  
+  if(isLoading){
+    console.log('loading :',  isLoading);
+    return <LoadingCircle/>
+  }
+  if(isError){
+    console.log('this is error :', error.data.message);
+    return <div>this is error : {error.data.message}</div>
+  }
 
   const handleStatusChange = (updatedRow, newStatus) => {
     setRows((prevRows) =>
