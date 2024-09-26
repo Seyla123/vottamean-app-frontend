@@ -9,8 +9,6 @@ import {
   Typography,
   TextField,
   Button,
-  Checkbox,
-  IconButton,
   Select,
   InputAdornment,
   Link,
@@ -20,17 +18,11 @@ import {
 // Redux hooks and actions
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
-import {
-  Eye,
-  EyeIcon,
-  EyeOff,
-  LockKeyhole,
-  Mail,
-  UserRoundPlus,
-} from 'lucide-react';
+import { UserRoundPlus } from 'lucide-react';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
+import FormFooter from './FormFooter';
 
 // Date picker components from MUI X
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -281,28 +273,8 @@ const PersonalDetailsForm = ({ handleNext, handleBack }) => {
             </Button>
           </Box>
 
-          {/* GO TO SIGN IN */}
-          <Box
-            component={'span'}
-            sx={{
-              display: 'flex',
-              alignItems: 'start',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="body2" component={'span'}>
-              Already have an account?{' '}
-              <Link
-                href="/auth/login"
-                sx={{ display: 'inline-block' }}
-                underline="hover"
-              >
-                <Typography variant="body2" color="primary">
-                  Login
-                </Typography>
-              </Link>
-            </Typography>
-          </Box>
+          {/* FORM FOOTER */}
+          <FormFooter href={'/auth/login'} />
         </Box>
       </form>
     </Box>

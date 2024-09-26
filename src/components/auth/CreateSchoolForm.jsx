@@ -19,14 +19,13 @@ import {
 } from '@mui/material';
 
 // Custom components
-import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
-import schoolIcon from '../../assets/icon/schoolIcon.png';
 
 // Validator
 import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 import { Contact2, Phone, PhoneOutgoing, School } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import FormFooter from './FormFooter';
 
 const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
   const dispatch = useDispatch();
@@ -196,28 +195,8 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
             </Button>
           </Box>
 
-          {/* GO TO SIGN IN */}
-          <Box
-            component={'span'}
-            sx={{
-              display: 'flex',
-              alignItems: 'start',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="body2" component={'span'}>
-              Already have an account?{' '}
-              <Link
-                href="/auth/login"
-                sx={{ display: 'inline-block' }}
-                underline="hover"
-              >
-                <Typography variant="body2" color="primary">
-                  Login
-                </Typography>
-              </Link>
-            </Typography>
-          </Box>
+          {/* FORM FOOTER */}
+          <FormFooter href={'/auth/signin'} />
         </Box>
       </form>
     </Box>
