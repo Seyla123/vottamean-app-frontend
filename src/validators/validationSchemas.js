@@ -112,10 +112,10 @@ export const newPasswordConfirmSchema = Yup.string()
 export const phoneSchema = Yup.string()
   .trim()
   .required('Phone number is required')
-  .matches(/^\d{9,15}$/, 'Phone number must be between 10 and 15 digits')
+  .matches(/^\d{9,15}$/, 'Phone number must be between 09 and 15 digits')
   .test(
     'length',
-    'Phone number must be between 10 and 15 digits',
+    'Phone number must be between 09 and 15 digits',
     (value) => value && value.length >= 9 && value.length <= 15,
   );
 
@@ -138,6 +138,7 @@ export const ageSchema = Yup.number()
 export const genderSchema = Yup.string()
   .required('Gender is required')
   .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
+
 //Class Valid
 export const ClassValidator = Yup.object().shape({
   class_name: Yup.string().required('Class name is required'),
@@ -265,7 +266,6 @@ export const UserProfileValidator = createFormSchema([
   'first_name',
   'last_name',
   'gender',
-  'email',
   'phone_number',
   'address',
   'dob',
