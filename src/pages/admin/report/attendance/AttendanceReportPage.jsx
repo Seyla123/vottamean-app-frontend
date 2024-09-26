@@ -11,7 +11,7 @@ import AttendanceTable from "../../../../components/attendance/AttendanceReportT
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
-import AttendanceFilter from '../../../../components/attendance/AttendnaceFilter';
+import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
 
 const columns = [
   { id: "id", label: "StudentID" },

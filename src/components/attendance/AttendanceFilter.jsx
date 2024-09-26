@@ -15,7 +15,7 @@ const filterOptions = [
     { value: "lastYear", label: "Yearly" },
 ]
 
-function AttendnaceFilter() {
+function AttendanceFilter() {
     // Get the dispatch function and the current filter state from the store
     const dispatch = useDispatch();
     const filter = useSelector((state) => state.attendance.filter);
@@ -29,7 +29,7 @@ function AttendnaceFilter() {
         value: '',
         label: 'All'
     }]
-    const [subjects, setSujects ] = useState(allSelector);
+    const [subjects, setSubjects ] = useState(allSelector);
     const [classes, setClasses ] = useState(allSelector);
 
     // When the data is loaded, format the data and set the state
@@ -40,7 +40,7 @@ function AttendnaceFilter() {
             const formatDataClasses = transformedFilterClasses(dataClass.data);
 
             // Set the state with the formatted data
-            setSujects([...allSelector, ...formattedDataSubjects]);
+            setSubjects([...allSelector, ...formattedDataSubjects]);
             setClasses([...allSelector, ...formatDataClasses]);
         }
     }, [isSubjectSuccess, isClassSuccess]);
@@ -89,7 +89,7 @@ function AttendnaceFilter() {
     )
 }
 
-export default AttendnaceFilter;
+export default AttendanceFilter;
 
 const filterBoxStyle = {
     display: "flex",
