@@ -139,76 +139,65 @@ export function formatPhoneNumber(phoneNumber) {
   return phoneNumber;
 }
 
+// Utility: Capitalize the first letter of each word
+export function capitalize(name) {
+  return name
+    .split(' ')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
 // Transform User Profile Data
 export const transformUserProfile = (user) => {
-  if (!user || !user.data.adminProfile?.Info) {
-    return {};
-  }
+  const info = user?.data?.adminProfile?.Info;
 
-  // Utility function to capitalize the first letter of each word
-  const capitalize = (name) => {
-    return name
-      .split(' ')
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join(' ');
-  };
+  if (!info) return {};
 
-  const info = user.data.adminProfile.Info;
-
-  // Combine first and last name and capitalize each part
   const fullName = `${info.first_name} ${info.last_name}`;
-  const capitalizedFullName = capitalize(fullName);
-
-  // Transform user profile data
   return {
-    'Full Name': capitalizedFullName,
-    Age: info.dob
+    fullName: capitalize(fullName),
+    age: info.dob
       ? new Date().getFullYear() - new Date(info.dob).getFullYear()
       : 'N/A',
-    Gender: info.gender || 'N/A',
-    'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
-    'Phone Number': formatPhoneNumber(info.phone_number),
-    Email: user.data.email,
-    Address: info.address || 'N/A',
+    gender: info.gender || 'N/A',
+    dateOfBirth: info.dob ? formatDate(info.dob) : 'N/A',
+    phoneNumber: formatPhoneNumber(info.phone_number),
+    email: user.data.email,
+    address: info.address || 'N/A',
   };
 };
 
 // Transform School Profile Data
 export const transformSchoolProfile = (user) => {
-  if (!user || !user.data.adminProfile?.Schools) {
-    return {};
-  }
+  const school = user?.data?.adminProfile?.Schools?.[0];
 
-  const school = user.data.adminProfile.Schools[0] || {};
+  if (!school) return {};
 
-  // Transform school data
   return {
-    'School Name': school.school_name || 'N/A',
-    'Phone Number': formatPhoneNumber(school.school_phone_number) || 'N/A',
-    'School Address': school.school_address || 'N/A',
+    schoolName: school.school_name || 'N/A',
+    schoolPhoneNumber: formatPhoneNumber(school.school_phone_number) || 'N/A',
+    schoolAddress: school.school_address || 'N/A',
   };
 };
 
 // Combined User and School Profile Data
-export const UserProfileData = (user) => {
-  const info = user.data.adminProfile.Info;
+export const getUserProfileData = (user) => {
   const userProfile = transformUserProfile(user);
   const schoolProfile = transformSchoolProfile(user);
+  const photo = user?.data?.adminProfile?.Info?.photo;
 
   return {
     userProfile,
     schoolProfile,
-    photo: info.photo,
+    photo: photo || null,
   };
 };
 
-// Combined User Profile Update Data excluding the date of birth formatted
-export const UserProfileUpdateData = (user) => {
-  if (!user || !user.data.adminProfile?.Info) {
-    return {};
-  }
+// Combined User Profile Data for Updates (without formatted DOB)
+export const getUserProfileUpdateData = (user) => {
+  const info = user?.data?.adminProfile?.Info;
 
-  const info = user.data.adminProfile.Info;
+  if (!info) return {};
 
   return {
     userProfile: {
@@ -219,18 +208,19 @@ export const UserProfileUpdateData = (user) => {
       phone_number: info.phone_number,
       address: info.address,
     },
-    photo: info.photo,
+    photo: info.photo || null,
   };
 };
 
-// Combined School Data
-export const transformSchoolData = (user) => {
-  if (!user || !user.data.adminProfile?.Info) {
-    return {};
-  }
-  const school = user.data.adminProfile.Schools[0] || {};
+// Transform School Data for Updates
+export const getSchoolData = (user) => {
+  const school = user?.data?.adminProfile?.Schools?.[0];
+
+  if (!school) return {};
 
   return {
+    info_id: user.data.adminProfile.info_id,
+    school_id: school.school_id,
     school_name: school.school_name,
     school_phone_number: school.school_phone_number,
     school_address: school.school_address,

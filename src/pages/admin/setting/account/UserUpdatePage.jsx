@@ -20,7 +20,7 @@ import {
 } from '../../../../services/userApi';
 
 // User Profile Data formatting
-import { UserProfileUpdateData } from '../../../../utils/formatData';
+import { getUserProfileUpdateData } from '../../../../utils/formatData';
 
 // Ui Slice for snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
@@ -52,7 +52,7 @@ function UserUpdatePersonalInfoPage() {
 
   useEffect(() => {
     if (isSuccess && userProfile) {
-      const transformedData = UserProfileUpdateData(userProfile);
+      const transformedData = getUserProfileUpdateData(userProfile);
       setFormData({
         ...transformedData.userProfile,
       });

@@ -1,43 +1,61 @@
-import { useEffect } from 'react';
+// React and third-party libraries
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, TextField, Stack } from '@mui/material';
+
+// Material UI components
+import {
+  Stack,
+  Button,
+  TextField,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
+
+// Component
+import FormComponent from '../../../../components/common/FormComponent';
+
+// Redux Hooks and APIs
 import {
   useUpdateUserProfileMutation,
   useGetUserProfileQuery,
 } from '../../../../services/userApi';
 import { useDispatch } from 'react-redux';
-import { setSnackbar } from '../../../../store/slices/uiSlice';
-import { transformSchoolData } from '../../../../utils/formatData';
+
+// - School formatted Data and Validator
+import { getSchoolData } from '../../../../utils/formatData';
 import { SchoolValidator } from '../../../../validators/validationSchemas';
 
+// - Ui Slice for snackbar
+import { setSnackbar } from '../../../../store/slices/uiSlice';
+
 function SchoolUpdatePage() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Fetch user profile data
-  const { data: userProfile, isLoading, error } = useGetUserProfileQuery();
-  console.log('userProfile', userProfile);
+  // - State to store original form values
+  const [originalData, setOriginalData] = useState(null);
 
-  // Mutation for updating user profile
-  const [updateUserProfile, { isLoading: isUpdating, error: updateError }] =
-    useUpdateUserProfileMutation();
+  // - Fetch user profile data
+  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
 
-  // Transform user profile data
-  const transformedData = transformSchoolData(userProfile);
-  console.log('transformedData', transformedData);
+  // - Mutation hook for updating the profile
+  const [
+    updateUserProfile,
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      error: updateError,
+    },
+  ] = useUpdateUserProfileMutation();
 
-  // onClickBack
-  const onClickBack = () => {
-    console.log('cancel');
-
-    navigate('/admin/settings/account');
-  };
-
-  // Form setup with react-hook-form
+  // - Form state
   const {
-    control,
+    register,
     handleSubmit,
+    getValues,
     formState: { errors },
     reset,
   } = useForm({
@@ -49,112 +67,139 @@ function SchoolUpdatePage() {
     },
   });
 
+  // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
-    if (userProfile) {
-      const formattedData = transformSchoolData(userProfile);
+    if (isSuccess && userProfile) {
+      const formattedData = getSchoolData(userProfile);
 
       // Debugging to check what data is being set
       console.log('Setting default values with: ', formattedData);
 
       // Dynamically set the form default values
       reset(formattedData);
+
+      // Store the original data for comparison
+      setOriginalData(formattedData);
     }
-  }, [userProfile, reset]);
+  }, [isSuccess, userProfile, reset]);
 
-  // Submit handler
+  // - Handle form submission
   const onSubmit = async (data) => {
+    const currentData = getValues();
+
+    // Compare current data with the original data
+    if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes detected',
+          severity: 'info',
+        }),
+      );
+      return;
+    }
+
+    console.log('Submitted data:', data);
+
     try {
-      // Access info_id correctly
-      const infoId = userProfile.data.adminProfile?.info_id;
-
-      // Confirm info_id in console
-      console.log('Extracted info_id:', infoId);
-
-      const updatedData = {
-        ...data,
-        info_id: infoId,
-      };
-
-      // Log the updated data
-      console.log('Updated Data:', updatedData);
-
-      await updateUserProfile(updatedData).unwrap(); // This should be your API call
-      // Dispatch success message
-    } catch (err) {
-      console.error('Failed to update profile:', err);
-      // Dispatch error message
+      await updateUserProfile(data).unwrap();
+    } catch (error) {
+      console.error('Error updating profile:', error);
     }
   };
 
-  // Handle loading and error states
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading user profile!</div>;
+  // Handle UI feedback
+  useEffect(() => {
+    if (isUpdateLoading) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
+      );
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError.data.message,
+          severity: 'error',
+        }),
+      );
+    } else if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/settings/account');
+    }
+  }, [
+    isUpdateLoading,
+    isUpdateError,
+    isUpdateSuccess,
+    updateError,
+    dispatch,
+    navigate,
+  ]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (!isSuccess || !userProfile) {
+    return <Typography variant="h6">No user data found</Typography>;
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={3}>
-        <Controller
-          name="school_name"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="School Name"
-              error={!!errors.school_name}
-              helperText={errors.school_name?.message}
-              fullWidth
-            />
-          )}
-        />
+    <FormComponent
+      title="Update School Information"
+      subTitle="Update your school details"
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={3}>
+          {/* School Name */}
+          <TextField
+            label="School Name"
+            {...register('school_name')}
+            error={!!errors.school_name}
+            helperText={errors.school_name?.message}
+            fullWidth
+          />
 
-        <Controller
-          name="school_address"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="School Address"
-              error={!!errors.school_address}
-              helperText={errors.school_address?.message}
-              fullWidth
-            />
-          )}
-        />
+          {/* School Phone Number */}
+          <TextField
+            label="School Phone Number"
+            {...register('school_phone_number')}
+            error={!!errors.school_phone_number}
+            helperText={errors.school_phone_number?.message}
+            fullWidth
+          />
 
-        <Controller
-          name="school_phone_number"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="School Phone Number"
-              error={!!errors.school_phone_number}
-              helperText={errors.school_phone_number?.message}
-              fullWidth
-            />
-          )}
-        />
+          {/* School Address */}
+          <TextField
+            label="School Address"
+            {...register('school_address')}
+            error={!!errors.school_address}
+            helperText={errors.school_address?.message}
+            fullWidth
+          />
 
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          disabled={isUpdating}
-        >
-          {isUpdating ? 'Updating...' : 'Update School Info'}
-        </Button>
+          {/* Submit button */}
+          <Button type="submit" variant="contained" fullWidth>
+            Update School Info
+          </Button>
 
-        {/* Cancel button */}
-        <Button
-          type="button"
-          variant="outlined"
-          fullWidth
-          onClick={onClickBack}
-        >
-          Cancel
-        </Button>
-      </Stack>
-    </form>
+          {/* Cancel button */}
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            onClick={() => navigate('/admin/settings/account')}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </form>
+    </FormComponent>
   );
 }
 

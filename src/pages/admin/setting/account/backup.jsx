@@ -1,8 +1,10 @@
-import { useEffect } from 'react';
+// React and third-party libraries
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+// Material UI components
 import {
   Stack,
   Button,
@@ -11,26 +13,34 @@ import {
   Typography,
 } from '@mui/material';
 
+// Component
 import FormComponent from '../../../../components/common/FormComponent';
+
+// Redux Hooks and APIs
 import {
   useUpdateUserProfileMutation,
   useGetUserProfileQuery,
 } from '../../../../services/userApi';
 import { useDispatch } from 'react-redux';
-import { updateFormData } from '../../../../store/slices/formSlice';
 
-import { transformSchoolData } from '../../../../utils/formatData';
+// - School formatted Data and Validator
+import { getSchoolData } from '../../../../utils/formatData';
 import { SchoolValidator } from '../../../../validators/validationSchemas';
+
+// - Ui Slice for snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function SchoolUpdatePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Fetch user profile data
+  // - State to store original form values
+  const [originalData, setOriginalData] = useState(null);
+
+  // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
 
-  // Mutation hook for updating the profile
+  // - Mutation hook for updating the profile
   const [
     updateUserProfile,
     {
@@ -41,10 +51,10 @@ function SchoolUpdatePage() {
     },
   ] = useUpdateUserProfileMutation();
 
+  // - Form state
   const {
     register,
     handleSubmit,
-    setValue,
     getValues,
     formState: { errors },
     reset,
@@ -57,19 +67,38 @@ function SchoolUpdatePage() {
     },
   });
 
+  // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
-      const formattedData = transformSchoolData(userProfile);
+      const formattedData = getSchoolData(userProfile);
 
       // Debugging to check what data is being set
       console.log('Setting default values with: ', formattedData);
 
       // Dynamically set the form default values
       reset(formattedData);
+
+      // Store the original data for comparison
+      setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
 
+  // - Handle form submission
   const onSubmit = async (data) => {
+    const currentData = getValues();
+
+    // Compare current data with the original data
+    if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes detected',
+          severity: 'info',
+        }),
+      );
+      return;
+    }
+
     console.log('Submitted data:', data);
 
     try {
@@ -78,10 +107,6 @@ function SchoolUpdatePage() {
       console.error('Error updating profile:', error);
     }
   };
-
-  // Get all form values
-  const allFormValue = getValues();
-  console.log('get all form :', allFormValue);
 
   // Handle UI feedback
   useEffect(() => {

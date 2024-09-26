@@ -21,7 +21,7 @@ import {
 } from '../../../../services/userApi';
 
 // User Profile Data formatting
-import { UserProfileData } from '../../../../utils/formatData';
+import { getUserProfileData } from '../../../../utils/formatData';
 
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
@@ -44,7 +44,7 @@ function AccountProfilePage() {
   // Dispatch user data to form state
   useEffect(() => {
     if (user) {
-      const transformedData = UserProfileData(user);
+      const transformedData = getUserProfileData(user);
       console.log(transformedData);
       setUserData(transformedData);
       dispatch(updateFormData(transformedData));
