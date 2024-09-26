@@ -2,30 +2,38 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApi } from '../services/authApi';
 import { classApi } from '../services/classApi';
+import { attendanceApi } from '../services/attendanceApi';
+import { teacherApi } from '../services/teacherApi';
+import { subjectApi } from '../services/subjectApi';
 import formReducer from './slices/formSlice';
 import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
-import { attendanceApi } from '../services/attendanceApi';
-import { teacherApi } from '../services/teacherApi';
 import teacherReducer from './slices/teacherSlice';
 import classReducer from './slices/classSlice';
 import uiReducer from './slices/uiSlice';
 
 const store = configureStore({
   reducer: {
-    ui:uiReducer,
+    ui: uiReducer,
     form: formReducer,
     auth: authReducer,
-    teachers: teacherReducer, 
+    teachers: teacherReducer,
     attendance: attendanceReducer,
     classes: classReducer,
     [classApi.reducerPath]: classApi.reducer,
+    [subjectApi.reducerPath]: subjectApi.reducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, attendanceApi.middleware, teacherApi.middleware,classApi.middleware),
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      attendanceApi.middleware,
+      teacherApi.middleware,
+      classApi.middleware,
+      subjectApi.middleware,
+    ),
 });
 
 setupListeners(store.dispatch);
