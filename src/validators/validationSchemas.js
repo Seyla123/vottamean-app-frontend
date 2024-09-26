@@ -131,12 +131,11 @@ export const ageSchema = Yup.number()
 export const genderSchema = Yup.string()
   .required('Gender is required')
   .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
-  //Class Valid
+//Class Valid
 export const ClassValidator = Yup.object().shape({
-  class_name: Yup.string().required('Class name is required'), 
-  description: Yup.string().optional(), 
+  class_name: Yup.string().required('Class name is required'),
+  description: Yup.string().optional(),
 });
-
 
 // Start Time & End Time Validator
 export const startTimeSchema = Yup.string()
@@ -276,8 +275,8 @@ export const SchoolValidator = createFormSchema([
 export const AccountInformationValidator = createFormSchema([
   'email',
   'password',
-  'passwordConfirm'
-])
+  'passwordConfirm',
+]);
 
 // Start of Class Period Validation
 export const ClassPeriodValidator = createFormSchema([
@@ -291,5 +290,5 @@ export const UpdateTeacherInfo = createFormSchema([
   'gender',
   'phone_number',
   'address',
-  'dob'
-])
+  'dob',
+]);
