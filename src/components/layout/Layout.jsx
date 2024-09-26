@@ -35,8 +35,7 @@ const Layout = ({ teacherSite, adminSite }) => {
       // 4.2. Dispatch a logout action to clear the authentication state in Redux
       dispatch(logoutAction());
 
-      // 4.3. Navigate the user back to the login page after successful logout
-      navigate('/auth/login');
+    
     } catch (error) {
       // Handle potential errors during logout
       console.error('Failed to logout:', error);

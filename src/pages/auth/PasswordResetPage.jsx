@@ -62,7 +62,7 @@ function PasswordResetPage() {
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => {
-        navigate('/auth/login');
+        navigate('/auth/signin');
       }, 3000); // 3 seconds
 
       // Clean up the timer when the component unmounts or when isSuccess changes

@@ -88,9 +88,10 @@ const LoginForm = ({ onSubmit }) => {
       setIsLoading(false);
       setSnackbar({
         open: true,
-        message: error?.data?.message === 'Invalid credentials'
-          ? 'Incorrect email or password. Please try again.'
-          : 'Login failed. Please try again later.',
+        message:
+          error?.data?.message === 'Invalid credentials'
+            ? 'Incorrect email or password. Please try again.'
+            : 'Login failed. Please try again later.',
         severity: 'error',
       });
       console.error('Login error:', error);
@@ -107,10 +108,7 @@ const LoginForm = ({ onSubmit }) => {
     severity: 'info',
   });
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
@@ -165,7 +163,7 @@ const LoginForm = ({ onSubmit }) => {
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
-              placeholder="Create password"
+              placeholder="Enter your password"
               slotProps={{
                 input: {
                   startAdornment: (
