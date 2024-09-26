@@ -1,13 +1,6 @@
-import { Box } from '@mui/material';
-import React from 'react';
-import Header from '../../../components/teacher/Header';
-import TeacherInfo from '../../../components/teacher/TeacherInfo';
 import FormComponent from '../../../components/common/FormComponent';
+import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 function TeacherUpdatePage() {
-  const handleCancel = () => {
-    navigate('/teacher');
-  };
-
   return (
     <>
       {/* Header */}
@@ -15,9 +8,9 @@ function TeacherUpdatePage() {
         title="UPDATE TEACHER"
         subTitle="Please Update Teacher Information"
       >
-        {/* Form edit */}
-        <TeacherInfo mode="update" handleCancel={handleCancel} />
+       < UpdateTeacherForm/>
       </FormComponent>
+
     </>
   );
 }

@@ -9,14 +9,15 @@ import {
   Typography,
   Stack,
   FormControl,
-  InputLabel,
   Select,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import {
+  DatePicker,
+  LocalizationProvider,
+} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
 import dayjs from 'dayjs';
@@ -25,24 +26,31 @@ import dayjs from 'dayjs';
 const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
-  phoneNumber: yup.string().required('Phone number is required'),
+  phoneNumber: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^\d{9,15}$/, 'Phone number must be between 9 and 15 digits and numeric.')
+    .test(
+      'length',
+      'Phone number must be between 9 and 15 digits',
+      (value) => value && value.length >= 9 && value.length <= 15,
+    ),
   gender: yup.string().required('Gender is required'),
   dob: yup
-    .date()
+    .string()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
-    .nullable()
     .typeError('Invalid date format'),
   address: yup.string().required('Address is required'),
 });
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -50,16 +58,14 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
       lastName: '',
       phoneNumber: '',
       gender: '',
-      dob: null,
+      dob: '',
       address: '',
     },
   });
 
   const [dob, setDob] = useState(null);
 
-  const handleCancel = () => {
-    navigate('/teacher');
-  };
+
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
@@ -71,7 +77,10 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null });
     console.log(data);
   };
-
+  // handle back to list page
+  const handleCancel = () => {
+    navigate('/admin/teachers');
+  };
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -196,24 +205,19 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                     field.onChange(newValue);
                   }}
                   maxDate={dayjs()}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                     
-                      fullWidth
-                      slotProps={{
-                        textField: {
-                          error: !!error,
-                          helperText: error ? error.message : '',
-                          fullWidth: true,
-                        },
-                      }}
-                    />
-                    
-                  )}
+                  slotProps={{
+                    textField: {
+                      error: !!error,
+                      helperText: errors.dob?.message,
+                      fullWidth: true,
+                    },
+                  }}
                 />
               )}
             />
+            {/* <Typography variant="caption" color="error">
+                    {errors.dateOfBirth?.message}
+                  </Typography> */}
           </Box>
           {/* Address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
@@ -228,6 +232,8 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                   error={!!errors.address}
                   helperText={errors.address?.message}
                   fullWidth
+                  multiline
+                  minRows={2}
                 />
               )}
             />
@@ -240,7 +246,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 1, sm: 2 }}
           >
-            <Button fullWidth variant="outlined" color="inherit">
+            <Button fullWidth variant="outlined" color="inherit" onClick={handleCancel}>
               Cancel
             </Button>
             <Button fullWidth type="submit" variant="contained" color="primary">

@@ -7,11 +7,6 @@ const teacherSlice = createSlice({
     rows: [],
     selectedTeacher: null,
     search: '',
-    snackbar: {
-      open: false,
-      message: '',
-      severity: 'success',
-    },
   },
   reducers: {
     setRows: (state, action) => {
@@ -23,33 +18,8 @@ const teacherSlice = createSlice({
     setSearch: (state, action) => {
       state.search = action.payload;
     },
-    setSnackbar: (state, action) => {
-      state.snackbar = action.payload;
-    }
-  },
-  extraReducers: (builder) => {
-    builder
-      .addMatcher(
-        teacherApi.endpoints.deleteTeacher.matchPending,
-        (state) => {
-          state.snackbar = { open: true, message: 'Deleting...', severity: 'info' };
-        }
-      )
-      .addMatcher(
-        teacherApi.endpoints.deleteTeacher.matchFulfilled,
-        (state, action) => {
-          state.rows = state.rows.filter((row) => row.id !== action.payload.id); 
-          state.snackbar = { open: true, message: 'Deleted successfully', severity: 'success' };
-        }
-      )
-      .addMatcher(
-        teacherApi.endpoints.deleteTeacher.matchRejected,
-        (state) => {
-          state.snackbar = { open: true, message: 'Failed to delete', severity: 'error' };
-        }
-      );
-  },
+  }
 });
 
-export const { setRows, setSelectedTeacher, setSearch, setSnackbar } = teacherSlice.actions;
+export const { setRows, setSelectedTeacher, setSearch } = teacherSlice.actions;
 export default teacherSlice.reducer;
