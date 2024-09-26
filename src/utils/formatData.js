@@ -17,16 +17,16 @@ export const transformAttendanceData = (apiResponse) => {
     img: item.Student.Info.photo, // Photo
   }));
 };
-//format to get year old 
+//format to get year old
 export const getYearOld = (dob) => {
   const today = new Date();
   const birthDate = new Date(dob);
   const age = today.getFullYear() - birthDate.getFullYear();
   return age;
-}
+};
 // get full name
 export const getFullName = (info) => `${info.first_name} ${info.last_name}`;
-//format attendance data detail 
+//format attendance data detail
 export const formatAttendanceData = (apiResponse) => {
   // get teacher and student name,img
   const teacherFullName = getFullName(apiResponse.Sessions.Teacher.Info);
@@ -129,7 +129,8 @@ export function formatTeacherDetail(teacherData) {
     return null;
   }
   const { email } = teacherData.data.User;
-  const { first_name, last_name, gender, dob, phone_number, address } = teacherData.data.Info;
+  const { first_name, last_name, gender, dob, phone_number, address } =
+    teacherData.data.Info;
   const formattedData = [
     { label: 'Teacher ID', value: teacherData.data.teacher_id },
     { label: 'Teacher Name', value: `${first_name} ${last_name}` },
@@ -297,12 +298,12 @@ export const transformedFilterSubjects = (subjects) => {
   return subjects.map((subject) => ({
     value: subject.subject_id,
     label: subject.name,
-  }))
-}
+  }));
+};
 // Transform filter class for attendance report table
 export const transformedFilterClasses = (classes) => {
   return classes.map((item) => ({
     value: item.class_id,
     label: item.class_name,
-  }))
-}
+  }));
+};
