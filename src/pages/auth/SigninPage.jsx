@@ -52,12 +52,6 @@ const SigninPage = () => {
     }
   };
 
-  // Automatically close Snackbars after a duration
-  const handleCloseSnackbar = () => {
-    setOpenError(false);
-    setOpenSuccess(false);
-  };
-
   return (
     <Box
       component={'section'}
@@ -136,32 +130,6 @@ const SigninPage = () => {
         <SigninImageCarousel />
       </Box>
     </Box>
-  );
-};
-
-// Snackbar for displaying error
-const SnackBarAlert = ({ open, setOpen, message }) => {
-  return (
-    <>
-      {error && (
-        <Snackbar
-          open={openError}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity="error"
-            sx={{ width: '100%' }}
-          >
-            {error?.data?.message === 'Invalid credentials'
-              ? 'Incorrect email or password. Please try again.'
-              : 'Login failed. Please try again later.'}
-          </Alert>
-        </Snackbar>
-      )}
-    </>
   );
 };
 
