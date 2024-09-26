@@ -35,8 +35,8 @@ export const subjectApi = baseApi.injectEndpoints({
 
     // Update subject
     updateSubject: builder.mutation({
-      query: ({ id, formData }) => ({
-        url: `subjects/${id}`,
+      query: (subjectDetail) => ({
+        url: `subjects/${subjectDetail.id}`,
         method: 'PUT',
         body: formData,
         credentials: 'include',
