@@ -63,5 +63,6 @@ export const {
     useDeleteTeacherMutation,
     useUpdateTeacherMutation,
     useGetTeacherQuery,
-    useGetTeacherScheduleClassesQuery
+    useGetTeacherScheduleClassesQuery,
+    useGetAllStudentsByClassInSessionQuery
 } = teacherApi;
