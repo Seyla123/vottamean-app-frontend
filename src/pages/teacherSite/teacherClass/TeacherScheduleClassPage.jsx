@@ -17,7 +17,7 @@ const colors = [
   '#ffece9',
   '#e7eaff',
 ];
-function TeacherClassPage() {
+function TeacherScheduleClassPage() {
   const navigate = useNavigate();
 
   // useGetTeacherScheduleClassesQuery : This is the data fetching hook for the teacher classes,fetch the classes schedule for the current day
@@ -105,4 +105,4 @@ function TeacherClassPage() {
   );
 }
 
-export default TeacherClassPage;
+export default TeacherScheduleClassPage;

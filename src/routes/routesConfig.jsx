@@ -55,7 +55,7 @@ import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
 // Teacher site
 import TeacherAttendanceListPage from '../pages/teacherSite/teacherClass/TeacherAttendanceListPage';
-import TeacherClassPage from '../pages/teacherSite/teacherClass/TeacherClassPage';
+import TeacherScheduleClassPage from '../pages/teacherSite/teacherClass/TeacherScheduleClassPage';
 import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAccountProfilePage';
 import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage';
 
@@ -112,13 +112,13 @@ const routesConfig = [
         children: [
           {
             path: '',
-            element: <TeacherClassPage />,
-          },
-          {
-            path: 'class/:id',
-            element: <TeacherAttendanceListPage />,
-          },
+            element: <TeacherScheduleClassPage />,
+          }
         ],
+      },
+      {
+        path:'classes-schedule/mark-attendance',
+        element: <TeacherAttendanceListPage />,
       },
       {
         path: 'sessions',
