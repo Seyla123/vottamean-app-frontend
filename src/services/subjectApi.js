@@ -12,6 +12,16 @@ export const subjectApi = baseApi.injectEndpoints({
       providesTags: ['Subjects'],
     }),
 
+    // Get subject by Id
+    getSubjectById: builder.query({
+      query: (id) => ({
+        url: `subjects/${id}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['Subjects'],
+    }),
+
     // Delete subject by ID
     deleteSubject: builder.mutation({
       query: (id) => ({
@@ -35,19 +45,20 @@ export const subjectApi = baseApi.injectEndpoints({
 
     // Update subject
     updateSubject: builder.mutation({
-      query: (subjectDetail) => ({
-        url: `subjects/${subjectDetail.id}`,
+      query: ({ id, formData }) => ({
+        url: `subjects/${id}`,
         method: 'PUT',
         body: formData,
         credentials: 'include',
       }),
       providesTags: ['Subjects'],
-    })
+    }),
   }),
 });
 
 export const {
   useGetSubjectsQuery,
+  useGetSubjectByIdQuery,
   useDeleteSubjectMutation,
   useCreateSubjectMutation,
   useUpdateSubjectMutation,
