@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Material UI components
@@ -35,7 +35,7 @@ import { UserProfileValidator } from '../../../../validators/validationSchemas';
 // Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
-function UserUpdatePersonalInfoPage() {
+function UserUpdatePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -49,23 +49,15 @@ function UserUpdatePersonalInfoPage() {
     },
   ] = useUpdateUserProfileMutation();
 
-  // - Fetch user profile data
+  // Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
   console.log('User Profile Data : ', userProfile);
 
-  // Store original data for comparison
   const [originalData, setOriginalData] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // State for the selected file
 
-  // Manage gender and date of birth state
-  const [gender, setGender] = useState(userProfile.gender || '');
-  const [dob, setDob] = useState(
-    userProfile.dob ? dayjs(userProfile.dob) : null,
-  );
-
-  // - Form state using react-hook-form
   const {
-    register,
-    controller,
+    control,
     handleSubmit,
     getValues,
     formState: { errors },
@@ -79,31 +71,31 @@ function UserUpdatePersonalInfoPage() {
       gender: '',
       dob: '',
       phone_number: '',
+      address: '',
     },
   });
 
-  // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
-
-      // Debugging to check what data is being set
       console.log('Setting default values with: ', formattedData);
-
-      // Dynamically set the form default values
       reset(formattedData);
-
-      // Store the original data for comparison
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
 
-  // - Handle form submission
   const onSubmit = async (data) => {
     const currentData = getValues();
+    console.log('Current Data:', currentData);
+    console.log('Original Data:', originalData);
 
-    // Compare current data with the original data
-    if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
+    // Check if the image is uploaded or data has changed
+    const isDataChanged =
+      JSON.stringify(currentData) !== JSON.stringify(originalData);
+    const isImageUploaded = selectedFile !== null;
+
+    // If no changes detected and no image uploaded, show snackbar
+    if (!isDataChanged && !isImageUploaded) {
       dispatch(
         setSnackbar({
           open: true,
@@ -114,10 +106,18 @@ function UserUpdatePersonalInfoPage() {
       return;
     }
 
-    console.log('Submitted data:', data);
+    // Prepare form data for submission
+    const formData = new FormData();
+    if (selectedFile) {
+      formData.append('photo', selectedFile); // Append the image file
+    }
+    Object.keys(data).forEach((key) => formData.append(key, data[key])); // Append the rest of the data
+
+    console.log('Submitted data:', formData);
 
     try {
-      await updateUserProfile(data).unwrap();
+      await updateUserProfile(formData).unwrap();
+      console.log('Profile updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -170,75 +170,127 @@ function UserUpdatePersonalInfoPage() {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <img
-              src={profile}
-              alt="Profile"
-              style={{ width: '120px', borderRadius: '50%' }}
-            />
-          </Box>
+          {/* Photo Upload */}
+          <input
+            accept="image/*"
+            type="file"
+            id="photo-upload"
+            style={{ display: 'none' }}
+            onChange={(e) => setSelectedFile(e.target.files[0])}
+          />
+          <label htmlFor="photo-upload">
+            <Button variant="contained" component="span" fullWidth>
+              Upload Photo
+            </Button>
+          </label>
+
+          {/* Preview the selected image */}
+          {selectedFile && (
+            <Box mt={2}>
+              <img
+                src={URL.createObjectURL(selectedFile)}
+                alt="Selected Preview"
+                style={{ maxWidth: '100%', height: 'auto' }}
+              />
+            </Box>
+          )}
 
           {/* First Name */}
-          <TextField
-            label="First Name"
-            {...register('first_name')}
-            error={!!errors.first_name}
-            helperText={errors.first_name?.message}
-            fullWidth
+          <Controller
+            name="first_name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="First Name"
+                {...field}
+                error={!!errors.first_name}
+                helperText={errors.first_name?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* Last Name */}
-          <TextField
-            label="Last Name"
-            {...register('last_name')}
-            error={!!errors.last_name}
-            helperText={errors.last_name?.message}
-            fullWidth
+          <Controller
+            name="last_name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Last Name"
+                {...field}
+                error={!!errors.last_name}
+                helperText={errors.last_name?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* Phone Number */}
-          <TextField
-            label="Phone Number"
-            {...register('phone_number')}
-            error={!!errors.phone_number}
-            helperText={errors.phone_number?.message}
-            fullWidth
+          <Controller
+            name="phone_number"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Phone Number"
+                {...field}
+                error={!!errors.phone_number}
+                helperText={errors.phone_number?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* Address */}
-          <TextField
-            label="Address"
-            {...register('address')}
-            error={!!errors.address}
-            helperText={errors.address?.message}
-            fullWidth
+          <Controller
+            name="address"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Address"
+                {...field}
+                error={!!errors.address}
+                helperText={errors.address?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* Date of Birth */}
-          <TextField
-            label="Date of Birth"
+          <Controller
             name="dob"
-            type="date"
-            value={formData?.dob || ''}
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            error={!!errors.dob}
-            helperText={errors.dob?.message}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Date of Birth"
+                type="date"
+                {...field}
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.dob}
+                helperText={errors.dob?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* Gender */}
-          <TextField
-            select
-            label="Gender"
+          <Controller
             name="gender"
-            fullWidth
-            error={!!errors.gender}
-            helperText={errors.gender?.message}
-          >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
+            control={control}
+            render={({ field }) => (
+              <TextField
+                select
+                label="Gender"
+                {...field}
+                fullWidth
+                error={!!errors.gender}
+                helperText={errors.gender?.message}
+              >
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </TextField>
+            )}
+          />
 
           {/* Submit button */}
           <Button type="submit" variant="contained" fullWidth>
@@ -260,4 +312,4 @@ function UserUpdatePersonalInfoPage() {
   );
 }
 
-export default UserUpdatePersonalInfoPage;
+export default UserUpdatePage;

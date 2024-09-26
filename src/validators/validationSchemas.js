@@ -45,6 +45,13 @@ const nameSchema = Yup.string()
   .min(2, 'Name must be at least 2 characters long')
   .max(40, 'Name must be less than 40 characters');
 
+// School name validator
+export const schoolNameSchema = Yup.string()
+  .trim()
+  .required('School name is required')
+  .min(2, 'School name must be at least 2 characters long')
+  .max(50, 'School name must be less than 50 characters');
+
 // First name validator
 export const firstNameSchema = nameSchema
   .label('First name')
@@ -105,10 +112,10 @@ export const newPasswordConfirmSchema = Yup.string()
 export const phoneSchema = Yup.string()
   .trim()
   .required('Phone number is required')
-  .matches(/^\d{9,15}$/, 'Phone number must be between 10 and 15 digits')
+  .matches(/^\d{9,15}$/, 'Phone number must be between 09 and 15 digits')
   .test(
     'length',
-    'Phone number must be between 10 and 15 digits',
+    'Phone number must be between 09 and 15 digits',
     (value) => value && value.length >= 9 && value.length <= 15,
   );
 
@@ -131,12 +138,12 @@ export const ageSchema = Yup.number()
 export const genderSchema = Yup.string()
   .required('Gender is required')
   .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
-  //Class Valid
-export const ClassValidator = Yup.object().shape({
-  class_name: Yup.string().required('Class name is required'), 
-  description: Yup.string().optional(), 
-});
 
+//Class Valid
+export const ClassValidator = Yup.object().shape({
+  class_name: Yup.string().required('Class name is required'),
+  description: Yup.string().optional(),
+});
 
 // Start Time & End Time Validator
 export const startTimeSchema = Yup.string()
@@ -186,7 +193,7 @@ export const createFormSchema = (fields) => {
     dob: dobSchema,
     phone_number: phoneSchema,
     address: addressSchema,
-    school_name: nameSchema,
+    school_name: schoolNameSchema,
     school_address: addressSchema,
     school_phone_number: phoneSchema,
     age: ageSchema,
@@ -265,7 +272,6 @@ export const UserProfileValidator = createFormSchema([
   'first_name',
   'last_name',
   'gender',
-  'email',
   'phone_number',
   'address',
   'dob',
@@ -282,8 +288,8 @@ export const SchoolValidator = createFormSchema([
 export const AccountInformationValidator = createFormSchema([
   'email',
   'password',
-  'passwordConfirm'
-])
+  'passwordConfirm',
+]);
 
 // Start of Class Period Validation
 export const ClassPeriodValidator = createFormSchema([
