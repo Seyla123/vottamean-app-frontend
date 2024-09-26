@@ -8,16 +8,18 @@ import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import {
-  useGetSubjectsQuery,
+  useGetSubjectByIdQuery,
   useUpdateSubjectMutation,
 } from '../../../services/subjectApi';
+import { setSnackbar } from '../../../store/slices/uiSlice';
+
 function SubjectUpdatePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const { id } = useParams();
-  const { data, isLoading, fetchError } = useGetSubjectsQuery(id);
+  
 
+  const { data, isLoading, fetchError } = useGetSubjectByIdQuery(id);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -75,11 +77,15 @@ function SubjectUpdatePage() {
     }));
   };
 
-  const onClickNext = () => {
-    console.log('update');
+  const onSubmit = async () => {
+    try {
+      await updateSubject({ id, formData }).unwrap();
+    } catch (error) {
+      console.error('Update failed', error);
+    }
   };
   const onClickBack = () => {
-    console.log('ok');
+    navigate('/admin/subjects');
   };
 
   if (isLoading) {
@@ -118,7 +124,7 @@ function SubjectUpdatePage() {
           {/* Button Container  */}
           <ButtonContainer
             leftBtn={onClickBack}
-            rightBtn={onClickNext}
+            rightBtn={onSubmit}
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Update'}
           />
