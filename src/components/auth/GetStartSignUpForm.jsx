@@ -120,7 +120,7 @@ const GetStartSignUp = ({ nextStep }) => {
           {/* Login Link */}
           <Typography variant="body1">
             Already have an account?
-            <Link to={'/auth/login'}>
+            <Link to={'/auth/signin'}>
               <Typography variant="body1" component="span" color="primary">
                 {' '}
                 Login

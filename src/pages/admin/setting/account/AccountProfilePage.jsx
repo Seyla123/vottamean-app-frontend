@@ -69,7 +69,7 @@ function AccountProfilePage() {
       await deleteUserAccount().unwrap();
       console.log('Account deleted successfully');
 
-      navigate('/auth/login');
+      navigate('/auth/signin');
     } catch (error) {
       console.error('Failed to delete account:', error);
     }

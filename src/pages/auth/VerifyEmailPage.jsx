@@ -40,7 +40,7 @@ function VerifyEmailPage() {
 
   // Redirect to login after successful verification
   const handleLoginRedirect = () => {
-    navigate('/auth/login');
+    navigate('/auth/signin');
   };
 
   return (
@@ -104,7 +104,7 @@ const ErrorState = () => (
     <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
       We couldn't verify your email. The link may have expired or is invalid.
     </Typography>
-    <Button variant="outlined" color="primary" size="large" href="/auth/login">
+    <Button variant="outlined" color="primary" size="large" href="/auth/signin">
       Try again
     </Button>
   </Box>

@@ -76,7 +76,7 @@ const RegisterPage = () => {
       );
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-      // navigate('/auth/login');
+      // navigate('/auth/signin');
     } catch (err) {
       setSnackbarMessage(
         'There was an issue with your signup. Please try again.',
