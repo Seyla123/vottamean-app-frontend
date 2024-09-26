@@ -45,7 +45,15 @@ export const teacherApi = baseApi.injectEndpoints({
                 }
             }),
             providesTags: ['Teachers'],
-        })
+        }),
+        getAllStudentsByClassInSession: builder.query({
+            query: (id) => ({
+              url: `teachers/sessions/${id}`,
+              method: 'GET',
+              credentials: 'include',
+            }),
+            providesTags: ['Teachers'],
+          })
     })
 })
 
