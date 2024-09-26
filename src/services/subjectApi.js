@@ -18,8 +18,9 @@ export const subjectApi = baseApi.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Subjects'],
+      providesTags: ['Subjects'],
     }),
+
     createSubject: builder.mutation({
       query: (subjectData) => ({
         url: 'subjects',
@@ -27,9 +28,13 @@ export const subjectApi = baseApi.injectEndpoints({
         body: subjectData,
         credentials: 'include',
       }),
-      invalidatesTags: ['Subjects'],
+      providesTags: ['Subjects'],
     }),
   }),
 });
 
-export const { useGetSubjectsQuery, useDeleteSubjectMutation, useCreateSubjectMutation } = subjectApi;
+export const {
+  useGetSubjectsQuery,
+  useDeleteSubjectMutation,
+  useCreateSubjectMutation,
+} = subjectApi;
