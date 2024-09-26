@@ -154,7 +154,6 @@ function SubjectListPage() {
         hideColumns={'description'}
         emptyTitle={'No Subject'}
         emptySubTitle={'No Subject Available'}
-        showNO={true}
       />
     </FormComponent>
   );
