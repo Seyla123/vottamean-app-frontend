@@ -22,19 +22,21 @@
  */
 
 import { Box, Typography } from "@mui/material";
-function CardInformation({ data=[] }) {
+function CardInformation({ data }) {
   return (
     <>
       <Box sx={containerStyle}>
-        {Object.entries(data).map(([key, value]) => (
-          <Box sx={textStyles} key={key}>
-            {key}: <Typography sx={textInput}>{value}</Typography>
+        {data.map((item, index) => (
+          <Box key={index} sx={{ ...textStyles, display: "flex", gap: 0.5 }}>
+            <Typography sx={{fontWeight: "bold"}}>{item.label} : </Typography> 
+            <Typography>{item.value}</Typography>
           </Box>
         ))}
       </Box>
     </>
   );
 }
+
 
 export default CardInformation;
 

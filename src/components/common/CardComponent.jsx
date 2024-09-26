@@ -11,12 +11,12 @@
  * 
  * function handleEdit() {
  *   console.log("Edit clicked");
- * }
+ * }                       
  * 
  * function handleDelete() {
  *   console.log("Delete clicked");
  * }
- * 
+ *   
  * <Card 
  *   title="Card Title" 
  *   handleEdit={handleEdit} 
@@ -38,15 +38,14 @@ import { Box ,Stack, Avatar} from "@mui/material"
 import { cardContainer } from "../../styles/global";
 import CardHeader from "./CardHeader";
 
-function Card({title,imgUrl,imgTitle ,children, handleEdit, handleDelete}) {
-  
+function Card({title, children, handleEdit, handleDelete, data}) {
+  const {photo : teacher_profile} = data.Info;
   return (
     <Box component={'form'} direction="column" sx={{...cardContainer, bgcolor: "white"} } >
       {/* Card Title */}
       <CardHeader title={title} handleEdit={handleEdit} handleDelete={handleDelete}/>
-      <Stack component={'div'} sx={imgUrl ? containerStyle : containerStyleNoImg}>
-     {imgUrl &&  <Avatar sx={imgStyle} alt={imgTitle} src={imgUrl} />}
-
+      <Stack component={'div'} sx={teacher_profile ? containerStyle : containerStyleNoImg}>
+        {teacher_profile && <Avatar sx={imgStyle} alt={''} src={teacher_profile} />}
       {children}
       </Stack>
     </Box>
