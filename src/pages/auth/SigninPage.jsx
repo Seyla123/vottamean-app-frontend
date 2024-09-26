@@ -1,28 +1,23 @@
 // React and third-party libraries
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Redux hooks and actions
 import { useLoginMutation } from '../../services/authApi';
 
 // Material UI components
-import { Container, Box, Stack, Snackbar, Alert } from '@mui/material';
+import { Box } from '@mui/material';
 
 // Icon & IMAGE
-import { User, Users, Contact, School } from 'lucide-react';
 import Logo from '../../assets/images/Logo.svg';
 
 // Components
 import LoginForm from '../../components/auth/LoginForm';
-import AuthContainerCard from '../../components/auth/AuthContainerCard';
 import FormFooter from '../../components/auth/FormFooter';
 import SigninImageCarousel from '../../components/auth/SigninImageCarousel';
 import HeaderTitle from '../../components/auth/HeaderTitle';
 
 const SigninPage = () => {
   const [login, { isSuccess, isLoading, error }] = useLoginMutation();
-  const [openError, setOpenError] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (formData) => {
@@ -31,9 +26,6 @@ const SigninPage = () => {
 
       if (response.data) {
         const { role } = response.data;
-
-        // Show success message
-        setOpenSuccess(true);
 
         // Navigate based on the user role
         if (role === 'admin') {
@@ -48,7 +40,6 @@ const SigninPage = () => {
       }
     } catch (err) {
       console.error('Login failed:', err);
-      setOpenError(true);
     }
   };
 
