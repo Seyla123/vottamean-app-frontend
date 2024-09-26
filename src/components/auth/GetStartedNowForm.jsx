@@ -14,6 +14,7 @@ import {
   Link,
 } from '@mui/material';
 import HeaderTitle from './HeaderTitle';
+import FormFooter from './FormFooter';
 import { getStartSignupValidator } from '../../validators/validationSchemas';
 import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
@@ -199,28 +200,8 @@ const GetStartedNowForm = ({ handleNext }) => {
             Continue
           </Button>
 
-          {/* GO TO SIGN IN */}
-          <Box
-            component={'span'}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="body2" component={'span'}>
-              Already have an account?{' '}
-              <Link
-                href="/auth/login"
-                sx={{ display: 'inline-block' }}
-                underline="hover"
-              >
-                <Typography variant="body2" color="primary">
-                  Login
-                </Typography>
-              </Link>
-            </Typography>
-          </Box>
+          {/* FORM FOOTER */}
+          <FormFooter href={'/auth/login'} />
         </Box>
       </form>
     </Box>
