@@ -9,6 +9,8 @@ import { Box } from '@mui/material';
 
 // Icon & IMAGE
 import Logo from '../../assets/images/Logo.svg';
+import patternImage from '../../assets/images/pattern-1.png';
+import patternImage2 from '../../assets/images/pattern-2.png';
 
 // Components
 import LoginForm from '../../components/auth/LoginForm';
@@ -110,6 +112,7 @@ const SigninPage = () => {
         sx={{
           display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
           position: 'relative',
+          zIndex: 1,
           width: '100%',
           height: '100%',
           background: ' linear-gradient(360deg,#6C63FF 0%,  #8B93FF   100%)',
@@ -118,6 +121,28 @@ const SigninPage = () => {
           overflow: 'hidden',
         }}
       >
+        <img
+          src={patternImage}
+          alt="pattern image"
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            left: 0,
+            top: 0,
+          }}
+        />
+
+        <img
+          src={patternImage2}
+          alt="pattern image"
+          style={{
+            position: 'absolute',
+            width: '100px',
+            right: -25,
+            top: 40,
+          }}
+        />
         <SigninImageCarousel />
       </Box>
     </Box>

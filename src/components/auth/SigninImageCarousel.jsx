@@ -3,7 +3,6 @@ import { Box, Typography, MobileStepper } from '@mui/material';
 import image1 from '../../assets/images/auth-illustrator-img-1.svg';
 import image2 from '../../assets/images/auth-illustrator-img-2.svg';
 import image3 from '../../assets/images/auth-illustrator-img-3.png';
-import patternImage from '../../assets/images/pattern-1.png';
 
 const carouselItems = [
   {
@@ -64,7 +63,15 @@ const SigninImageCarousel = () => {
           </Box>
         ))}
       </Box>
-      <Box sx={{ p: 2, color: 'white', textAlign: 'center' }}>
+      <Box
+        sx={{
+          p: 2,
+          color: 'white',
+          textAlign: 'center',
+          position: 'relative',
+          zIndex: 50,
+        }}
+      >
         <Typography variant="h3" gutterBottom fontWeight={'bold'}>
           {carouselItems[activeStep].title}
         </Typography>
