@@ -220,8 +220,8 @@ export const getUserProfileUpdateData = (user) => {
   if (!info) return {};
 
   return {
-    // user_id: user.data.adminProfile.user_id,
-    // info_id: user.data.adminProfile.info_id,
+    user_id: user.data.adminProfile.user_id,
+    info_id: user.data.adminProfile.info_id,
     photo: info.photo,
     first_name: info.first_name,
     last_name: info.last_name,

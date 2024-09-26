@@ -45,6 +45,13 @@ const nameSchema = Yup.string()
   .min(2, 'Name must be at least 2 characters long')
   .max(40, 'Name must be less than 40 characters');
 
+// School name validator
+export const schoolNameSchema = Yup.string()
+  .trim()
+  .required('School name is required')
+  .min(2, 'School name must be at least 2 characters long')
+  .max(50, 'School name must be less than 50 characters');
+
 // First name validator
 export const firstNameSchema = nameSchema
   .label('First name')
@@ -185,7 +192,7 @@ export const createFormSchema = (fields) => {
     dob: dobSchema,
     phone_number: phoneSchema,
     address: addressSchema,
-    school_name: nameSchema,
+    school_name: schoolNameSchema,
     school_address: addressSchema,
     school_phone_number: phoneSchema,
     age: ageSchema,
