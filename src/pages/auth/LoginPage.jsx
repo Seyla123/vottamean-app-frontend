@@ -11,6 +11,7 @@ import { Container, Stack, Snackbar, Alert } from '@mui/material';
 // Components
 import LoginForm from '../../components/auth/LoginForm';
 import AuthContainerCard from '../../components/auth/AuthContainerCard';
+import FormFooter from '../../components/auth/FormFooter';
 
 function LoginPage() {
   const [login, { isSuccess, isLoading, error }] = useLoginMutation();
@@ -20,7 +21,6 @@ function LoginPage() {
 
   const handleLogin = async (formData) => {
     try {
-
       const response = await login(formData).unwrap();
 
       if (response.data) {

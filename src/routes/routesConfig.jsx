@@ -1,6 +1,8 @@
 // auth
 import LoginPage from '../pages/auth/LoginPage';
 import SignupPage from '../pages/auth/SignupPage';
+import RegisterPage from '../pages/auth/RegisterPage';
+import SigninPage from '../pages/auth/SigninPage';
 import PasswordForgotPage from '../pages/auth/PasswordForgotPage';
 import PasswordResetPage from '../pages/auth/PasswordResetPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
@@ -62,7 +64,6 @@ import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage'
 // Layout
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
-import RegisterPage from '../pages/auth/RegisterPage';
 // Routes configuration
 const routesConfig = [
   {
@@ -72,6 +73,10 @@ const routesConfig = [
       {
         path: 'login',
         element: <LoginPage />,
+      },
+      {
+        path: 'signin',
+        element: <SigninPage />,
       },
       {
         path: 'signup',

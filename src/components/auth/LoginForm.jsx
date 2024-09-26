@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Eye, EyeOff, Mail } from 'lucide-react';
+import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
 // Material UI components
 import {
@@ -28,6 +28,9 @@ import { useNavigate } from 'react-router-dom';
 
 // Validation schema
 import { LoginValidator } from '../../validators/validationSchemas';
+
+// Import SnackbarAlert component
+import SnackbarAlert from '../common/SnackbarAlert';
 
 const LoginForm = ({ onSubmit }) => {
   // 1. Initialize dispatch for updating Redux store
@@ -63,6 +66,11 @@ const LoginForm = ({ onSubmit }) => {
     try {
       const result = await onSubmit(data);
       if (result && result.success) {
+        setSnackbar({
+          open: true,
+          message: 'Login successful!',
+          severity: 'success',
+        });
         // Simulate a delay before redirecting (you can remove this in production)
         setTimeout(() => {
           setIsLoading(false);
@@ -70,11 +78,21 @@ const LoginForm = ({ onSubmit }) => {
         }, 2000);
       } else {
         setIsLoading(false);
-        // Handle login failure (e.g., show an error message)
+        setSnackbar({
+          open: true,
+          message: 'Login failed. Please check your credentials and try again.',
+          severity: 'error',
+        });
       }
     } catch (error) {
       setIsLoading(false);
-      // Handle any errors that occur during login
+      setSnackbar({
+        open: true,
+        message: error?.data?.message === 'Invalid credentials'
+          ? 'Incorrect email or password. Please try again.'
+          : 'Login failed. Please try again later.',
+        severity: 'error',
+      });
       console.error('Login error:', error);
     }
   };
@@ -83,79 +101,122 @@ const LoginForm = ({ onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <Box sx={styles.container}>
-      <Box sx={styles.formWrapper}>
-        <HeaderTitle
-          title="Sign In"
-          subTitle="Welcome back! Please sign in your account."
-        />
-
+    <>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Box
-          component="form"
-          onSubmit={handleSubmit(handleFormSubmit)}
-          sx={styles.form}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: { xs: 2, md: 3 },
+          }}
         >
-          <Box sx={styles.inputContainer}>
-            <Typography variant="body2" sx={styles.inputLabel}>
-              Email <span style={styles.requiredStar}>*</span>
+          {/* EMAIL INPUT */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Typography variant="body2" fontWeight="bold">
+              Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
             <TextField
               variant="outlined"
               fullWidth
+              type="email"
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
               placeholder="Enter your email"
-              InputProps={{ endAdornment: <Mail size={20} /> }}
-            />
-          </Box>
-
-          <Box sx={styles.inputContainer}>
-            <Typography variant="body2" sx={styles.inputLabel}>
-              Password <span style={styles.requiredStar}>*</span>
-            </Typography>
-            <TextField
-              type={showPassword ? 'text' : 'password'}
-              variant="outlined"
-              fullWidth
-              {...register('password')}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-              placeholder="Password"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={togglePasswordVisibility}
-                      edge="end"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Mail size={20} />
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
           </Box>
 
-          <Box sx={styles.rememberMeContainer}>
-            <Box component="span" sx={styles.rememberMe}>
-              <Checkbox />
-              <Typography variant="body2">Remember me</Typography>
-            </Box>
-            <Link to="/auth/forgot-password" style={styles.forgotPassword}>
-              <Typography variant="body2" color="primary">
-                Forgot Password?
-              </Typography>
-            </Link>
+          {/* PASSWORD INPUT */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Typography variant="body2" fontWeight="bold">
+              Password <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
+            <TextField
+              variant="outlined"
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              placeholder="Create password"
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockKeyhole size={20} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <IconButton onClick={togglePasswordVisibility} size="icon">
+                      {showPassword ? (
+                        <EyeOff size={20} />
+                      ) : (
+                        <EyeIcon size={20} />
+                      )}
+                    </IconButton>
+                  ),
+                },
+              }}
+            />
           </Box>
 
+          {/* AGREE WITH TERMS */}
+          <Box
+            component="div"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Checkbox />
+            <Box
+              component="div"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                justifyContent: 'space-between',
+                width: '100%',
+              }}
+            >
+              <Typography variant="body2">Remember me</Typography>
+              <Link href="/auth/term">
+                <Typography variant="body2" color="primary">
+                  Forgot Password?
+                </Typography>
+              </Link>
+            </Box>
+          </Box>
+
+          {/* SUBMIT BUTTON */}
           <Button
             variant="contained"
             type="submit"
@@ -166,76 +227,19 @@ const LoginForm = ({ onSubmit }) => {
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              'LOGIN'
+              'SIGN IN'
             )}
           </Button>
-
-          <Typography variant="body2" align="center" sx={styles.signupText}>
-            Don't have an account?{' '}
-            <Link to="/auth/signup" style={styles.signupLink}>
-              Sign Up
-            </Link>
-          </Typography>
         </Box>
-      </Box>
-    </Box>
+      </form>
+      <SnackbarAlert
+        open={snackbar.open}
+        handleClose={handleCloseSnackbar}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
+    </>
   );
 };
 
 export default LoginForm;
-
-const styles = {
-  container: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  formWrapper: {
-    width: '100%',
-    maxWidth: '380px',
-    borderRadius: 2,
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 3,
-    mt: 3,
-  },
-  inputContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-  },
-  inputLabel: {
-    fontWeight: 'bold',
-  },
-  requiredStar: {
-    color: 'red',
-  },
-  forgotPassword: {
-    textDecoration: 'underline',
-    '&:hover': {
-      textDecoration: 'underline',
-    },
-  },
-
-  signupText: {
-    mt: 1,
-  },
-  signupLink: {
-    color: 'primary.main',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-  },
-  rememberMeContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  rememberMe: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-};
