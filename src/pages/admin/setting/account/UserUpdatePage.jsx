@@ -35,7 +35,7 @@ import { UserProfileValidator } from '../../../../validators/validationSchemas';
 // Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
-function UserUpdatePersonalInfoPage() {
+function UserUpdatePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -95,6 +95,8 @@ function UserUpdatePersonalInfoPage() {
   // - Handle form submission
   const onSubmit = async (data) => {
     const currentData = getValues();
+    console.log('Current Data:', currentData);
+    console.log('Original Data:', originalData);
 
     // Compare current data with the original data
     if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
@@ -112,6 +114,7 @@ function UserUpdatePersonalInfoPage() {
 
     try {
       await updateUserProfile(data).unwrap();
+      console.log('Profile updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -164,14 +167,6 @@ function UserUpdatePersonalInfoPage() {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <img
-              src={profile}
-              alt="Profile"
-              style={{ width: '120px', borderRadius: '50%' }}
-            />
-          </Box>
-
           {/* First Name */}
           <Controller
             name="first_name"
@@ -289,4 +284,4 @@ function UserUpdatePersonalInfoPage() {
   );
 }
 
-export default UserUpdatePersonalInfoPage;
+export default UserUpdatePage;
