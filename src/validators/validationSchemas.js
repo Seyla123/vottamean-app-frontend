@@ -291,7 +291,6 @@ export const ClassPeriodValidator = createFormSchema([
   'end_time',
 ]);
 
-<<<<<<< HEAD
 export const UpdateTeacherInfo = createFormSchema([
   'first_name',
   'last_name',
@@ -300,9 +299,7 @@ export const UpdateTeacherInfo = createFormSchema([
   'address',
   'dob'
 ])
-=======
 export const SubjectValidator = createFormSchema([
-  'subjectName',
+  'name',
   'description',
 ]);
->>>>>>> 96fc530 (feature: create schema for subject)
