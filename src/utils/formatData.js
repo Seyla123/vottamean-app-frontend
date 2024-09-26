@@ -39,7 +39,7 @@ export const formatAttendanceData = (apiResponse) => {
     Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
     Subject: apiResponse.Sessions.Subject.name ?? 'N/A',
     Time: `${formatTimeTo12Hour(apiResponse.Sessions.Period.start_time) ?? 'N/A'} - ${formatTimeTo12Hour(apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
-    Period: `${calculatePeriod(apiResponse.Sessions.Period.start_time,apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
+    Period: `${calculatePeriod(apiResponse.Sessions.Period.start_time, apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
     "Teacher's Name": getFullName(apiResponse.Sessions.Teacher.Info) || 'N/A',
     Status: apiResponse.Status.status ?? 'N/A',
     Date: apiResponse.date ?? 'N/A',
@@ -50,7 +50,7 @@ export const formatAttendanceData = (apiResponse) => {
     'Student ID': apiResponse.student_id ?? 'N/A',
     Name: studentFullName || 'N/A',
     Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
-    Age: getYearOld(apiResponse.Student.Info.dob)?? 'N/A',
+    Age: getYearOld(apiResponse.Student.Info.dob) ?? 'N/A',
     Gender: apiResponse.Student.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
     Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
@@ -62,7 +62,7 @@ export const formatAttendanceData = (apiResponse) => {
   const teacher = {
     'Teacher ID': apiResponse.Sessions.Teacher.teacher_id ?? 'N/A',
     Name: teacherFullName || 'N/A',
-    Age: getYearOld(apiResponse.Sessions.Teacher.Info.dob)?? 'N/A',
+    Age: getYearOld(apiResponse.Sessions.Teacher.Info.dob) ?? 'N/A',
     Gender: apiResponse.Sessions.Teacher.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Sessions.Teacher.Info.dob ?? 'N/A',
     Phone: apiResponse.Sessions.Teacher.Info.phone_number ?? 'N/A',
@@ -290,4 +290,19 @@ export const StudentProfile = (student) => {
 // Formatting Students List for Data Table
 export function formatStudentsList(students) {
   return students.map((student) => studentsData(student));
+}
+
+// Transform filter subject for attendance report table
+export const transformedFilterSubjects = (subjects) => {
+  return subjects.map((subject) => ({
+    value: subject.subject_id,
+    label: subject.name,
+  }))
+}
+// Transform filter class for attendance report table
+export const transformedFilterClasses = (classes) => {
+  return classes.map((item) => ({
+    value: item.class_id,
+    label: item.class_name,
+  }))
 }
