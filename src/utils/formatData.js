@@ -122,6 +122,24 @@ export function teacherData(teachers) {
     phoneNumber: teacher.Info.phone_number,
   }));
 }
+// Format teacher detail
+export function formatTeacherDetail(teacherData) {
+  if (!teacherData || !teacherData.data || !teacherData.data.Info) {
+    return null;
+  }
+  const { email } = teacherData.data.User;
+  const { first_name, last_name, gender, dob, phone_number, address } = teacherData.data.Info;
+  const formattedData = [
+    { label: 'Teacher ID', value: teacherData.data.teacher_id },
+    { label: 'Teacher Name', value: `${first_name} ${last_name}` },
+    { label: 'Gender', value: gender },
+    { label: 'Date of Birth', value: dob },
+    { label: 'Phone Number', value: phone_number },
+    { label: 'Email', value: email },
+    { label: 'Street Address', value: address },
+  ];
+  return formattedData;
+}
 
 // Utility: Format Date to a more readable format ("DD/MM/YYYY")
 export function formatDate(dateString) {
