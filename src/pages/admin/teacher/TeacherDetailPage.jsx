@@ -1,39 +1,98 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
+import {
+  useGetTeacherQuery,
+  useDeleteTeacherMutation,
+} from '../../../services/teacherApi';
+import { setSnackbar } from '../../../store/slices/uiSlice';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
+import { formatTeacherDetail } from '../../../utils/formatData';
+import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 
-const clickEdit = () => {
-  console.log('edit');
-};
-const clickDetele = () => {
-  console.log('delete');
-};
-
-const teacher = {
-  TeacherID: 'ANB00101',
-  'Full Name ': 'Potato Fried',
-  Age: 18,
-  Gender: 'Male',
-  'Date of Birth': '01/01/2001',
-  Phone: '01234567',
-  Email: 'mrpotato123gmail.com',
-  Address: 'Potato Chip City, FrenchFried Country',
-};
 function TeacherDetailPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [formattedTeacher, setFormattedTeacher] = useState([]);
+
+  // Get teacher information
+  const { data: teacherData, isLoading, fetchError } = useGetTeacherQuery(id);
+  const [deleteTeacher, { isLoading: isDeleting }] = useDeleteTeacherMutation();
+
+  // Format teacher data and set it in the state
+  useEffect(() => {
+    if (teacherData) {
+      setFormattedTeacher(formatTeacherDetail(teacherData));
+    }
+  }, [teacherData]);
+
+  // Handle Edit
+  const handleEdit = () => {
+    navigate(`/admin/teachers/update/${id}`);
+  };
+
+  // Open delete confirmation modal when user clicks on delete button
+  const handleDelete = () => {
+    setItemToDelete(id);
+    setIsOpen(true);
+  };
+  // Confirm delete
+  const confirmDelete = async () => {
+    try {
+      setIsOpen(false);
+      await deleteTeacher(itemToDelete).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Teacher deleted successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/teachers');
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Failed to delete teacher',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  // loading and error states
+  if (isLoading || isDeleting) return <LoadingCircle />;
+  if (fetchError) return <div>Error loading teacher details</div>;
+
   return (
-    <FormComponent
-      title={'Teacher Detail'}
-      subTitle={'These are Teacher’s information'}
-    >
+    <>
+      <FormComponent
+        title="Teacher Detail"
+        subTitle="These are the teacher's detailed information"
+      ></FormComponent>
       <CardComponent
-        title={'Teacher Information'}
-        imgUrl="r"
-        handleEdit={clickEdit}
-        handleDelete={clickDetele}
+        title="Teacher Information"
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+        data={teacherData.data}
       >
-        <CardInformation data={teacher} />
+        {/*  */}
+        {formattedTeacher && <CardInformation data={formattedTeacher} />}
       </CardComponent>
-    </FormComponent>
+      {/* Delete confirmation modal */}
+      <DeleteConfirmationModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={confirmDelete}
+        itemName="Teacher"
+      />
+    </>
   );
 }
 
