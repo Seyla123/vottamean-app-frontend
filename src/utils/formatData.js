@@ -227,3 +227,48 @@ export const getSchoolData = (user) => {
     school_address: school.school_address,
   };
 };
+
+// Function for Formatted Student Data
+export function studentsData(student) {
+  return {
+    id: student.student_id,
+    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`,
+    class: student.Class.class_name || 'N/A',
+    age: student.Info.dob
+      ? new Date().getFullYear() - new Date(student.Info.dob).getFullYear()
+      : 'N/A',
+    gender: student.Info.gender || 'N/A',
+    'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
+    phone: student.Info.phone_number || 'N/A',
+    email: student.guardian_email || 'N/A',
+    address: student.Info.address || 'N/A',
+  };
+}
+
+// GuardianData Formatted
+export function guardianData(guardian) {
+  return {
+    "Guardian's Name": guardian.guardian_name || 'N/A',
+    Relationship: guardian.guardian_relationship || 'N/A',
+    Phone: formatPhoneNumber(guardian.guardian_phone_number),
+    Email: guardian.guardian_email,
+  };
+}
+
+// Combined User and School Profile Data
+export const StudentProfile = (student) => {
+  // const info = student.Info;
+  const studentProfile = studentsData(student);
+  const guardianProfile = guardianData(student);
+
+  return {
+    studentProfile,
+    guardianProfile,
+    // img: info.photo,
+  };
+};
+
+// Formatting Students List for Data Table
+export function formatStudentsList(students) {
+  return students.map((student) => studentsData(student));
+}
