@@ -17,24 +17,30 @@ export const transformAttendanceData = (apiResponse) => {
     img: item.Student.Info.photo, // Photo
   }));
 };
-//
+//format to get year old 
+export const getYearOld = (dob) => {
+  const today = new Date();
+  const birthDate = new Date(dob);
+  const age = today.getFullYear() - birthDate.getFullYear();
+  return age;
+}
+// get full name
+export const getFullName = (info) => `${info.first_name} ${info.last_name}`;
+//format attendance data detail 
 export const formatAttendanceData = (apiResponse) => {
-  const teacherFullName = `${apiResponse.Sessions.Teacher.Info.first_name} ${apiResponse.Sessions.Teacher.Info.last_name}`;
-  const studentFullName = `${apiResponse.Student.Info.first_name} ${apiResponse.Student.Info.last_name}`;
-  const teacherImg =
-    apiResponse.Sessions.Teacher.User.photo ||
-    'https://i.ibb.co/0y9GkFm/placeholder.png';
-  const studentImg =
-    apiResponse.Student.Info.photo ||
-    'https://i.ibb.co/0y9GkFm/placeholder.png';
+  // get teacher and student name,img
+  const teacherFullName = getFullName(apiResponse.Sessions.Teacher.Info);
+  const studentFullName = getFullName(apiResponse.Student.Info);
+  const teacherImg = apiResponse.Sessions.Teacher.Info.photo;
+  const studentImg = apiResponse.Student.Info.photo;
   // Attendance Information
   const attendance = {
-    "Student's Name": studentFullName || 'N/A',
+    "Student's Name": getFullName(apiResponse.Student.Info) || 'N/A',
     Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
     Subject: apiResponse.Sessions.Subject.name ?? 'N/A',
-    Time: `${apiResponse.Sessions.Period.start_time ?? 'N/A'} - ${apiResponse.Sessions.Period.end_time ?? 'N/A'}`,
-    Period: `${apiResponse.Sessions.Period.end_time ?? 'N/A'} - ${apiResponse.Sessions.Period.start_time ?? 'N/A'}`,
-    "Teacher's Name": teacherFullName || 'N/A',
+    Time: `${formatTimeTo12Hour(apiResponse.Sessions.Period.start_time) ?? 'N/A'} - ${formatTimeTo12Hour(apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
+    Period: `${calculatePeriod(apiResponse.Sessions.Period.start_time, apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
+    "Teacher's Name": getFullName(apiResponse.Sessions.Teacher.Info) || 'N/A',
     Status: apiResponse.Status.status ?? 'N/A',
     Date: apiResponse.date ?? 'N/A',
   };
@@ -44,10 +50,7 @@ export const formatAttendanceData = (apiResponse) => {
     'Student ID': apiResponse.student_id ?? 'N/A',
     Name: studentFullName || 'N/A',
     Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
-    Age: apiResponse.Student.Info.dob
-      ? new Date().getFullYear() -
-        new Date(apiResponse.Student.Info.dob).getFullYear()
-      : 'N/A',
+    Age: getYearOld(apiResponse.Student.Info.dob) ?? 'N/A',
     Gender: apiResponse.Student.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
     Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
@@ -59,14 +62,11 @@ export const formatAttendanceData = (apiResponse) => {
   const teacher = {
     'Teacher ID': apiResponse.Sessions.Teacher.teacher_id ?? 'N/A',
     Name: teacherFullName || 'N/A',
-    Age: apiResponse.Sessions.Teacher.Info.dob
-      ? new Date().getFullYear() -
-        new Date(apiResponse.Sessions.Teacher.Info.dob).getFullYear()
-      : 'N/A',
+    Age: getYearOld(apiResponse.Sessions.Teacher.Info.dob) ?? 'N/A',
     Gender: apiResponse.Sessions.Teacher.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Sessions.Teacher.Info.dob ?? 'N/A',
     Phone: apiResponse.Sessions.Teacher.Info.phone_number ?? 'N/A',
-    Email: apiResponse.Sessions.Teacher.User.email ?? 'N/A',
+    Email: apiResponse.Sessions.Teacher.Info.email ?? 'N/A',
     Address: apiResponse.Sessions.Teacher.Info.address ?? 'N/A',
   };
 
@@ -77,6 +77,7 @@ export const formatAttendanceData = (apiResponse) => {
     Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
     Email: apiResponse.Student.guardian_email ?? 'N/A',
   };
+
   return { attendance, student, teacher, guardian, teacherImg, studentImg };
 };
 
@@ -289,4 +290,19 @@ export const StudentProfile = (student) => {
 // Formatting Students List for Data Table
 export function formatStudentsList(students) {
   return students.map((student) => studentsData(student));
+}
+
+// Transform filter subject for attendance report table
+export const transformedFilterSubjects = (subjects) => {
+  return subjects.map((subject) => ({
+    value: subject.subject_id,
+    label: subject.name,
+  }))
+}
+// Transform filter class for attendance report table
+export const transformedFilterClasses = (classes) => {
+  return classes.map((item) => ({
+    value: item.class_id,
+    label: item.class_name,
+  }))
 }
