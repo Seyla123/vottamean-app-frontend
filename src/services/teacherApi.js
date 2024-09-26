@@ -36,9 +36,9 @@ export const teacherApi = baseApi.injectEndpoints({
             query: (id) => `teachers/${id}`,
             providesTags: ['Teachers'],
         }),
-        getTeacherClasses: builder.query({
+        getTeacherScheduleClasses: builder.query({
             query: (data) => ({
-                url: `teachers/classes`,
+                url: `teachers/sessions`,
                 method: 'GET',
                 params: {
                     filter: data?.filter || ''
@@ -55,5 +55,5 @@ export const {
     useDeleteTeacherMutation,
     useUpdateTeacherMutation,
     useGetTeacherQuery,
-    useGetTeacherClassesQuery
+    useGetTeacherScheduleClassesQuery
 } = teacherApi;
