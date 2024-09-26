@@ -6,7 +6,7 @@ const HeaderTitle = ({ title, subTitle }) => {
       <Typography variant="h4" fontWeight={'bold'}>
         {title}
       </Typography>
-      <Typography variant="subtitle1" mt={0}>
+      <Typography variant="subtitle1" mt={1}>
         {subTitle}
       </Typography>
     </Box>

@@ -40,7 +40,7 @@ function VerifyTeacherEmailPage() {
 
   // Redirect to login after successful verification
   const handleLoginRedirect = () => {
-    navigate('/auth/login');
+    navigate('/auth/signin');
   };
 
   return (

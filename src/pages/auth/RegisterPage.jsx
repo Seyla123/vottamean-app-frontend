@@ -76,7 +76,7 @@ const RegisterPage = () => {
       );
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-        // navigate('/auth/login');
+      // navigate('/auth/signin');
     } catch (err) {
       setSnackbarMessage(
         'There was an issue with your signup. Please try again.',
@@ -154,7 +154,7 @@ const RegisterPage = () => {
 
   return (
     <Box
-      component={'div'}
+      component={'section'}
       sx={{
         height: '100vh',
         width: '100vw',
@@ -271,7 +271,7 @@ const RegisterPage = () => {
       <Box
         component={'div'}
         sx={{
-          width: { xs: '100%', sm: '100%', md: '100%', lg: '65%' },
+          width: '100%',
           height: '100%',
           position: 'relative',
         }}

@@ -14,6 +14,7 @@ import {
   Link,
 } from '@mui/material';
 import HeaderTitle from './HeaderTitle';
+import FormFooter from './FormFooter';
 import { getStartSignupValidator } from '../../validators/validationSchemas';
 import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
@@ -173,25 +174,20 @@ const GetStartedNowForm = ({ handleNext }) => {
           </Box>
 
           {/* AGREE WITH TERMS */}
-          <Box>
-            <Box
-              component="span"
-              sx={{ display: 'flex', alignItems: 'center' }}
-            >
-              <Checkbox />
-              <Typography variant="body2" component={'span'}>
-                I agree with the{' '}
-                <Link
-                  href="/auth/term"
-                  sx={{ display: 'inline-block' }}
-                  underline="hover"
-                >
-                  <Typography variant="body2" color="primary">
-                    Terms and Conditions
-                  </Typography>
-                </Link>
-              </Typography>
-            </Box>
+          <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
+            <Checkbox />
+            <Typography variant="body2" component={'span'}>
+              I agree with the{' '}
+              <Link
+                href="/auth/term"
+                sx={{ display: 'inline-block' }}
+                underline="hover"
+              >
+                <Typography variant="body2" color="primary">
+                  Terms and Conditions
+                </Typography>
+              </Link>
+            </Typography>
           </Box>
 
           {/* SUBMIT BUTTON */}
@@ -199,28 +195,8 @@ const GetStartedNowForm = ({ handleNext }) => {
             Continue
           </Button>
 
-          {/* GO TO SIGN IN */}
-          <Box
-            component={'span'}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="body2" component={'span'}>
-              Already have an account?{' '}
-              <Link
-                href="/auth/login"
-                sx={{ display: 'inline-block' }}
-                underline="hover"
-              >
-                <Typography variant="body2" color="primary">
-                  Login
-                </Typography>
-              </Link>
-            </Typography>
-          </Box>
+          {/* FORM FOOTER */}
+          <FormFooter href={'/auth/signin'} />
         </Box>
       </form>
     </Box>

@@ -114,11 +114,12 @@ function Dashboard() {
 }
 
 const GreetingCard = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   const userName =
-    user.adminProfile.Info.first_name + ' ' + user.adminProfile.Info.last_name;
+    user?.adminProfile?.Info?.first_name +
+    ' ' +
+    user?.adminProfile?.Info?.last_name;
 
   return (
     <Box
@@ -189,7 +190,7 @@ const StatusCard = () => {
         background: '#FFFFFF',
       }}
     >
-      {statusCard.map((item) => (
+      {statusCard?.map((item) => (
         <Grid container key={item.id}>
           <Grid item>
             <Box
