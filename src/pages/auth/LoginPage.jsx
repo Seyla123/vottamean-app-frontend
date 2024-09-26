@@ -20,14 +20,11 @@ function LoginPage() {
 
   const handleLogin = async (formData) => {
     try {
-      console.log('Submitting form data:', formData);
 
       const response = await login(formData).unwrap();
-      console.log('Login successful:', response);
 
       if (response.data) {
         const { role } = response.data;
-        console.log('User role:', role);
 
         // Show success message
         setOpenSuccess(true);
@@ -38,11 +35,9 @@ function LoginPage() {
         } else if (role === 'teacher') {
           navigate('/teacher/dashboard');
         } else {
-          console.warn('Unhandled role:', role);
           navigate('/default-dashboard');
         }
       } else {
-        console.warn('Response data is missing');
         navigate('/default-dashboard');
       }
     } catch (err) {
