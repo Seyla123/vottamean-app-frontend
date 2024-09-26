@@ -274,7 +274,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack }) => {
           </Box>
 
           {/* FORM FOOTER */}
-          <FormFooter href={'/auth/login'} />
+          <FormFooter href={'/auth/signin'} />
         </Box>
       </form>
     </Box>

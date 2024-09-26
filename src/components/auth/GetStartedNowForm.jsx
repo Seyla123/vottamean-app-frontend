@@ -174,25 +174,20 @@ const GetStartedNowForm = ({ handleNext }) => {
           </Box>
 
           {/* AGREE WITH TERMS */}
-          <Box>
-            <Box
-              component="span"
-              sx={{ display: 'flex', alignItems: 'center' }}
-            >
-              <Checkbox />
-              <Typography variant="body2" component={'span'}>
-                I agree with the{' '}
-                <Link
-                  href="/auth/term"
-                  sx={{ display: 'inline-block' }}
-                  underline="hover"
-                >
-                  <Typography variant="body2" color="primary">
-                    Terms and Conditions
-                  </Typography>
-                </Link>
-              </Typography>
-            </Box>
+          <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
+            <Checkbox />
+            <Typography variant="body2" component={'span'}>
+              I agree with the{' '}
+              <Link
+                href="/auth/term"
+                sx={{ display: 'inline-block' }}
+                underline="hover"
+              >
+                <Typography variant="body2" color="primary">
+                  Terms and Conditions
+                </Typography>
+              </Link>
+            </Typography>
           </Box>
 
           {/* SUBMIT BUTTON */}
@@ -201,7 +196,7 @@ const GetStartedNowForm = ({ handleNext }) => {
           </Button>
 
           {/* FORM FOOTER */}
-          <FormFooter href={'/auth/login'} />
+          <FormFooter href={'/auth/signin'} />
         </Box>
       </form>
     </Box>

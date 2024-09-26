@@ -1,24 +1,34 @@
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Link, Route, useNavigate } from 'react-router-dom';
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 const FormFooter = ({ href }) => {
   return (
     <Box
-      component={'span'}
+      component={'div'}
       sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      <Typography variant="body2" component={'span'}>
-        Already have an account?{' '}
-        <Link href={href} sx={{ display: 'inline-block' }} underline="hover">
+      <Box
+        component={'span'}
+        sx={{ display: 'flex', gap: 1, alignItems: 'center' }}
+      >
+        <Typography variant="body2">
+          {href === '/auth/signin'
+            ? 'Already have an account?'
+            : 'Don’t have an account?'}
+        </Typography>
+        <Link to={href}>
           <Typography variant="body2" color="primary">
-            Login
+            {' '}
+            {href === '/auth/signin' ? 'Sign In' : 'Sign Up'}
           </Typography>
         </Link>
-      </Typography>
+      </Box>
     </Box>
   );
 };
