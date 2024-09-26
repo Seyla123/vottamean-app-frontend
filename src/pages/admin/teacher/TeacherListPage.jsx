@@ -30,7 +30,6 @@ const TeacherListPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
-
   // Get all teachers
   const {
     data: allTeachersData,
@@ -39,9 +38,8 @@ const TeacherListPage = () => {
   } = useGetAllTeachersQuery({
     search: searchTerm,
   });
-  // Delete teacher 
+  // Delete teacher
   const [deleteTeacher] = useDeleteTeacherMutation();
-
 
   // Format teacher data and set it in the state
   useEffect(() => {
@@ -50,7 +48,6 @@ const TeacherListPage = () => {
       setRows(formattedData);
     }
   }, [allTeachersData, isSuccess]);
-
 
   // Handle Search by teacher name
   const handleSearchChange = (event) => {
@@ -67,20 +64,29 @@ const TeacherListPage = () => {
     navigate(`/admin/teachers/${row.id}`);
   };
 
-  // Handle Delete action
+
+  // Handle Delete a single teacher
   const handleDelete = (row) => {
     setSelectedItems([row.id]);
     setIsOpen(true);
   };
 
-  // Handle Confirm Delete
+  // Handle delete multiple teachers
+  const handleMultiDelete = (selected) => {
+    if (selected.length > 0) {
+      setSelectedItems(selected); 
+      setIsOpen(true);
+    }
+  };
+
+  // Handle Confirm Delete for both single and multiple teachers
   const confirmDelete = async () => {
     setIsOpen(false);
     try {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Deleting...',
+          message: `Deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
           severity: 'info',
         }),
       );
@@ -91,14 +97,14 @@ const TeacherListPage = () => {
         try {
           await deleteTeacher(id).unwrap();
           // Remove the deleted teacher from the list of rows
-          newRows = newRows.filter((row) => row.id !== id); 
+          newRows = newRows.filter((row) => row.id !== id);
           // create a new aray of rows excluding the deleted teachers
         } catch (error) {
           console.error('Error deleting teacher:', error);
           dispatch(
             setSnackbar({
               open: true,
-              message:'Failed to delete teacher',
+              message: `Error deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
               severity: 'error',
             }),
           );
@@ -111,7 +117,7 @@ const TeacherListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Deleted successfully',
+          message: `Deleted successfully ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
           severity: 'success',
         }),
       );
@@ -120,19 +126,12 @@ const TeacherListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Failed to delete teachers',
+          message: `Failed to delete ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
           severity: 'error',
         }),
       );
     } finally {
       setSelectedItems([]); // Clear selectedItems
-    }
-  };
-
-  // Handle multiple delete
-  const handleMultiDelete = (selected) => {
-    if (selected.length > 0) {
-      setIsOpen(true);
     }
   };
 
@@ -144,7 +143,7 @@ const TeacherListPage = () => {
   if (!isSuccess) {
     return <div>Error fetching data</div>;
   }
-  
+
   return (
     <FormComponent
       title="Teacher List"
