@@ -1,278 +1,287 @@
-// React and third-party libraries
-import React, { useEffect, useState } from 'react';
+// React
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import dayjs from 'dayjs';
 
-// Material UI
+// Material UI components
 import {
-  Typography,
-  Stack,
-  Avatar,
   Box,
-  Select,
-  MenuItem,
+  Stack,
   Button,
+  TextField,
+  MenuItem,
+  CircularProgress,
+  Typography,
 } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-// Components
-import CardComponent from '../../../../components/common/CardComponent';
-import TextFieldComponent from '../../../../components/common/TextFieldComponent';
+// Custom components
 import FormComponent from '../../../../components/common/FormComponent';
-import ButtonContainer from '../../../../components/common/ButtonContainer';
-import userProfile from '../../../../assets/images/default-profile.png';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateFormData } from '../../../../store/slices/formSlice';
+import profile from '../../../../assets/images/default-profile.png';
 
-// Redux hooks and API
+// Redux Hooks and APIs
 import {
-  useGetUserProfileQuery,
   useUpdateUserProfileMutation,
+  useGetUserProfileQuery,
 } from '../../../../services/userApi';
 
-// User Profile Data validation
+// Formatted Data
+import { getUserProfileUpdateData } from '../../../../utils/formatData';
+
+// Validator
 import { UserProfileValidator } from '../../../../validators/validationSchemas';
 
-// User Profile Data formatting
-import { UserProfileData } from '../../../../utils/formatData';
+// Snackbar
+import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function UserUpdatePage() {
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form);
-  console.log('Form Data : ', formData);
+  const navigate = useNavigate();
 
-  // Redux API calls to get user profile
-  const { data: user, isLoading, error } = useGetUserProfileQuery();
+  const [
+    updateUserProfile,
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      error: updateError,
+    },
+  ] = useUpdateUserProfileMutation();
 
-  console.log('User Data : ', user);
-  const [updateUserProfile, { isLoading: isUpdating }] =
-    useUpdateUserProfileMutation();
+  // - Fetch user profile data
+  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
+  console.log('User Profile Data : ', userProfile);
 
-  const [gender, setGender] = useState(formData.gender || '');
-  const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
+  // Store original data for comparison
+  const [originalData, setOriginalData] = useState(null);
 
+  // - Form state using react-hook-form
   const {
     control,
-    register,
     handleSubmit,
+    getValues,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(UserProfileValidator),
-    defaultValues: formData,
+    defaultValues: {
+      photo: '',
+      first_name: '',
+      last_name: '',
+      gender: '',
+      dob: '',
+      phone_number: '',
+      address: '',
+    },
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    dispatch(updateFormData({ [name]: value }));
-  };
-
-  const handleDateChange = (date) => {
-    setDob(date);
-    dispatch(updateFormData({ dob: date?.toISOString() }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      dispatch(updateFormData({ image: file }));
-    }
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      const formDataToSend = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (key !== 'image' && value) {
-          formDataToSend.append(key, value);
-        }
-      });
-      if (formData.image) {
-        formDataToSend.append('image', formData.image);
-      }
-
-      await updateUserProfile(formDataToSend).unwrap();
-      console.log('Profile updated successfully');
-    } catch (error) {
-      console.error('Failed to update profile', error);
-    }
-  };
-
-  // Use the formatted user data on mount
+  // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
-    if (user && user.data.adminProfile?.Info) {
-      const { userProfile } = UserProfileData(user); // Get formatted data
+    if (isSuccess && userProfile) {
+      const formattedData = getUserProfileUpdateData(userProfile);
 
-      // Update the form data with formatted values
+      // Debugging to check what data is being set
+      console.log('Setting default values with: ', formattedData);
+
+      // Dynamically set the form default values
+      reset(formattedData);
+
+      // Store the original data for comparison
+      setOriginalData(formattedData);
+    }
+  }, [isSuccess, userProfile, reset]);
+
+  // - Handle form submission
+  const onSubmit = async (data) => {
+    const currentData = getValues();
+    console.log('Current Data:', currentData);
+    console.log('Original Data:', originalData);
+
+    // Compare current data with the original data
+    if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
       dispatch(
-        updateFormData({
-          first_name: userProfile['Full Name'].split(' ')[0],
-          last_name: userProfile['Full Name'].split(' ')[1],
-          gender: userProfile.Gender,
-          dob: userProfile['Date of Birth'],
-          phone_number: userProfile.Phone,
-          address: userProfile.Address,
-          email: userProfile.Email,
+        setSnackbar({
+          open: true,
+          message: 'No changes detected',
+          severity: 'info',
         }),
       );
-
-      // Set additional local state for form controls
-      setDob(dayjs(userProfile['Date of Birth']));
-      setGender(userProfile.Gender);
+      return;
     }
-  }, [user, dispatch]);
+
+    console.log('Submitted data:', data);
+
+    try {
+      await updateUserProfile(data).unwrap();
+      console.log('Profile updated successfully');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isUpdateLoading) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
+      );
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError?.data?.message || 'Update failed',
+          severity: 'error',
+        }),
+      );
+    } else if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/settings/account');
+    }
+  }, [
+    isUpdateLoading,
+    isUpdateError,
+    isUpdateSuccess,
+    updateError,
+    dispatch,
+    navigate,
+  ]);
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return <CircularProgress />;
+  }
+
+  if (!isSuccess || !userProfile) {
+    return <Typography variant="h6">No user data found</Typography>;
   }
 
   return (
-    <FormComponent title="Update User" subTitle="Update user information">
-      <CardComponent title="User Information">
-        <Stack component={'div'} alignSelf={'center'}>
-          <Avatar
-            sx={imgStyle}
-            alt="user profile"
-            src={
-              formData.image
-                ? URL.createObjectURL(formData.image)
-                : user?.image || userProfile
-            }
+    <FormComponent
+      title="Update Personal Information"
+      subTitle="Update your personal details"
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={3}>
+          {/* First Name */}
+          <Controller
+            name="first_name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="First Name"
+                {...field}
+                error={!!errors.first_name}
+                helperText={errors.first_name?.message}
+                fullWidth
+              />
+            )}
           />
-          <input
-            accept="image/*"
-            type="file"
-            onChange={handleImageUpload}
-            style={{ marginTop: '10px' }}
+
+          {/* Last Name */}
+          <Controller
+            name="last_name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Last Name"
+                {...field}
+                error={!!errors.last_name}
+                helperText={errors.last_name?.message}
+                fullWidth
+              />
+            )}
           />
-        </Stack>
 
-        <Stack direction="row" gap={2}>
-          <Box flexGrow={1}>
-            <Typography variant="body1">First Name</Typography>
-            <TextFieldComponent
-              customStyle={{ flexGrow: 1 }}
-              name="first_name"
-              {...register('first_name')}
-              value={formData.first_name}
-              onChange={handleInputChange}
-              placeholder="First Name"
-              error={Boolean(errors.first_name)}
-              helperText={errors.first_name?.message}
-            />
-          </Box>
-
-          <Box flexGrow={1}>
-            <Typography variant="body1">Last Name</Typography>
-            <TextFieldComponent
-              customStyle={{ flexGrow: 1 }}
-              name="last_name"
-              {...register('last_name')}
-              value={formData.last_name}
-              onChange={handleInputChange}
-              placeholder="Last Name"
-              error={Boolean(errors.last_name)}
-              helperText={errors.last_name?.message}
-            />
-          </Box>
-        </Stack>
-
-        <Box>
-          <Typography variant="body1">Gender</Typography>
-          <Select
-            fullWidth
-            value={gender}
-            onChange={(e) => {
-              setGender(e.target.value);
-              dispatch(updateFormData({ gender: e.target.value }));
-            }}
-            displayEmpty
-            renderValue={(selected) => {
-              if (!selected) {
-                return <Box sx={{ color: '#B5B5B5' }}>Select gender</Box>;
-              }
-              return selected;
-            }}
-          >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </Select>
-        </Box>
-
-        <Box>
-          <Typography variant="body1">Date of Birth</Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Controller
-              name="dob"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  value={dob}
-                  onChange={handleDateChange}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      placeholder: 'Date of Birth',
-                      error: Boolean(errors.dob),
-                      helperText: errors.dob?.message,
-                    },
-                  }}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Box>
-
-        <Box>
-          <Typography variant="body1">Phone Number</Typography>
-          <TextFieldComponent
+          {/* Phone Number */}
+          <Controller
             name="phone_number"
-            {...register('phone_number')}
-            value={formData.phone_number}
-            onChange={handleInputChange}
-            placeholder="Phone Number"
-            error={Boolean(errors.phone_number)}
-            helperText={errors.phone_number?.message}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Phone Number"
+                {...field}
+                error={!!errors.phone_number}
+                helperText={errors.phone_number?.message}
+                fullWidth
+              />
+            )}
           />
-        </Box>
 
-        <Box>
-          <Typography variant="body1">Address</Typography>
-          <TextFieldComponent
+          {/* Address */}
+          <Controller
             name="address"
-            {...register('address')}
-            value={formData.address}
-            onChange={handleInputChange}
-            placeholder="Address"
-            error={Boolean(errors.address)}
-            helperText={errors.address?.message}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Address"
+                {...field}
+                error={!!errors.address}
+                helperText={errors.address?.message}
+                fullWidth
+              />
+            )}
           />
-        </Box>
 
-        <ButtonContainer
-          leftBtnTitle="Cancel"
-          rightBtnTitle={isUpdating ? 'Updating...' : 'Update'}
-          rightBtn={handleSubmit(onSubmit)}
-        />
-      </CardComponent>
+          {/* Date of Birth */}
+          <Controller
+            name="dob"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Date of Birth"
+                type="date"
+                {...field}
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.dob}
+                helperText={errors.dob?.message}
+                fullWidth
+              />
+            )}
+          />
+
+          {/* Gender */}
+          <Controller
+            name="gender"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                select
+                label="Gender"
+                {...field}
+                fullWidth
+                error={!!errors.gender}
+                helperText={errors.gender?.message}
+              >
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </TextField>
+            )}
+          />
+
+          {/* Submit button */}
+          <Button type="submit" variant="contained" fullWidth>
+            Update Personal Info
+          </Button>
+
+          {/* Cancel button */}
+          <Button
+            type="button"
+            variant="outlined"
+            fullWidth
+            onClick={() => navigate('/admin/settings/account')}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </form>
     </FormComponent>
   );
 }
 
 export default UserUpdatePage;
-
-const imgStyle = {
-  width: {
-    xs: 120,
-    sm: 160,
-  },
-  height: {
-    xs: 120,
-    sm: 160,
-  },
-  display: 'flex',
-};

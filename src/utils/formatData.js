@@ -50,7 +50,7 @@ export const formatAttendanceData = (apiResponse) => {
       : 'N/A',
     Gender: apiResponse.Student.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
-    Phone: apiResponse.Student.Info.phone_number ?? 'N/A',
+    Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
     Email: apiResponse.Student.guardian_email ?? 'N/A',
     Address: apiResponse.Student.Info.address ?? 'N/A',
   };
@@ -123,74 +123,12 @@ export function teacherData(teachers) {
   }));
 }
 
-// Transform User Profile Data
-export const transformUserProfile = (user) => {
-  if (!user || !user.data.adminProfile?.Info) {
-    return {};
-  }
-
-  // Utility function to capitalize the first letter of each word
-  const capitalize = (name) => {
-    return name
-      .split(' ')
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join(' ');
-  };
-
-  const info = user.data.adminProfile.Info;
-
-  // Combine first and last name and capitalize each part
-  const fullName = `${info.first_name} ${info.last_name}`;
-  const capitalizedFullName = capitalize(fullName);
-
-  // Transform user profile data
-  return {
-    'Full Name': capitalizedFullName,
-    Age: info.dob
-      ? new Date().getFullYear() - new Date(info.dob).getFullYear()
-      : 'N/A',
-    Gender: info.gender || 'N/A',
-    'Date of Birth': info.dob ? formatDate(info.dob) : 'N/A',
-    Phone: formatPhoneNumber(info.phone_number),
-    Email: user.data.email,
-    Address: info.address || 'N/A',
-  };
-};
-
-// Transform School Profile Data
-export const transformSchoolProfile = (user) => {
-  if (!user || !user.data.adminProfile?.Schools) {
-    return {};
-  }
-
-  const school = user.data.adminProfile.Schools[0] || {};
-
-  // Transform school data
-  return {
-    'School Name': school.school_name || 'N/A',
-    'Phone Number': formatPhoneNumber(school.school_phone_number) || 'N/A',
-    'School Address': school.school_address || 'N/A',
-  };
-};
-
 // Utility: Format Date to a more readable format ("DD/MM/YYYY")
 export function formatDate(dateString) {
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
-// Combined User and School Profile Data
-export const UserProfileData = (user) => {
-  const info = user.data.adminProfile.Info;
-  const userProfile = transformUserProfile(user);
-  const schoolProfile = transformSchoolProfile(user);
-
-  return {
-    userProfile,
-    schoolProfile,
-    img: info.photo,
-  };
-};
 // Utility: Ensure phone number formatting
 export function formatPhoneNumber(phoneNumber) {
   const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -200,44 +138,92 @@ export function formatPhoneNumber(phoneNumber) {
   }
   return phoneNumber;
 }
-//Function for Formatted Student Data
-export function studentsData(student) {
-  return  ({
-    id: student.student_id,
-    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`, // Corrected this line
-    class: student.Class.class_name || 'N/A', 
-    age: student.Info.dob
-      ? new Date().getFullYear() - new Date(student.Info.dob).getFullYear()
-      : 'N/A', 
-    gender: student.Info.gender || 'N/A',
-    'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
-    phone: student.Info.phone_number || 'N/A', // Added default value
-    email: student.guardian_email || 'N/A', // Added default value
-    address: student.Info.address || 'N/A',
-  });
-}
-// Format guardian Data
-export function guardianData(guardian) {
-  return {
-    "Guardian's Name": guardian.guardian_name || 'N/A',
-    Relationship: guardian.guardian_relationship || 'N/A',
-    Phone: formatPhoneNumber(guardian.guardian_phone_number),
-    Email: guardian.guardian_email,
-  };
-}
-// Combined Student and Guardian Data
-export const StudentProfile = (student) => {
-  // const info = student.Info;
-  const studentProfile = studentsData(student);
-  const guardianProfile = guardianData(student);
 
+// Utility:g Capitalize the first letter of each word
+export function capitalize(name) {
+  return name
+    .split(' ')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
+// Transform User Profile Data
+export const transformUserProfile = (user) => {
+  const info = user?.data?.adminProfile?.Info;
+
+  if (!info) return {};
+
+  const fullName = `${info.first_name} ${info.last_name}`;
   return {
-    studentProfile,
-    guardianProfile,
-    // img: info.photo,
+    'Full Name': capitalize(fullName),
+    Age: info.dob
+      ? new Date().getFullYear() - new Date(info.dob).getFullYear()
+      : 'N/A',
+    Gender: info.gender || 'N/A',
+    'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
+    'Phone Number': formatPhoneNumber(info.phone_number),
+    Email: user.data.email,
+    Address: info.address || 'N/A',
   };
 };
-// Use map to format student For Student List
-export function formatStudentsList(students) {
-  return students.map(student => studentsData(student)); 
-}
+
+// Transform School Profile Data
+export const transformSchoolProfile = (user) => {
+  const school = user?.data?.adminProfile?.Schools?.[0];
+
+  if (!school) return {};
+
+  return {
+    'School Name': school.school_name || 'N/A',
+    'School Phone Number':
+      formatPhoneNumber(school.school_phone_number) || 'N/A',
+    'School Address': school.school_address || 'N/A',
+  };
+};
+
+// Combined User and School Profile Data
+export const getUserProfileData = (user) => {
+  const userProfile = transformUserProfile(user);
+  const schoolProfile = transformSchoolProfile(user);
+  const photo = user?.data?.adminProfile?.Info?.photo;
+
+  return {
+    userProfile,
+    schoolProfile,
+    photo: photo || null,
+  };
+};
+
+// Combined User Profile Data for Updates (without formatted DOB)
+export const getUserProfileUpdateData = (user) => {
+  const info = user?.data?.adminProfile?.Info;
+
+  if (!info) return {};
+
+  return {
+    // user_id: user.data.adminProfile.user_id,
+    // info_id: user.data.adminProfile.info_id,
+    photo: info.photo,
+    first_name: info.first_name,
+    last_name: info.last_name,
+    gender: info.gender || '',
+    dob: info.dob || '',
+    phone_number: info.phone_number,
+    address: info.address,
+  };
+};
+
+// Transform School Data for Updates
+export const getSchoolData = (user) => {
+  const school = user?.data?.adminProfile?.Schools?.[0];
+
+  if (!school) return {};
+
+  return {
+    info_id: user.data.adminProfile.info_id,
+    school_id: school.school_id,
+    school_name: school.school_name,
+    school_phone_number: school.school_phone_number,
+    school_address: school.school_address,
+  };
+};

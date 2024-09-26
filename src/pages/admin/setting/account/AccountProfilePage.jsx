@@ -21,7 +21,7 @@ import {
 } from '../../../../services/userApi';
 
 // User Profile Data formatting
-import { UserProfileData } from '../../../../utils/formatData';
+import { getUserProfileData } from '../../../../utils/formatData';
 
 function AccountProfilePage() {
   const [value, setValue] = useState('1');
@@ -38,16 +38,16 @@ function AccountProfilePage() {
   const [userData, setUserData] = useState({
     userProfile: {},
     schoolProfile: {},
-    img: '',
+    photo: '',
   });
 
   // Dispatch user data to form state
   useEffect(() => {
     if (user) {
-      const transformedData = UserProfileData(user);
+      const transformedData = getUserProfileData(user);
       console.log(transformedData);
-      setUserData(transformedData); // Store transformed data locally
-      dispatch(updateFormData(transformedData)); // Dispatch to form state
+      setUserData(transformedData);
+      dispatch(updateFormData(transformedData));
     }
   }, [user, dispatch]);
 
@@ -101,11 +101,11 @@ function AccountProfilePage() {
               {/* User profile information */}
               <CardComponent
                 title={'User Information'}
-                imgUrl={userData.img || profile}
+                imgUrl={userData.photo || profile}
                 handleEdit={clickEditUser}
               >
-                <CardInformation data={userData.userProfile} />
                 {/* Display user profile data */}
+                <CardInformation data={userData.userProfile} />
               </CardComponent>
 
               {/* School information */}
@@ -113,8 +113,8 @@ function AccountProfilePage() {
                 title={'School Information'}
                 handleEdit={clickEditSchool}
               >
-                <CardInformation data={userData.schoolProfile} />{' '}
                 {/* Display school data */}
+                <CardInformation data={userData.schoolProfile} />
               </CardComponent>
             </Stack>
           </TabPanel>

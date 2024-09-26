@@ -3,7 +3,7 @@ import { Box, Button, Typography, TextField, Stack } from '@mui/material';
 import SubHeader from './SubHeader';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AccountInformation } from '../../validators/validationSchemas';
+import { AccountInformationValidator } from '../../validators/validationSchemas';
 
 const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
   // yup validation from account information schema
@@ -12,7 +12,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(AccountInformation),
+    resolver: yupResolver(AccountInformationValidator),
     defaultValues: {
       email: '',
       password: '',
@@ -45,7 +45,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
-              autoComplete='email'
+              autoComplete="email"
             />
           </Box>
           {/* Password */}
@@ -60,7 +60,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
-              autoComplete='new-password'
+              autoComplete="new-password"
             />
           </Box>
           {/* Confirm Password */}
@@ -75,7 +75,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('passwordConfirm')}
               error={!!errors.passwordConfirm}
               helperText={errors.passwordConfirm?.message}
-              autoComplete='new-password'
+              autoComplete="new-password"
             />
           </Box>
           {/* Buttons */}
@@ -86,11 +86,16 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 1, sm: 2 }}
           >
-            <Button onClick={handleBack} fullWidth variant="outlined" color="inherit">
+            <Button
+              onClick={handleBack}
+              fullWidth
+              variant="outlined"
+              color="inherit"
+            >
               Back
             </Button>
-            <Button fullWidth variant="contained" type="submit" >
-            Add Teacher
+            <Button fullWidth variant="contained" type="submit">
+              Add Teacher
             </Button>
           </Stack>
         </Box>
