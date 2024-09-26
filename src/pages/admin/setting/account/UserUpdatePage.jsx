@@ -1,5 +1,11 @@
+// React
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+// Material UI components
 import {
   Box,
   Stack,
@@ -9,25 +15,30 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { updateFormData } from '../../../../store/slices/formSlice';
+
+// Custom components
 import FormComponent from '../../../../components/common/FormComponent';
 import profile from '../../../../assets/images/default-profile.png';
 
+// Redux Hooks and APIs
 import {
   useUpdateUserProfileMutation,
   useGetUserProfileQuery,
 } from '../../../../services/userApi';
 
-// User Profile Data formatting
+// Formatted Data
 import { getUserProfileUpdateData } from '../../../../utils/formatData';
 
-// Ui Slice for snackbar
+// Validator
+import { UserProfileValidator } from '../../../../validators/validationSchemas';
+
+// Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function UserUpdatePersonalInfoPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [
     updateUserProfile,
     {
@@ -38,42 +49,71 @@ function UserUpdatePersonalInfoPage() {
     },
   ] = useUpdateUserProfileMutation();
 
+  // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
+  console.log('User Profile Data : ', userProfile);
 
-  // Use formSlice data to store form state
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    phone_number: '',
-    address: '',
-    dob: '',
-    gender: '',
+  // Store original data for comparison
+  const [originalData, setOriginalData] = useState(null);
+
+  // - Form state using react-hook-form
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(UserProfileValidator),
+    defaultValues: {
+      photo: '',
+      first_name: '',
+      last_name: '',
+      gender: '',
+      dob: '',
+      phone_number: '',
+      address: '',
+    },
   });
 
+  // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
-      const transformedData = getUserProfileUpdateData(userProfile);
-      setFormData({
-        ...transformedData.userProfile,
-      });
+      const formattedData = getUserProfileUpdateData(userProfile);
+
+      // Debugging to check what data is being set
+      console.log('Setting default values with: ', formattedData);
+
+      // Dynamically set the form default values
+      reset(formattedData);
+
+      // Store the original data for comparison
+      setOriginalData(formattedData);
     }
-  }, [isSuccess, userProfile]);
+  }, [isSuccess, userProfile, reset]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // - Handle form submission
+  const onSubmit = async (data) => {
+    const currentData = getValues();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    // Compare current data with the original data
+    if (JSON.stringify(currentData) === JSON.stringify(originalData)) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes detected',
+          severity: 'info',
+        }),
+      );
+      return;
+    }
+
+    console.log('Submitted data:', data);
 
     try {
-      await updateUserProfile(formData).unwrap();
+      await updateUserProfile(data).unwrap();
     } catch (error) {
-      console.error('Error updating profile: ', error);
+      console.error('Error updating profile:', error);
     }
   };
 
@@ -86,7 +126,7 @@ function UserUpdatePersonalInfoPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: updateError.data.message,
+          message: updateError?.data?.message || 'Update failed',
           severity: 'error',
         }),
       );
@@ -101,12 +141,12 @@ function UserUpdatePersonalInfoPage() {
       navigate('/admin/settings/account');
     }
   }, [
-    dispatch,
-    isUpdateError,
     isUpdateLoading,
+    isUpdateError,
     isUpdateSuccess,
-    navigate,
     updateError,
+    dispatch,
+    navigate,
   ]);
 
   if (isLoading) {
@@ -122,9 +162,8 @@ function UserUpdatePersonalInfoPage() {
       title="Update Personal Information"
       subTitle="Update your personal details"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {/* Profile picture */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
             <img
               src={profile}
@@ -134,68 +173,107 @@ function UserUpdatePersonalInfoPage() {
           </Box>
 
           {/* First Name */}
-          <TextField
-            label="First Name"
+          <Controller
             name="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-            fullWidth
-            required
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="First Name"
+                {...field}
+                error={!!errors.first_name}
+                helperText={errors.first_name?.message}
+                fullWidth
+              />
+            )}
           />
+
           {/* Last Name */}
-          <TextField
-            label="Last Name"
+          <Controller
             name="last_name"
-            value={formData.last_name}
-            onChange={handleChange}
-            fullWidth
-            required
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Last Name"
+                {...field}
+                error={!!errors.last_name}
+                helperText={errors.last_name?.message}
+                fullWidth
+              />
+            )}
           />
-          {/* Phone */}
-          <TextField
-            label="Phone"
+
+          {/* Phone Number */}
+          <Controller
             name="phone_number"
-            value={formData.phone_number}
-            onChange={handleChange}
-            fullWidth
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Phone Number"
+                {...field}
+                error={!!errors.phone_number}
+                helperText={errors.phone_number?.message}
+                fullWidth
+              />
+            )}
           />
+
           {/* Address */}
-          <TextField
-            label="Address"
+          <Controller
             name="address"
-            value={formData.address}
-            onChange={handleChange}
-            fullWidth
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Address"
+                {...field}
+                error={!!errors.address}
+                helperText={errors.address?.message}
+                fullWidth
+              />
+            )}
           />
+
           {/* Date of Birth */}
-          <TextField
-            label="Date of Birth"
+          <Controller
             name="dob"
-            type="date"
-            value={formData.dob}
-            onChange={handleChange}
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="Date of Birth"
+                type="date"
+                {...field}
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.dob}
+                helperText={errors.dob?.message}
+                fullWidth
+              />
+            )}
           />
+
           {/* Gender */}
-          <TextField
-            select
-            label="Gender"
+          <Controller
             name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            fullWidth
-          >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
+            control={control}
+            render={({ field }) => (
+              <TextField
+                select
+                label="Gender"
+                {...field}
+                fullWidth
+                error={!!errors.gender}
+                helperText={errors.gender?.message}
+              >
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </TextField>
+            )}
+          />
+
           {/* Submit button */}
           <Button type="submit" variant="contained" fullWidth>
             Update Personal Info
           </Button>
+
           {/* Cancel button */}
           <Button
             type="button"

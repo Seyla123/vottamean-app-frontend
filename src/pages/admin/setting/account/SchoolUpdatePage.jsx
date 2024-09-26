@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Material UI components
@@ -31,11 +31,9 @@ import { SchoolValidator } from '../../../../validators/validationSchemas';
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function SchoolUpdatePage() {
+  // - State to store user data for the school
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // - State to store original form values
-  const [originalData, setOriginalData] = useState(null);
 
   // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
@@ -51,9 +49,12 @@ function SchoolUpdatePage() {
     },
   ] = useUpdateUserProfileMutation();
 
+  // - State to store original form values
+  const [originalData, setOriginalData] = useState(null);
+
   // - Form state
   const {
-    register,
+    control,
     handleSubmit,
     getValues,
     formState: { errors },
@@ -157,30 +158,48 @@ function SchoolUpdatePage() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
           {/* School Name */}
-          <TextField
-            label="School Name"
-            {...register('school_name')}
-            error={!!errors.school_name}
-            helperText={errors.school_name?.message}
-            fullWidth
+          <Controller
+            name="school_name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="School Name"
+                error={!!errors.school_name}
+                helperText={errors.school_name?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* School Phone Number */}
-          <TextField
-            label="School Phone Number"
-            {...register('school_phone_number')}
-            error={!!errors.school_phone_number}
-            helperText={errors.school_phone_number?.message}
-            fullWidth
+          <Controller
+            name="school_phone_number"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="School Phone Number"
+                error={!!errors.school_phone_number}
+                helperText={errors.school_phone_number?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* School Address */}
-          <TextField
-            label="School Address"
-            {...register('school_address')}
-            error={!!errors.school_address}
-            helperText={errors.school_address?.message}
-            fullWidth
+          <Controller
+            name="school_address"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="School Address"
+                error={!!errors.school_address}
+                helperText={errors.school_address?.message}
+                fullWidth
+              />
+            )}
           />
 
           {/* Submit button */}

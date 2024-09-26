@@ -104,8 +104,8 @@ function AccountProfilePage() {
                 imgUrl={userData.photo || profile}
                 handleEdit={clickEditUser}
               >
-                <CardInformation data={userData.userProfile} />
                 {/* Display user profile data */}
+                <CardInformation data={userData.userProfile} />
               </CardComponent>
 
               {/* School information */}
@@ -113,8 +113,8 @@ function AccountProfilePage() {
                 title={'School Information'}
                 handleEdit={clickEditSchool}
               >
-                <CardInformation data={userData.schoolProfile} />{' '}
                 {/* Display school data */}
+                <CardInformation data={userData.schoolProfile} />
               </CardComponent>
             </Stack>
           </TabPanel>

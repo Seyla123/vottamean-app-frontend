@@ -155,15 +155,15 @@ export const transformUserProfile = (user) => {
 
   const fullName = `${info.first_name} ${info.last_name}`;
   return {
-    fullName: capitalize(fullName),
-    age: info.dob
+    'Full Name': capitalize(fullName),
+    Age: info.dob
       ? new Date().getFullYear() - new Date(info.dob).getFullYear()
       : 'N/A',
-    gender: info.gender || 'N/A',
-    dateOfBirth: info.dob ? formatDate(info.dob) : 'N/A',
-    phoneNumber: formatPhoneNumber(info.phone_number),
-    email: user.data.email,
-    address: info.address || 'N/A',
+    Gender: info.gender || 'N/A',
+    'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
+    'Phone Number': formatPhoneNumber(info.phone_number),
+    Email: user.data.email,
+    Address: info.address || 'N/A',
   };
 };
 
@@ -174,9 +174,10 @@ export const transformSchoolProfile = (user) => {
   if (!school) return {};
 
   return {
-    schoolName: school.school_name || 'N/A',
-    schoolPhoneNumber: formatPhoneNumber(school.school_phone_number) || 'N/A',
-    schoolAddress: school.school_address || 'N/A',
+    'School Name': school.school_name || 'N/A',
+    'School Phone Number':
+      formatPhoneNumber(school.school_phone_number) || 'N/A',
+    'School Address': school.school_address || 'N/A',
   };
 };
 
@@ -200,15 +201,13 @@ export const getUserProfileUpdateData = (user) => {
   if (!info) return {};
 
   return {
-    userProfile: {
-      first_name: info.first_name,
-      last_name: info.last_name,
-      gender: info.gender,
-      dob: info.dob,
-      phone_number: info.phone_number,
-      address: info.address,
-    },
-    photo: info.photo || null,
+    photo: info.photo,
+    first_name: info.first_name,
+    last_name: info.last_name,
+    gender: info.gender || '',
+    dob: info.dob || '',
+    phone_number: info.phone_number,
+    address: info.address,
   };
 };
 

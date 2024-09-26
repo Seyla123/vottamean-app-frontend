@@ -1,46 +1,44 @@
-// React and third-party libraries
-import { useEffect, useState } from 'react';
+// React
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Material UI components
 import {
+  Box,
   Stack,
   Button,
   TextField,
+  MenuItem,
   CircularProgress,
   Typography,
 } from '@mui/material';
 
-// Component
+// Custom components
 import FormComponent from '../../../../components/common/FormComponent';
+import profile from '../../../../assets/images/default-profile.png';
 
 // Redux Hooks and APIs
 import {
   useUpdateUserProfileMutation,
   useGetUserProfileQuery,
 } from '../../../../services/userApi';
-import { useDispatch } from 'react-redux';
 
-// - School formatted Data and Validator
-import { getSchoolData } from '../../../../utils/formatData';
-import { SchoolValidator } from '../../../../validators/validationSchemas';
+// Formatted Data
+import { getUserProfileUpdateData } from '../../../../utils/formatData';
 
-// - Ui Slice for snackbar
+// Validator
+import { UserProfileValidator } from '../../../../validators/validationSchemas';
+
+// Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
-function SchoolUpdatePage() {
+function UserUpdatePersonalInfoPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // - State to store original form values
-  const [originalData, setOriginalData] = useState(null);
-
-  // - Fetch user profile data
-  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
-
-  // - Mutation hook for updating the profile
   const [
     updateUserProfile,
     {
@@ -51,26 +49,43 @@ function SchoolUpdatePage() {
     },
   ] = useUpdateUserProfileMutation();
 
-  // - Form state
+  // - Fetch user profile data
+  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
+  console.log('User Profile Data : ', userProfile);
+
+  // Store original data for comparison
+  const [originalData, setOriginalData] = useState(null);
+
+  // Manage gender and date of birth state
+  const [gender, setGender] = useState(userProfile.gender || '');
+  const [dob, setDob] = useState(
+    userProfile.dob ? dayjs(userProfile.dob) : null,
+  );
+
+  // - Form state using react-hook-form
   const {
     register,
+    controller,
     handleSubmit,
     getValues,
     formState: { errors },
     reset,
   } = useForm({
-    resolver: yupResolver(SchoolValidator),
+    resolver: yupResolver(UserProfileValidator),
     defaultValues: {
-      school_name: '',
-      school_address: '',
-      school_phone_number: '',
+      photo: '',
+      first_name: '',
+      last_name: '',
+      gender: '',
+      dob: '',
+      phone_number: '',
     },
   });
 
   // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
-      const formattedData = getSchoolData(userProfile);
+      const formattedData = getUserProfileUpdateData(userProfile);
 
       // Debugging to check what data is being set
       console.log('Setting default values with: ', formattedData);
@@ -108,7 +123,6 @@ function SchoolUpdatePage() {
     }
   };
 
-  // Handle UI feedback
   useEffect(() => {
     if (isUpdateLoading) {
       dispatch(
@@ -118,7 +132,7 @@ function SchoolUpdatePage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: updateError.data.message,
+          message: updateError?.data?.message || 'Update failed',
           severity: 'error',
         }),
       );
@@ -151,41 +165,84 @@ function SchoolUpdatePage() {
 
   return (
     <FormComponent
-      title="Update School Information"
-      subTitle="Update your school details"
+      title="Update Personal Information"
+      subTitle="Update your personal details"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {/* School Name */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <img
+              src={profile}
+              alt="Profile"
+              style={{ width: '120px', borderRadius: '50%' }}
+            />
+          </Box>
+
+          {/* First Name */}
           <TextField
-            label="School Name"
-            {...register('school_name')}
-            error={!!errors.school_name}
-            helperText={errors.school_name?.message}
+            label="First Name"
+            {...register('first_name')}
+            error={!!errors.first_name}
+            helperText={errors.first_name?.message}
             fullWidth
           />
 
-          {/* School Phone Number */}
+          {/* Last Name */}
           <TextField
-            label="School Phone Number"
-            {...register('school_phone_number')}
-            error={!!errors.school_phone_number}
-            helperText={errors.school_phone_number?.message}
+            label="Last Name"
+            {...register('last_name')}
+            error={!!errors.last_name}
+            helperText={errors.last_name?.message}
             fullWidth
           />
 
-          {/* School Address */}
+          {/* Phone Number */}
           <TextField
-            label="School Address"
-            {...register('school_address')}
-            error={!!errors.school_address}
-            helperText={errors.school_address?.message}
+            label="Phone Number"
+            {...register('phone_number')}
+            error={!!errors.phone_number}
+            helperText={errors.phone_number?.message}
             fullWidth
           />
+
+          {/* Address */}
+          <TextField
+            label="Address"
+            {...register('address')}
+            error={!!errors.address}
+            helperText={errors.address?.message}
+            fullWidth
+          />
+
+          {/* Date of Birth */}
+          <TextField
+            label="Date of Birth"
+            name="dob"
+            type="date"
+            value={formData?.dob || ''}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            error={!!errors.dob}
+            helperText={errors.dob?.message}
+          />
+
+          {/* Gender */}
+          <TextField
+            select
+            label="Gender"
+            name="gender"
+            fullWidth
+            error={!!errors.gender}
+            helperText={errors.gender?.message}
+          >
+            <MenuItem value="Male">Male</MenuItem>
+            <MenuItem value="Female">Female</MenuItem>
+            <MenuItem value="Other">Other</MenuItem>
+          </TextField>
 
           {/* Submit button */}
           <Button type="submit" variant="contained" fullWidth>
-            Update School Info
+            Update Personal Info
           </Button>
 
           {/* Cancel button */}
@@ -203,4 +260,4 @@ function SchoolUpdatePage() {
   );
 }
 
-export default SchoolUpdatePage;
+export default UserUpdatePersonalInfoPage;
