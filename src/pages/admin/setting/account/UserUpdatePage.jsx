@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Material UI components
+// - Material UI components
 import {
   Box,
   Stack,
@@ -16,29 +16,31 @@ import {
   Typography,
 } from '@mui/material';
 
-// Custom components
+// - Custom components
 import FormComponent from '../../../../components/common/FormComponent';
 import profile from '../../../../assets/images/default-profile.png';
 
-// Redux Hooks and APIs
+// - Redux Hooks and APIs
 import {
   useUpdateUserProfileMutation,
   useGetUserProfileQuery,
 } from '../../../../services/userApi';
 
-// Formatted Data
+// - Formatted Data
 import { getUserProfileUpdateData } from '../../../../utils/formatData';
 
-// Validator
+// - User Profile Validator
 import { UserProfileValidator } from '../../../../validators/validationSchemas';
 
-// Snackbar
+// - UI Slice for Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function UserUpdatePage() {
+  // - State to store user data for updating
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // - Mutation hook for updating the profile
   const [
     updateUserProfile,
     {
@@ -49,13 +51,15 @@ function UserUpdatePage() {
     },
   ] = useUpdateUserProfileMutation();
 
-  // Fetch user profile data
+  // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
   console.log('User Profile Data : ', userProfile);
 
+  // - Local State for managing data and file upload
   const [originalData, setOriginalData] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null); // State for the selected file
+  const [selectedFile, setSelectedFile] = useState(null);
 
+  // - Form Controller hooks for form fields
   const {
     control,
     handleSubmit,
@@ -75,6 +79,7 @@ function UserUpdatePage() {
     },
   });
 
+  // - Effect hook to reset form values if user profile is updated
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
@@ -84,6 +89,7 @@ function UserUpdatePage() {
     }
   }, [isSuccess, userProfile, reset]);
 
+  // - Handle file selection and preview
   const onSubmit = async (data) => {
     const currentData = getValues();
     console.log('Current Data:', currentData);
@@ -109,9 +115,9 @@ function UserUpdatePage() {
     // Prepare form data for submission
     const formData = new FormData();
     if (selectedFile) {
-      formData.append('photo', selectedFile); // Append the image file
+      formData.append('photo', selectedFile);
     }
-    Object.keys(data).forEach((key) => formData.append(key, data[key])); // Append the rest of the data
+    Object.keys(data).forEach((key) => formData.append(key, data[key]));
 
     console.log('Submitted data:', formData);
 
@@ -123,6 +129,7 @@ function UserUpdatePage() {
     }
   };
 
+  // - Effect for loading status
   useEffect(() => {
     if (isUpdateLoading) {
       dispatch(
@@ -170,6 +177,15 @@ function UserUpdatePage() {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
+          {/* Profile picture */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <img
+              src={userProfile?.data?.adminProfile?.Info.photo || profile}
+              alt="Profile"
+              style={{ width: '120px', borderRadius: '50%' }}
+            />
+          </Box>
+
           {/* Photo Upload */}
           <input
             accept="image/*"
