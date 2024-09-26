@@ -69,7 +69,6 @@ function SubjectCreatePage() {
       const { subject_name, description } = getValues();
       const formData = { subject_name, description };
       await createSubject(formData).unwrap();
-      console.log(formData);
     } catch (err) {
       console.log('error message :', err);
     }
