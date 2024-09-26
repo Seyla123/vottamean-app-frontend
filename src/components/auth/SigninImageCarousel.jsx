@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, MobileStepper } from '@mui/material';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import image1 from '../../assets/images/auth-illustrator-img-1.svg';
 import image2 from '../../assets/images/auth-illustrator-img-2.svg';
 import image3 from '../../assets/images/auth-illustrator-img-3.png';
+import patternImage from '../../assets/images/pattern-1.png';
 
 const carouselItems = [
   {
     imgSrc: image1,
-    title: 'Image 1 Title',
-    description: 'Description for image 1',
+    title: 'Real-time Tracking',
+    description: 'Mark student attendance instantly from any device.',
   },
   {
     imgSrc: image2,
-    title: 'Image 2 Title',
-    description: 'Description for image 2',
+    title: 'Automated Reports',
+    description:
+      ' Generate and download daily, weekly, or monthly attendance reports.',
   },
   {
     imgSrc: image3,
-    title: 'Image 3 Title',
-    description: 'Description for image 3',
+    title: 'Parent Notifications',
+    description:
+      "Automatically notify parents about their child's attendance status.",
   },
 ];
 
@@ -30,8 +32,7 @@ const SigninImageCarousel = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveStep((prevActiveStep) => (prevActiveStep + 1) % maxSteps);
-    }, 5000); // Change slide every 5 seconds
-
+    }, 5000);
     return () => clearInterval(timer);
   }, [maxSteps]);
 
@@ -63,19 +64,29 @@ const SigninImageCarousel = () => {
           </Box>
         ))}
       </Box>
-      <Box sx={{ p: 2, backgroundColor: 'background.paper' }}>
-        <Typography variant="h6" gutterBottom>
+      <Box sx={{ p: 2, color: 'white', textAlign: 'center' }}>
+        <Typography variant="h3" gutterBottom fontWeight={'bold'}>
           {carouselItems[activeStep].title}
         </Typography>
-        <Typography variant="body2" paragraph>
+        <Typography variant="body2">
           {carouselItems[activeStep].description}
         </Typography>
         <MobileStepper
           steps={maxSteps}
           position="static"
           activeStep={activeStep}
-          sx={{ flexGrow: 1, justifyContent: 'center' }}
-
+          sx={{
+            mt: 3,
+            flexGrow: 1,
+            justifyContent: 'center',
+            backgroundColor: 'transparent',
+            '& .MuiMobileStepper-dot': {
+              backgroundColor: '#ccc',
+            },
+            '& .MuiMobileStepper-dotActive': {
+              backgroundColor: '#fff',
+            },
+          }}
         />
       </Box>
     </Box>
