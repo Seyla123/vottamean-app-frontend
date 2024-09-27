@@ -1,9 +1,8 @@
 // auth
 import LoginPage from '../pages/auth/LoginPage';
-import SignupPage from '../pages/auth/SignupPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import SigninPage from '../pages/auth/SigninPage';
-import PasswordForgotPage from '../pages/auth/PasswordForgotPage';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import PasswordResetPage from '../pages/auth/PasswordResetPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
 import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
@@ -96,7 +95,7 @@ const routesConfig = [
       },
       {
         path: 'forgot-password',
-        element: <PasswordForgotPage />,
+        element: <ForgotPasswordPage />,
       },
       {
         path: 'verify-reset-password/:token',
@@ -118,11 +117,11 @@ const routesConfig = [
           {
             path: '',
             element: <TeacherScheduleClassPage />,
-          }
+          },
         ],
       },
       {
-        path:'classes-schedule/mark-attendance',
+        path: 'classes-schedule/mark-attendance',
         element: <TeacherAttendanceListPage />,
       },
       {
