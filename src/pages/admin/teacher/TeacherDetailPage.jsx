@@ -72,17 +72,18 @@ function TeacherDetailPage() {
 
   return (
     <>
+      {/* Header */}
       <FormComponent
         title="Teacher Detail"
         subTitle="These are the teacher's detailed information"
       ></FormComponent>
+      {/* Card Component */}
       <CardComponent
         title="Teacher Information"
         handleEdit={handleEdit}
         handleDelete={handleDelete}
-        data={teacherData.data}
-      >
-        {/*  */}
+        data={teacherData.data}>
+        {/* Card Data */}
         {formattedTeacher && <CardInformation data={formattedTeacher} />}
       </CardComponent>
       {/* Delete confirmation modal */}

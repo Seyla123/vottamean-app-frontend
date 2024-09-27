@@ -30,7 +30,10 @@ const UpdateTeacherForm = () => {
 
   // Get the teacher data
   const { data: teacherData, isLoading, fetchError } = useGetTeacherQuery(id);
-  const [profileImg, setProfileImg] = useState('')
+  const [profileImg, setProfileImg] = useState('');
+
+  // State to hold initial form data for changes comparison
+  const [initialFormData, setInitialFormData] = useState(null);
 
   // Initialize formData with empty strings and nulls
   // We use this state to store the updated teacher information
@@ -59,17 +62,17 @@ const UpdateTeacherForm = () => {
   useEffect(() => {
     if (teacherData) {
       const { Info } = teacherData.data;
-      setProfileImg(Info.photo)
-      setFormData({
-        // avoid undefined by provide a default value in case of empty
+      const teacherInfo = {
         first_name: Info.first_name || '',
         last_name: Info.last_name || '',
         phone_number: Info.phone_number || '',
         gender: Info.gender || '',
-        // convert the dob string to a date object since the DatePicker expects a date object
         dob: Info.dob ? dayjs(Info.dob) : null,
         address: Info.address || '',
-      });
+      };
+      setFormData(teacherInfo);
+      setInitialFormData(teacherInfo); 
+      setProfileImg(Info.photo);
     }
   }, [teacherData]);
 
@@ -169,17 +172,29 @@ const UpdateTeacherForm = () => {
     return true;
   };
 
+  const isFormDataUnchanged = () => {
+    return JSON.stringify(formData) === JSON.stringify(initialFormData);
+  };
+
   // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
-    // avoid page reloading when form is submitted
-
+    // validation failed
     if (!validateForm()) {
       return;
-      // Don't proceed if validation fails
+    }
+    if (isFormDataUnchanged()) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes made.',
+          severity: 'info',
+          autoHideDuration: 6000,
+        }),
+      );
+      navigate('/admin/teachers');
     }
     try {
-      // Call the updateTeacher mutation
       await updateTeacher({
         id, // get the id of the teacher to update
         updates: {
@@ -199,7 +214,7 @@ const UpdateTeacherForm = () => {
 
   // loading and error states
   if (isLoading) return <LoadingCircle />;
-  if (fetchError) return <p>Error loading teacher data.</p>;
+  if (fetchError) return navigate('/admin/teachers');
 
   return (
     <Box sx={profileBox}>
@@ -229,16 +244,6 @@ const UpdateTeacherForm = () => {
             />
           </Box>
         </Stack>
-        {/* Phone Number */}
-        <Box sx={textFieldGap}>
-          <Typography>Phone Number</Typography>
-          <TextField
-            name="phone_number"
-            value={formData.phone_number}
-            onChange={handleInputChange}
-            placeholder="Phone Number"
-          />
-        </Box>
         {/* Gender */}
         <Box sx={textFieldGap}>
           <Typography>Gender</Typography>
@@ -268,6 +273,16 @@ const UpdateTeacherForm = () => {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+        </Box>
+        {/* Phone Number */}
+        <Box sx={textFieldGap}>
+          <Typography>Contact Number</Typography>
+          <TextField
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleInputChange}
+            placeholder="Contact Number"
+          />
         </Box>
         {/* Address */}
         <Box sx={textFieldGap}>
@@ -301,7 +316,7 @@ const UpdateTeacherForm = () => {
   );
 };
 
-// Styles remain unchanged
+// Styles
 const profileBox = {
   border: '1px solid',
   borderColor: '#E0E0E0',
@@ -313,7 +328,6 @@ const profileBox = {
   flexDirection: 'column',
   alignItems: 'center',
 };
-
 const valueBoxOne = {
   width: 100,
   height: 100,
@@ -324,7 +338,6 @@ const valueBoxOne = {
   justifyContent: 'center',
   mb: 2,
 };
-
 const imgStyle = {
   width: {
     xs: 120,
@@ -335,13 +348,11 @@ const imgStyle = {
     sm: 160,
   },
 };
-
 const textFieldGap = {
   display: 'flex',
   gap: 0.5,
   flexDirection: 'column',
 };
-
 const boxContainer = {
   width: '100%',
   marginY: '16px',
@@ -354,10 +365,10 @@ const boxContainer = {
 };
 const buttons = {
   display: 'flex',
-  flexDirection:"row",
-  alignSelf:"flex-end",
-  gap: 2  ,
-  marginTop:2,
-  width:{ xs: '100%', sm: '340px' }
-}
+  flexDirection: 'row',
+  alignSelf: 'flex-end',
+  gap: 2,
+  marginTop: 2,
+  width: { xs: '100%', sm: '340px' },
+};
 export default UpdateTeacherForm;
