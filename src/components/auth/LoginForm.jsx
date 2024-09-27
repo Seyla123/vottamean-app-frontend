@@ -1,13 +1,11 @@
-// React and third-party libraries
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
-
-// Material UI components
+import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   Box,
-  Stack,
   Typography,
   TextField,
   Button,
@@ -16,50 +14,26 @@ import {
   CircularProgress,
   Checkbox,
 } from '@mui/material';
-
-// Custom components
-import HeaderTitle from './HeaderTitle';
-import { Link } from 'react-router-dom';
-
-// Redux hooks and actions
-import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
-import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../services/authApi';
 import { setSnackbar } from '../../store/slices/uiSlice';
-
-// Validation schema
 import { LoginValidator } from '../../validators/validationSchemas';
 
 const LoginForm = () => {
-  // 1. Initialize dispatch for updating Redux store
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  // 2. Get form data from Redux store
-  const formData = useSelector((state) => state.form);
-
-  // 3. Initialize useForm with validation schema and default values from Redux
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
+    reset,
   } = useForm({
     resolver: yupResolver(LoginValidator),
-    defaultValues: formData,
   });
 
-  // 4. Pre-fill form fields with data from Redux store
-  useEffect(() => {
-    if (formData) {
-      setValue('email', formData.email);
-      setValue('password', formData.password);
-    }
-  }, [formData, setValue]);
-
-  // 5. Handle form submission
   const handleFormSubmit = async (data) => {
     dispatch(updateFormData(data));
 
@@ -74,14 +48,14 @@ const LoginForm = () => {
             severity: 'success',
           }),
         );
-        // Navigate based on the user role
-        if (role === 'admin') {
-          navigate('/admin/dashboard');
-        } else if (role === 'teacher') {
-          navigate('/teacher/dashboard');
-        } else {
-          navigate('/something-went-wrong');
-        }
+
+        reset();
+
+        const dashboardRoutes = {
+          admin: '/admin/dashboard',
+          teacher: '/teacher/dashboard',
+        };
+        navigate(dashboardRoutes[role] || '/something-went-wrong');
       }
     } catch (error) {
       dispatch(
@@ -94,129 +68,110 @@ const LoginForm = () => {
     }
   };
 
-  // 6. Toggle password visibility
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: 2, md: 3 },
-          }}
-        >
-          {/* EMAIL INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type="email"
-              {...register('email')}
-              error={!!errors.email}
-              helperText={errors.email?.message}
-              placeholder="Enter your email"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Mail size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-          </Box>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <Box sx={styles.formContainer}>
+        <FormField
+          label="Email"
+          type="email"
+          register={register('email')}
+          error={errors.email}
+          icon={<Mail size={20} />}
+        />
 
-          {/* PASSWORD INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Password <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              {...register('password')}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-              placeholder="Enter your password"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockKeyhole size={20} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <IconButton onClick={togglePasswordVisibility} size="icon">
-                      {showPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <EyeIcon size={20} />
-                      )}
-                    </IconButton>
-                  ),
-                },
-              }}
-            />
-          </Box>
+        <FormField
+          label="Password"
+          type={showPassword ? 'text' : 'password'}
+          register={register('password')}
+          error={errors.password}
+          icon={<LockKeyhole size={20} />}
+          endAdornment={
+            <IconButton onClick={togglePasswordVisibility} size="small">
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </IconButton>
+          }
+        />
 
-          {/* AGREE WITH TERMS */}
-          <Box
-            component="div"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
-            <Checkbox />
-            <Box
-              component="div"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                justifyContent: 'space-between',
-                width: '100%',
-              }}
-            >
-              <Typography variant="body2">Remember me</Typography>
-              <Link href="/auth/term">
-                <Typography variant="body2" color="primary">
-                  Forgot Password?
-                </Typography>
-              </Link>
-            </Box>
+        <Box sx={styles.rememberMeContainer}>
+          <Checkbox />
+          <Box sx={styles.rememberMeText}>
+            <Typography variant="body2">Remember me</Typography>
+            <Link to="/auth/forgot-password">
+              <Typography variant="body2" color="primary">
+                Forgot Password?
+              </Typography>
+            </Link>
           </Box>
-
-          {/* SUBMIT BUTTON */}
-          <Button
-            variant="contained"
-            type="submit"
-            fullWidth
-            size="large"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              'SIGN IN'
-            )}
-          </Button>
         </Box>
-      </form>
-    </>
+
+        <Button
+          variant="contained"
+          type="submit"
+          fullWidth
+          size="large"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'SIGN IN'
+          )}
+        </Button>
+      </Box>
+    </form>
   );
+};
+
+const FormField = ({ label, type, register, error, icon, endAdornment }) => (
+  <Box sx={styles.fieldContainer}>
+    <Typography variant="body2" fontWeight="bold">
+      {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+    </Typography>
+    <TextField
+      variant="outlined"
+      fullWidth
+      type={type}
+      {...register}
+      error={!!error}
+      helperText={error?.message}
+      placeholder={`Enter your ${label.toLowerCase()}`}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">{icon}</InputAdornment>
+        ),
+        endAdornment: endAdornment && (
+          <InputAdornment position="end">{endAdornment}</InputAdornment>
+        ),
+      }}
+    />
+  </Box>
+);
+
+const styles = {
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: { xs: 2, md: 3 },
+  },
+  fieldContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+  },
+  rememberMeContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+  },
+  rememberMeText: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 0.5,
+    justifyContent: 'space-between',
+    width: '100%',
+  },
 };
 
 export default LoginForm;
