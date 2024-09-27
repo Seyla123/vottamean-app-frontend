@@ -4,6 +4,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import { Box, Button, Grid2 } from '@mui/material';
 import { SendIcon, DownloadIcon } from 'lucide-react';
 import { useGetAllStudentsByClassInSessionQuery } from '../../../services/teacherApi';
+import { useGetStatusQuery } from '../../../services/statusApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 
 const columns = [
@@ -49,7 +50,10 @@ const transformStudentData = (apiResponse) => {
 };
 function TeacherAttendanceListPage() {
   const  { data: studentsData, isLoading , isError , isSuccess, error } = useGetAllStudentsByClassInSessionQuery(6);
+  const { data: statusData, isLoading: isLoadingStatus, isError: isErrorStatus, isSuccess: isSuccessStatus, error: errorStatus } = useGetStatusQuery();
+
   const [rows, setRows] = useState([]);
+  const [status, setStatus] = useState([]);
 
   useEffect(() => {
     if(studentsData && isSuccess){
@@ -58,18 +62,20 @@ function TeacherAttendanceListPage() {
       console.log('this data : ', formattedData);
     }
   },[studentsData, isSuccess])
+  useEffect(() => {
+    if(statusData && isSuccessStatus){
+      setStatus(statusData.data)
+      console.log('this status : ', statusData.data);
+    }
+  },[statusData])
 
-  
-  
-  const status = ['Present', 'Absent', 'Late', 'Permission'];
   const hideColumns = ['dob', 'address', 'phone'];
-  console.log('this is : ', );
+  console.log('this is : ',rows );
   
-  if(isLoading){
-    console.log('loading :',  isLoading);
+  if(isLoading || isLoadingStatus){
     return <LoadingCircle/>
   }
-  if(isError){
+  if(isError || isErrorStatus){
     console.log('this is error :', error.data.message);
     return <div>this is error : {error.data.message}</div>
   }
@@ -119,8 +125,8 @@ function TeacherAttendanceListPage() {
       <AttendanceTable
         rows={rows}
         columns={columns}
-        status={status}
         hideColumns={hideColumns}
+        status={status}
         onStatusChange={handleStatusChange}
       />
     </FormComponent>
