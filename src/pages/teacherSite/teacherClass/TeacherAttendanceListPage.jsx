@@ -6,6 +6,7 @@ import { SendIcon, DownloadIcon } from 'lucide-react';
 import { useGetAllStudentsByClassInSessionQuery } from '../../../services/teacherApi';
 import { useGetStatusQuery } from '../../../services/statusApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
+import { transformMarkAttendancetTable } from '../../../utils/formatData';
 
 const columns = [
   {
@@ -35,51 +36,48 @@ const columns = [
   },
 ];
 
-// Function to transform the data
-const transformStudentData = (apiResponse) => {
-  return apiResponse.map((item) => ({
-    id: `ANB0${item.student_id}`,
-    img: item.Info.photo || '', // Adjust the URL as needed
-    name: `${item.Info.first_name} ${item.Info.last_name}`,
-    gender: item.Info.gender === "Male" ? 'M' : 'F', // Convert to 'M' or 'F'
-    phone: item.Info.phone_number,
-    address: item.Info.address,
-    dob: item.Info.dob,
-    status: null, // Adjust status based on active field
-  }))
-};
 function TeacherAttendanceListPage() {
+  // - useGetAllStudentsByClassInSessionQuery : get all students by class in session
+  // - useGetStatusQuery : get all status
   const  { data: studentsData, isLoading , isError , isSuccess, error } = useGetAllStudentsByClassInSessionQuery(6);
   const { data: statusData, isLoading: isLoadingStatus, isError: isErrorStatus, isSuccess: isSuccessStatus, error: errorStatus } = useGetStatusQuery();
 
+  // rows : the data to be displayed in the table
+  // status : the status of attendance to be displayed in the table
   const [rows, setRows] = useState([]);
   const [status, setStatus] = useState([]);
 
+  // if get all students by class in session is success, 
+  // then set rows to transformed data
   useEffect(() => {
     if(studentsData && isSuccess){
-      const formattedData = transformStudentData(studentsData.data);
+      const formattedData = transformMarkAttendancetTable(studentsData.data);
       setRows(formattedData)
-      console.log('this data : ', formattedData);
     }
   },[studentsData, isSuccess])
+
+  // if get all status is success, 
+  // then set status to status data
   useEffect(() => {
     if(statusData && isSuccessStatus){
       setStatus(statusData.data)
-      console.log('this status : ', statusData.data);
     }
   },[statusData])
 
-  const hideColumns = ['dob', 'address', 'phone'];
-  console.log('this is : ',rows );
-  
+  // handle loading
   if(isLoading || isLoadingStatus){
     return <LoadingCircle/>
   }
-  if(isError || isErrorStatus){
-    console.log('this is error :', error.data.message);
+
+  // if isError or isErrorStatus is true, then show error message
+  if(isError ){
     return <div>this is error : {error.data.message}</div>
   }
+  if(isErrorStatus ){
+    return <div>this is error : {errorStatus.data.message}</div>
+  }
 
+  // handle status change
   const handleStatusChange = (updatedRow, newStatus) => {
     setRows((prevRows) =>
       prevRows.map((row) =>
@@ -89,10 +87,12 @@ function TeacherAttendanceListPage() {
     console.log(`Changed ${updatedRow.name} to ${newStatus}`);
   };
 
+  // handle send button
   const handleSend = () => {
     console.log('Send');
   };
 
+  // handle export button
   const handleExport = () => {
     console.log('Export');
   };
@@ -102,10 +102,6 @@ function TeacherAttendanceListPage() {
       title="Attendance List"
       subTitle={`This is attendance list of ${rows.length} students`}
     >
-      <Grid2 xs={12} container>
-        {/* Status card */}
-        {/* <StatusCard rows={rows} /> */}
-      </Grid2>
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <Button
           variant="outlined"
@@ -125,7 +121,7 @@ function TeacherAttendanceListPage() {
       <AttendanceTable
         rows={rows}
         columns={columns}
-        hideColumns={hideColumns}
+        hideColumns={['dob', 'address', 'phone']}
         status={status}
         onStatusChange={handleStatusChange}
       />
