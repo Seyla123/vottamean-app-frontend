@@ -4,6 +4,7 @@ import RegisterPage from '../pages/auth/RegisterPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import PasswordResetPage from '../pages/auth/PasswordResetPage';
+import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
 import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
@@ -103,7 +104,7 @@ const routesConfig = [
       },
       {
         path: 'reset-password/:token',
-        element: <PasswordResetPage />,
+        element: <ResetNewPasswordPage />,
       },
     ],
   },
