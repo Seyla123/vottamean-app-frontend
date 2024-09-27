@@ -18,7 +18,7 @@ import {
   useGetClassPeriodByIdQuery,
   useUpdateClassPeriodMutation,
 } from '../../../services/classPeriodApi';
-
+                                                                                                                                                                                                                                                                                                                                               
 function ClassPeriodUpdatePage() {
   const navigate = useNavigate();
   const { id } = useParams();

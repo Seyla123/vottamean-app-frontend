@@ -177,6 +177,7 @@ export const descriptionSchema = Yup.string()
   .required('Description cannot be empty')
   .max(255, 'Description must be less than 255 characters');
 
+export const createSessionSchema = Yup.string().required('This field is required');
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
   const schemaFields = {
@@ -202,6 +203,11 @@ export const createFormSchema = (fields) => {
     end_time: endTimeSchema,
     subjectName: subjectSchema,
     description: descriptionSchema,
+    teacher_id : createSessionSchema, 
+    class_id : createSessionSchema,
+    period_id : createSessionSchema,
+    day_id : createSessionSchema,
+    subject_id : createSessionSchema
     // Add more schemas as needed
   };
 
@@ -308,4 +314,11 @@ export const UpdateTeacherInfo = createFormSchema([
 ]);
 
 // Update Subject Information
-export const SubjectValidator = createFormSchema(['name', 'description']);
+export const SubjectValidator = createFormSchema(['subject_name', 'description']);
+export const SessionValidator = createFormSchema([
+  'teacher_id',
+  'class_id',
+  'period_id',
+  'day_id',
+  'subject_id'
+])

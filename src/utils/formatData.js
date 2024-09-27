@@ -17,7 +17,7 @@ export const transformAttendanceData = (apiResponse) =>
     name: getFullName(item.Student.Info),
     time: `${item.Sessions.Period.start_time.slice(0, 5)} - ${item.Sessions.Period.end_time.slice(0, 5)}`,
     subjectId: item.Sessions.Subject.id,
-    subject: item.Sessions.Subject.name,
+    subject: item.Sessions.Subject.subject_name,
     classId: item.Student.Class.id,
     class: item.Student.Class.class_name,
     address: item.Student.Info.address,
@@ -37,7 +37,7 @@ export const formatAttendanceData = (apiResponse) => {
   const attendance = {
     "Student's Name": getFullName(studentInfo),
     Class: Sessions.Class?.class_name ?? 'N/A',
-    Subject: Sessions.Subject.name ?? 'N/A',
+    Subject: Sessions.Subject.subject_name ?? 'N/A',
     Time: `${formatTimeTo12Hour(Sessions.Period.start_time)} - ${formatTimeTo12Hour(Sessions.Period.end_time)}`,
     Period: calculatePeriod(
       Sessions.Period.start_time,
@@ -97,7 +97,7 @@ export const transformSessionsData = (apiResponse) =>
     id: item.session_id,
     teacher: getFullName(item.Teacher.Info),
     class: item.Class.class_name,
-    subject: item.Subject.name,
+    subject: item.Subject.subject_name,
     time: calculatePeriod(item.Period.start_time, item.Period.end_time),
     day: item.DayOfWeek.day,
   }));
@@ -284,7 +284,7 @@ export function formatStudentsList(students) {
 export const transformedFilterSubjects = (subjects) => {
   return subjects.map((subject) => ({
     value: subject.subject_id,
-    label: subject.name,
+    label: subject.subject_name,
   }));
 };
 

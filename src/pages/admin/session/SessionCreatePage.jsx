@@ -1,212 +1,217 @@
 import { useEffect, useState } from 'react';
-import { Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import {
+  Box,
+  MenuItem,
+  Select,
+  Typography,
+  FormHelperText,
+} from '@mui/material';
+
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
+
 import { useCreateSessionMutation } from '../../../services/sessionApi';
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 import { useGetDayQuery } from '../../../services/daysApi';
 import { useGetSubjectsQuery } from '../../../services/subjectApi';
+
 import { useNavigate } from 'react-router-dom';
+import { setSnackbar } from '../../../store/slices/uiSlice';
+import { useDispatch } from 'react-redux';
+
+// - Validation Schema
+import { SessionValidator } from '../../../validators/validationSchemas';
 
 // Main Component
 const SessionCreatePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [form, setForm] = useState({
-    teacher: '',
-    classPeriod: '',
-    classes: '',
-    subject: '',
-    dayOfWeek: '',
-  });
+  const [createSession, { isLoading, isError, isSuccess, error }] =
+    useCreateSessionMutation();
+  const { data: periodData } = useGetClassPeriodQuery();
+  const { data: classData } = useGetClassesDataQuery();
+  const { data: teacherData } = useGetAllTeachersQuery();
+  const { data: dayData } = useGetDayQuery();
+  const { data: subjectData } = useGetSubjectsQuery();
 
-  const [createSession] = useCreateSessionMutation();
-
-  // handle periods data for select field
   const [periods, setPeriods] = useState([]);
-  const { data } = useGetClassPeriodQuery();
+  const [classes, setClasses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [days, setDays] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+
   useEffect(() => {
-    if (data) {
-      const transformPeriod = data.data.map((item) => ({
-        value: item.period_id, // Store period_id
-        label: `${item.start_time} - ${item.end_time}`, // Display time range
+    if (periodData) {
+      const transformPeriod = periodData.data.map((item) => ({
+        value: item.period_id,
+        label: `${item.start_time} - ${item.end_time}`,
       }));
       setPeriods(transformPeriod);
     }
-  }, [data]);
 
-  // handle class data for select field
-  const [classes, setClass] = useState([]);
-  const { data: classData } = useGetClassesDataQuery();
-  useEffect(() => {
     if (classData) {
       const classFormat = classData.data.map((item) => ({
-        value: item.class_id, // Store class_id
-        label: item.class_name, // Display class name
+        value: item.class_id,
+        label: item.class_name,
       }));
-      setClass(classFormat);
+      setClasses(classFormat);
     }
-  }, [classData]);
 
-  // handle teachers data for select field
-  const [teachers, setTeachers] = useState([]);
-  const { data: teacherData } = useGetAllTeachersQuery();
-  useEffect(() => {
     if (teacherData) {
       const teacherFormat = teacherData.data.map((item) => ({
-        value: item.teacher_id, // Store teacher_id
-        label: `${item.Info.first_name} ${item.Info.last_name}`, // Display full name
+        value: item.teacher_id,
+        label: `${item.Info.first_name} ${item.Info.last_name}`,
       }));
       setTeachers(teacherFormat);
     }
-  }, [teacherData]);
 
-  // handle days data for select field 
-  const [days, setDays] = useState([]);
-  const { data: dayData } = useGetDayQuery(); 
-  useEffect(() => {
     if (dayData) {
       const dayFormat = dayData.data.map((item) => ({
-        value: item.day_id, // Store day_id
-        label: item.day, // Display day name
+        value: item.day_id,
+        label: item.day,
       }));
       setDays(dayFormat);
     }
-  }, [dayData]);
 
-  // handle subjects data for select field
-  const [subjects, setSubjects] = useState([]);
-  const { data: subjectData } = useGetSubjectsQuery();
-  useEffect(() => {
-    if (subjectData){
+    if (subjectData) {
       const subjectFormat = subjectData.data.map((item) => ({
-        value: item.subject_id, // Store subject_id
-        label: item.name, // Display subject name
+        value: item.subject_id,
+        label: item.subject_name,
       }));
       setSubjects(subjectFormat);
     }
-  }, [subjectData])
+  }, [periodData, classData, teacherData, dayData, subjectData]);
 
-  // Form change handler
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(SessionValidator),
+    defaultValues: {
+      teacher_id: '',
+      period_id: '',
+      class_id: '',
+      subject_id: '',
+      day_id: '',
+    },
+  });
 
-  // Handle form submission
-  const handleCreate = async () => {
+  const onSubmit = async (formData) => {
+    console.log('Form Data:', formData);
+
     const sessionData = {
-      class_id: form.classes,
-      subject_id: form.subject,
-      day_id: form.dayOfWeek,
-      teacher_id: form.teacher,
-      period_id: form.classPeriod,
+      class_id: formData.class_id,
+      subject_id: formData.subject_id,
+      day_id: formData.day_id,
+      teacher_id: formData.teacher_id,
+      period_id: formData.period_id,
     };
 
+    console.log('Session Data:', sessionData);
+
     try {
-      const result = await createSession(sessionData);
+      const result = await createSession(sessionData).unwrap();
       console.log('Session created successfully', result);
-      navigate('/admin/sessions');
     } catch (error) {
       console.log('Error creating session', error);
     }
   };
+
+  useEffect(() => {
+    console.log({ isLoading, isError, isSuccess });
+
+    if (isLoading) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Creating...', severity: 'info' }),
+      );
+    } else if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'Error creating session',
+          severity: 'error',
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Created successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/sessions');
+    }
+  }, [isLoading, isError, isSuccess, dispatch, error, navigate]);
+
+  const renderSelect = (name, label, options) => (
+    <Controller
+      name={name}
+      control={control}
+      fullWidth
+      render={({ field }) => (
+        <Box sx={box}>
+          <Typography>{label}</Typography>
+          <Select
+            {...field}
+            displayEmpty
+            fullWidth
+            renderValue={(selected) =>
+              !selected ? (
+                <span style={{ color: 'gray' }}>{label}</span>
+              ) : (
+                options.find((option) => option.value === selected)?.label || ''
+              )
+            }
+            sx={{
+              '& .MuiSelect-placeholder': {
+                color: 'gray',
+              },
+            }}
+          >
+            {options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors[name] && (
+            <FormHelperText error>{errors[name].message}</FormHelperText>
+          )}
+        </Box>
+      )}
+    />
+  );
 
   return (
     <FormComponent
       title="Add session"
       subTitle="Please Fill session information"
     >
-      <CardComponent title="Session Information">
-        <Box component="form" sx={containerStyle}>
-          {/* Teacher field */}
-          <FormControl fullWidth>
-            <InputLabel>Teacher</InputLabel>
-            <Select
-              name="teacher"
-              value={form.teacher}
-              onChange={handleChange}
-              label="Teacher"
-            >
-              {teachers.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {/* Class Period */}
-          <FormControl fullWidth>
-            <InputLabel>Class Period</InputLabel>
-            <Select
-              name="classPeriod"
-              value={form.classPeriod}
-              onChange={handleChange}
-              label="Class Period"
-            >
-              {periods.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {/* Classes */}
-          <FormControl fullWidth>
-            <InputLabel>Class</InputLabel>
-            <Select
-              name="classes"
-              value={form.classes}
-              onChange={handleChange}
-              label="Class"
-            >
-              {classes.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {/* Subject */}
-          <FormControl fullWidth>
-            <InputLabel>Subject</InputLabel>
-            <Select
-              name="subject"
-              value={form.subject}
-              onChange={handleChange}
-              label="Subject"
-            >
-              {subjects.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {/* Day of Week */}
-          <FormControl fullWidth>
-            <InputLabel>Day of Week</InputLabel>
-            <Select
-              name="dayOfWeek"
-              value={form.dayOfWeek}
-              onChange={handleChange}
-              label="Day of Week"
-            >
-              {days.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
+        <Box sx={containerStyle}>
+          <Box sx={selectedStyle}>
+            <Box>{renderSelect('teacher_id', 'Teacher', teachers)}</Box>
+            <Box>{renderSelect('period_id', 'Class Period', periods)}</Box>
+          </Box>
+          <Box sx={selectedStyle}> 
+            <Box>{renderSelect('class_id', 'Class', classes)}</Box>
+            <Box>{renderSelect('subject_id', 'Subject', subjects)}</Box>
+          </Box>
+          <Box>{renderSelect('day_id', 'Day of Week', days)}</Box>
         </Box>
         <ButtonContainer
-          rightBtn={handleCreate}
           leftBtnTitle="Cancel"
           rightBtnTitle="Add Session"
+          rightBtn={handleSubmit(onSubmit)}
         />
       </CardComponent>
     </FormComponent>
@@ -216,13 +221,23 @@ const SessionCreatePage = () => {
 export default SessionCreatePage;
 
 const containerStyle = {
-  '& .MuiTextField-root': { width: 1 },
   width: '100%',
   display: 'grid',
   gap: { xs: '12px', md: '24px' },
-  margin: '0 auto',
   gridTemplateColumns: {
     xs: 'repeat(1, 1fr)',
     md: 'repeat(2, 1fr)',
   },
 };
+
+const selectedStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: { xs: '12px', md: '24px' },
+}
+
+const box = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+}
