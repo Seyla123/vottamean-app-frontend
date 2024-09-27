@@ -15,7 +15,6 @@ import {
   Button,
   InputAdornment,
   CircularProgress,
-  Link,
 } from '@mui/material';
 
 // Custom components
@@ -23,8 +22,7 @@ import HeaderTitle from './HeaderTitle';
 
 // Validator
 import { RegisterSchoolValidator } from '../../validators/validationSchemas';
-import { Contact2, Phone, PhoneOutgoing, School } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { PhoneOutgoing, School } from 'lucide-react';
 import FormFooter from './FormFooter';
 
 const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
@@ -46,9 +44,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
 
   useEffect(() => {
     if (formData) {
-      setValue('name', formData.school_name);
-      setValue('phone_number', formData.school_phone_number);
-      setValue('address', formData.school_address);
+      setValue('school_name', formData.school_name);
+      setValue('school_phone_number', formData.school_phone_number);
+      setValue('school_address', formData.school_address);
     }
   }, [formData, setValue]);
 
@@ -60,7 +58,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
       school_address: data.school_address,
     };
 
-    dispatch(updateFormData(formattedData)); // Update Redux with form data
+    console.log('Form Data in Step 4 :', formattedData);
+
+    dispatch(updateFormData(formattedData));
 
     if (onFormChange) {
       onFormChange(formattedData);
@@ -110,9 +110,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
               fullWidth
               type="text"
               placeholder="Enter your school name"
-              {...register('name')}
-              error={!!errors.name}
-              helperText={errors.name?.message}
+              {...register('school_name')}
+              error={!!errors.school_name}
+              helperText={errors.school_name?.message}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -136,9 +136,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
               fullWidth
               type="text"
               placeholder="Enter School contact"
-              {...register('phone_number')}
-              error={!!errors.phone_number}
-              helperText={errors.phone_number?.message}
+              {...register('school_phone_number')}
+              error={!!errors.school_phone_number}
+              helperText={errors.school_phone_number?.message}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -163,9 +163,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
               fullWidth
               type="text"
               placeholder="Phnom Penh, Street 210, ..."
-              {...register('address')}
-              error={!!errors.address}
-              helperText={errors.address?.message}
+              {...register('school_address')}
+              error={!!errors.school_address}
+              helperText={errors.school_address?.message}
             />
           </Box>
 

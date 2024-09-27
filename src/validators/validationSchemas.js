@@ -243,9 +243,9 @@ export const ContactInformationValidator = createFormSchema([
 
 // Signup Step 4 :
 export const RegisterSchoolValidator = createFormSchema([
-  'name',
-  'phone_number',
-  'address',
+  'school_name',
+  'school_address',
+  'school_phone_number',
 ]);
 
 // Login Validator :

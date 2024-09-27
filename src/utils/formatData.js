@@ -102,6 +102,27 @@ export const transformSessionsData = (apiResponse) =>
     day: item.DayOfWeek.day,
   }));
 
+// Session detail format
+export const formatSessionDetail = (sessionData) => {
+  // Ensure sessionData is valid before accessing properties
+  if (!sessionData) return {};
+
+  const teacherInfo = sessionData.Teacher.Info;
+
+  return {
+    // 'Teach By': `${teacherInfo.first_name} ${teacherInfo.last_name}`,
+    'Teach By': getFullName(teacherInfo),
+    Time: `${sessionData.Period.start_time} - ${sessionData.Period.end_time}`,
+    Period: calculatePeriod(
+      sessionData.Period.start_time,
+      sessionData.Period.end_time,
+    ),
+    Subject: sessionData.Subject.subject_name,
+    Class: sessionData.Class.class_name,
+    'Day of week': sessionData.DayOfWeek.day,
+  };
+};
+
 // Teacher list format
 export function teacherData(teachers) {
   return teachers.map((teacher) => ({
