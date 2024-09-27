@@ -1,141 +1,145 @@
 // Utility: Capitalize the first letter of each word
-export function capitalize(name) {
-  return name
+export const capitalize = (name) =>
+  name
     .split(' ')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
     .join(' ');
-}
 
 // Utility: Format Date to a more readable format ("DD/MM/YYYY")
-export function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-}
+export const formatDate = (dateString) =>
+  new Date(dateString).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 
 // Utility: Ensure phone number formatting
-export function formatPhoneNumber(phoneNumber) {
-  const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+export const formatPhoneNumber = (phoneNumber) => {
+  const cleaned = phoneNumber.replace(/\D/g, '');
   const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return `(${match[1]}) ${match[2]}-${match[3]}`;
-  }
-  return phoneNumber;
-}
+  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
+};
 
 // Utility: Get user age
 export const getAge = (dob) => {
-  const today = new Date();
   const birthDate = new Date(dob);
-  const age = today.getFullYear() - birthDate.getFullYear();
-  return age;
+  return new Date().getFullYear() - birthDate.getFullYear();
 };
+
+// Utility: Calculation to get period of hour
+export const calculatePeriod = (startTime, endTime) => {
+  const diff = Math.abs(
+    new Date(`1970-01-01T${endTime}Z`) - new Date(`1970-01-01T${startTime}Z`),
+  );
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return `${hours}h ${minutes}m`;
+};
+
+// Utility: Format into standard hour AM or PM
+export const formatTimeTo12Hour = (timeString) => {
+  let [hours, minutes] = timeString.split(':').map(Number);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${hours}:${minutes < 10 ? '0' + minutes : minutes} ${ampm}`;
+};
+
+// Utility: Get Full Name from API response
+export const getFullName = (info) =>
+  info ? capitalize(`${info.first_name} ${info.last_name}`) : 'N/A';
 
 // Transform API response into table data format
-export const transformAttendanceData = (apiResponse) => {
-  return apiResponse.map((item) => ({
+export const transformAttendanceData = (apiResponse) =>
+  apiResponse.map((item) => ({
     id: item.student_id,
     attendance_id: item.attendance_id,
-    name: `${item.Student.Info.first_name} ${item.Student.Info.last_name}`, // Combine first and last name
-    time: `${item.Sessions.Period.start_time.slice(0, 5)} - ${item.Sessions.Period.end_time.slice(0, 5)}`, // Time range
+    name: getFullName(item.Student.Info),
+    time: `${item.Sessions.Period.start_time.slice(0, 5)} - ${item.Sessions.Period.end_time.slice(0, 5)}`,
     subjectId: item.Sessions.Subject.id,
-    subject: item.Sessions.Subject.name, // Subject name
+    subject: item.Sessions.Subject.name,
     classId: item.Student.Class.id,
-    class: item.Student.Class.class_name, // Class name
-    address: item.Student.Info.address, // Address
-    date: item.date, // Date
-    status_id: item.status_id, // Status
-    status:
-      item.Status.status.charAt(0).toUpperCase() + item.Status.status.slice(1), // Capitalize status
-    img: item.Student.Info.photo, // Photo
+    class: item.Student.Class.class_name,
+    address: item.Student.Info.address,
+    date: item.date,
+    status_id: item.status_id,
+    status: capitalize(item.Status.status),
+    img: item.Student.Info.photo,
   }));
-};
 
-//format attendance data detail
+// Format attendance data detail
 export const formatAttendanceData = (apiResponse) => {
-  // get teacher and student name,img
-  const teacherFullName = getFullName(apiResponse.Sessions.Teacher.Info);
-  const studentFullName = getFullName(apiResponse.Student.Info);
-  const teacherImg = apiResponse.Sessions.Teacher.Info.photo;
-  const studentImg = apiResponse.Student.Info.photo;
+  const { Sessions, Status, Student } = apiResponse;
+  const teacherInfo = Sessions.Teacher.Info;
+  const studentInfo = Student.Info;
+
   // Attendance Information
   const attendance = {
-    "Student's Name": getFullName(apiResponse.Student.Info) || 'N/A',
-    Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
-    Subject: apiResponse.Sessions.Subject.name ?? 'N/A',
-    Time: `${formatTimeTo12Hour(apiResponse.Sessions.Period.start_time) ?? 'N/A'} - ${formatTimeTo12Hour(apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
-    Period: `${calculatePeriod(apiResponse.Sessions.Period.start_time, apiResponse.Sessions.Period.end_time) ?? 'N/A'}`,
-    "Teacher's Name": getFullName(apiResponse.Sessions.Teacher.Info) || 'N/A',
-    Status: apiResponse.Status.status ?? 'N/A',
+    "Student's Name": getFullName(studentInfo),
+    Class: Sessions.Class?.class_name ?? 'N/A',
+    Subject: Sessions.Subject.name ?? 'N/A',
+    Time: `${formatTimeTo12Hour(Sessions.Period.start_time)} - ${formatTimeTo12Hour(Sessions.Period.end_time)}`,
+    Period: calculatePeriod(
+      Sessions.Period.start_time,
+      Sessions.Period.end_time,
+    ),
+    "Teacher's Name": getFullName(teacherInfo),
+    Status: Status.status ?? 'N/A',
     Date: apiResponse.date ?? 'N/A',
   };
 
   // Student Information
   const student = {
-    'Student ID': apiResponse.student_id ?? 'N/A',
-    Name: studentFullName || 'N/A',
-    Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
-    Age: getAge(apiResponse.Student.Info.dob) ?? 'N/A',
-    Gender: apiResponse.Student.Info.gender ?? 'N/A',
-    'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
-    Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
-    Email: apiResponse.Student.guardian_email ?? 'N/A',
-    Address: apiResponse.Student.Info.address ?? 'N/A',
+    'Student ID': Student.student_id ?? 'N/A',
+    Name: getFullName(studentInfo),
+    Class: Sessions.Class?.class_name ?? 'N/A',
+    Age: getAge(studentInfo.dob),
+    Gender: studentInfo.gender ?? 'N/A',
+    'Date of Birth': studentInfo.dob ?? 'N/A',
+    Phone: Student.guardian_phone_number ?? 'N/A',
+    Email: Student.guardian_email ?? 'N/A',
+    Address: studentInfo.address ?? 'N/A',
   };
 
   // Teacher Information
   const teacher = {
-    'Teacher ID': apiResponse.Sessions.Teacher.teacher_id ?? 'N/A',
-    Name: teacherFullName || 'N/A',
-    Age: getAge(apiResponse.Sessions.Teacher.Info.dob) ?? 'N/A',
-    Gender: apiResponse.Sessions.Teacher.Info.gender ?? 'N/A',
-    'Date of Birth': apiResponse.Sessions.Teacher.Info.dob ?? 'N/A',
-    Phone: apiResponse.Sessions.Teacher.Info.phone_number ?? 'N/A',
-    Email: apiResponse.Sessions.Teacher.Info.email ?? 'N/A',
-    Address: apiResponse.Sessions.Teacher.Info.address ?? 'N/A',
+    'Teacher ID': Sessions.Teacher.teacher_id ?? 'N/A',
+    Name: getFullName(teacherInfo),
+    Age: getAge(teacherInfo.dob),
+    Gender: teacherInfo.gender ?? 'N/A',
+    'Date of Birth': teacherInfo.dob ?? 'N/A',
+    Phone: teacherInfo.phone_number ?? 'N/A',
+    Email: teacherInfo.email ?? 'N/A',
+    Address: teacherInfo.address ?? 'N/A',
   };
 
   // Guardian Information
   const guardian = {
-    "Guardian's Name": apiResponse.Student.guardian_name ?? 'N/A',
-    Relationship: apiResponse.Student.guardian_relationship ?? 'N/A',
-    Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
-    Email: apiResponse.Student.guardian_email ?? 'N/A',
+    "Guardian's Name": Student.guardian_name ?? 'N/A',
+    Relationship: Student.guardian_relationship ?? 'N/A',
+    Phone: Student.guardian_phone_number ?? 'N/A',
+    Email: Student.guardian_email ?? 'N/A',
   };
 
-  return { attendance, student, teacher, guardian, teacherImg, studentImg };
+  return {
+    attendance,
+    student,
+    teacher,
+    guardian,
+    teacherImg: teacherInfo.photo,
+    studentImg: studentInfo.photo,
+  };
 };
 
-// Calculation to get period of hour
-export function calculatePeriod(startTime, endTime) {
-  const start = new Date(`1970-01-01T${startTime}Z`);
-  const end = new Date(`1970-01-01T${endTime}Z`);
-  const diff = Math.abs(end - start);
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  return `${hours}h ${minutes}m`;
-}
-
-// Format into standard hour AM or PM
-export function formatTimeTo12Hour(timeString) {
-  const [hourStr, minuteStr] = timeString.split(':');
-  let hours = parseInt(hourStr, 10);
-  const minutes = parseInt(minuteStr, 10);
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  return `${hours}:${formattedMinutes} ${ampm}`;
-}
-
-export const transformSessionsData = (apiResponse) => {
-  return apiResponse.map((item) => ({
+// Transform Sessions data
+export const transformSessionsData = (apiResponse) =>
+  apiResponse.map((item) => ({
     id: item.session_id,
-    teacher: `${item.Teacher.Info.first_name} ${item.Teacher.Info.last_name}`,
+    teacher: getFullName(item.Teacher.Info),
     class: item.Class.class_name,
     subject: item.Subject.name,
     time: calculatePeriod(item.Period.start_time, item.Period.end_time),
     day: item.DayOfWeek.day,
   }));
-};
 
 // Teacher list format
 export function teacherData(teachers) {
@@ -174,9 +178,8 @@ export const transformUserProfile = (user) => {
 
   if (!info) return {};
 
-  const fullName = `${info.first_name} ${info.last_name}`;
   return {
-    'Full Name': capitalize(fullName),
+    'Full Name': getFullName(info),
     Age: getAge(info.dob) || 'N/A',
     Gender: info.gender || 'N/A',
     'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
@@ -242,8 +245,8 @@ export const getSchoolData = (user) => {
     info_id: user.data.adminProfile.info_id,
     school_id: school.school_id,
     school_name: school.school_name,
-    school_phone_number: school.school_phone_number,
     school_address: school.school_address,
+    school_phone_number: school.school_phone_number,
   };
 };
 
