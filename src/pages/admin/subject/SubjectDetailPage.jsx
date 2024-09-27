@@ -3,7 +3,6 @@ import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
 import { useGetSubjectByIdQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
-import { subjectDetail } from '../../../utils/formatData';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +26,7 @@ function SubjectDetailPage() {
 
   useEffect(() => {
     if (data && isSuccess) {
-      setDetails(subjectDetail(data));
+      setDetails(subjectDetail);
     }
   }, [data, isSuccess, isDeleteSuccess]);
 
@@ -69,13 +68,21 @@ function SubjectDetailPage() {
   };
 
   // Manually remove or nullify the `photo` property in the `data` object
-  const dataWithoutPhoto = {
-    ...data.data,
-    Info: {
-      ...data.data.Info,
-      photo: null,  // This will prevent the `Avatar` from being rendered
-    },
-  };
+  // const dataWithoutPhoto = {
+  //   ...data.data,
+  //   Info: {
+  //     ...data.data.Info,
+  //     photo: null,  // This will prevent the `Avatar` from being rendered
+  //   },
+  // };
+
+  const { subject_id, name, description } = data.data;
+
+  const subjectDetail = {
+    'Subject ID': subject_id,
+    'Subject Name': name,
+    'Description': description
+  }
 
   return (
     <FormComponent
@@ -86,7 +93,6 @@ function SubjectDetailPage() {
         title={'Subject Information'}
         handleEdit={clickEdit}
         handleDelete={clickDetele}
-        data={dataWithoutPhoto}  // Pass data with `photo` field set to null
       >
         <CardInformation data={details} />
       </CardComponent>
