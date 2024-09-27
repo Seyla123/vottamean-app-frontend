@@ -83,7 +83,7 @@ const SessionCreatePage = () => {
     if (subjectData) {
       const subjectFormat = subjectData.data.map((item) => ({
         value: item.subject_id,
-        label: item.name,
+        label: item.subject_name,
       }));
       setSubjects(subjectFormat);
     }

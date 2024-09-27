@@ -49,6 +49,7 @@ function SchoolUpdatePage() {
   // - State to store user data for the school
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [originData, setOriginaData] = useState()
 
   // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();

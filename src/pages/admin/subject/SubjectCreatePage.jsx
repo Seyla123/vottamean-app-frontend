@@ -24,7 +24,7 @@ function SubjectCreatePage() {
   } = useForm({
     resolver: yupResolver(SubjectValidator),
     defaultValues: {
-      name: '',
+      subject_name: '',
       description: '',
     },
   });
@@ -66,8 +66,8 @@ function SubjectCreatePage() {
 
   const onSubmit = async () => {
     try {
-      const { name, description } = getValues();
-      const formData = { name, description };
+      const { subject_name, description } = getValues();
+      const formData = { subject_name, description };
       await createSubject(formData).unwrap();
       console.log(formData);
     } catch (err) {
@@ -82,18 +82,20 @@ function SubjectCreatePage() {
         subTitle={'Please Fill Subject information'}
       >
         <CardComponent title={'Subject Information'}>
-          {/* subject name input container */}
+          {/* subject subject_name input container */}
           <Stack sx={fieldContainer}>
             <Typography variant="body1">Subject's Name</Typography>
             <Controller
-              name="name"
+              name="subject_name"
               control={control}
               render={({ field }) => (
                 <TextField
                   placeholder="subject's name"
                   {...field}
-                  error={!!errors.name}
-                  helperText={errors.name ? errors.name.message : ''}
+                  error={!!errors.subject_name}
+                  helperText={
+                    errors.subject_name ? errors.subject_name.message : ''
+                  }
                 />
               )}
             />

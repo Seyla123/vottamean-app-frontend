@@ -5,12 +5,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 
 // style
-import { Box, MenuItem, Select, Typography, FormHelperText} from '@mui/material';
+import {
+  Box,
+  MenuItem,
+  Select,
+  Typography,
+  FormHelperText,
+} from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import { setSnackbar } from '../../../store/slices/uiSlice';
-
 
 // api
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
@@ -18,8 +23,7 @@ import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 import { useGetDayQuery } from '../../../services/daysApi';
 import { useGetSubjectsQuery } from '../../../services/subjectApi';
-import { useNavigate, useParams } from 'react-router-dom';
-import { calculatePeriod } from '../../../utils/formatHelper';
+
 import {
   useUpdateSessionMutation,
   useGetSessionByIdQuery,
@@ -33,8 +37,11 @@ const SessionUpdatePage = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
+  const [originData, setOriginData] = useState(null); // originData ,
+
   const { data: session } = useGetSessionByIdQuery(id);
-  const [updateSession, {isLoading, isError, isSuccess, error}] = useUpdateSessionMutation();
+  const [updateSession, { isLoading, isError, isSuccess, error }] =
+    useUpdateSessionMutation();
 
   const { data: periodData } = useGetClassPeriodQuery();
   const { data: classData } = useGetClassesDataQuery();
@@ -46,6 +53,8 @@ const SessionUpdatePage = () => {
     control,
     handleSubmit,
     setValue,
+    getValues,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(SessionValidator),
@@ -57,14 +66,23 @@ const SessionUpdatePage = () => {
       day_id: '',
     },
   });
-
+console.log('this data session : ', session);
   useEffect(() => {
     if (session) {
-      setValue('teacher_id', session.data.Teacher.teacher_id);
-      setValue('period_id', session.data.Period.period_id);
-      setValue('class_id', session.data.Class.class_id);
-      setValue('subject_id', session.data.Subject.subject_id);
-      setValue('day_id', session.data.DayOfWeek.day_id);
+      const dataSession = {
+        teacher_id: session.data.Teacher.teacher_id,
+        period_id: session.data.Period.period_id,
+        class_id: session.data.Class.class_id,
+        subject_id: session.data.Subject.subject_id,
+        day_id: session.data.DayOfWeek.day_id,
+      };
+      reset(dataSession)
+      // setValue('teacher_id', session.data.Teacher.teacher_id);
+      // setValue('period_id', session.data.Period.period_id);
+      // setValue('class_id', session.data.Class.class_id);
+      // setValue('subject_id', session.data.Subject.subject_id);
+      // setValue('day_id', session.data.DayOfWeek.day_id);
+      setOriginData(dataSession);
     }
   }, [session, setValue]);
 
@@ -110,27 +128,43 @@ const SessionUpdatePage = () => {
     if (subjectData) {
       const subjectFormat = subjectData.data.map((item) => ({
         value: item.subject_id,
-        label: item.name,
+        label: item.subject_name,
       }));
       setSubjects(subjectFormat);
     }
   }, [periodData, classData, teacherData, dayData, subjectData]);
 
   const onSubmit = async (formData) => {
-    console.log('Form Data:', formData);
-
     const sessionData = {
-      class_id: formData.class_id,
-      subject_id: formData.subject_id,
-      day_id: formData.day_id,
-      teacher_id: formData.teacher_id,
-      period_id: formData.period_id,
+      teacher_id: formData.teacher_id*1,
+      period_id: formData.period_id*1,
+      class_id: formData.class_id*1,
+      subject_id: formData.subject_id*1,
+      day_id: formData.day_id*1,
     };
+    console.log('Form Data:', formData);
+    const noChange = JSON.stringify(sessionData) == JSON.stringify(originData);
+    console.log('session : ', sessionData);
+    console.log('origin  : ', originData);
+    console.log('is this no change ? : ', noChange);
+
+    // Compare current data with the original data
+    if (noChange) {
+      console.log('No changes detected');
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes detected',
+          severity: 'info',
+        }),
+      );
+      return;
+    }
 
     console.log('Session Data:', sessionData);
 
     try {
-      const result = await updateSession({ id ,sessionData}).unwrap();
+      const result = await updateSession({ id, sessionData }).unwrap();
       console.log('Session created successfully', result);
     } catch (error) {
       console.log('Error updating session', error);
@@ -214,7 +248,7 @@ const SessionUpdatePage = () => {
             <Box>{renderSelect('teacher_id', 'Teacher', teachers)}</Box>
             <Box>{renderSelect('period_id', 'Class Period', periods)}</Box>
           </Box>
-          <Box sx={selectedStyle}> 
+          <Box sx={selectedStyle}>
             <Box>{renderSelect('class_id', 'Class', classes)}</Box>
             <Box>{renderSelect('subject_id', 'Subject', subjects)}</Box>
           </Box>
@@ -246,10 +280,10 @@ const selectedStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: { xs: '12px', md: '24px' },
-}
+};
 
 const box = {
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
-}
+};

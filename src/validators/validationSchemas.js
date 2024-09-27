@@ -314,7 +314,7 @@ export const UpdateTeacherInfo = createFormSchema([
 ]);
 
 // Update Subject Information
-export const SubjectValidator = createFormSchema(['name', 'description']);
+export const SubjectValidator = createFormSchema(['subject_name', 'description']);
 export const SessionValidator = createFormSchema([
   'teacher_id',
   'class_id',
