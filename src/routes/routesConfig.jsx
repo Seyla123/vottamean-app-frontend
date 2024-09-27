@@ -5,7 +5,7 @@ import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import PasswordResetPage from '../pages/auth/PasswordResetPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
-import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
+import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
@@ -99,7 +99,7 @@ const routesConfig = [
       },
       {
         path: 'verify-reset-password/:token',
-        element: <VerifyResetPassword />,
+        element: <VerifySuccessfullyPage />,
       },
       {
         path: 'reset-password/:token',
