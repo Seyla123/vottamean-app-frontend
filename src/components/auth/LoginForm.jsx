@@ -25,16 +25,17 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
 import { useNavigate } from 'react-router-dom';
+import { useLoginMutation } from '../../services/authApi';
+import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Validation schema
 import { LoginValidator } from '../../validators/validationSchemas';
 
-// Import SnackbarAlert component
-import SnackbarAlert from '../common/SnackbarAlert';
-
-const LoginForm = ({ onSubmit }) => {
+const LoginForm = () => {
   // 1. Initialize dispatch for updating Redux store
+  const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // 2. Get form data from Redux store
   const formData = useSelector((state) => state.form);
@@ -60,57 +61,41 @@ const LoginForm = ({ onSubmit }) => {
 
   // 5. Handle form submission
   const handleFormSubmit = async (data) => {
-    setIsLoading(true);
     dispatch(updateFormData(data));
 
     try {
-      const result = await onSubmit(data);
-      if (result && result.success) {
-        setSnackbar({
-          open: true,
-          message: 'Login successful!',
-          severity: 'success',
-        });
-        // Simulate a delay before redirecting (you can remove this in production)
-        setTimeout(() => {
-          setIsLoading(false);
-          navigate('/dashboard');
-        }, 2000);
-      } else {
-        setIsLoading(false);
-        setSnackbar({
-          open: true,
-          message: 'Login failed. Please check your credentials and try again.',
-          severity: 'error',
-        });
+      const response = await login(data).unwrap();
+      if (response.data) {
+        const { role } = response.data;
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'Logged in successfully',
+            severity: 'success',
+          }),
+        );
+        // Navigate based on the user role
+        if (role === 'admin') {
+          navigate('/admin/dashboard');
+        } else if (role === 'teacher') {
+          navigate('/teacher/dashboard');
+        } else {
+          navigate('/something-went-wrong');
+        }
       }
     } catch (error) {
-      setIsLoading(false);
-      setSnackbar({
-        open: true,
-        message:
-          error?.data?.message === 'Invalid credentials'
-            ? 'Incorrect email or password. Please try again.'
-            : 'Login failed. Please try again later.',
-        severity: 'error',
-      });
-      console.error('Login error:', error);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'An error occurred during login',
+          severity: 'error',
+        }),
+      );
     }
   };
 
   // 6. Toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'info',
-  });
-
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -230,12 +215,6 @@ const LoginForm = ({ onSubmit }) => {
           </Button>
         </Box>
       </form>
-      <SnackbarAlert
-        open={snackbar.open}
-        handleClose={handleCloseSnackbar}
-        message={snackbar.message}
-        severity={snackbar.severity}
-      />
     </>
   );
 };

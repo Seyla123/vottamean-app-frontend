@@ -18,30 +18,43 @@ import FormFooter from '../../components/auth/FormFooter';
 import SigninImageCarousel from '../../components/auth/SigninImageCarousel';
 import HeaderTitle from '../../components/auth/HeaderTitle';
 
+import { useDispatch } from 'react-redux';
+import { setSnackbar } from '../../store/slices/uiSlice';
+
 const SigninPage = () => {
-  const [login, { isSuccess, isLoading, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (formData) => {
     try {
       const response = await login(formData).unwrap();
-
       if (response.data) {
         const { role } = response.data;
-
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'Logged in successfully',
+            severity: 'success',
+          })
+        );
         // Navigate based on the user role
         if (role === 'admin') {
           navigate('/admin/dashboard');
         } else if (role === 'teacher') {
           navigate('/teacher/dashboard');
         } else {
-          navigate('/default-dashboard');
+          navigate('/something-went-wrong');
         }
-      } else {
-        navigate('/default-dashboard');
       }
-    } catch (err) {
-      console.error('Login failed:', err);
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'An error occurred during login',
+          severity: 'error',
+        })
+      );
     }
   };
 
@@ -97,10 +110,10 @@ const SigninPage = () => {
           {/* FORM HEADER */}
           <HeaderTitle
             title={' Welcome to WaveTrack!'}
-            subTitle={`Accurately record and monitor student attendance with WaveTrack's user-friendly platform. Improve efficiency and reduce paperwork, all while ensuring every student is accounted for.`}
+            subTitle={`Accurately record and monitor student attendance with WaveTrack's user-friendly platform.`}
           />
           {/* FORM MAIN */}
-          <LoginForm onSubmit={handleLogin} />
+          <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
           {/* FORM FOOTER */}
           <FormFooter href={'/auth/signup'} />
         </Box>
