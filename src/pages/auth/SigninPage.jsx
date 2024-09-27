@@ -1,9 +1,3 @@
-// React and third-party libraries
-import { useNavigate } from 'react-router-dom';
-
-// Redux hooks and actions
-import { useLoginMutation } from '../../services/authApi';
-
 // Material UI components
 import { Box } from '@mui/material';
 
@@ -19,14 +13,8 @@ import SigninImageCarousel from '../../components/auth/SigninImageCarousel';
 import HeaderTitle from '../../components/auth/HeaderTitle';
 
 import { useDispatch } from 'react-redux';
-import { setSnackbar } from '../../store/slices/uiSlice';
 
 const SigninPage = () => {
-  const [login, { isLoading }] = useLoginMutation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-
   return (
     <Box component="section" sx={styles.pageContainer}>
       {/* LEFT CONTAINER */}
@@ -42,7 +30,7 @@ const SigninPage = () => {
             subTitle={`Accurately record and monitor student attendance with WaveTrack's user-friendly platform.`}
           />
           {/* FORM MAIN */}
-          <LoginForm isLoading={isLoading} />
+          <LoginForm />
           {/* FORM FOOTER */}
           <FormFooter href={'/auth/signup'} />
         </Box>
