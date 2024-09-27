@@ -3,7 +3,6 @@ import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
-import CheckYourEmailPage from '../pages/auth/CheckYourEmailPage';
 import PasswordResetPage from '../pages/auth/PasswordResetPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
 import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
@@ -97,10 +96,6 @@ const routesConfig = [
       {
         path: 'forgot-password',
         element: <ForgotPasswordPage />,
-      },
-      {
-        path: "check-email",
-        element: <CheckYourEmailPage />,
       },
       {
         path: 'verify-reset-password/:token',
