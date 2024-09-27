@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Tab, Box, Stack, Typography, Button, Avatar, Divider } from '@mui/material';
+import {
+  Tab,
+  Box,
+  Stack,
+  Typography,
+  Button,
+  Avatar,
+  Divider,
+} from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Trash2, KeyRound, School, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -41,8 +49,18 @@ function TeacherAccountProfilePage() {
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
             <TabList onChange={handleChange} aria-label="Account tabs">
-              <Tab label="General" value="1" icon={<User size={18} />} iconPosition="start" />
-              <Tab label="Advanced" value="2" icon={<KeyRound size={18} />} iconPosition="start" />
+              <Tab
+                label="General"
+                value="1"
+                icon={<User size={18} />}
+                iconPosition="start"
+              />
+              <Tab
+                label="Advanced"
+                value="2"
+                icon={<KeyRound size={18} />}
+                iconPosition="start"
+              />
             </TabList>
           </Box>
           {/* tab general */}
@@ -75,16 +93,28 @@ function TeacherAccountProfilePage() {
           </TabPanel>
           {/* tap advanced */}
           <TabPanel value="2" sx={{ px: 0, py: 2 }}>
-            <CardComponent title={'Login and Security'} icon={<KeyRound size={24} />}>
+            <CardComponent
+              title={'Login and Security'}
+              icon={<KeyRound size={24} />}
+            >
               <Stack direction={'column'} gap={3}>
                 {/* change password */}
                 <Box>
-                  <Typography variant="h6" gutterBottom>Change Password</Typography>
-                  <Typography variant="body2" color="text.secondary" mb={2}>
-                    It's a good idea to use a strong password that you're not using elsewhere
+                  <Typography variant="h6" gutterBottom>
+                    Change Password
                   </Typography>
-                  <Link to="/change-password" style={{ textDecoration: 'none' }}>
-                    <Button variant="outlined" startIcon={<KeyRound size={18} />}>
+                  <Typography variant="body2" color="text.secondary" mb={2}>
+                    It's a good idea to use a strong password that you're not
+                    using elsewhere
+                  </Typography>
+                  <Link
+                    to="/change-password"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Button
+                      variant="outlined"
+                      startIcon={<KeyRound size={18} />}
+                    >
                       Change Password
                     </Button>
                   </Link>
@@ -92,7 +122,9 @@ function TeacherAccountProfilePage() {
                 <Divider />
                 {/* delete account */}
                 <Box>
-                  <Typography variant="h6" gutterBottom>Account Ownership</Typography>
+                  <Typography variant="h6" gutterBottom>
+                    Account Ownership
+                  </Typography>
                   <Typography variant="body2" color="text.secondary" mb={2}>
                     Permanently delete your account from WaveTrack service
                   </Typography>
