@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useResetPasswordMutation } from '../../services/authApi';
 
 // Material UI components
@@ -26,14 +26,19 @@ import Logo from '../../assets/images/Logo.svg';
 // Validator
 import { ResetPasswordValidator } from '../../validators/validationSchemas';
 import zIndex from '@mui/material/styles/zIndex';
-import { EyeIcon, EyeOff, LockKeyhole, Phone } from 'lucide-react';
+import {
+  ChevronLeft,
+  EyeIcon,
+  EyeOff,
+  RectangleEllipsis,
+  LockKeyholeOpen,
+  Phone,
+} from 'lucide-react';
 
 const ResetNewPasswordPage = () => {
   const { token } = useParams();
-  const { showPassword, setShowPassword } = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const [openError, setOpenError] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
 
   // Hook form setup with Yup validation
   const {
@@ -52,15 +57,13 @@ const ResetNewPasswordPage = () => {
         token,
         newPassword: formData.password,
       }).unwrap();
-      setOpenSuccess(true);
+      // Navigate after successful reset
+      setTimeout(() => {
+        navigate('/auth/signin');
+      }, 3000); // Navigate after 3 seconds
     } catch (err) {
-      setOpenError(true);
+      console.error('Password reset error:', err);
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenError(false);
-    setOpenSuccess(false);
   };
 
   // Automatically navigate to login page after 3 seconds on success
@@ -75,6 +78,10 @@ const ResetNewPasswordPage = () => {
     }
   }, [isSuccess, navigate]);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <Box component="section" sx={styles.pageContainer}>
       {/* LEFT CONTAINER */}
@@ -82,88 +89,118 @@ const ResetNewPasswordPage = () => {
         {/* LOGO */}
         <img src={Logo} alt="wavetrack logo" style={styles.logo} />
 
-        {/* FORM CONTAINER */}
+        {/* FORM MAIN */}
         <Box sx={styles.formContainer}>
-          {/* FORM MAIN */}
+          <Box component={'div'} sx={styles.iconContainer}>
+            <RectangleEllipsis size={100} />
+          </Box>
+          {/* FORM HEADER */}
+          <HeaderTitle
+            title={'Reset New Password'}
+            subTitle={'Enter your new password to reset your password.'}
+          />
           <form onSubmit={handleSubmit(handlePasswordReset)} noValidate>
-            {/* PASSWORD INPUT */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="body2" fontWeight="bold">
-                New Password{' '}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <TextField
-                id="password"
-                variant="outlined"
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                {...register('password')}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                placeholder="Enter new password"
-                slotProps={{
-                  input: {
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: { xs: 2, md: 3 },
+              }}
+            >
+              {/* NEW PASSWORD INPUT */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body2" fontWeight="bold">
+                  New Password{' '}
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <TextField
+                  id="password"
+                  variant="outlined"
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  {...register('password')}
+                  error={!!errors.password}
+                  helperText={errors.password ? errors.password.message : ''}
+                  placeholder="Enter new password"
+                  InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockKeyhole size={20} />
+                        <LockKeyholeOpen size={20} />
                       </InputAdornment>
                     ),
                     endAdornment: (
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        size="icon"
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={togglePasswordVisibility}
+                          size="icon"
+                        >
+                          {showPassword ? (
+                            <EyeOff size={20} />
+                          ) : (
+                            <EyeIcon size={20} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
                     ),
-                  },
-                }}
-              />
-            </Box>
+                  }}
+                />
+              </Box>
 
-            {/* CONFIRM PASSWORD INPUT */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="body2" fontWeight="bold">
-                Confirm Password{' '}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <TextField
-                id="confirmPassword"
-                variant="outlined"
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                {...register('password')}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                placeholder="Confirm new password"
-                slotProps={{
-                  input: {
+              {/* CONFIRM PASSWORD INPUT */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body2" fontWeight="bold">
+                  Confirm Password{' '}
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <TextField
+                  id="confirmPassword"
+                  variant="outlined"
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  {...register('passwordConfirm')}
+                  error={!!errors.passwordConfirm}
+                  helperText={
+                    errors.passwordConfirm ? errors.passwordConfirm.message : ''
+                  }
+                  placeholder="Confirm new password"
+                  InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockKeyhole size={20} />
+                        <LockKeyholeOpen size={20} />
                       </InputAdornment>
                     ),
                     endAdornment: (
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        size="icon"
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={togglePasswordVisibility}
+                          size="icon"
+                        >
+                          {showPassword ? (
+                            <EyeOff size={20} />
+                          ) : (
+                            <EyeIcon size={20} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
                     ),
-                  },
-                }}
-              />
+                  }}
+                />
+              </Box>
+              <Button
+                variant="contained"
+                onClick={handleSubmit(handlePasswordReset)}
+                disabled={isLoading}
+                size="large"
+              >
+                {isLoading ? 'Resetting...' : 'Reset Password'}
+              </Button>
             </Box>
           </form>
+          {/* FOOTER */}
+          <Link to={'/auth/signin'} style={styles.footer}>
+            <ChevronLeft size={20} />
+            <Typography variant="body2">Back to sign in</Typography>
+          </Link>
         </Box>
       </Box>
 
@@ -182,10 +219,13 @@ const ResetNewPasswordPage = () => {
             <br />- Use a mix of letters, numbers, and symbols for a secure
             password.
           </Typography>
-          <Typography variant="body1" color="white" sx={styles.contactSupport}>
-            <Phone size={14} />
-            Reach out to our support team if you're facing any issues.
+          <Typography variant="body1" color="white">
+            Reach out to our support team if you're facing any issues.{' '}
           </Typography>
+          <Link to={'/'} style={styles.contactSupport}>
+            <Phone size={14} />
+            <span style={{ marginLeft: 6 }}> HexCode+ Support</span>
+          </Link>
         </Box>
       </Box>
     </Box>
@@ -296,12 +336,15 @@ const styles = {
     alignItems: 'center',
     textAlign: 'center',
   },
+
   contactSupport: {
     display: 'flex',
     alignItems: 'center',
     gap: 1,
     width: 'fit-content',
-    borderRadius: 2,
+    background: 'white',
+    borderRadius: '4px',
+    padding: '2px 8px',
   },
 };
 
