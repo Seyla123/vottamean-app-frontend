@@ -30,6 +30,21 @@ import { SchoolValidator } from '../../../../validators/validationSchemas';
 // - Ui Slice for snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
+/**
+ * SchoolUpdatePage component allows users to update their school information,
+ * including school name, address, and phone number.
+ *
+ * It performs the following:
+ * - Fetches the current user profile data using {@link useGetUserProfileQuery}.
+ * - Manages form state and validation with {@link useForm} and {@link yupResolver}.
+ * - Updates the school information via {@link useUpdateUserProfileMutation}.
+ * - Displays snackbar notifications for status updates and handles user feedback.
+ *
+ * Dependencies: React, Redux, Material UI, react-hook-form, yup.
+ *
+ * @returns {JSX.Element} The rendered SchoolUpdatePage component.
+ */
+
 function SchoolUpdatePage() {
   // - State to store user data for the school
   const dispatch = useDispatch();
@@ -52,7 +67,7 @@ function SchoolUpdatePage() {
   // - State to store original form values
   const [originalData, setOriginalData] = useState(null);
 
-  // - Form state
+  // - Form state management
   const {
     control,
     handleSubmit,
@@ -72,13 +87,8 @@ function SchoolUpdatePage() {
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getSchoolData(userProfile);
-
-      // Debugging to check what data is being set
-      console.log('Setting default values with: ', formattedData);
-
       // Dynamically set the form default values
       reset(formattedData);
-
       // Store the original data for comparison
       setOriginalData(formattedData);
     }

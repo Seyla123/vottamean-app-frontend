@@ -1,4 +1,4 @@
-// React
+// - React and third-party libraries
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -35,10 +35,32 @@ import { UserProfileValidator } from '../../../../validators/validationSchemas';
 // - UI Slice for Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
+/**
+ * UserUpdatePage component enables users to update their personal information, including
+ * name, email, phone number, address, date of birth, gender, and profile picture.
+ *
+ * It performs the following:
+ * - Fetches current user data using {@link useGetUserProfileQuery}.
+ * - Manages form state and validation with {@link useForm} and {@link yupResolver}.
+ * - Updates user information via {@link useUpdateUserProfileMutation}.
+ * - Previews selected images and provides snackbar notifications for status updates.
+ *
+ * Dependencies: React, Redux, Material UI, react-hook-form, yup.
+ *
+ * @param {Object} userInfo - The current user data to populate the form.
+ * @param {Function} onUpdate - Callback triggered after a successful update.
+ * @param {Array} fields - List of fields that can be modified (e.g., name, email).
+ * @param {boolean} isEditable - Indicates if the fields are editable or read-only.
+ *
+ * @returns {JSX.Element} The rendered UserUpdatePage component.
+ */
+
 function UserUpdatePage() {
+  // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // - Redux hooks update user api
   const [
     updateUserProfile,
     {
@@ -49,12 +71,19 @@ function UserUpdatePage() {
     },
   ] = useUpdateUserProfileMutation();
 
+  // - Redux hooks get user api
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
 
+  // - State to store original form values
   const [originalData, setOriginalData] = useState(null);
+
+  // - State to store selected image file
   const [selectedFile, setSelectedFile] = useState(null);
+
+  // - State to store the preview URL of the selected image
   const [previewUrl, setPreviewUrl] = useState(null);
 
+  // - Form state management
   const {
     control,
     handleSubmit,
@@ -78,7 +107,9 @@ function UserUpdatePage() {
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
+      // Dynamically set the form default values
       reset(formattedData);
+      // Store the original data for comparison
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
@@ -107,8 +138,6 @@ function UserUpdatePage() {
   // - Handle form submission
   const onSubmit = async (data) => {
     const currentData = getValues();
-    console.log('Current Data:', currentData);
-
     const isDataChanged =
       JSON.stringify(currentData) !== JSON.stringify(originalData);
     const isImageUploaded = selectedFile !== null;
@@ -124,6 +153,7 @@ function UserUpdatePage() {
       return;
     }
 
+    // Create a new FormData object for multipart/form-data
     const formData = new FormData();
     // Append the selected image file if it exists
     if (selectedFile) {
