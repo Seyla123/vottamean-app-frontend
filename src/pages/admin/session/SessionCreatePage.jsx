@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+
 import {
   Box,
   MenuItem,
@@ -8,64 +9,37 @@ import {
   Typography,
   FormHelperText,
 } from '@mui/material';
+
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
+
+import { useCreateSessionMutation } from '../../../services/sessionApi';
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 import { useGetDayQuery } from '../../../services/daysApi';
 import { useGetSubjectsQuery } from '../../../services/subjectApi';
-import { useNavigate, useParams } from 'react-router-dom';
-import {
-  useUpdateSessionMutation,
-  useGetSessionByIdQuery,
-} from '../../../services/sessionApi';
+
+import { useNavigate } from 'react-router-dom';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import { useDispatch } from 'react-redux';
 
-// Validation Schema
+// - Validation Schema
 import { SessionValidator } from '../../../validators/validationSchemas';
 
-const SessionUpdatePage = () => {
+// Main Component
+const SessionCreatePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
 
-  const { data: session } = useGetSessionByIdQuery(id);
-  const [updateSession, {isLoading, isError, isSuccess, error}] = useUpdateSessionMutation();
-
+  const [createSession, { isLoading, isError, isSuccess, error }] =
+    useCreateSessionMutation();
   const { data: periodData } = useGetClassPeriodQuery();
   const { data: classData } = useGetClassesDataQuery();
   const { data: teacherData } = useGetAllTeachersQuery();
   const { data: dayData } = useGetDayQuery();
   const { data: subjectData } = useGetSubjectsQuery();
-
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(SessionValidator),
-    defaultValues: {
-      teacher_id: '',
-      period_id: '',
-      class_id: '',
-      subject_id: '',
-      day_id: '',
-    },
-  });
-
-  useEffect(() => {
-    if (session) {
-      setValue('teacher_id', session.data.Teacher.teacher_id);
-      setValue('period_id', session.data.Period.period_id);
-      setValue('class_id', session.data.Class.class_id);
-      setValue('subject_id', session.data.Subject.subject_id);
-      setValue('day_id', session.data.DayOfWeek.day_id);
-    }
-  }, [session, setValue]);
 
   const [periods, setPeriods] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -75,11 +49,11 @@ const SessionUpdatePage = () => {
 
   useEffect(() => {
     if (periodData) {
-      const transformedPeriods = periodData.data.map((item) => ({
+      const transformPeriod = periodData.data.map((item) => ({
         value: item.period_id,
         label: `${item.start_time} - ${item.end_time}`,
       }));
-      setPeriods(transformedPeriods);
+      setPeriods(transformPeriod);
     }
 
     if (classData) {
@@ -115,6 +89,21 @@ const SessionUpdatePage = () => {
     }
   }, [periodData, classData, teacherData, dayData, subjectData]);
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(SessionValidator),
+    defaultValues: {
+      teacher_id: '',
+      period_id: '',
+      class_id: '',
+      subject_id: '',
+      day_id: '',
+    },
+  });
+
   const onSubmit = async (formData) => {
     console.log('Form Data:', formData);
 
@@ -129,10 +118,10 @@ const SessionUpdatePage = () => {
     console.log('Session Data:', sessionData);
 
     try {
-      const result = await updateSession({ id ,sessionData}).unwrap();
+      const result = await createSession(sessionData).unwrap();
       console.log('Session created successfully', result);
     } catch (error) {
-      console.log('Error updating session', error);
+      console.log('Error creating session', error);
     }
   };
 
@@ -141,13 +130,13 @@ const SessionUpdatePage = () => {
 
     if (isLoading) {
       dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
+        setSnackbar({ open: true, message: 'Creating...', severity: 'info' }),
       );
     } else if (isError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: error?.data?.message || 'Error updating session',
+          message: error?.data?.message || 'Error creating session',
           severity: 'error',
         }),
       );
@@ -155,7 +144,7 @@ const SessionUpdatePage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Update successfully',
+          message: 'Created successfully',
           severity: 'success',
         }),
       );
@@ -204,10 +193,10 @@ const SessionUpdatePage = () => {
 
   return (
     <FormComponent
-      title="Update session"
+      title="Add session"
       subTitle="Please Fill session information"
     >
-      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Update Session">
+      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
         <Box sx={containerStyle}>
           <Box sx={selectedStyle}>
             <Box>{renderSelect('teacher_id', 'Teacher', teachers)}</Box>
@@ -229,7 +218,7 @@ const SessionUpdatePage = () => {
   );
 };
 
-export default SessionUpdatePage;
+export default SessionCreatePage;
 
 const containerStyle = {
   width: '100%',
