@@ -28,13 +28,14 @@ import {
 import BackgroundImage from '../../assets/images/forgot-pass-illustrate.svg';
 import HeaderTitle from '../../components/auth/HeaderTitle';
 import { ChevronLeft, Fingerprint, Mail } from 'lucide-react';
+import EmailSentIcon from '../../assets/icon/email-sent.svg';
 
 // Validator
 import { ForgotPasswordValidator } from '../../validators/validationSchemas';
 
 const ForgotPasswordPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [isEmailSent, setIsEmailSent] = useState(false);
   // Hook form setup with Yup validation
   const {
     register,
@@ -50,7 +51,14 @@ const ForgotPasswordPage = () => {
     try {
       const result = await forgotPassword({ email: formData.email }).unwrap();
       if (result.status === 'success') {
-        navigate('/auth/check-email', { state: { email: formData.email } });
+        setIsEmailSent(true);
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: result.message,
+            severity: 'success',
+          }),
+        );
       } else {
         dispatch(
           setSnackbar({
@@ -79,54 +87,78 @@ const ForgotPasswordPage = () => {
         <img src={Logo} alt="wavetrack logo" style={styles.logo} />
         {/* FORM CONTAINER */}
         <Box sx={styles.formContainer}>
-          <Box component={'div'} sx={styles.iconContainer}>
-            <Fingerprint size={100} />
-          </Box>
-          {/* FORM HEADER */}
-          <HeaderTitle
-            title={'Forgot Password?'}
-            subTitle={`Enter your email, and we'll send you instructions to reset your password.`}
-          />
-
-          {/* EMAIL INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
-              id="email"
-              variant="outlined"
-              fullWidth
-              type="email"
-              {...register('email')}
-              error={!!errors.email}
-              helperText={errors.email ? errors.email.message : ''}
-              placeholder="Enter your email"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Mail size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-          </Box>
-
-          <Button
-            variant="contained"
-            fullWidth
-            size="large"
-            disabled={isLoading}
-            onClick={handleSubmit(handleForgotPassword)}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              'Reset Password'
-            )}
-          </Button>
+          {isEmailSent ? (
+            <Box sx={styles.emailContainer}>
+              <img
+                src={EmailSentIcon}
+                alt="email-sent"
+                style={{ width: '200px' }}
+              />
+              <Typography variant="h4">Email Sent</Typography>
+              <Typography variant="body1">
+                We have sent a password reset link to your email. Please check
+                your{' '}
+                <Link
+                  target="_blank"
+                  to={'https://mail.google.com/mail/u/0/#inbox'}
+                  style={{ textDecoration: 'underline' }}
+                >
+                  Email
+                </Link>
+                .
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              {' '}
+              <Box component={'div'} sx={styles.iconContainer}>
+                <Fingerprint size={100} />
+              </Box>
+              {/* FORM HEADER */}
+              <HeaderTitle
+                title={'Forgot Password?'}
+                subTitle={`Enter your email, and we'll send you instructions to reset your password.`}
+              />
+              {/* EMAIL INPUT */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body2" fontWeight="bold">
+                  Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <TextField
+                  id="email"
+                  variant="outlined"
+                  fullWidth
+                  type="email"
+                  {...register('email')}
+                  error={!!errors.email}
+                  helperText={errors.email ? errors.email.message : ''}
+                  placeholder="Enter your email"
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Mail size={20} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </Box>
+              <Button
+                variant="contained"
+                fullWidth
+                size="large"
+                disabled={isLoading}
+                onClick={handleSubmit(handleForgotPassword)}
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Reset Password'
+                )}
+              </Button>
+            </>
+          )}
 
           {/* FOOTER */}
           <Link to={'/auth/signin'} style={styles.footer}>
@@ -246,6 +278,13 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     gap: 1,
+  },
+  emailContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+    alignItems: 'center',
+    textAlign: 'center',
   },
 };
 
