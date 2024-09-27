@@ -14,10 +14,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {
-  DatePicker,
-  LocalizationProvider,
-} from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SubHeader from './SubHeader';
 import dayjs from 'dayjs';
@@ -29,7 +26,10 @@ const validationSchema = yup.object({
   phoneNumber: yup
     .string()
     .required('Phone number is required')
-    .matches(/^\d{9,15}$/, 'Phone number must be between 9 and 15 digits and numeric.')
+    .matches(
+      /^\d{9,15}$/,
+      'Phone number must be between 9 and 15 digits and numeric.',
+    )
     .test(
       'length',
       'Phone number must be between 9 and 15 digits',
@@ -46,6 +46,7 @@ const validationSchema = yup.object({
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const navigate = useNavigate();
+  const [dob, setDob] = useState(null);
   const {
     control,
     handleSubmit,
@@ -63,19 +64,19 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     },
   });
 
-  const [dob, setDob] = useState(null);
-
-
+  // Set default values and date of birth state when defaultValues change
   useEffect(() => {
+    // reset the form with the default values if it was provided
+    // and set the date of birth state
     if (defaultValues) {
       reset(defaultValues);
       setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
     }
   }, [defaultValues, reset]);
 
+  // Handle form submission
   const onSubmit = (data) => {
-    handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null });
-    console.log(data);
+    handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null }); // pass the date of birth to the next page
   };
   // handle back to list page
   const handleCancel = () => {
@@ -129,23 +130,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               </Box>
             </Box>
           </Box>
-          {/* Phone Number */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Phone Number</Typography>
-            <Controller
-              name="phoneNumber"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Phone Number"
-                  error={!!errors.phoneNumber}
-                  helperText={errors.phoneNumber?.message}
-                  fullWidth
-                />
-              )}
-            />
-          </Box>
           {/* Gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography>Gender</Typography>
@@ -171,7 +155,14 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                     <MenuItem value="Female">Female</MenuItem>
                     <MenuItem value="Other">Other</MenuItem>
                   </Select>
-                  <Typography variant="caption" color="error">
+                  <Typography
+                    variant="caption"
+                    color="error"
+                    sx={{
+                      marginLeft: errors.gender?.message ? '14px' : '0',
+                      marginTop: errors.gender?.message ? '3px' : '0',
+                    }}
+                  >
                     {errors.gender?.message}
                   </Typography>
                 </FormControl>
@@ -215,9 +206,23 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                 />
               )}
             />
-            {/* <Typography variant="caption" color="error">
-                    {errors.dateOfBirth?.message}
-                  </Typography> */}
+          </Box>
+          {/* Phone Number */}
+          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            <Typography>Contact Number</Typography>
+            <Controller
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  placeholder="Contact Number"
+                  error={!!errors.phoneNumber}
+                  helperText={errors.phoneNumber?.message}
+                  fullWidth
+                />
+              )}
+            />
           </Box>
           {/* Address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
@@ -246,7 +251,12 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 1, sm: 2 }}
           >
-            <Button fullWidth variant="outlined" color="inherit" onClick={handleCancel}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="inherit"
+              onClick={handleCancel}
+            >
               Cancel
             </Button>
             <Button fullWidth type="submit" variant="contained" color="primary">
@@ -301,13 +311,11 @@ const valueBoxOne = {
   mb: 2,
   position: 'relative',
 };
-
 const textFieldGap = {
   display: 'flex',
   gap: 0.5,
   flexDirection: 'column',
 };
-
 const imgStyle = {
   width: {
     xs: 120,
