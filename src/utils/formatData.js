@@ -1,3 +1,35 @@
+// Utility: Capitalize the first letter of each word
+export function capitalize(name) {
+  return name
+    .split(' ')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
+// Utility: Format Date to a more readable format ("DD/MM/YYYY")
+export function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Utility: Ensure phone number formatting
+export function formatPhoneNumber(phoneNumber) {
+  const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  return phoneNumber;
+}
+
+// Utility: Get user age
+export const getAge = (dob) => {
+  const today = new Date();
+  const birthDate = new Date(dob);
+  const age = today.getFullYear() - birthDate.getFullYear();
+  return age;
+};
+
 // Transform API response into table data format
 export const transformAttendanceData = (apiResponse) => {
   return apiResponse.map((item) => ({
@@ -17,16 +49,8 @@ export const transformAttendanceData = (apiResponse) => {
     img: item.Student.Info.photo, // Photo
   }));
 };
-//format to get year old 
-export const getYearOld = (dob) => {
-  const today = new Date();
-  const birthDate = new Date(dob);
-  const age = today.getFullYear() - birthDate.getFullYear();
-  return age;
-}
-// get full name
-export const getFullName = (info) => `${info.first_name} ${info.last_name}`;
-//format attendance data detail 
+
+//format attendance data detail
 export const formatAttendanceData = (apiResponse) => {
   // get teacher and student name,img
   const teacherFullName = getFullName(apiResponse.Sessions.Teacher.Info);
@@ -50,7 +74,7 @@ export const formatAttendanceData = (apiResponse) => {
     'Student ID': apiResponse.student_id ?? 'N/A',
     Name: studentFullName || 'N/A',
     Class: apiResponse.Sessions.Class?.class_name ?? 'N/A',
-    Age: getYearOld(apiResponse.Student.Info.dob) ?? 'N/A',
+    Age: getAge(apiResponse.Student.Info.dob) ?? 'N/A',
     Gender: apiResponse.Student.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Student.Info.dob ?? 'N/A',
     Phone: apiResponse.Student.guardian_phone_number ?? 'N/A',
@@ -62,7 +86,7 @@ export const formatAttendanceData = (apiResponse) => {
   const teacher = {
     'Teacher ID': apiResponse.Sessions.Teacher.teacher_id ?? 'N/A',
     Name: teacherFullName || 'N/A',
-    Age: getYearOld(apiResponse.Sessions.Teacher.Info.dob) ?? 'N/A',
+    Age: getAge(apiResponse.Sessions.Teacher.Info.dob) ?? 'N/A',
     Gender: apiResponse.Sessions.Teacher.Info.gender ?? 'N/A',
     'Date of Birth': apiResponse.Sessions.Teacher.Info.dob ?? 'N/A',
     Phone: apiResponse.Sessions.Teacher.Info.phone_number ?? 'N/A',
@@ -123,13 +147,15 @@ export function teacherData(teachers) {
     phoneNumber: teacher.Info.phone_number,
   }));
 }
+
 // Format teacher detail
 export function formatTeacherDetail(teacherData) {
   if (!teacherData || !teacherData.data || !teacherData.data.Info) {
     return null;
   }
   const { email } = teacherData.data.User;
-  const { first_name, last_name, gender, dob, phone_number, address } = teacherData.data.Info;
+  const { first_name, last_name, gender, dob, phone_number, address } =
+    teacherData.data.Info;
   const formattedData = [
     { label: 'Teacher ID', value: teacherData.data.teacher_id },
     { label: 'Teacher Name', value: `${first_name} ${last_name}` },
@@ -142,30 +168,6 @@ export function formatTeacherDetail(teacherData) {
   return formattedData;
 }
 
-// Utility: Format Date to a more readable format ("DD/MM/YYYY")
-export function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-}
-
-// Utility: Ensure phone number formatting
-export function formatPhoneNumber(phoneNumber) {
-  const cleaned = ('' + phoneNumber).replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return `(${match[1]}) ${match[2]}-${match[3]}`;
-  }
-  return phoneNumber;
-}
-
-// Utility:g Capitalize the first letter of each word
-export function capitalize(name) {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-    .join(' ');
-}
-
 // Transform User Profile Data
 export const transformUserProfile = (user) => {
   const info = user?.data?.adminProfile?.Info;
@@ -175,9 +177,7 @@ export const transformUserProfile = (user) => {
   const fullName = `${info.first_name} ${info.last_name}`;
   return {
     'Full Name': capitalize(fullName),
-    Age: info.dob
-      ? new Date().getFullYear() - new Date(info.dob).getFullYear()
-      : 'N/A',
+    Age: getAge(info.dob) || 'N/A',
     Gender: info.gender || 'N/A',
     'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
     'Phone Number': formatPhoneNumber(info.phone_number),
@@ -253,9 +253,7 @@ export function studentsData(student) {
     id: student.student_id,
     name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`,
     class: student.Class.class_name || 'N/A',
-    age: student.Info.dob
-      ? new Date().getFullYear() - new Date(student.Info.dob).getFullYear()
-      : 'N/A',
+    age: getAge(student.info.dob) || 'N/A',
     gender: student.Info.gender || 'N/A',
     'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
     phone: student.Info.phone_number || 'N/A',
@@ -297,12 +295,13 @@ export const transformedFilterSubjects = (subjects) => {
   return subjects.map((subject) => ({
     value: subject.subject_id,
     label: subject.name,
-  }))
-}
+  }));
+};
+
 // Transform filter class for attendance report table
 export const transformedFilterClasses = (classes) => {
   return classes.map((item) => ({
     value: item.class_id,
     label: item.class_name,
-  }))
-}
+  }));
+};

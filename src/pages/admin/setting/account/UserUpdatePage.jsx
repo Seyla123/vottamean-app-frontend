@@ -36,11 +36,9 @@ import { UserProfileValidator } from '../../../../validators/validationSchemas';
 import { setSnackbar } from '../../../../store/slices/uiSlice';
 
 function UserUpdatePage() {
-  // - State to store user data for updating
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // - Mutation hook for updating the profile
   const [
     updateUserProfile,
     {
@@ -51,15 +49,12 @@ function UserUpdatePage() {
     },
   ] = useUpdateUserProfileMutation();
 
-  // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
-  console.log('User Profile Data : ', userProfile);
 
-  // - Local State for managing data and file upload
   const [originalData, setOriginalData] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
-  // - Form Controller hooks for form fields
   const {
     control,
     handleSubmit,
@@ -79,28 +74,45 @@ function UserUpdatePage() {
     },
   });
 
-  // - Effect hook to reset form values if user profile is updated
+  // Fetching and setting up the original user profile data
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
-      console.log('Setting default values with: ', formattedData);
       reset(formattedData);
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
 
-  // - Handle file selection and preview
+  // - Handle image file selection and preview
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (
+      file &&
+      file.type.startsWith('image/') &&
+      file.size <= 5 * 1024 * 1024
+    ) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Invalid image file',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  // - Handle form submission
   const onSubmit = async (data) => {
     const currentData = getValues();
     console.log('Current Data:', currentData);
-    console.log('Original Data:', originalData);
 
-    // Check if the image is uploaded or data has changed
     const isDataChanged =
       JSON.stringify(currentData) !== JSON.stringify(originalData);
     const isImageUploaded = selectedFile !== null;
 
-    // If no changes detected and no image uploaded, show snackbar
     if (!isDataChanged && !isImageUploaded) {
       dispatch(
         setSnackbar({
@@ -112,24 +124,27 @@ function UserUpdatePage() {
       return;
     }
 
-    // Prepare form data for submission
     const formData = new FormData();
+    // Append the selected image file if it exists
     if (selectedFile) {
       formData.append('photo', selectedFile);
     }
-    Object.keys(data).forEach((key) => formData.append(key, data[key]));
-
-    console.log('Submitted data:', formData);
+    // Append the other fields, excluding the old photo URL if it's part of the `data`
+    Object.keys(data).forEach((key) => {
+      if (key !== 'photo') {
+        // Exclude old photo URL
+        formData.append(key, data[key]);
+      }
+    });
 
     try {
       await updateUserProfile(formData).unwrap();
-      console.log('Profile updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
 
-  // - Effect for loading status
+  // - Snackbar notifications based on update status
   useEffect(() => {
     if (isUpdateLoading) {
       dispatch(
@@ -180,7 +195,11 @@ function UserUpdatePage() {
           {/* Profile picture */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
             <img
-              src={userProfile?.data?.adminProfile?.Info.photo || profile}
+              src={
+                previewUrl ||
+                userProfile?.data?.adminProfile?.Info.photo ||
+                profile
+              }
               alt="Profile"
               style={{ width: '120px', borderRadius: '50%' }}
             />
@@ -192,7 +211,7 @@ function UserUpdatePage() {
             type="file"
             id="photo-upload"
             style={{ display: 'none' }}
-            onChange={(e) => setSelectedFile(e.target.files[0])}
+            onChange={handleFileChange}
           />
           <label htmlFor="photo-upload">
             <Button variant="contained" component="span" fullWidth>
@@ -200,15 +219,18 @@ function UserUpdatePage() {
             </Button>
           </label>
 
-          {/* Preview the selected image */}
+          {/* Clear Image Button */}
           {selectedFile && (
-            <Box mt={2}>
-              <img
-                src={URL.createObjectURL(selectedFile)}
-                alt="Selected Preview"
-                style={{ maxWidth: '100%', height: 'auto' }}
-              />
-            </Box>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => {
+                setSelectedFile(null);
+                setPreviewUrl(null);
+              }}
+            >
+              Clear Image
+            </Button>
           )}
 
           {/* First Name */}
@@ -310,7 +332,7 @@ function UserUpdatePage() {
 
           {/* Submit button */}
           <Button type="submit" variant="contained" fullWidth>
-            Update Personal Info
+            Update
           </Button>
 
           {/* Cancel button */}

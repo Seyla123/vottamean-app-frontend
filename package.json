@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@toolpad/core": "^0.5.2",
     "axios": "^1.7.7",
+    "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.13",
     "lucide-react": "^0.439.0",
     "moment": "^2.30.1",
