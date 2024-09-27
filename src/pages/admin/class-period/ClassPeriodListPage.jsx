@@ -8,7 +8,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatHelper';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodListPage() {

@@ -23,8 +23,26 @@ import {
 // User Profile Data formatting
 import { getUserProfileData } from '../../../../utils/formatData';
 
+/**
+ * AccountProfilePage component displays and manages user account information,
+ * allowing updates to user and school profiles, password changes, and account deletion.
+ *
+ * Key functionalities include:
+ * - Fetching user data with {@link useGetUserProfileQuery}.
+ * - Deleting the user account using {@link useDeleteUserAccountMutation}.
+ * - Managing form state and tab switching for user and school information.
+ *
+ * @param {Object} userData - The current user's profile data, including personal and school information.
+ * @param {Function} onUpdate - Callback to execute when the user updates their information.
+ *
+ * @returns {JSX.Element} The rendered AccountProfilePage component, including tabs for General
+ * and Advanced settings, with relevant user information and actions.
+ *
+ * Dependencies: React, Redux, Material UI, react-router-dom, lucide-react.
+ */
+
 function AccountProfilePage() {
-  const [value, setValue] = useState('1');
+  // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -41,7 +59,10 @@ function AccountProfilePage() {
     photo: '',
   });
 
-  // Dispatch user data to form state
+  // Local state for tab
+  const [value, setValue] = useState('1');
+
+  // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
@@ -51,18 +72,22 @@ function AccountProfilePage() {
     }
   }, [user, dispatch]);
 
+  // Handle tab switch
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  // Handle edit button click
   const clickEditUser = () => {
     navigate('/admin/settings/account/update-me');
   };
 
+  // Handle edit school button click
   const clickEditSchool = () => {
     navigate('/admin/settings/account/update-school');
   };
 
+  // Handle delete button click
   const clickDeleteAccount = async () => {
     try {
       console.log('Deleting current user');

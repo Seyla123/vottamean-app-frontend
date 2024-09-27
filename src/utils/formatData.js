@@ -1,52 +1,13 @@
-// Utility: Capitalize the first letter of each word
-export const capitalize = (name) =>
-  name
-    .split(' ')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-    .join(' ');
-
-// Utility: Format Date to a more readable format ("DD/MM/YYYY")
-export const formatDate = (dateString) =>
-  new Date(dateString).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-
-// Utility: Ensure phone number formatting
-export const formatPhoneNumber = (phoneNumber) => {
-  const cleaned = phoneNumber.replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
-};
-
-// Utility: Get user age
-export const getAge = (dob) => {
-  const birthDate = new Date(dob);
-  return new Date().getFullYear() - birthDate.getFullYear();
-};
-
-// Utility: Calculation to get period of hour
-export const calculatePeriod = (startTime, endTime) => {
-  const diff = Math.abs(
-    new Date(`1970-01-01T${endTime}Z`) - new Date(`1970-01-01T${startTime}Z`),
-  );
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  return `${hours}h ${minutes}m`;
-};
-
-// Utility: Format into standard hour AM or PM
-export const formatTimeTo12Hour = (timeString) => {
-  let [hours, minutes] = timeString.split(':').map(Number);
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
-  return `${hours}:${minutes < 10 ? '0' + minutes : minutes} ${ampm}`;
-};
-
-// Utility: Get Full Name from API response
-export const getFullName = (info) =>
-  info ? capitalize(`${info.first_name} ${info.last_name}`) : 'N/A';
+import {
+  getProfileKey,
+  capitalize,
+  getFullName,
+  getAge,
+  formatDate,
+  formatPhoneNumber,
+  calculatePeriod,
+  formatTimeTo12Hour,
+} from './formatHelper';
 
 // Transform API response into table data format
 export const transformAttendanceData = (apiResponse) =>
@@ -174,32 +135,34 @@ export function formatTeacherDetail(teacherData) {
 
 // Transform User Profile Data
 export const transformUserProfile = (user) => {
-  const info = user?.data?.adminProfile?.Info;
+  const profileKey = getProfileKey(user.data.role);
+  const profileInfo = user?.data[profileKey]?.Info;
 
-  if (!info) return {};
+  if (!profileInfo) return {};
 
   return {
-    'Full Name': getFullName(info),
-    Age: getAge(info.dob) || 'N/A',
-    Gender: info.gender || 'N/A',
-    'Date Of Birth': info.dob ? formatDate(info.dob) : 'N/A',
-    'Phone Number': formatPhoneNumber(info.phone_number),
+    'Full Name': getFullName(profileInfo),
+    Age: getAge(profileInfo.dob) || 'N/A',
+    Gender: profileInfo.gender || 'N/A',
+    'Date Of Birth': profileInfo.dob ? formatDate(profileInfo.dob) : 'N/A',
+    'Phone Number': formatPhoneNumber(profileInfo.phone_number) ?? 'N/A',
     Email: user.data.email,
-    Address: info.address || 'N/A',
+    Address: profileInfo.address || 'N/A',
   };
 };
 
 // Transform School Profile Data
 export const transformSchoolProfile = (user) => {
-  const school = user?.data?.adminProfile?.Schools?.[0];
+  const profileKey = getProfileKey(user.data.role);
+  const profileSchools = user?.data[profileKey]?.Schools?.[0];
 
-  if (!school) return {};
+  if (!profileSchools) return {};
 
   return {
-    'School Name': school.school_name || 'N/A',
+    'School Name': profileSchools.school_name || 'N/A',
     'School Phone Number':
-      formatPhoneNumber(school.school_phone_number) || 'N/A',
-    'School Address': school.school_address || 'N/A',
+      formatPhoneNumber(profileSchools.school_phone_number) ?? 'N/A',
+    'School Address': profileSchools.school_address || 'N/A',
   };
 };
 
@@ -207,46 +170,49 @@ export const transformSchoolProfile = (user) => {
 export const getUserProfileData = (user) => {
   const userProfile = transformUserProfile(user);
   const schoolProfile = transformSchoolProfile(user);
-  const photo = user?.data?.adminProfile?.Info?.photo;
+  const profileKey = getProfileKey(user.data.role);
+  const photo = user?.data[profileKey]?.Info?.photo ?? null;
 
   return {
     userProfile,
     schoolProfile,
-    photo: photo || null,
+    photo,
   };
 };
 
 // Combined User Profile Data for Updates (without formatted DOB)
 export const getUserProfileUpdateData = (user) => {
-  const info = user?.data?.adminProfile?.Info;
+  const profileKey = getProfileKey(user.data.role);
+  const profileInfo = user?.data[profileKey]?.Info;
 
-  if (!info) return {};
+  if (!profileInfo) return {};
 
   return {
-    user_id: user.data.adminProfile.user_id,
-    info_id: user.data.adminProfile.info_id,
-    photo: info.photo,
-    first_name: info.first_name,
-    last_name: info.last_name,
-    gender: info.gender || '',
-    dob: info.dob || '',
-    phone_number: info.phone_number,
-    address: info.address,
+    user_id: user.data[profileKey]?.user_id,
+    info_id: user.data[profileKey]?.info_id,
+    photo: profileInfo.photo,
+    first_name: profileInfo.first_name,
+    last_name: profileInfo.last_name,
+    gender: profileInfo.gender || '',
+    dob: profileInfo.dob || '',
+    phone_number: profileInfo.phone_number,
+    address: profileInfo.address,
   };
 };
 
 // Transform School Data for Updates
 export const getSchoolData = (user) => {
-  const school = user?.data?.adminProfile?.Schools?.[0];
+  const profileKey = getProfileKey(user.data.role);
+  const profileSchools = user?.data[profileKey]?.Schools?.[0];
 
-  if (!school) return {};
+  if (!profileSchools) return {};
 
   return {
-    info_id: user.data.adminProfile.info_id,
-    school_id: school.school_id,
-    school_name: school.school_name,
-    school_address: school.school_address,
-    school_phone_number: school.school_phone_number,
+    info_id: user.data[profileKey]?.info_id,
+    school_id: profileSchools.school_id,
+    school_name: profileSchools.school_name,
+    school_address: profileSchools.school_address,
+    school_phone_number: profileSchools.school_phone_number,
   };
 };
 
