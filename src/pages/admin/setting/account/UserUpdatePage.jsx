@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import imageCompression from 'browser-image-compression';
 
 // - Material UI components
 import {
@@ -75,6 +74,7 @@ function UserUpdatePage() {
     },
   });
 
+  // Fetching and setting up the original user profile data
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
@@ -83,32 +83,16 @@ function UserUpdatePage() {
     }
   }, [isSuccess, userProfile, reset]);
 
-  // - Image Compression function
-  const compressImage = async (file) => {
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 600,
-      useWebWorker: true,
-    };
-    try {
-      const compressedFile = await imageCompression(file, options);
-      return compressedFile;
-    } catch (error) {
-      console.error('Error compressing image:', error);
-    }
-  };
-
-  // - Handle Image Selection
-  const handleFileChange = async (e) => {
+  // - Handle image file selection and preview
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (
       file &&
       file.type.startsWith('image/') &&
       file.size <= 5 * 1024 * 1024
     ) {
-      const compressedFile = await compressImage(file);
-      setSelectedFile(compressedFile);
-      setPreviewUrl(URL.createObjectURL(compressedFile));
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
     } else {
       dispatch(
         setSnackbar({
@@ -123,6 +107,8 @@ function UserUpdatePage() {
   // - Handle form submission
   const onSubmit = async (data) => {
     const currentData = getValues();
+    console.log('Current Data:', currentData);
+
     const isDataChanged =
       JSON.stringify(currentData) !== JSON.stringify(originalData);
     const isImageUploaded = selectedFile !== null;
@@ -139,10 +125,17 @@ function UserUpdatePage() {
     }
 
     const formData = new FormData();
+    // Append the selected image file if it exists
     if (selectedFile) {
       formData.append('photo', selectedFile);
     }
-    Object.keys(data).forEach((key) => formData.append(key, data[key]));
+    // Append the other fields, excluding the old photo URL if it's part of the `data`
+    Object.keys(data).forEach((key) => {
+      if (key !== 'photo') {
+        // Exclude old photo URL
+        formData.append(key, data[key]);
+      }
+    });
 
     try {
       await updateUserProfile(formData).unwrap();
@@ -151,6 +144,7 @@ function UserUpdatePage() {
     }
   };
 
+  // - Snackbar notifications based on update status
   useEffect(() => {
     if (isUpdateLoading) {
       dispatch(
