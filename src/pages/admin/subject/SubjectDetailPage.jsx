@@ -67,15 +67,6 @@ function SubjectDetailPage() {
     await deleteSubject(subjectToDelete.subject_id).unwrap();
   };
 
-  // Manually remove or nullify the `photo` property in the `data` object
-  // const dataWithoutPhoto = {
-  //   ...data.data,
-  //   Info: {
-  //     ...data.data.Info,
-  //     photo: null,  // This will prevent the `Avatar` from being rendered
-  //   },
-  // };
-
   const { subject_id, name, description } = data.data;
 
   const subjectDetail = {
