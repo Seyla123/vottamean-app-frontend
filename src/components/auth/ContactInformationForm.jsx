@@ -18,17 +18,19 @@ import HeaderTitle from './HeaderTitle';
 import { ContactInformationValidator } from '../../validators/validationSchemas';
 
 const ContactInformationForm = ({ nextStep, onClickBack }) => {
+  // Redux hooks and actions
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form); // Fetch form data from Redux
+  const formData = useSelector((state) => state.form);
 
+  // - Form management
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue, // Set form values programmatically
+    setValue,
   } = useForm({
     resolver: yupResolver(ContactInformationValidator),
-    defaultValues: formData, // Set initial form values from Redux
+    defaultValues: formData,
   });
 
   // Pre-fill form data when component mounts
@@ -41,8 +43,8 @@ const ContactInformationForm = ({ nextStep, onClickBack }) => {
 
   // Handle form submission
   const onSubmit = (data) => {
-    dispatch(updateFormData(data)); // Update Redux state with the form data
-    nextStep(); // Navigate to the next step
+    dispatch(updateFormData(data));
+    nextStep();
   };
 
   return (
