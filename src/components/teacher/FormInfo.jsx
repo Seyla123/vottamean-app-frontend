@@ -107,7 +107,7 @@ function FormInfo() {
 
   // loading and error states
   if (isLoading) return <LoadingCircle />;
-  if (isError) return <p>Error loading teacher data.</p>;
+  if (isError) return navigate('/admin/teachers');
 
   return (
     <Box>
