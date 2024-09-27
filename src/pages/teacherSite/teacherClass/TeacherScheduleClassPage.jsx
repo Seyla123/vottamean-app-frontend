@@ -6,7 +6,7 @@ import { Grid2, Box, Typography } from '@mui/material';
 import teacher from '../../../assets/icon/teacher.png';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
-import { formatTimeTo12Hour } from '../../../utils/formatData';
+import { formatTimeTo12Hour } from '../../../utils/formatHelper';
 import ClassNotFound from '../../../components/teacherSite/ClassNotFound';
 // colors for card
 const colors = [

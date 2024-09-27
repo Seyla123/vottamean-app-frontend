@@ -9,12 +9,11 @@ import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 import { useGetDayQuery } from '../../../services/daysApi';
 import { useGetSubjectsQuery } from '../../../services/subjectApi';
 import { useNavigate, useParams } from 'react-router-dom';
-import { calculatePeriod } from '../../../utils/formatData';
+import { calculatePeriod } from '../../../utils/formatHelper';
 import {
   useUpdateSessionMutation,
   useGetSessionByIdQuery,
 } from '../../../services/sessionApi';
-
 
 const SessionUpdatePage = () => {
   // Hooks
