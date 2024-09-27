@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 // Redux hooks and actions
 import { useForgotPasswordMutation } from '../../services/authApi';
+import { useDispatch } from 'react-redux';
+import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Material UI components
 import {
@@ -31,7 +33,7 @@ import { ChevronLeft, Fingerprint, Mail } from 'lucide-react';
 import { ForgotPasswordValidator } from '../../validators/validationSchemas';
 
 const ForgotPasswordPage = () => {
-  const [openError, setOpenError] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   // Hook form setup with Yup validation
   const {
@@ -50,10 +52,22 @@ const ForgotPasswordPage = () => {
       if (result.status === 'success') {
         navigate('/auth/check-email', { state: { email: formData.email } });
       } else {
-        setOpenError(true);
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: result.message,
+            severity: 'error',
+          }),
+        );
       }
     } catch (err) {
-      setOpenError(true);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: err?.data?.message,
+          severity: 'error',
+        }),
+      );
     }
   };
 
