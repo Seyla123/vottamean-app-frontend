@@ -257,11 +257,11 @@ const styles = {
     width: '100%',
     height: '100%',
     background:
-      ' linear-gradient(360deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)',
+      ' linear-gradient(360deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%)',
     pointerEvents: 'none',
   },
   content: {
-    p: 8,
+    p: 4,
     bottom: 0,
     left: 0,
     width: '100%',
