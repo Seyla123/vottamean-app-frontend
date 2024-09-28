@@ -40,19 +40,19 @@ function SubjectListPage() {
   
     // Show a snackbar with messages during delete (progress, failure, success)
     if (isDeleting) {
-      dispatch(setSnackbar({
+      dispatch( setSnackbar({
         open: true,
         message: 'Deleting...',
         severity: 'info',
       }));
     } else if (isDeleteError) {
-      dispatch(setSnackbar({
+      dispatch( setSnackbar({
         open: true,
         message: error?.data?.message || 'Failed to delete subject',
         severity: 'error',
       }));
     } else if (isDeleteSuccess) {
-      dispatch(setSnackbar({
+      dispatch( setSnackbar({
         open: true,
         message: 'Deleted successfully',
         severity: 'success',
