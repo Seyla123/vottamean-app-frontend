@@ -299,7 +299,7 @@ export const transformedFilterClasses = (classes) => {
 // Function to transform the data
 export const transformMarkAttendancetTable = (apiResponse) => {
   return apiResponse.map((item) => ({
-    id: `ANB0${item.student_id}`,
+    id: `${item.student_id}`,
     img: item.Info.photo || '', // Adjust the URL as needed
     name: `${item.Info.first_name} ${item.Info.last_name}`,
     gender: item.Info.gender === "Male" ? 'M' : 'F', // Convert to 'M' or 'F'
