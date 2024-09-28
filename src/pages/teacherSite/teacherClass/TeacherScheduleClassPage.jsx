@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import FormComponent from '../../../components/common/FormComponent';
 import ClassCard from '../../../components/teacherSite/ClassCard';
 import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
-import { Grid2, Box, Typography } from '@mui/material';
+import { Grid2, Box } from '@mui/material';
 import teacher from '../../../assets/icon/teacher.png';
-import { useNavigate, Link } from 'react-router-dom';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
-import { formatTimeTo12Hour } from '../../../utils/formatHelper';
+import { formatStartEndTime } from '../../../utils/formatHelper';
 import ClassNotFound from '../../../components/teacherSite/ClassNotFound';
+import { Link } from 'react-router-dom';
 // colors for card
 const colors = [
   '#e7f7ff',
@@ -18,10 +18,9 @@ const colors = [
   '#e7eaff',
 ];
 function TeacherScheduleClassPage() {
-  const navigate = useNavigate();
 
   // useGetTeacherScheduleClassesQuery : This is the data fetching hook for the teacher classes,fetch the classes schedule for the current day
-  const { data: getTeacherClasses, error, isLoading, isSuccess, isError } = useGetTeacherScheduleClassesQuery({filter:'today'});
+  const { data: getTeacherClasses, error, isLoading, isSuccess, isError } = useGetTeacherScheduleClassesQuery();
 
   // classesData : This is the state for the classes
   const [classesData, setClassesData] = useState([]);
@@ -49,12 +48,6 @@ function TeacherScheduleClassPage() {
     ))
   );
   
-  // This is the function for formatting the time
-  const getTime = (classData) => {
-    const time = `${formatTimeTo12Hour(classData.start_time)} - ${formatTimeTo12Hour(classData.end_time)}`;
-    return time;
-  }
-  
   // This is the handling for no classes found
   if (isSuccess && classesData.length == 0) {  
     return (
@@ -79,7 +72,7 @@ function TeacherScheduleClassPage() {
                   <Grid2 size={{ xs: 12, md: 6 }} key={classData.session_id}>
                     <Box
                       component={Link}
-                      to={`/teacher/classes-schedule/mark-attendance`}
+                      to={`/teacher/mark-attendance/${classData.session_id}`}
                       sx={{ color: 'black' }}
                     >
                       <ClassCard
@@ -87,7 +80,7 @@ function TeacherScheduleClassPage() {
                         day={classData.day}
                         subject={classData.subject}
                         students={classData.students}
-                        time={getTime(classData)}
+                        time={formatStartEndTime(classData)}
                         classIcon={teacher}
                         randomColor={cardColor}
                       />

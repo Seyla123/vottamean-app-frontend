@@ -121,7 +121,7 @@ const routesConfig = [
         ],
       },
       {
-        path: 'classes-schedule/mark-attendance',
+        path: 'mark-attendance/:id',
         element: <TeacherAttendanceListPage />,
       },
       {
