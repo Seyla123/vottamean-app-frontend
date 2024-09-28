@@ -3,11 +3,10 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // Material UI components
-import { Box, Typography, Button, Card } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 
 // Image & Icons
 import resetPassIcon from '../../assets/icon/reset-password-icon.svg';
-import { object } from 'yup';
 
 const VerifySuccessfullyPage = () => {
   const navigate = useNavigate();
