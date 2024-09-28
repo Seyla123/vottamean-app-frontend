@@ -45,7 +45,6 @@ const SigninImageCarousel = () => {
               height: '100%',
               width: '100%',
               position: 'absolute',
-              transition: 'transform 0.5s ease',
               transform: `translateX(${(index - activeStep) * 100}%)`,
               transition:
                 'opacity 0.8s ease-in-out, transform 0.8s cubic-bezier(0.83, 0, 0.17, 1)',
