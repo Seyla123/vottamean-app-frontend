@@ -145,6 +145,12 @@ export const ClassValidator = Yup.object().shape({
   description: Yup.string().optional(),
 });
 
+//Class Valid
+export const SubjectValidator = Yup.object().shape({
+  subject_name: Yup.string().required('Subject name is required'),
+  description: Yup.string().optional(),
+});
+
 // Start Time & End Time Validator
 export const startTimeSchema = Yup.string()
   .required('Start time is required')
@@ -165,17 +171,19 @@ export const endTimeSchema = Yup.string()
 
 // Class validation
 export const classSchema = Yup.string().required('Class is required');
+export const subjectSchema = Yup.string().required('Subject is required');
 
-export const subjectSchema = Yup.string()
-  .trim()
-  .required('Subject is required')
-  .min(3, 'Subject name must be at least 3 characters long')
-  .max(50, 'Subject name must be less than 50 characters');
 
-export const descriptionSchema = Yup.string()
-  .trim()
-  .required('Description cannot be empty')
-  .max(255, 'Description must be less than 255 characters');
+// export const subjectSchema = Yup.string()
+//   .trim()
+//   .required('Subject is required')
+//   .min(3, 'Subject name must be at least 3 characters long')
+//   .max(50, 'Subject name must be less than 50 characters');
+
+// export const descriptionSchema = Yup.string()
+//   .trim()
+//   .required('Description cannot be empty')
+//   .max(255, 'Description must be less than 255 characters');
 
 export const createSessionSchema = Yup.string().required('This field is required');
 // Dynamic form schema generator
@@ -202,12 +210,11 @@ export const createFormSchema = (fields) => {
     start_time: startTimeSchema,
     end_time: endTimeSchema,
     subjectName: subjectSchema,
-    description: descriptionSchema,
     teacher_id : createSessionSchema, 
     class_id : createSessionSchema,
     period_id : createSessionSchema,
     day_id : createSessionSchema,
-    subject_id : createSessionSchema
+    subject_name: subjectSchema,
     // Add more schemas as needed
   };
 
@@ -314,7 +321,7 @@ export const UpdateTeacherInfo = createFormSchema([
 ]);
 
 // Update Subject Information
-export const SubjectValidator = createFormSchema(['subject_name', 'description']);
+// export const SubjectValidator = createFormSchema(['subject_name', 'description']);
 export const SessionValidator = createFormSchema([
   'teacher_id',
   'class_id',
