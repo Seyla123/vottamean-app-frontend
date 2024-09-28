@@ -21,7 +21,7 @@ function SubjectUpdatePage() {
 
   const { data, isLoading, fetchError } = useGetSubjectByIdQuery(id);
   const [formData, setFormData] = useState({
-    name: '',
+    subject_name: '',
     description: '',
   });
 
@@ -38,7 +38,7 @@ function SubjectUpdatePage() {
   useEffect(() => {
     if (data && data.data) {
       setFormData({
-        name: data.data.name || '',
+        subject_name: data.data.subject_name || '',
         description: data.data.description || '',
       });
     }
@@ -104,8 +104,8 @@ function SubjectUpdatePage() {
             <Typography variant="body1">Subject's Name</Typography>
             <TextField
               placeholder="school's name"
-              name="name"
-              value={formData.name}
+              name="subject_name"
+              value={formData.subject_name}
               onChange={handleInputChange}
             />
           </Stack>
