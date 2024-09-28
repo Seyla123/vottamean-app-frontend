@@ -83,7 +83,7 @@ function SubjectCreatePage() {
         <CardComponent title={'Subject Information'}>
           {/* subject subject_name input container */}
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Subject's Name</Typography>
+            <Typography color={errors.subject_name ? 'red' : 'inherit'}>Subject's Name</Typography>
             <Controller
               name="subject_name"
               control={control}
