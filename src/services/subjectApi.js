@@ -2,7 +2,7 @@ import { baseApi } from './baseApi';
 
 export const subjectApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Get subject
+    // GET ALL subjects
     getSubjects: builder.query({
       query: () => ({
         url: 'subjects',
@@ -12,7 +12,7 @@ export const subjectApi = baseApi.injectEndpoints({
       providesTags: ['Subjects'],
     }),
 
-    // Get subject by Id
+    // GET ONE subject
     getSubjectById: builder.query({
       query: (id) => ({
         url: `subjects/${id}`,
@@ -22,7 +22,7 @@ export const subjectApi = baseApi.injectEndpoints({
       providesTags: ['Subjects'],
     }),
 
-    // Delete subject by ID
+    // DELETE ONE subject by ID
     deleteSubject: builder.mutation({
       query: (id) => ({
         url: `subjects/${id}`,
@@ -32,7 +32,7 @@ export const subjectApi = baseApi.injectEndpoints({
       invalidatesTags: ['Subjects'],
     }),
 
-    // Create subject
+    // CREATE subject
     createSubject: builder.mutation({
       query: (subjectData) => ({
         url: 'subjects',
@@ -43,7 +43,7 @@ export const subjectApi = baseApi.injectEndpoints({
       invalidatesTags: ['Subjects'],
     }),
 
-    // Update subject
+    // UPDATE a subject by ID
     updateSubject: builder.mutation({
       query: ({ id, formData }) => ({
         url: `subjects/${id}`,
