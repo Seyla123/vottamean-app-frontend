@@ -7,7 +7,7 @@ import CardInformation from '../../../components/common/CardInformation';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import { useGetClassPeriodByIdQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatData';
+import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatHelper';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodDetailPage() {
