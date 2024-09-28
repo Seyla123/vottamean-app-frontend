@@ -67,11 +67,11 @@ function SubjectDetailPage() {
     await deleteSubject(subjectToDelete.subject_id).unwrap();
   };
 
-  const { subject_id, name, description } = data.data;
+  const { subject_id, subject_name, description } = data.data;
 
   const subjectDetail = {
     'Subject ID': subject_id,
-    'Subject Name': name,
+    'Subject Name': subject_name,
     'Description': description
   }
 
