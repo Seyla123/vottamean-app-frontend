@@ -9,17 +9,25 @@ import {
   IconButton,
   Divider,
 } from '@mui/material';
+// import {
+//   Edit as EditIcon,
+//   Email as EmailIcon,
+//   Phone as PhoneIcon,
+//   Home as HomeIcon,
+//   Person as PersonIcon,
+//   Cake as CakeIcon,
+//   School as SchoolIcon,
+// } from '@mui/icons-material';
+
 import {
-  Edit as EditIcon,
-  Email as EmailIcon,
+  PencilLine as EditIcon,
+  Mail as EmailIcon,
   Phone as PhoneIcon,
   Home as HomeIcon,
-  Person as PersonIcon,
+  User2 as PersonIcon,
   Cake as CakeIcon,
   School as SchoolIcon,
-} from '@mui/icons-material';
-
-
+} from 'lucide-react';
 
 const MyProfileView = ({
   title,
