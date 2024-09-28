@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, MobileStepper } from '@mui/material';
-import image1 from '../../assets/images/auth-illustrator-img-1.svg';
-import image2 from '../../assets/images/auth-illustrator-img-2.svg';
-import image3 from '../../assets/images/auth-illustrator-img-3.png';
+import image1 from '../../assets/images/attendance-list.svg';
+import image2 from '../../assets/images/easy-to-manage.svg';
+import image3 from '../../assets/images/parent-notification.svg';
+import image4 from '../../assets/images/student-tracking.svg';
 
 const carouselItems = [
   {
-    imgSrc: image1,
+    imgSrc: image4,
     title: 'Real-time Tracking',
-    description: 'Mark student attendance instantly from any device.',
+    description:
+      'Track and mark student attendance instantly using any device. With our real-time tracking, teachers and administrators can easily manage and update student attendance records on the go.',
   },
   {
     imgSrc: image2,
     title: 'Automated Reports',
     description:
-      ' Generate and download daily, weekly, or monthly attendance reports.',
+      ' Simplify your administrative tasks with automated attendance reports. Generate daily, weekly, or monthly reports effortlessly, giving you more time to focus on student engagement.',
   },
   {
     imgSrc: image3,
     title: 'Parent Notifications',
     description:
-      "Automatically notify parents about their child's attendance status.",
+      'Keep parents informed in real-time. Automatically notify them of their child’s attendance status—whether they’re in class, absent, or tardy—so they always stay connected and informed.',
+  },
+  {
+    imgSrc: image1,
+    title: 'Attendance List',
+    description:
+      'Easily access and manage comprehensive attendance lists. View real-time attendance records for all students, helping you stay organized and up-to-date with classroom attendance at a glance.',
   },
 ];
 
@@ -67,7 +75,14 @@ const SigninImageCarousel = () => {
           p: 2,
           color: 'white',
           textAlign: 'center',
-          position: 'relative',
+          position: 'absolute',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+
+          width: '100%',
+          maxWidth: '800px',
+          margin: '0 auto',
           zIndex: 50,
         }}
       >

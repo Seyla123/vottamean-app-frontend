@@ -242,8 +242,8 @@ const styles = {
     zIndex: 1,
     width: '100%',
     height: '100%',
-    background: 'linear-gradient(45deg, #8B93FF 0%, #f5f5f5 100%)',
-    backgroundImage: `url(${BackgroundImage})`,
+    background: 'linear-gradient(180deg, #64b5f6 0%, #8B93FF 100%)',
+
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     borderRadius: 2,
@@ -256,8 +256,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    background:
-      ' linear-gradient(360deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%)',
+    backgroundImage: `url(${BackgroundImage})`,
     pointerEvents: 'none',
   },
   content: {

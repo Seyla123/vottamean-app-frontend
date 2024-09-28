@@ -3,9 +3,9 @@ import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
-import PasswordResetPage from '../pages/auth/PasswordResetPage';
+import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
 import PasswordChangePage from '../pages/auth/PasswordChangePage';
-import VerifyResetPassword from '../pages/auth/VerifyResetPassword';
+import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
@@ -99,11 +99,11 @@ const routesConfig = [
       },
       {
         path: 'verify-reset-password/:token',
-        element: <VerifyResetPassword />,
+        element: <VerifySuccessfullyPage />,
       },
       {
         path: 'reset-password/:token',
-        element: <PasswordResetPage />,
+        element: <ResetNewPasswordPage />,
       },
     ],
   },
