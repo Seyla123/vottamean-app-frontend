@@ -48,6 +48,7 @@ import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 import SchoolUpdatePage from '../pages/admin/setting/account/SchoolUpdatePage';
 
 import AccountProfilePage from '../pages/admin/setting/account/AccountProfilePage';
+import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
 import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
@@ -283,7 +284,7 @@ const routesConfig = [
             children: [
               {
                 path: '',
-                element: <AccountProfilePage />,
+                element: <AccountSettingsPage />,
               },
               {
                 path: 'change-password',

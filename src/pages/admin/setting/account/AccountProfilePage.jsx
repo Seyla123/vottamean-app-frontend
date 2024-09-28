@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Tab, Box, Stack, Typography, Button } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Trash2, KeyRoundIcon } from 'lucide-react';
+import { Trash2, KeyRoundIcon, User, KeyRound } from 'lucide-react';
 
 // Components
 import FormComponent from '../../../../components/common/FormComponent';
@@ -116,8 +116,18 @@ function AccountProfilePage() {
       <Box sx={{ width: '100%', typography: 'body1' }}>
         <TabContext value={value}>
           <TabList onChange={handleChange} aria-label="Account tabs">
-            <Tab label="General" value="1" />
-            <Tab label="Advanced" value="2" />
+            <Tab
+              label="General"
+              value="1"
+              icon={<User size={18} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Advanced"
+              value="2"
+              icon={<KeyRound size={18} />}
+              iconPosition="start"
+            />
           </TabList>
 
           {/* General tab */}
