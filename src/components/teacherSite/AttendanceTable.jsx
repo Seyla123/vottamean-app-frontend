@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -12,12 +12,12 @@ import {
   MenuItem,
   useMediaQuery,
   useTheme,
-  Chip,
   Avatar,
   Box,
   TablePagination,
   Typography,
 } from '@mui/material';
+
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   CheckCheckIcon,
@@ -25,8 +25,12 @@ import {
   CircleX,
   PencilIcon,
 } from 'lucide-react';
-import NotFoundImage from '../../assets/images/not-found.jpg';
+
 import { tableShadow } from '../../styles/global';
+
+import StatusChip from '../common/StatusChip';
+import NotFoundImage from '../../assets/images/not-found.jpg';
+
 const AttendanceTable = ({
   rows,
   columns,
@@ -34,8 +38,8 @@ const AttendanceTable = ({
   hideColumns = [],
   onStatusChange,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -70,38 +74,13 @@ const AttendanceTable = ({
     isMobile ? !hideColumns.includes(col.id) : true,
   );
 
-  const statusColor = {
-    Present: '#E0F5D7',
-    Absent: '#FADBD8',
-    Late: '#FFF3C7',
-    Permission: '#D6EAF8',
-  };
-
-  const mobileStatusColor = {
-    Present: '#7AC74F',
-    Absent: '#E74C3C',
-    Late: '#F4D03F',
-    Permission: '#3498DB',
-  };
-
   const statusIcon = {
-    Present: <CheckCheckIcon size={16} color="green" />,
-    Absent: <CircleX size={16} color="red" />,
-    Late: <AlarmClockIcon size={16} color="orange" />,
-    Permission: <PencilIcon size={16} color="blue" />,
+    present: <CheckCheckIcon size={16} color="green" />,
+    absent: <CircleX size={16} color="red" />,
+    late: <AlarmClockIcon size={16} color="orange" />,
+    permission: <PencilIcon size={16} color="blue" />,
   };
-
-  const getStatusColor = (status) => statusColor[status];
-  const getMobileStatusColor = (status) => mobileStatusColor[status];
-  const getStatusIcon = (status) => statusIcon[status];
-  const getStatusTextColor = (status) =>
-    status === 'Present'
-      ? 'green'
-      : status === 'Absent'
-        ? 'red'
-        : status === 'Late'
-          ? 'orange'
-          : 'blue';
+  const getStatusIcon = (statusLabel) => statusIcon[statusLabel];
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -173,19 +152,7 @@ const AttendanceTable = ({
                         justifyContent: 'flex-end',
                       }}
                     >
-                      <Chip
-                        icon={getStatusIcon(row.status)}
-                        label={row.status}
-                        sx={{
-                          backgroundColor: getStatusColor(row.status),
-                          px: '4px',
-                          color: getStatusTextColor(row.status),
-                        }}
-                        size="small"
-                        style={{
-                          marginRight: '8px',
-                        }}
-                      />
+                      <StatusChip status='' statusId={row.status} />
 
                       <IconButton
                         size="small"
@@ -236,18 +203,18 @@ const AttendanceTable = ({
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         {status.map((statusOption) => (
           <MenuItem
-            key={statusOption}
-            onClick={() => handleStatusChange(statusOption)}
+            key={statusOption.status_id}
+            value={statusOption.status_id}
+            onClick={() => handleStatusChange(statusOption.status_id)}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {getStatusIcon(statusOption)}
-              <Box component="span" sx={{ ml: 1 }}>
-                {statusOption}
+              {getStatusIcon(statusOption.status)}
+              <Box component="span" sx={{ ml: 1}}>
+                {statusOption.status}
               </Box>
             </Box>
           </MenuItem>
-        ))}
-      </Menu>
+        ))}      </Menu>
     </Paper>
   );
 };

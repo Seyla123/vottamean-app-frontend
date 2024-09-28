@@ -101,7 +101,7 @@ const AttendanceReportTable = ({
                 ))}
                 <TableCell sx={{ width: 'auto' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                    <StatusChip status={row.status} statusId={row.status_id} />
+                    <StatusChip statusId={row.status_id} />
                     <IconButton size="small" onClick={(e) => handleClick(e, row)}>
                       <MoreVertIcon fontSize="small" />
                     </IconButton>

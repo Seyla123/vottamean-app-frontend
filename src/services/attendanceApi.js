@@ -30,7 +30,16 @@ export const attendanceApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Attendance'],
     }),
+    markAttendance: builder.mutation({
+      query: (data) => ({
+        url: `attendance`,
+        method: 'POST',
+        body: data,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Attendance'],
+    })
   }),
 });
 
-export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery } = attendanceApi;
+export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery, useMarkAttendanceMutation } = attendanceApi;

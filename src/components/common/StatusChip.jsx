@@ -1,13 +1,15 @@
 import React from 'react';
 import { Chip } from '@mui/material';
 import { statusObj } from '../../data/status';
-const StatusChip = ({ status, statusId }) => {
-  const statusConfig = statusObj[statusId];
+
+const StatusChip = ({ statusId }) => {
+  const id = statusId !== null ? statusId : 0;
+  const statusConfig = statusObj[id];
 
   return (
     <Chip
       icon={statusConfig.icon}
-      label={status}
+      label={statusConfig.label}
       sx={{
         backgroundColor: statusConfig.color,
         px: '4px',
@@ -19,3 +21,4 @@ const StatusChip = ({ status, statusId }) => {
 };
 
 export default StatusChip;
+
