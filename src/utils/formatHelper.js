@@ -51,3 +51,9 @@ export const getFullName = (info) =>
 // Helper function to determine profile key
 export const getProfileKey = (role) =>
   role === 'admin' ? 'adminProfile' : 'teacherProfile';
+
+// This is the function for formatting the time
+export const formatStartEndTime = (classData) => {
+  const time = `${formatTimeTo12Hour(classData.start_time)} - ${formatTimeTo12Hour(classData.end_time)}`;
+  return time;
+}
