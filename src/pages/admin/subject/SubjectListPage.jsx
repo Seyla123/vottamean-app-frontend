@@ -107,16 +107,16 @@ function SubjectListPage() {
   // Define table columns title
   const tableTiles = [
     { id: 'subject_id', label: 'Subject ID' },
-    { id: 'name', label: 'Subject Name' },
+    { id: 'subject_name', label: 'Subject Name' },
     { id: 'description', label: 'Subject Description' },
   ];
 
   // Define formatted data to display
   const subjectData = data.data.map((item) => {
-    const { subject_id, name, description } = item;
+    const { subject_id, subject_name, description } = item;
     return {
       subject_id,
-      name,
+      subject_name,
       description,
     };
   });
