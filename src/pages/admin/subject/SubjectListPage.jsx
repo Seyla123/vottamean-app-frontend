@@ -3,70 +3,64 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Stack, Button } from '@mui/material';
 import { PlusIcon } from 'lucide-react';
+// import components
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import { useGetSubjectsQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
+// import api and uiSlice
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
+import { useGetSubjectsQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
 
 function SubjectListPage() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // rows : Array of objects representing the data to be displayed in the table
-  // subjectToDelete : a selected subject to be deleted
+  // useState: "data to be displayed" and "data to be deleted"
   const [rows, setRows] = useState([]);
   const [subjectToDelete, setSubjectToDelete] = useState(null);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { modal } = useSelector((state) => state.ui);
 
-  // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
-  // useDeleteSubjectMutation : a hook that returns a function to delete an class period record
+  // useGetSubjectsQuery : return a function to fetch all subject records
   const { data, isError, isLoading, isSuccess } = useGetSubjectsQuery();
-  const [
-    deleteSubject,
-    {
-      isLoading: isDeleting,
+
+  // useDeleteSubjectMutation : returns a function to delete a subject
+  const [ deleteSubject,
+    { isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error,
-    },
-  ] = useDeleteSubjectMutation();
+      error }
+    ] = useDeleteSubjectMutation();
 
-  // when the subject records are fetched successfully, then set the rows state
   useEffect(() => {
+    // set the rows state when subject records are fetched successfully
     if (data && isSuccess) {
       setRows(subjectData);
     }
-  }, [data, isSuccess, isDeleteSuccess]);
-
-  // When the delete is in progress, show a snackbar with a message "Deleting..."
-  // When the delete is failed, show a snackbar with an error message
-  // When the delete is successful, show a snackbar with a success message and navigate to the class period list page
-  useEffect(() => {
+  
+    // Show a snackbar with messages during delete (progress, failure, success)
     if (isDeleting) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
-      );
+      dispatch(setSnackbar({
+        open: true,
+        message: 'Deleting...',
+        severity: 'info',
+      }));
     } else if (isDeleteError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data.message,
-          severity: 'error',
-        }),
-      );
+      dispatch(setSnackbar({
+        open: true,
+        message: error?.data?.message || 'Failed to delete subject',
+        severity: 'error',
+      }));
     } else if (isDeleteSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Deleted successfully',
-          severity: 'success',
-        }),
-      );
+      dispatch(setSnackbar({
+        open: true,
+        message: 'Deleted successfully',
+        severity: 'success',
+      }));
       navigate('/admin/subjects');
     }
-  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
+  }, [data, isSuccess, isDeleteSuccess, isDeleting, isDeleteError, dispatch ]);
+  
 
   // loading the data until it successfully fetched
   if (isLoading) {
@@ -84,6 +78,7 @@ function SubjectListPage() {
     dispatch(setModal({ open: true }));
   };
 
+  // Handle delete confirmation modal
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
     await deleteSubject(subjectToDelete.subject_id).unwrap();
@@ -97,7 +92,7 @@ function SubjectListPage() {
   // Handle DETAIL action
   const handleView = (row) => {
     navigate(`/admin/subjects/${row.subject_id}`);
-  }
+  };
 
   // Handle EDIT action
   const handleEdit = (row) => {
@@ -117,13 +112,15 @@ function SubjectListPage() {
     return {
       subject_id,
       subject_name,
-      description,
+      description
     };
   });
 
   return (
-    <FormComponent title="Subject List" subTitle={`There are total ${rows.length} Subjects`}>
-      {/* Button to add a new class period */}
+    <FormComponent
+      title="Subject List"
+      subTitle={`There are total ${rows.length} Subjects`}
+    >
       <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
         <Link to={'/admin/subjects/create'}>
           <Button
@@ -143,7 +140,6 @@ function SubjectListPage() {
         itemName="Subject"
       />
 
-      {/* List Subject */}
       <DataTable
         rows={rows}
         columns={tableTiles}
