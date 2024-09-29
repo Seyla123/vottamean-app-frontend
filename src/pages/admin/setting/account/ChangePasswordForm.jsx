@@ -10,13 +10,12 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../../../store/slices/uiSlice';
-import SnackbarComponent from '../../../../components/common/SnackbarComponent';
 import { shadow } from '../../../../styles/global';
 import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useChangePasswordMutation } from '../../../../services/authApi';
-import { EyeIcon, EyeOff, Key, KeyRound, School } from 'lucide-react';
+import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
 import FormComponent from '../../../../components/common/FormComponent';
 
 const ChangePasswordForm = () => {
@@ -63,7 +62,6 @@ const ChangePasswordForm = () => {
           open: true,
           message: 'Failed to change password. Please try again.',
           severity: 'error',
-          
         }),
       );
     }
@@ -71,15 +69,17 @@ const ChangePasswordForm = () => {
 
   return (
     <FormComponent
-      title={'Manage your password'}
-      subTitle={'Change your password'}
+      title={'Password Management'}
+      subTitle={
+        'To ensure the security of your account, we recommend changing your password periodically.'
+      }
     >
       <Card sx={shadow}>
         <Box
           component={'section'}
           sx={{
             margin: 'auto',
-            p: 4,
+            p: 5,
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -249,6 +249,26 @@ const ChangePasswordForm = () => {
                   },
                 }}
               />
+            </Box>
+
+            {/* REQUIREMENT */}
+            <Box>
+              <Typography variant="body1" fontWeight="bold">
+                Password Requirements{' '}
+                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+              </Typography>
+              <Typography variant="body1">
+                <Box component={'ul'} sx={{ mt: 1 }}>
+                  <Box component={'li'}>At least 8 characters.</Box>
+                  <Box component={'li'}>Contain at least one number.</Box>
+                  <Box component={'li'}>
+                    Contain at least one uppercase letter.
+                  </Box>
+                  <Box component={'li'}>
+                    Contain at least one special character.
+                  </Box>
+                </Box>
+              </Typography>
             </Box>
 
             {/* SUBMIT BUTTON */}
