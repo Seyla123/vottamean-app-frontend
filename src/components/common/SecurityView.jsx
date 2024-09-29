@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import { Typography, Box, Button, Card } from '@mui/material';
 
 const SecurityView = () => {
   return (
-    <div>SecurityView</div>
-  )
-}
+    <Box component={'section'}>
+      <Typography variant="h4" component="h1" fontWeight="bold"></Typography>
+    </Box>
+  );
+};
 
-export default SecurityView
+export default SecurityView;

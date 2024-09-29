@@ -25,6 +25,7 @@ const MyProfileView = ({
   title,
   adminProfileData,
   schoolProfileData,
+  handleEditSchool,
   handleEditUser,
 }) => {
   const userName = `${adminProfileData.first_name} ${adminProfileData.last_name}`;
@@ -56,14 +57,6 @@ const MyProfileView = ({
         <Typography variant="h4" component="h1" fontWeight="bold">
           {title}
         </Typography>
-        <Button
-          variant="outlined"
-          startIcon={<EditIcon />}
-          onClick={handleEditUser}
-          sx={{ textTransform: 'none' }}
-        >
-          Edit Profile
-        </Button>
       </Box>
 
       <Grid container spacing={4}>
@@ -73,7 +66,7 @@ const MyProfileView = ({
             sx={{
               border: '1px solid #e0e0e0',
               borderRadius: 2,
-              p: 3,
+              p: 2,
               textAlign: 'center',
             }}
           >
@@ -102,13 +95,23 @@ const MyProfileView = ({
             sx={{
               border: '1px solid #e0e0e0',
               borderRadius: 2,
-              p: 3,
+              p: 2,
               height: '100%',
             }}
           >
-            <Typography variant="h6" gutterBottom>
-              Personal Information
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography variant="h6" gutterBottom>
+                Personal Information
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<EditIcon size={20} />}
+                onClick={handleEditUser}
+                sx={{ textTransform: 'none' }}
+              >
+                Edit
+              </Button>
+            </Box>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
               <InfoItem
@@ -136,13 +139,22 @@ const MyProfileView = ({
         </Grid>
 
         {/* School Information */}
+
         <Grid item xs={12}>
-          <Box
-            sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 3, mt: 4 }}
-          >
-            <Typography variant="h6" gutterBottom>
-              School Information
-            </Typography>
+          <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography variant="h6" gutterBottom>
+                School Information
+              </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<EditIcon size={20} />}
+                onClick={handleEditUser}
+                sx={{ textTransform: 'none' }}
+              >
+                Edit
+              </Button>
+            </Box>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
               <InfoItem

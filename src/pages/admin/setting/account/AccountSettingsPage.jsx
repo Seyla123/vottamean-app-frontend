@@ -76,7 +76,7 @@ const AccountSettingsPage = () => {
   };
 
   // Handle edit school button click
-  const clickEditSchool = () => {
+  const handleEditSchool = () => {
     navigate('/admin/settings/account/update-school');
   };
 
@@ -131,13 +131,14 @@ const AccountSettingsPage = () => {
               title={'My Profile'}
               adminProfileData={adminProfileData}
               schoolProfileData={schoolProfileData}
+              handleEditSchool={handleEditSchool}
               handleEditUser={handleEditUser}
             />
           </TabPanel>
 
           <TabPanel value="2">
             {/* SECURITY VIEW */}
-            <SecurityView />
+            <SecurityView title={'Security'} handle />
           </TabPanel>
         </TabContext>
       </Card>
