@@ -43,7 +43,8 @@ const AccountSettingsPage = () => {
   const adminProfileData = user?.data?.adminProfile?.Info;
 
   // Extract the School profile data
-  const schoolProfileData = user?.data?.adminProfile?.schools;
+  const schoolProfileData = user?.data?.adminProfile?.schools[0];
+
   // Local state for transformed data
   const [userData, setUserData] = useState({
     userProfile: {},

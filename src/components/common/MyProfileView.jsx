@@ -5,19 +5,10 @@ import {
   Button,
   Avatar,
   Grid,
-  Chip,
   IconButton,
+  Chip,
   Divider,
 } from '@mui/material';
-// import {
-//   Edit as EditIcon,
-//   Email as EmailIcon,
-//   Phone as PhoneIcon,
-//   Home as HomeIcon,
-//   Person as PersonIcon,
-//   Cake as CakeIcon,
-//   School as SchoolIcon,
-// } from '@mui/icons-material';
 
 import {
   PencilLine as EditIcon,
@@ -27,6 +18,7 @@ import {
   User2 as PersonIcon,
   Cake as CakeIcon,
   School as SchoolIcon,
+  IdCard as IdCardIcon,
 } from 'lucide-react';
 
 const MyProfileView = ({
@@ -50,8 +42,10 @@ const MyProfileView = ({
     schoolProfileData?.school_phone_number || 'Not provided';
   const schoolId = schoolProfileData?.school_id || 'N/A';
 
+  console.log(schoolProfileData);
+
   return (
-    <Box sx={{ maxWidth: 1200, margin: 'auto', p: 3 }}>
+    <Box sx={{ margin: 'auto', p: 2 }}>
       {/* Header */}
       <Box
         sx={{
@@ -169,7 +163,7 @@ const MyProfileView = ({
                 value={schoolPhoneNumber}
               />
               <InfoItem
-                icon={<Chip size="small" label="ID" />}
+                icon={<IdCardIcon />}
                 label="School ID"
                 value={schoolId}
               />
@@ -193,6 +187,7 @@ const InfoItem = ({ icon, label, value }) => (
           alignItems: 'center',
           backgroundColor: 'primary.main',
           borderRadius: 2,
+          color: 'white',
         }}
       >
         {icon}
