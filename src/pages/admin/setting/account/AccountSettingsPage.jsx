@@ -33,17 +33,9 @@ const AccountSettingsPage = () => {
   const navigate = useNavigate();
 
   // Redux API calls to get user profile
-  const { data: user, isLoading, error } = useGetUserProfileQuery();
+  const { data: user, isLoading, error, isSuccess } = useGetUserProfileQuery();
   // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
-
-  console.log(user);
-
-  // Extract the Admin profile data
-  const adminProfileData = user?.data?.adminProfile?.Info;
-
-  // Extract the School profile data
-  const schoolProfileData = user?.data?.adminProfile?.schools[0];
 
   // Local state for transformed data
   const [userData, setUserData] = useState({
@@ -61,9 +53,21 @@ const AccountSettingsPage = () => {
       const transformedData = getUserProfileData(user);
       console.log(transformedData);
       setUserData(transformedData);
+      console.log('this is rows :', userData);
       dispatch(updateFormData(transformedData));
     }
-  }, [user, dispatch]);
+  }, [user]);
+
+  
+  // // Extract the Admin profile data
+  const adminProfileData = user?.data?.adminProfile?.Info;
+  // // Extract the School profile data
+  const schoolProfileData = user?.data?.adminProfile?.schools;
+  console.log('this is rows outside:', userData);
+
+  console.log('this is admin ', adminProfileData);
+  console.log('this is school ', schoolProfileData);
+  
 
   // Handle tab switch
   const handleChange = (event, newValue) => {
@@ -129,8 +133,8 @@ const AccountSettingsPage = () => {
             {/* MY PROFILE VIEW */}
             <MyProfileView
               title={'My Profile'}
-              adminProfileData={adminProfileData}
-              schoolProfileData={schoolProfileData}
+              adminProfileData={userData.userProfile}
+              schoolProfileData={userData.schoolProfile}
               handleEditSchool={handleEditSchool}
               handleEditUser={handleEditUser}
             />

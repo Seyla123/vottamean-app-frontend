@@ -162,13 +162,14 @@ export const transformUserProfile = (user) => {
   if (!profileInfo) return {};
 
   return {
-    'Full Name': getFullName(profileInfo),
-    Age: getAge(profileInfo.dob) || 'N/A',
-    Gender: profileInfo.gender || 'N/A',
-    'Date Of Birth': profileInfo.dob ? formatDate(profileInfo.dob) : 'N/A',
-    'Phone Number': formatPhoneNumber(profileInfo.phone_number) ?? 'N/A',
-    Email: user.data.email,
-    Address: profileInfo.address || 'N/A',
+    userId: user.data[profileKey]?.user_id || 'N/A',
+    userName: getFullName(profileInfo),
+    Age: getAge(profileInfo.dob) || 'Not provided',
+    userGender: profileInfo.gender || 'Not specified',
+    userDOB: profileInfo.dob ? formatDate(profileInfo.dob) : 'Not provided',
+    userPhoneNumber: formatPhoneNumber(profileInfo.phone_number) ?? 'Not provided',
+    userEmail: user.data.email || 'Not provided',
+    userAddress: profileInfo.address || 'Not provided',
   };
 };
 
@@ -180,10 +181,10 @@ export const transformSchoolProfile = (user) => {
   if (!profileSchools) return {};
 
   return {
-    'School Name': profileSchools.school_name || 'N/A',
-    'School Phone Number':
-      formatPhoneNumber(profileSchools.school_phone_number) ?? 'N/A',
-    'School Address': profileSchools.school_address || 'N/A',
+    schoolId : profileSchools.school_id || 'N/A',
+    schoolName: profileSchools.school_name || 'Not provided',
+    schoolPhoneNumber:formatPhoneNumber(profileSchools.school_phone_number) ?? 'Not provided',
+    schoolAddress: profileSchools.school_address || 'Not provided',
   };
 };
 
@@ -243,7 +244,7 @@ export function studentsData(student) {
     id: student.student_id,
     name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`,
     class: student.Class.class_name || 'N/A',
-    age: getAge(student.info.dob) || 'N/A',
+    age: getAge(student.info?.dob) || 'N/A',
     gender: student.Info.gender || 'N/A',
     'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
     phone: student.Info.phone_number || 'N/A',

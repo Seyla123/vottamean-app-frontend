@@ -28,20 +28,22 @@ const MyProfileView = ({
   handleEditSchool,
   handleEditUser,
 }) => {
-  const userName = `${adminProfileData.first_name} ${adminProfileData.last_name}`;
-  const userEmail = adminProfileData.email;
-  const userPhoto = adminProfileData.photo || '/api/placeholder/150/150';
-  const userPhoneNumber = adminProfileData.phone_number || 'Not provided';
-  const userAddress = adminProfileData.address || 'Not provided';
-  const userGender = adminProfileData.gender || 'Not specified';
-  const userId = adminProfileData.info_id || 'N/A';
-  const userDOB = adminProfileData.dob || 'Not provided';
 
-  const schoolName = schoolProfileData?.school_name || 'Not provided';
-  const schoolAddress = schoolProfileData?.school_address || 'Not provided';
-  const schoolPhoneNumber =
-    schoolProfileData?.school_phone_number || 'Not provided';
-  const schoolId = schoolProfileData?.school_id || 'N/A';
+  const {
+    userName,
+    userEmail,
+    userPhoto,
+    userPhoneNumber,
+    userAddress,
+    userGender,
+    userId,
+    userDOB,
+  } = adminProfileData;
+  const { schoolName, schoolAddress, schoolPhoneNumber, schoolId } =
+    schoolProfileData;
+    
+  console.log('this school component : ', schoolProfileData);
+  console.log('this profile user : ', adminProfileData);
 
   return (
     <Box sx={{ margin: 'auto', p: 2 }}>
@@ -149,7 +151,7 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleEditUser}
+                onClick={handleEditSchool}
                 sx={{ textTransform: 'none' }}
               >
                 Edit

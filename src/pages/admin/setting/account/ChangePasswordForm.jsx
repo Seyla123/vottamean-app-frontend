@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   Typography,
@@ -17,9 +17,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useChangePasswordMutation } from '../../../../services/authApi';
 import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
 import FormComponent from '../../../../components/common/FormComponent';
+import { useNavigate } from 'react-router-dom';
 
 const ChangePasswordForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isShowPassword, setIsShowPassword] = useState(false);
 
@@ -37,16 +39,9 @@ const ChangePasswordForm = () => {
     resolver: yupResolver(ChangePasswordValidator),
   });
 
-  const [changePassword, { isLoading, error }] = useChangePasswordMutation();
-  const handlePasswordChange = async (formData) => {
-    console.log('Form Data:', formData);
-    try {
-      const response = await changePassword({
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      }).unwrap();
-
-      console.log('API Response:', response);
+  const [changePassword, { isLoading, error, isSuccess,isError }] = useChangePasswordMutation();
+  useEffect(() => {
+    if (isSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -54,19 +49,25 @@ const ChangePasswordForm = () => {
           severity: 'success',
         }),
       );
-      reset();
-    } catch (err) {
-      console.error('API Error:', err);
+      navigate('/admin/settings/account');
+    }
+    else if (isError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Failed to change password. Please try again.',
+          message: error.data.message,
           severity: 'error',
         }),
       );
     }
+  }, [error, dispatch, isError, isSuccess, navigate,isLoading]);
+  const handlePasswordChange = async (formData) => {
+    console.log('Form Data:', formData);
+    await changePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      }).unwrap();
   };
-
   return (
     <FormComponent
       title={'Password Management'}

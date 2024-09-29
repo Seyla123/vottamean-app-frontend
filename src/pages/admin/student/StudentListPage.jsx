@@ -43,8 +43,11 @@ const StudentListPage = () => {
     if (isSuccess && data) {
       const formattedStudents = formatStudentsList(data.data);
       setRows(formattedStudents);
+      console.log('this rows : ', rows);
+      
     }
   }, [isSuccess, data,dispatch]);
+
   //If loading is error, show error message
   if (isError) {
     console.log('error message :', error.data.message);

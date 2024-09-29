@@ -78,7 +78,6 @@ function AuthContainerCard({ sideCard, children }) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1,
-                color: '#111',
                 width: 'max-content',
                 fontSize: '14px',
                 color: 'text.secondary',
