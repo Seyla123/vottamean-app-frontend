@@ -64,6 +64,7 @@ import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage'
 // Layout
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
+import ChangePasswordForm from '../pages/admin/setting/account/ChangePasswordForm';
 // Routes configuration
 const routesConfig = [
   {
@@ -288,7 +289,7 @@ const routesConfig = [
               },
               {
                 path: 'change-password',
-                element: <PasswordChangePage />,
+                element: <ChangePasswordForm />,
               },
               {
                 path: 'update-me',
