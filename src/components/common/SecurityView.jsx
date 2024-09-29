@@ -4,6 +4,7 @@ import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 // Image and Icon
 import { Lock, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const SecurityView = ({ title, handleDeleteAccount }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,9 +49,11 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
             For security reasons, we recommend changing your password regularly.
           </Typography>
         </Box>
-        <Button variant="outlined" startIcon={<Lock size={20} />}>
-          Change password
-        </Button>
+        <Link to={'change-password'}>
+          <Button variant="outlined" startIcon={<Lock size={20} />}>
+            Change password
+          </Button>
+        </Link>
       </Box>
 
       {/* DELETE ACCOUNT SECTION */}
