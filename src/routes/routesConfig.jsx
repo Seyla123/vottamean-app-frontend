@@ -48,6 +48,7 @@ import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 import SchoolUpdatePage from '../pages/admin/setting/account/SchoolUpdatePage';
 
 import AccountProfilePage from '../pages/admin/setting/account/AccountProfilePage';
+import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
 import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
@@ -63,6 +64,7 @@ import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage'
 // Layout
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
+import ChangePasswordForm from '../pages/admin/setting/account/ChangePasswordForm';
 // Routes configuration
 const routesConfig = [
   {
@@ -283,11 +285,11 @@ const routesConfig = [
             children: [
               {
                 path: '',
-                element: <AccountProfilePage />,
+                element: <AccountSettingsPage />,
               },
               {
                 path: 'change-password',
-                element: <PasswordChangePage />,
+                element: <ChangePasswordForm />,
               },
               {
                 path: 'update-me',
