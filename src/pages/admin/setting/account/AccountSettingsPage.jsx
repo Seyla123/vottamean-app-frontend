@@ -81,7 +81,7 @@ const AccountSettingsPage = () => {
   };
 
   // Handle delete button click
-  const clickDeleteAccount = async () => {
+  const handleDeleteAccount = async () => {
     try {
       console.log('Deleting current user');
       await deleteUserAccount().unwrap();
@@ -138,7 +138,10 @@ const AccountSettingsPage = () => {
 
           <TabPanel value="2">
             {/* SECURITY VIEW */}
-            <SecurityView title={'Security'} handle />
+            <SecurityView
+              title={'Security'}
+              handleDeleteAccount={handleDeleteAccount}
+            />
           </TabPanel>
         </TabContext>
       </Card>
