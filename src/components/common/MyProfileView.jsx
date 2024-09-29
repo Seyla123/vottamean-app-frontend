@@ -42,8 +42,6 @@ const MyProfileView = ({
     schoolProfileData?.school_phone_number || 'Not provided';
   const schoolId = schoolProfileData?.school_id || 'N/A';
 
-  console.log(schoolProfileData);
-
   return (
     <Box sx={{ margin: 'auto', p: 2 }}>
       {/* Header */}
