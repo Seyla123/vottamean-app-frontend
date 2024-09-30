@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -9,6 +9,8 @@ import {
   Chip,
   Divider,
 } from '@mui/material';
+import RandomAvatar from '../common/RandomAvatar';
+import EditAccountModal from '../admin/EditAccountModal';
 
 import {
   PencilLine as EditIcon,
@@ -29,6 +31,27 @@ const MyProfileView = ({
   handleEditSchool,
   handleEditUser,
 }) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Remove the userData state as it's not being used effectively
+  // const [userData, setUserData] = useState({...});
+
+  const handleOpenEditModal = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleSaveUserData = (newData) => {
+    // Call handleEditUser directly with the new data
+    if (handleEditUser) {
+      handleEditUser(newData);
+    }
+    handleCloseEditModal();
+  };
+
   const {
     userName,
     userEmail,
@@ -40,9 +63,6 @@ const MyProfileView = ({
   } = adminProfileData;
   const { schoolName, schoolAddress, schoolPhoneNumber, schoolId } =
     schoolProfileData;
-
-  console.log('this school component : ', schoolProfileData);
-  console.log('this profile user : ', adminProfileData);
 
   return (
     <Box sx={{ margin: 'auto', p: 2 }}>
@@ -100,18 +120,29 @@ const MyProfileView = ({
               height: '100%',
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="h6" gutterBottom>
                 Personal Information
               </Typography>
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleEditUser}
-                sx={{ textTransform: 'none' }}
+                onClick={handleOpenEditModal}
               >
                 Edit
               </Button>
+
+              <EditAccountModal
+                open={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                onSave={handleSaveUserData}
+              />
             </Box>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
@@ -143,7 +174,13 @@ const MyProfileView = ({
 
         <Grid item xs={12}>
           <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexDirection: { xs: 'column', sm: 'row' },
+              }}
+            >
               <Typography variant="h6" gutterBottom>
                 School Information
               </Typography>
@@ -151,7 +188,6 @@ const MyProfileView = ({
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
                 onClick={handleEditSchool}
-                sx={{ textTransform: 'none' }}
               >
                 Edit
               </Button>

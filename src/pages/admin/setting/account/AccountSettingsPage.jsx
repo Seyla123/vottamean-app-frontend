@@ -1,19 +1,17 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Tab, Box, Stack, Typography, Button, Card } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Tab, Typography, Card } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 // Components
 import FormComponent from '../../../../components/common/FormComponent';
-import CardComponent from '../../../../components/common/CardComponent';
-import CardInformation from '../../../../components/common/CardInformation';
+
 import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
 // Image and Icon
-import { Trash2, KeyRoundIcon, PencilLine, User, KeyRound } from 'lucide-react';
-import profile from '../../../../assets/images/default-profile.png';
+import { User, KeyRound } from 'lucide-react';
 
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
@@ -51,16 +49,10 @@ const AccountSettingsPage = () => {
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
-      console.log(transformedData);
       setUserData(transformedData);
       dispatch(updateFormData(transformedData));
     }
   }, [user]);
-
-  // // Extract the Admin profile data
-  const adminProfileData = user?.data?.adminProfile?.Info;
-  // // Extract the School profile data
-  const schoolProfileData = user?.data?.adminProfile?.schools;
 
   // Handle tab switch
   const handleChange = (event, newValue) => {
@@ -122,7 +114,7 @@ const AccountSettingsPage = () => {
           </TabList>
 
           {/* TAB CONTENT */}
-          <TabPanel value="1">
+          <TabPanel sx={{ px: 0, py: 2 }} value="1">
             {/* MY PROFILE VIEW */}
             <MyProfileView
               title={'My Profile'}
@@ -134,7 +126,7 @@ const AccountSettingsPage = () => {
             />
           </TabPanel>
 
-          <TabPanel value="2">
+          <TabPanel sx={{ px: 0, py: 2 }} value="2">
             {/* SECURITY VIEW */}
             <SecurityView
               title={'Security'}

@@ -34,8 +34,6 @@ const Layout = ({ teacherSite, adminSite }) => {
 
       // 4.2. Dispatch a logout action to clear the authentication state in Redux
       dispatch(logoutAction());
-
-    
     } catch (error) {
       // Handle potential errors during logout
       console.error('Failed to logout:', error);
@@ -128,7 +126,7 @@ const Layout = ({ teacherSite, adminSite }) => {
 
         <Box paddingTop={2}>
           <DashboardLayout>
-            <Container maxWidth="xl">
+            <Container maxWidth="xl" sx={{ paddingBottom: 10 }}>
               <Outlet />
             </Container>
           </DashboardLayout>
