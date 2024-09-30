@@ -15,6 +15,9 @@ import { setSnackbar } from '../../../store/slices/uiSlice';
 import { useCreateSubjectMutation } from '../../../services/subjectApi';
 
 function SubjectCreatePage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
   // yup validator
   const {
     control,
@@ -28,9 +31,6 @@ function SubjectCreatePage() {
       description: '',
     },
   });
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // useCreateSubjectMutation : returns a function to create a subject
   const [ createSubject, {
