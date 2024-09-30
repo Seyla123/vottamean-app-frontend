@@ -1,21 +1,21 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Typography, Stack, TextField } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { fieldContainer } from '../../../styles/authStyle';
+// import components
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-import { useCreateSubjectMutation } from '../../../services/subjectApi';
+// import validator, style, api and uiSlice
 import { SubjectValidator } from '../../../validators/validationSchemas';
+import { fieldContainer } from '../../../styles/authStyle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useCreateSubjectMutation } from '../../../services/subjectApi';
 
 function SubjectCreatePage() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  // yup validator
   const {
     control,
     handleSubmit,
@@ -29,37 +29,37 @@ function SubjectCreatePage() {
     },
   });
 
-  const [
-    createSubject,
-    {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // useCreateSubjectMutation : returns a function to create a subject
+  const [ createSubject, {
       isLoading: isCreating,
       isError: isUpdateError,
       isSuccess: isCreateSuccess,
-      error: updateError,
-    },
+      error: updateError }
   ] = useCreateSubjectMutation();
 
+  // Show a snackbar with messages during creating (progress, failure, success)
   useEffect(() => {
     if (isCreating) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Creating...', severity: 'info' }),
-      );
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Creating...',
+        severity: 'info'
+      }));
     } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
+      dispatch( setSnackbar({
           open: true,
           message: updateError.data.message,
           severity: 'error',
-        }),
-      );
+        }));
     } else if (isCreateSuccess) {
-      dispatch(
-        setSnackbar({
+      dispatch( setSnackbar({
           open: true,
           message: 'Subject created successfully',
           severity: 'success',
-        }),
-      );
+        }));
       navigate('/admin/subjects');
     }
   }, [dispatch, isUpdateError, isCreating, isCreateSuccess]);
@@ -81,7 +81,6 @@ function SubjectCreatePage() {
         subTitle={'Please Fill Subject information'}
       >
         <CardComponent title={'Subject Information'}>
-          {/* subject subject_name input container */}
           <Stack sx={fieldContainer}>
             <Typography color={errors.subject_name ? 'red' : 'inherit'}>Subject's Name</Typography>
             <Controller
@@ -99,7 +98,6 @@ function SubjectCreatePage() {
               )}
             />
           </Stack>
-          {/* description input container */}
           <Stack sx={fieldContainer}>
             <Typography variant="body1">Description</Typography>
             <Controller
@@ -115,7 +113,6 @@ function SubjectCreatePage() {
               )}
             />
           </Stack>
-          {/* Button Container  */}
           <ButtonContainer
             rightBtn={handleSubmit(onSubmit)}
             leftBtnTitle={'Cancel'}
