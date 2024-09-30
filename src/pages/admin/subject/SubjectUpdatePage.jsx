@@ -13,15 +13,15 @@ import { setSnackbar } from '../../../store/slices/uiSlice';
 import { useGetSubjectByIdQuery, useUpdateSubjectMutation } from '../../../services/subjectApi';
 
 function SubjectUpdatePage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
   // useState: "data to be displayed as state and for deleted"
   const [formData, setFormData] = useState({
     subject_name: '',
     description: ''
   });
-  
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { id } = useParams();
   
   // useGetSubjectByIdQuery : return a function a subject within ID
   const { data, fetchError, isLoading, isSuccess } = useGetSubjectByIdQuery(id);
