@@ -33,9 +33,9 @@ const MyProfileView = ({
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userData, setUserData] = useState({
-    firstName: adminProfileData.userName.split(' ')[0],
-    lastName: adminProfileData.userName.split(' ')[1] || '',
-    profileImage: adminProfileData.userPhoto,
+    firstName: adminProfileData.first_name,
+    lastName: adminProfileData.last_name,
+    userPhoto: adminProfileData.userPhoto,
   });
 
   const handleSave = (newData) => {
@@ -59,9 +59,6 @@ const MyProfileView = ({
   } = adminProfileData;
   const { schoolName, schoolAddress, schoolPhoneNumber, schoolId } =
     schoolProfileData;
-
-  console.log('this school component : ', schoolProfileData);
-  console.log('this profile user : ', adminProfileData);
 
   return (
     <Box sx={{ margin: 'auto', p: 2 }}>
@@ -141,8 +138,7 @@ const MyProfileView = ({
               <EditAccountModal
                 open={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
-                onSave={handleSave}
-                initialData={userData}
+                initialData={adminProfileData}
               />
             </Box>
             <Divider sx={{ my: 2 }} />
