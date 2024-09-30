@@ -9,6 +9,7 @@ import {
   Chip,
   Divider,
 } from '@mui/material';
+import { RandomAvatar } from '../common/RandomAvatar';
 
 import {
   PencilLine as EditIcon,
@@ -71,6 +72,12 @@ const MyProfileView = ({
               textAlign: 'center',
             }}
           >
+            {/* <RandomAvatar
+              key={user.username}
+              username={user.username}
+              gender={user.gender}
+              size={80}
+            /> */}
             <Avatar
               src={profilePhoto}
               sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
