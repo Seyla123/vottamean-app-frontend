@@ -296,37 +296,133 @@ const EditAccountModal = ({ open, onClose }) => {
               </Box>
 
               {/* INPUTS CONTAINER */}
-              <Box component={'div'}>
-                {/* FIRST NAME INPUT */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <Typography variant="body2" fontWeight="bold">
-                    First Name{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
+              <Box
+                component={'div'}
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 4,
+                }}
+              >
+                {/* FIRST NAME & LAST NAME INPUTS CONTAINER */}
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  {/* FIRST NAME INPUT */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      First Name{' '}
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                    </Typography>
 
-                  <Controller
-                    name="first_name"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        {...field}
-                        error={!!errors.first_name}
-                        helperText={errors.first_name?.message}
-                        placeholder="Enter your first name"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <UserRoundPen size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
+                    <Controller
+                      name="first_name"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          variant="outlined"
+                          fullWidth
+                          {...field}
+                          error={!!errors.first_name}
+                          helperText={errors.first_name?.message}
+                          placeholder="Enter your first name"
+                          slotProps={{
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <UserRoundPen size={20} />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  {/* LAST NAME INPUT */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      Last Name{' '}
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                    </Typography>
+
+                    <Controller
+                      name="last_name"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          variant="outlined"
+                          fullWidth
+                          {...field}
+                          error={!!errors.last_name}
+                          helperText={errors.last_name?.message}
+                          placeholder="Enter your last name"
+                          slotProps={{
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <UserRoundPen size={20} />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  {/* CONTACT NUMBER INPUT */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      Contact Number{' '}
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                    </Typography>
+
+                    <Controller
+                      name="phone_number"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          variant="outlined"
+                          fullWidth
+                          {...field}
+                          error={!!errors.phone_number}
+                          helperText={errors.phone_number?.message}
+                          placeholder="Enter your first name"
+                          slotProps={{
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <UserRoundPen size={20} />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Box>
                 </Box>
               </Box>
             </Box>
