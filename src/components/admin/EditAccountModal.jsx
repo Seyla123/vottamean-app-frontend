@@ -17,6 +17,7 @@ import {
   Backdrop,
   InputAdornment,
   Grid,
+  MenuItem,
 } from '@mui/material';
 import shadows from '@mui/material/styles/shadows';
 
@@ -34,7 +35,16 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
-import { EditIcon, Phone, Trash2, User, UserRoundPen } from 'lucide-react';
+import {
+  Calendar,
+  ImagePlus,
+  MapPin,
+  Phone,
+  Trash2,
+  User,
+  UserRoundPen,
+  Users,
+} from 'lucide-react';
 const username = 'narak';
 const gender = 'male';
 
@@ -275,9 +285,9 @@ const EditAccountModal = ({ open, onClose }) => {
                       component="span"
                       size="small"
                       fullWidth
-                      startIcon={<EditIcon size={20} />}
+                      startIcon={<ImagePlus size={20} />}
                     >
-                      Upload Photo
+                      Change
                     </Button>
                   </label>
                   <Button
@@ -291,7 +301,7 @@ const EditAccountModal = ({ open, onClose }) => {
                       setPreviewUrl(null);
                     }}
                   >
-                    Delete Picture
+                    Remove
                   </Button>
                 </Box>
               </Box>
@@ -409,7 +419,7 @@ const EditAccountModal = ({ open, onClose }) => {
                           {...field}
                           error={!!errors.phone_number}
                           helperText={errors.phone_number?.message}
-                          placeholder="Enter your first name"
+                          placeholder="Enter your contact number"
                           slotProps={{
                             input: {
                               startAdornment: (
@@ -426,7 +436,131 @@ const EditAccountModal = ({ open, onClose }) => {
                 </Grid>
 
                 <Grid item xs={6}>
-                  
+                  {/* STREET ADDRESS INPUT */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      Street Address{' '}
+                    </Typography>
+
+                    <Controller
+                      name="address"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          variant="outlined"
+                          fullWidth
+                          {...field}
+                          error={!!errors.address}
+                          helperText={errors.address?.message}
+                          placeholder="Enter your street address"
+                          slotProps={{
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <MapPin size={20} />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Box>
+                </Grid>
+
+                <Grid item xs={6}>
+                  {/* DOB INPUT */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      Date of Birth{' '}
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                    </Typography>
+
+                    <Controller
+                      name="dob"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          variant="outlined"
+                          type="date"
+                          fullWidth
+                          {...field}
+                          error={!!errors.dob}
+                          helperText={errors.dob?.message}
+                          placeholder="Enter your date of birth"
+                          slotProps={{
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Calendar size={20} />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Box>
+                </Grid>
+
+                <Grid item xs={6}>
+                  {/* GENDER INPUT */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="body2" fontWeight="bold">
+                      Gender{' '}
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                    </Typography>
+
+                    <Controller
+                      name="gender"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          variant="outlined"
+                          fullWidth
+                          select
+                          {...field}
+                          error={!!errors.gender}
+                          helperText={errors.gender?.message}
+                          placeholder="Select your gender"
+                          slotProps={{
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Users size={20} />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                        >
+                          <MenuItem value="Male">Male</MenuItem>
+                          <MenuItem value="Female">Female</MenuItem>
+                          <MenuItem value="Other">Other</MenuItem>
+                        </TextField>
+                      )}
+                    />
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
