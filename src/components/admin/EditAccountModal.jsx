@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Edit as EditIcon } from 'lucide-react';
 
-const EditAccountModal = () => {
+const EditAccountModal = ({ open, onClose, onSave, initialData }) => {
   const [firstName, setFirstName] = useState(initialData.firstName || '');
   const [lastName, setLastName] = useState(initialData.lastName || '');
   const [profileImage, setProfileImage] = useState(
