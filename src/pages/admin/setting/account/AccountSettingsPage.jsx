@@ -1,19 +1,18 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Tab, Box, Stack, Typography, Button, Card } from '@mui/material';
+import {  useNavigate } from 'react-router-dom';
+import { Tab,  Typography,  Card } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 // Components
 import FormComponent from '../../../../components/common/FormComponent';
-import CardComponent from '../../../../components/common/CardComponent';
-import CardInformation from '../../../../components/common/CardInformation';
+
 import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
 // Image and Icon
-import { Trash2, KeyRoundIcon, PencilLine, User, KeyRound } from 'lucide-react';
-import profile from '../../../../assets/images/default-profile.png';
+import {  User, KeyRound } from 'lucide-react';
+
 
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
