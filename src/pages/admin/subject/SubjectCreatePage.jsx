@@ -105,10 +105,12 @@ function SubjectCreatePage() {
               control={control}
               render={({ field }) => (
                 <TextField
+                  {...field}
+                  error={!!errors.description}
+                  helperText={errors.description ? errors.description.message : ''}
                   multiline
                   minRows={5}
                   placeholder="description"
-                  {...field}
                 />
               )}
             />
