@@ -166,8 +166,9 @@ export const transformUserProfile = (user) => {
     userName: getFullName(profileInfo),
     Age: getAge(profileInfo.dob) || 'Not provided',
     userGender: profileInfo.gender || 'Not specified',
-    userDOB: profileInfo.dob ? formatDate(profileInfo.dob) : 'Not provided',
-    userPhoneNumber: formatPhoneNumber(profileInfo.phone_number) ?? 'Not provided',
+    userDOB: formatDate(profileInfo.dob) || 'Not provided',
+    userPhoneNumber:
+      formatPhoneNumber(profileInfo.phone_number) || 'Not provided',
     userEmail: user.data.email || 'Not provided',
     userAddress: profileInfo.address || 'Not provided',
   };
@@ -181,9 +182,10 @@ export const transformSchoolProfile = (user) => {
   if (!profileSchools) return {};
 
   return {
-    schoolId : profileSchools.school_id || 'N/A',
+    schoolId: profileSchools.school_id || 'N/A',
     schoolName: profileSchools.school_name || 'Not provided',
-    schoolPhoneNumber:formatPhoneNumber(profileSchools.school_phone_number) ?? 'Not provided',
+    schoolPhoneNumber:
+      formatPhoneNumber(profileSchools.school_phone_number) || 'Not provided',
     schoolAddress: profileSchools.school_address || 'Not provided',
   };
 };
@@ -303,10 +305,10 @@ export const transformMarkAttendancetTable = (apiResponse) => {
     id: `${item.student_id}`,
     img: item.Info.photo || '', // Adjust the URL as needed
     name: `${item.Info.first_name} ${item.Info.last_name}`,
-    gender: item.Info.gender === "Male" ? 'M' : 'F', // Convert to 'M' or 'F'
+    gender: item.Info.gender === 'Male' ? 'M' : 'F', // Convert to 'M' or 'F'
     phone: item.Info.phone_number,
     address: item.Info.address,
     dob: item.Info.dob,
-    status: null, 
-  }))
+    status: null,
+  }));
 };

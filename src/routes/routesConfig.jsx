@@ -10,6 +10,7 @@ import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 // Payment
+import PaymentPage from '../pages/payment/PaymentPage';
 import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
 
 import NotFoundPage from '../pages/NotFoundPage';
@@ -114,7 +115,13 @@ const routesConfig = [
   },
   {
     path: '/payment',
-    element: <PaymentRequiredPage />,
+    element: <PaymentPage />,
+    children: [
+      {
+        path: 'payment-required',
+        element: <PaymentRequiredPage />,
+      },
+    ],
   },
   {
     path: 'teacher',
