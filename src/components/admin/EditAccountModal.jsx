@@ -16,6 +16,7 @@ import {
   Fade,
   Backdrop,
   InputAdornment,
+  Grid,
 } from '@mui/material';
 import shadows from '@mui/material/styles/shadows';
 
@@ -33,7 +34,7 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
-import { EditIcon, Trash2, User, UserRoundPen } from 'lucide-react';
+import { EditIcon, Phone, Trash2, User, UserRoundPen } from 'lucide-react';
 const username = 'narak';
 const gender = 'male';
 
@@ -219,7 +220,7 @@ const EditAccountModal = ({ open, onClose }) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '100%',
-            maxWidth: '600px',
+            maxWidth: '800px',
             bgcolor: 'background.paper',
             p: 4,
             borderRadius: 2,
@@ -296,17 +297,12 @@ const EditAccountModal = ({ open, onClose }) => {
               </Box>
 
               {/* INPUTS CONTAINER */}
-              <Box
-                component={'div'}
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 4,
-                }}
+              <Grid
+                container
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                {/* FIRST NAME & LAST NAME INPUTS CONTAINER */}
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Grid item xs={6}>
                   {/* FIRST NAME INPUT */}
                   <Box
                     sx={{
@@ -345,7 +341,9 @@ const EditAccountModal = ({ open, onClose }) => {
                       )}
                     />
                   </Box>
+                </Grid>
 
+                <Grid item xs={6}>
                   {/* LAST NAME INPUT */}
                   <Box
                     sx={{
@@ -384,7 +382,9 @@ const EditAccountModal = ({ open, onClose }) => {
                       )}
                     />
                   </Box>
+                </Grid>
 
+                <Grid item xs={6}>
                   {/* CONTACT NUMBER INPUT */}
                   <Box
                     sx={{
@@ -414,7 +414,7 @@ const EditAccountModal = ({ open, onClose }) => {
                             input: {
                               startAdornment: (
                                 <InputAdornment position="start">
-                                  <UserRoundPen size={20} />
+                                  <Phone size={20} />
                                 </InputAdornment>
                               ),
                             },
@@ -423,8 +423,12 @@ const EditAccountModal = ({ open, onClose }) => {
                       )}
                     />
                   </Box>
-                </Box>
-              </Box>
+                </Grid>
+
+                <Grid item xs={6}>
+                  
+                </Grid>
+              </Grid>
             </Box>
           </form>
         </Box>
