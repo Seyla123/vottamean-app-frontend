@@ -32,6 +32,7 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
+import { EditIcon } from 'lucide-react';
 const username = 'narak';
 const gender = 'male';
 
@@ -227,18 +228,44 @@ const EditAccountModal = ({ open, onClose }) => {
             Edit Account
           </Typography>
 
+          {/* FORM CONTAINER */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Profile picture */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <img
-                src={
-                  previewUrl ||
-                  userProfile?.data?.adminProfile?.Info.photo ||
-                  profile
-                }
-                alt="Profile"
-                style={{ width: '120px', borderRadius: '50%' }}
-              />
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+              {' '}
+              {/* PROFILE IMAGE */}
+              <Box sx={{ position: 'relative' }}>
+                <Avatar
+                  src={
+                    previewUrl ||
+                    userProfile?.data?.adminProfile?.Info.photo ||
+                    profile
+                  }
+                  alt="Profile"
+                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                />
+                {/* UPLOAD PROFILE IMAGE */}
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="photo-upload"
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+                <label htmlFor="photo-upload">
+                  <IconButton
+                    aria-label="upload picture"
+                    component="span"
+                    sx={{
+                      position: 'absolute',
+                      bottom: 0,
+                      right: 0,
+                      bgcolor: 'background.paper',
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </label>
+              </Box>
             </Box>
           </form>
         </Box>
