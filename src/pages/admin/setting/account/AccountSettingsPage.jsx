@@ -53,21 +53,14 @@ const AccountSettingsPage = () => {
       const transformedData = getUserProfileData(user);
       console.log(transformedData);
       setUserData(transformedData);
-      console.log('this is rows :', userData);
       dispatch(updateFormData(transformedData));
     }
   }, [user]);
 
-  
   // // Extract the Admin profile data
   const adminProfileData = user?.data?.adminProfile?.Info;
   // // Extract the School profile data
   const schoolProfileData = user?.data?.adminProfile?.schools;
-  console.log('this is rows outside:', userData);
-
-  console.log('this is admin ', adminProfileData);
-  console.log('this is school ', schoolProfileData);
-  
 
   // Handle tab switch
   const handleChange = (event, newValue) => {
@@ -133,6 +126,7 @@ const AccountSettingsPage = () => {
             {/* MY PROFILE VIEW */}
             <MyProfileView
               title={'My Profile'}
+              profilePhoto={userData.photo}
               adminProfileData={userData.userProfile}
               schoolProfileData={userData.schoolProfile}
               handleEditSchool={handleEditSchool}
