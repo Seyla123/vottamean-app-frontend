@@ -65,7 +65,14 @@ function TeacherDetailPage() {
       );
     }
   };
+console.log('this is data teacher : ', formattedTeacher);
+console.log('this is teacher data : ', teacherData);
 
+const data = {
+   Name: "John Doe",
+   Age: "30",
+   Location: "New York"
+};
   // loading and error states
   if (isLoading || isDeleting) return <LoadingCircle />;
   if (fetchError) return <div>Error loading teacher details</div>;
@@ -82,9 +89,10 @@ function TeacherDetailPage() {
         title="Teacher Information"
         handleEdit={handleEdit}
         handleDelete={handleDelete}
-        data={teacherData.data}>
+        data={teacherData.data}
+        imgUrl={teacherData.data.Info.photo}>
         {/* Card Data */}
-        {formattedTeacher && <CardInformation data={formattedTeacher} />}
+        <CardInformation data={formattedTeacher} />
       </CardComponent>
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
