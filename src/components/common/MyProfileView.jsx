@@ -23,16 +23,15 @@ import {
 
 const MyProfileView = ({
   title,
+  profilePhoto,
   adminProfileData,
   schoolProfileData,
   handleEditSchool,
   handleEditUser,
 }) => {
-
   const {
     userName,
     userEmail,
-    userPhoto,
     userPhoneNumber,
     userAddress,
     userGender,
@@ -41,7 +40,7 @@ const MyProfileView = ({
   } = adminProfileData;
   const { schoolName, schoolAddress, schoolPhoneNumber, schoolId } =
     schoolProfileData;
-    
+
   console.log('this school component : ', schoolProfileData);
   console.log('this profile user : ', adminProfileData);
 
@@ -73,7 +72,7 @@ const MyProfileView = ({
             }}
           >
             <Avatar
-              src={userPhoto}
+              src={profilePhoto}
               sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
             />
             <Typography variant="h5" gutterBottom>
@@ -118,7 +117,7 @@ const MyProfileView = ({
             <Grid container spacing={3}>
               <InfoItem
                 icon={<PhoneIcon />}
-                label="Phone"
+                label="Contact"
                 value={userPhoneNumber}
               />
               <InfoItem
@@ -171,7 +170,7 @@ const MyProfileView = ({
               />
               <InfoItem
                 icon={<PhoneIcon />}
-                label="School Phone"
+                label="School Contact"
                 value={schoolPhoneNumber}
               />
               <InfoItem

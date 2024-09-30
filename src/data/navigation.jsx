@@ -62,6 +62,11 @@ const navigation = [
       },
     ],
   },
+  {
+    segment: 'payment',
+    title: 'Payment Trial',
+    icon: <ClassPeriodIcon />,
+  },
 
   { kind: 'divider' },
 

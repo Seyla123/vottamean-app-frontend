@@ -9,6 +9,10 @@ import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
+// Payment
+import PaymentPage from '../pages/payment/PaymentPage';
+import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
+
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 
@@ -106,6 +110,16 @@ const routesConfig = [
       {
         path: 'reset-password/:token',
         element: <ResetNewPasswordPage />,
+      },
+    ],
+  },
+  {
+    path: '/payment',
+    element: <PaymentPage />,
+    children: [
+      {
+        path: 'payment-required',
+        element: <PaymentRequiredPage />,
       },
     ],
   },
