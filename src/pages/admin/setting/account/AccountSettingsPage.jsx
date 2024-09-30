@@ -114,7 +114,7 @@ const AccountSettingsPage = () => {
           </TabList>
 
           {/* TAB CONTENT */}
-          <TabPanel value="1">
+          <TabPanel sx={{ px: 0, py: 2 }} value="1">
             {/* MY PROFILE VIEW */}
             <MyProfileView
               title={'My Profile'}
@@ -125,7 +125,7 @@ const AccountSettingsPage = () => {
             />
           </TabPanel>
 
-          <TabPanel value="2">
+          <TabPanel sx={{ px: 0, py: 2 }} value="2">
             {/* SECURITY VIEW */}
             <SecurityView
               title={'Security'}
