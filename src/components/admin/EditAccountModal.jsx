@@ -18,6 +18,7 @@ import {
   InputAdornment,
   Grid,
   MenuItem,
+  Divider,
 } from '@mui/material';
 import shadows from '@mui/material/styles/shadows';
 
@@ -228,7 +229,7 @@ const EditAccountModal = ({ open, onClose }) => {
           maxWidth: '800px',
           width: '100%',
           transform: 'translate(-50%, -50%)',
-          height: '100%',
+          maxHeight: { xs: '100%', sm: '100%' },
           overflowY: 'auto',
           bgcolor: 'background.paper',
           p: 4,
@@ -305,13 +306,11 @@ const EditAccountModal = ({ open, onClose }) => {
               </Box>
             </Box>
 
+            <Divider />
+
             {/* INPUTS CONTAINER */}
-            <Grid
-              container
-              rowSpacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            >
-              <Grid item sm={6} xs={12}>
+            <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2 }}>
+              <Grid item xs={12} sm={6}>
                 {/* FIRST NAME INPUT */}
                 <Box
                   sx={{
@@ -352,7 +351,7 @@ const EditAccountModal = ({ open, onClose }) => {
                 </Box>
               </Grid>
 
-              <Grid item sm={6} xs={12}>
+              <Grid item xs={12} sm={6}>
                 {/* LAST NAME INPUT */}
                 <Box
                   sx={{
@@ -393,7 +392,7 @@ const EditAccountModal = ({ open, onClose }) => {
                 </Box>
               </Grid>
 
-              <Grid item sm={6} xs={12}>
+              <Grid item xs={12} sm={6}>
                 {/* CONTACT NUMBER INPUT */}
                 <Box
                   sx={{
@@ -434,7 +433,7 @@ const EditAccountModal = ({ open, onClose }) => {
                 </Box>
               </Grid>
 
-              <Grid item sm={6} xs={12}>
+              <Grid item xs={12} sm={6}>
                 {/* STREET ADDRESS INPUT */}
                 <Box
                   sx={{
@@ -474,7 +473,7 @@ const EditAccountModal = ({ open, onClose }) => {
                 </Box>
               </Grid>
 
-              <Grid item sm={6} xs={12}>
+              <Grid item xs={12} sm={6}>
                 {/* DOB INPUT */}
                 <Box
                   sx={{
@@ -516,7 +515,7 @@ const EditAccountModal = ({ open, onClose }) => {
                 </Box>
               </Grid>
 
-              <Grid item sm={6} xs={12}>
+              <Grid item xs={12} sm={6}>
                 {/* GENDER INPUT */}
                 <Box
                   sx={{
@@ -561,30 +560,27 @@ const EditAccountModal = ({ open, onClose }) => {
                   />
                 </Box>
               </Grid>
-
-              <Grid item sm={6} xs={12}></Grid>
-
-              <Grid
-                item
-                sm={6}
-                xs={12}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: 2,
-                  mt: 2,
-                }}
-              >
-                {/* CANCEL BUTTON */}
-                <Button variant="outlined" fullWidth onClick={onClose}>
-                  Cancel
-                </Button>
-                {/* SAVE CHANGES BUTTON */}
-                <Button type="submit" variant="contained" fullWidth>
-                  Save Changes
-                </Button>
-              </Grid>
             </Grid>
+
+            <Divider />
+
+            <Box
+              component={'div'}
+              sx={{
+                width: '100%',
+                display: 'flex',
+                gap: 2,
+              }}
+            >
+              {/* CANCEL BUTTON */}
+              <Button variant="outlined" fullWidth onClick={onClose}>
+                Cancel
+              </Button>
+              {/* SAVE CHANGES BUTTON */}
+              <Button type="submit" variant="contained" fullWidth>
+                Save Changes
+              </Button>
+            </Box>
           </Box>
         </form>
       </Box>
