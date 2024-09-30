@@ -9,6 +9,7 @@ import {
   Chip,
   Divider,
 } from '@mui/material';
+import { RandomAvatar } from '../common/RandomAvatar';
 
 import {
   PencilLine as EditIcon,
@@ -28,7 +29,6 @@ const MyProfileView = ({
   handleEditSchool,
   handleEditUser,
 }) => {
-
   const {
     userName,
     userEmail,
@@ -41,7 +41,7 @@ const MyProfileView = ({
   } = adminProfileData;
   const { schoolName, schoolAddress, schoolPhoneNumber, schoolId } =
     schoolProfileData;
-    
+
   console.log('this school component : ', schoolProfileData);
   console.log('this profile user : ', adminProfileData);
 
@@ -72,6 +72,12 @@ const MyProfileView = ({
               textAlign: 'center',
             }}
           >
+            {/* <RandomAvatar
+              key={user.username}
+              username={user.username}
+              gender={user.gender}
+              size={80}
+            /> */}
             <Avatar
               src={userPhoto}
               sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
