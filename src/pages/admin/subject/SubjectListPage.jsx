@@ -22,7 +22,7 @@ function SubjectListPage() {
   const { modal } = useSelector((state) => state.ui);
 
   // useGetSubjectsQuery : return a function to fetch all subject records
-  const { data, isError, isLoading, isSuccess } = useGetSubjectsQuery();
+  const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
 
   // useDeleteSubjectMutation : returns a function to delete a subject
   const [ deleteSubject,
@@ -59,9 +59,8 @@ function SubjectListPage() {
       }));
       navigate('/admin/subjects');
     }
-  }, [data, isSuccess, isDeleteSuccess, isDeleting, isDeleteError, dispatch ]);
+  }, [data, dispatch, isSuccess, isDeleteSuccess, isDeleting, isDeleteError ]);
   
-
   // loading the data until it successfully fetched
   if (isLoading) {
     return <CircularIndeterminate />;
