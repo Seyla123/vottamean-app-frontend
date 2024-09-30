@@ -9,7 +9,7 @@ import {
   Chip,
   Divider,
 } from '@mui/material';
-import { RandomAvatar } from '../common/RandomAvatar';
+import RandomAvatar from '../common/RandomAvatar';
 
 import {
   PencilLine as EditIcon,
