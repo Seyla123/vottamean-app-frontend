@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
-import {  useNavigate } from 'react-router-dom';
-import { Tab,  Typography,  Card } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Tab, Typography, Card } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 // Components
@@ -11,8 +11,7 @@ import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
 // Image and Icon
-import {  User, KeyRound } from 'lucide-react';
-
+import { User, KeyRound } from 'lucide-react';
 
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
@@ -50,23 +49,10 @@ const AccountSettingsPage = () => {
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
-      console.log(transformedData);
       setUserData(transformedData);
-      console.log('this is rows :', userData);
       dispatch(updateFormData(transformedData));
     }
   }, [user]);
-
-  
-  // // Extract the Admin profile data
-  const adminProfileData = user?.data?.adminProfile?.Info;
-  // // Extract the School profile data
-  const schoolProfileData = user?.data?.adminProfile?.schools;
-  console.log('this is rows outside:', userData);
-
-  console.log('this is admin ', adminProfileData);
-  console.log('this is school ', schoolProfileData);
-  
 
   // Handle tab switch
   const handleChange = (event, newValue) => {
