@@ -32,7 +32,7 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
-import { EditIcon } from 'lucide-react';
+import { EditIcon, Trash2 } from 'lucide-react';
 const username = 'narak';
 const gender = 'male';
 
@@ -200,7 +200,7 @@ const EditAccountModal = ({ open, onClose }) => {
 
   return (
     <Modal
-      open={open}
+      open={true}
       onClose={onClose}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
@@ -210,7 +210,7 @@ const EditAccountModal = ({ open, onClose }) => {
         },
       }}
     >
-      <Fade in={open}>
+      <Fade in={true}>
         <Box
           sx={{
             position: 'absolute',
@@ -218,22 +218,32 @@ const EditAccountModal = ({ open, onClose }) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '100%',
-            maxWidth: '400px',
+            maxWidth: '600px',
             bgcolor: 'background.paper',
             p: 4,
             borderRadius: 2,
           }}
         >
-          <Typography variant="h6" component="h2" gutterBottom>
+          {/* HEADER */}
+          <Typography
+            variant="h5"
+            component="h2"
+            fontWeight={'bold'}
+            gutterBottom
+            mb={4}
+          >
             Edit Account
           </Typography>
 
           {/* FORM CONTAINER */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-              {' '}
-              {/* PROFILE IMAGE */}
-              <Box sx={{ position: 'relative' }}>
+            <Box
+              sx={{
+                width: '100%',
+              }}
+            >
+              {/* PROFILE CONTAINER */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Avatar
                   src={
                     previewUrl ||
@@ -251,21 +261,36 @@ const EditAccountModal = ({ open, onClose }) => {
                   style={{ display: 'none' }}
                   onChange={handleFileChange}
                 />
-                <label htmlFor="photo-upload">
-                  <IconButton
-                    aria-label="upload picture"
-                    component="span"
-                    sx={{
-                      position: 'absolute',
-                      bottom: 0,
-                      right: 0,
-                      bgcolor: 'background.paper',
+
+                {/* PROFILE BUTTONS */}
+                <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+                  <label htmlFor="photo-upload">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      size="small"
+                      fullWidth
+                      startIcon={<EditIcon size={20} />}
+                    >
+                      Upload Photo
+                    </Button>
+                  </label>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    color="error"
+                    startIcon={<Trash2 size={20} />}
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setPreviewUrl(null);
                     }}
                   >
-                    <EditIcon />
-                  </IconButton>
-                </label>
+                    Delete Picture
+                  </Button>
+                </Box>
               </Box>
+              {/* Clear Image Button */}
             </Box>
           </form>
         </Box>
