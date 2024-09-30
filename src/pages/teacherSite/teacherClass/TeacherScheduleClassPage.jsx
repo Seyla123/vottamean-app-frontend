@@ -33,7 +33,6 @@ function TeacherScheduleClassPage() {
     }
   }, [getTeacherClasses, isSuccess]);
   
-
   // error handler
   if (isError) {
     return <div>Error loading class data: {error.data.message}</div>;
@@ -57,7 +56,7 @@ function TeacherScheduleClassPage() {
 
   return (
     <>
-      <FormComponent title="Class Schedule" subTitle="These are 7 classes">
+      <FormComponent title="Class Schedule" subTitle={`These are ${classesData.length} classes`}>
         <Grid2 container spacing={2}>
           {isLoading ?
             // Render skeleton while loading
