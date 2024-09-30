@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Stack, TextField } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 // import components
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 // import style, api and uiSlice
+import { SubjectValidator } from '../../../validators/validationSchemas';
 import { fieldContainer } from '../../../styles/authStyle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import { useGetSubjectByIdQuery, useUpdateSubjectMutation } from '../../../services/subjectApi';
@@ -17,33 +20,37 @@ function SubjectUpdatePage() {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  // useState: "data to be displayed as state and for deleted"
-  const [formData, setFormData] = useState({
-    subject_name: '',
-    description: ''
-  });
-  
-  // useGetSubjectByIdQuery : return a function a subject within ID
+  // Fetch subject details
   const { data, fetchError, isLoading, isSuccess } = useGetSubjectByIdQuery(id);
+  
+  // Mutation for updating subject
+  const [updateSubject, { isLoading: isUpdating, isError: isUpdateError, isSuccess: isUpdatedSuccess, error: updateError }] = useUpdateSubjectMutation();
 
-  // useUpdateSubjectMutation : returns a function to update a subject
-  const [ updateSubject,
-    { isLoading: isUpdating,
-      isError: isUpdateError,
-      isSuccess: isUpdatedSuccess,
-      error: updateError }
-  ] = useUpdateSubjectMutation();
+  // Setup form with react-hook-form
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(SubjectValidator),
+    defaultValues: {
+      subject_name: '',
+      description: '',
+    },
+  });
 
+  // Fetch and set form data when the subject is successfully fetched
   useEffect(() => {
-    // set the update details state when subject records are fetched successfully
     if (data && isSuccess) {
-      setFormData({
-        subject_name: data.data.subject_name || '',
-        description: data.data.description || '',
-      });
+      setValue('subject_name', data.data.subject_name || '');
+      setValue('description', data.data.description || '');
     }
+  }, [data, isSuccess, setValue]);
 
-    // Show a snackbar with messages during updating (progress, failure, success)
+  // Handle update mutation lifecycle (loading, success, error)
+  useEffect(() => {
     if (isUpdating) {
       dispatch( setSnackbar({
         open: true,
@@ -52,79 +59,79 @@ function SubjectUpdatePage() {
       }));
     } else if (isUpdateError) {
       dispatch( setSnackbar({
-          open: true,
-          message: updateError.data.message,
-          severity: 'error',
-        }));
+        open: true,
+        message: updateError.data.message,
+        severity: 'error'
+      }));
     } else if (isUpdatedSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Updated successfully',
-          severity: 'success',
-        }));
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Updated successfully',
+        severity: 'success'
+      }));
       navigate('/admin/subjects');
     }
-  }, [data, dispatch, isUpdateError, isUpdatedSuccess, isUpdating]);
-  
-  // loading the data until it successfully fetched
-  if (isLoading) {
-    return <CircularIndeterminate />;
-  }
+  }, [isUpdating, isUpdateError, isUpdatedSuccess, updateError, dispatch, navigate]);
 
-  // Handle error state
-  if (fetchError) return <p>Error loading subjects: {fetchError.message} </p>;
-
-  // Handle input being changing
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
+  // Submit handler
   const onSubmit = async () => {
     try {
-      await updateSubject({ id, formData }).unwrap();
+      const { subject_name, description } = getValues(); // Get values from form
+      const formData = { subject_name, description };
+      await updateSubject({ id, formData }).unwrap(); // Pass formData for mutation
     } catch (error) {
       console.error('Update failed', error);
     }
   };
+
+  // Back button handler
   const onClickBack = () => {
     navigate('/admin/subjects');
   };
 
+  if (isLoading) {
+    return <CircularIndeterminate />;
+  }
+
+  if (fetchError) return <p>Error loading subject: {fetchError.message}</p>;
+
   return (
     <>
-      <FormComponent
-        title={'Update Subject'}
-        subTitle={'Please Fill subject information'}
-      >
+      <FormComponent title={'Update Subject'} subTitle={'Please Fill subject information'}>
         <CardComponent title={'Subject Information'}>
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Subject's Name</Typography>
-            <TextField
-              placeholder="school's name"
+            <Typography color={errors.subject_name ? 'red' : 'inherit'}>Subject's Name</Typography>
+            <Controller
               name="subject_name"
-              value={formData.subject_name}
-              onChange={handleInputChange}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.subject_name}
+                  helperText={errors.subject_name ? errors.subject_name.message : ''}
+                />
+              )}
             />
           </Stack>
           <Stack sx={fieldContainer}>
             <Typography variant="body1">Description</Typography>
-            <TextField
+            <Controller
               name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              multiline
-              minRows={5}
-              placeholder="Description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.description}
+                  helperText={errors.description ? errors.description.message : ''}
+                  multiline
+                  minRows={5}
+                />
+              )}
             />
           </Stack>
           <ButtonContainer
             leftBtn={onClickBack}
-            rightBtn={onSubmit}
+            rightBtn={handleSubmit(onSubmit)}
             leftBtnTitle={'Cancel'}
             rightBtnTitle={'Update'}
           />
