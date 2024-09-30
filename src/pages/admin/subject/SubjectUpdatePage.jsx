@@ -1,74 +1,81 @@
 import React, { useEffect, useState } from 'react';
-import CardComponent from '../../../components/common/CardComponent';
-import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Stack, TextField } from '@mui/material';
-import { fieldContainer } from '../../../styles/authStyle';
+// import components
 import FormComponent from '../../../components/common/FormComponent';
-import ButtonContainer from '../../../components/common/ButtonContainer';
+import CardComponent from '../../../components/common/CardComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
-import {
-  useGetSubjectByIdQuery,
-  useUpdateSubjectMutation,
-} from '../../../services/subjectApi';
+import ButtonContainer from '../../../components/common/ButtonContainer';
+// import style, api and uiSlice
+import { fieldContainer } from '../../../styles/authStyle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
+import { useGetSubjectByIdQuery, useUpdateSubjectMutation } from '../../../services/subjectApi';
 
 function SubjectUpdatePage() {
+  // useState: "data to be displayed as state and for deleted"
+  const [formData, setFormData] = useState({
+    subject_name: '',
+    description: ''
+  });
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
   
+  // useGetSubjectByIdQuery : return a function a subject within ID
+  const { data, fetchError, isLoading, isSuccess } = useGetSubjectByIdQuery(id);
 
-  const { data, isLoading, fetchError } = useGetSubjectByIdQuery(id);
-  const [formData, setFormData] = useState({
-    subject_name: '',
-    description: '',
-  });
-
-  const [
-    updateSubject,
-    {
-      isLoading: isUpdating,
+  // useUpdateSubjectMutation : returns a function to update a subject
+  const [ updateSubject,
+    { isLoading: isUpdating,
       isError: isUpdateError,
       isSuccess: isUpdatedSuccess,
-      error: updateError,
-    },
+      error: updateError }
   ] = useUpdateSubjectMutation();
 
   useEffect(() => {
-    if (data && data.data) {
+    // set the update details state when subject records are fetched successfully
+    if (data && isSuccess) {
       setFormData({
         subject_name: data.data.subject_name || '',
         description: data.data.description || '',
       });
     }
-  }, [data]);
 
-  useEffect(() => {
+    // Show a snackbar with messages during updating (progress, failure, success)
     if (isUpdating) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
-      );
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Updating...',
+        severity: 'info'
+      }));
     } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
+      dispatch( setSnackbar({
           open: true,
           message: updateError.data.message,
           severity: 'error',
-        }),
-      );
+        }));
     } else if (isUpdatedSuccess) {
       dispatch(
         setSnackbar({
           open: true,
           message: 'Updated successfully',
           severity: 'success',
-        }),
-      );
+        }));
       navigate('/admin/subjects');
     }
-  }, [dispatch, isUpdateError, isUpdatedSuccess, isUpdating]);
+  }, [data, dispatch, isUpdateError, isUpdatedSuccess, isUpdating]);
+  
+  // loading the data until it successfully fetched
+  if (isLoading) {
+    return <CircularIndeterminate />;
+  }
 
+  // Handle error state
+  if (fetchError) return <p>Error loading subjects: {fetchError.message} </p>;
+
+  // Handle input being changing
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -88,10 +95,6 @@ function SubjectUpdatePage() {
     navigate('/admin/subjects');
   };
 
-  if (isLoading) {
-    return <CircularIndeterminate />;
-  }
-  if (fetchError) return <p>Error loading class data.</p>;
   return (
     <>
       <FormComponent
@@ -99,7 +102,6 @@ function SubjectUpdatePage() {
         subTitle={'Please Fill subject information'}
       >
         <CardComponent title={'Subject Information'}>
-          {/* subject name input container */}
           <Stack sx={fieldContainer}>
             <Typography variant="body1">Subject's Name</Typography>
             <TextField
@@ -109,7 +111,6 @@ function SubjectUpdatePage() {
               onChange={handleInputChange}
             />
           </Stack>
-          {/* description input container */}
           <Stack sx={fieldContainer}>
             <Typography variant="body1">Description</Typography>
             <TextField
@@ -121,7 +122,6 @@ function SubjectUpdatePage() {
               placeholder="Description"
             />
           </Stack>
-          {/* Button Container  */}
           <ButtonContainer
             leftBtn={onClickBack}
             rightBtn={onSubmit}
