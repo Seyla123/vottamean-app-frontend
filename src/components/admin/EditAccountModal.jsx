@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
@@ -16,6 +16,7 @@ import {
   Fade,
   Backdrop,
 } from '@mui/material';
+import shadows from '@mui/material/styles/shadows';
 
 // Redux Hooks and APIs
 import {
@@ -31,6 +32,8 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
+const username = 'narak';
+const gender = 'male';
 
 const EditAccountModal = ({ open, onClose }) => {
   // - Initialize dispatch and navigate hooks
@@ -58,7 +61,9 @@ const EditAccountModal = ({ open, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   // - State to store the preview URL of the selected image
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(
+    `https://api.dicebear.com/6.x/big-smile/svg?seed=${username}&gender=${gender}`,
+  );
 
   // - Form state management
   const {
@@ -192,7 +197,54 @@ const EditAccountModal = ({ open, onClose }) => {
     return <Typography variant="h6">No user data found</Typography>;
   }
 
-  return <div>EditAccountModal</div>;
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+        },
+      }}
+    >
+      <Fade in={open}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '100%',
+            maxWidth: '400px',
+            bgcolor: 'background.paper',
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" component="h2" gutterBottom>
+            Edit Account
+          </Typography>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Profile picture */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <img
+                src={
+                  previewUrl ||
+                  userProfile?.data?.adminProfile?.Info.photo ||
+                  profile
+                }
+                alt="Profile"
+                style={{ width: '120px', borderRadius: '50%' }}
+              />
+            </Box>
+          </form>
+        </Box>
+      </Fade>
+    </Modal>
+  );
 };
 
 export default EditAccountModal;
