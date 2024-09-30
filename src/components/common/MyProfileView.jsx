@@ -91,12 +91,6 @@ const MyProfileView = ({
               textAlign: 'center',
             }}
           >
-            {/* <RandomAvatar
-              key={user.username}
-              username={user.username}
-              gender={user.gender}
-              size={80}
-            /> */}
             <Avatar
               src={profilePhoto}
               sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
@@ -126,7 +120,13 @@ const MyProfileView = ({
               height: '100%',
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="h6" gutterBottom>
                 Personal Information
               </Typography>
@@ -134,7 +134,6 @@ const MyProfileView = ({
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
                 onClick={handleOpenEditModal}
-                sx={{ textTransform: 'none' }}
               >
                 Edit
               </Button>
@@ -175,7 +174,13 @@ const MyProfileView = ({
 
         <Grid item xs={12}>
           <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexDirection: { xs: 'column', sm: 'row' },
+              }}
+            >
               <Typography variant="h6" gutterBottom>
                 School Information
               </Typography>
@@ -183,7 +188,6 @@ const MyProfileView = ({
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
                 onClick={handleEditSchool}
-                sx={{ textTransform: 'none' }}
               >
                 Edit
               </Button>
