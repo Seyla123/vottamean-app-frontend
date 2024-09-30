@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,6 +10,7 @@ import {
   Divider,
 } from '@mui/material';
 import RandomAvatar from '../common/RandomAvatar';
+import EditAccountModal from '../admin/EditAccountModal';
 
 import {
   PencilLine as EditIcon,
@@ -30,6 +31,18 @@ const MyProfileView = ({
   handleEditSchool,
   handleEditUser,
 }) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [userData, setUserData] = useState({
+    firstName: 'John',
+    lastName: 'Doe',
+    profileImage: 'https://example.com/default-avatar.jpg',
+  });
+
+  const handleSave = (newData) => {
+    setUserData(newData);
+    // Here you would typically also send this data to your backend
+    console.log('Saving user data:', newData);
+  };
   const {
     userName,
     userEmail,
@@ -114,11 +127,19 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleEditUser}
+                // onClick={handleEditUser}
+                onClick={() => setIsEditModalOpen(true)}
                 sx={{ textTransform: 'none' }}
               >
                 Edit
               </Button>
+
+              <EditAccountModal
+                open={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSave={handleSave}
+                initialData={userData}
+              />
             </Box>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
