@@ -147,7 +147,11 @@ export const ClassValidator = Yup.object().shape({
 
 //Class Valid
 export const SubjectValidator = Yup.object().shape({
-  subject_name: Yup.string().required('Subject name is required'),
+  subject_name: Yup
+  .string()
+  .required('Subject name is required')
+  .min(3, 'Subject name must be 3 characters up')
+  .max(50, 'Subject name is too long'),
   description: Yup.string().optional(),
 });
 
