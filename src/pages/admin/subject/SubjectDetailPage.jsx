@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-// import api and uiSlice
+// import components
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
-// import components
+// import api and uiSlice
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import { useGetSubjectByIdQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
 
