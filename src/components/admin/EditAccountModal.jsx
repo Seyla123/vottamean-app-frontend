@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Box,
   TextField,
   Button,
@@ -11,11 +14,17 @@ import {
 import { Edit as EditIcon } from 'lucide-react';
 
 const EditAccountModal = ({ open, onClose, onSave, initialData }) => {
-  const [firstName, setFirstName] = useState(initialData.firstName || '');
-  const [lastName, setLastName] = useState(initialData.lastName || '');
-  const [profileImage, setProfileImage] = useState(
-    initialData.profileImage || '',
-  );
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [profileImage, setProfileImage] = useState('');
+
+  useEffect(() => {
+    if (open) {
+      setFirstName(initialData.firstName || '');
+      setLastName(initialData.lastName || '');
+      setProfileImage(initialData.profileImage || '');
+    }
+  }, [open, initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,24 +44,10 @@ const EditAccountModal = ({ open, onClose, onSave, initialData }) => {
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
-        <Typography variant="h6" component="h2" gutterBottom>
-          Edit Account
-        </Typography>
-        <form onSubmit={handleSubmit}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Edit Account</DialogTitle>
+      <form onSubmit={handleSubmit}>
+        <DialogContent>
           <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ position: 'relative' }}>
               <Avatar src={profileImage} sx={{ width: 100, height: 100 }} />
@@ -93,18 +88,15 @@ const EditAccountModal = ({ open, onClose, onSave, initialData }) => {
             onChange={(e) => setLastName(e.target.value)}
             margin="normal"
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="submit" variant="contained" color="primary">
             Save Changes
           </Button>
-        </form>
-      </Box>
-    </Modal>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 };
 

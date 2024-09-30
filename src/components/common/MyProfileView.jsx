@@ -33,16 +33,21 @@ const MyProfileView = ({
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userData, setUserData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    profileImage: 'https://example.com/default-avatar.jpg',
+    firstName: adminProfileData.userName.split(' ')[0],
+    lastName: adminProfileData.userName.split(' ')[1] || '',
+    profileImage: adminProfileData.userPhoto,
   });
 
   const handleSave = (newData) => {
     setUserData(newData);
     // Here you would typically also send this data to your backend
     console.log('Saving user data:', newData);
+    // You might want to call handleEditUser here if it's meant to update the backend
+    if (handleEditUser) {
+      handleEditUser(newData);
+    }
   };
+
   const {
     userName,
     userEmail,
@@ -127,7 +132,6 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                // onClick={handleEditUser}
                 onClick={() => setIsEditModalOpen(true)}
                 sx={{ textTransform: 'none' }}
               >
