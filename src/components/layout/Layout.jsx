@@ -66,7 +66,6 @@ const Layout = ({ teacherSite, adminSite }) => {
         styleOverrides: {
           body: {
             backgroundColor: '#F5F5F7',
-            paddingBottom: 40,
           },
         },
       },
@@ -127,7 +126,7 @@ const Layout = ({ teacherSite, adminSite }) => {
 
         <Box paddingTop={2}>
           <DashboardLayout>
-            <Container maxWidth="xl">
+            <Container maxWidth="xl" sx={{ paddingBottom: 10 }}>
               <Outlet />
             </Container>
           </DashboardLayout>
