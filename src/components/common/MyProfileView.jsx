@@ -32,20 +32,24 @@ const MyProfileView = ({
   handleEditUser,
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [userData, setUserData] = useState({
-    firstName: adminProfileData.first_name,
-    lastName: adminProfileData.last_name,
-    userPhoto: adminProfileData.userPhoto,
-  });
 
-  const handleSave = (newData) => {
-    setUserData(newData);
-    // Here you would typically also send this data to your backend
-    console.log('Saving user data:', newData);
-    // You might want to call handleEditUser here if it's meant to update the backend
+  // Remove the userData state as it's not being used effectively
+  // const [userData, setUserData] = useState({...});
+
+  const handleOpenEditModal = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleSaveUserData = (newData) => {
+    // Call handleEditUser directly with the new data
     if (handleEditUser) {
       handleEditUser(newData);
     }
+    handleCloseEditModal();
   };
 
   const {
@@ -129,7 +133,7 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={() => setIsEditModalOpen(true)}
+                onClick={handleOpenEditModal}
                 sx={{ textTransform: 'none' }}
               >
                 Edit
@@ -137,8 +141,8 @@ const MyProfileView = ({
 
               <EditAccountModal
                 open={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                initialData={adminProfileData}
+                onClose={handleCloseEditModal}
+                onSave={handleSaveUserData}
               />
             </Box>
             <Divider sx={{ my: 2 }} />

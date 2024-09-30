@@ -45,6 +45,7 @@ import {
   UserRoundPen,
   Users,
 } from 'lucide-react';
+import profile from '../../assets/images/default-profile.png';
 const username = 'narak';
 const gender = 'male';
 
@@ -70,13 +71,13 @@ const EditAccountModal = ({ open, onClose }) => {
   // - State to store original form values
   const [originalData, setOriginalData] = useState(null);
 
+  console.log(originalData);
+
   // - State to store selected image file
   const [selectedFile, setSelectedFile] = useState(null);
 
   // - State to store the preview URL of the selected image
-  const [previewUrl, setPreviewUrl] = useState(
-    `https://api.dicebear.com/6.x/big-smile/svg?seed=${username}&gender=${gender}`,
-  );
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // - Form state management
   const {
@@ -164,6 +165,7 @@ const EditAccountModal = ({ open, onClose }) => {
 
     try {
       await updateUserProfile(formData).unwrap();
+      onClose();
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -212,17 +214,12 @@ const EditAccountModal = ({ open, onClose }) => {
 
   return (
     <Modal
-      open={true}
+      open={open}
       onClose={onClose}
-      closeAfterTransition
-      slots={{ backdrop: Backdrop }}
-      slotProps={{
-        backdrop: {
-          timeout: 500,
-        },
-      }}
+      aria-labelledby="edit-account-modal-title"
+      aria-describedby="edit-account-modal-description"
     >
-      <Fade in={true}>
+      <Fade in={open}>
         <Box
           sx={{
             position: 'absolute',
@@ -312,7 +309,7 @@ const EditAccountModal = ({ open, onClose }) => {
                 rowSpacing={1}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   {/* FIRST NAME INPUT */}
                   <Box
                     sx={{
@@ -353,7 +350,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   {/* LAST NAME INPUT */}
                   <Box
                     sx={{
@@ -394,7 +391,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   {/* CONTACT NUMBER INPUT */}
                   <Box
                     sx={{
@@ -435,7 +432,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   {/* STREET ADDRESS INPUT */}
                   <Box
                     sx={{
@@ -475,7 +472,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   {/* DOB INPUT */}
                   <Box
                     sx={{
@@ -517,7 +514,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item sm={6} xs={12}>
                   {/* GENDER INPUT */}
                   <Box
                     sx={{
@@ -561,6 +558,29 @@ const EditAccountModal = ({ open, onClose }) => {
                       )}
                     />
                   </Box>
+                </Grid>
+
+                <Grid item sm={6} xs={12}></Grid>
+
+                <Grid
+                  item
+                  sm={6}
+                  xs={12}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: 2,
+                    mt: 2,
+                  }}
+                >
+                  {/* CANCEL BUTTON */}
+                  <Button variant="outlined" fullWidth onClick={onClose}>
+                    Cancel
+                  </Button>
+                  {/* SAVE CHANGES BUTTON */}
+                  <Button type="submit" variant="contained" fullWidth>
+                    Save Changes
+                  </Button>
                 </Grid>
               </Grid>
             </Box>

@@ -34,8 +34,6 @@ const Layout = ({ teacherSite, adminSite }) => {
 
       // 4.2. Dispatch a logout action to clear the authentication state in Redux
       dispatch(logoutAction());
-
-    
     } catch (error) {
       // Handle potential errors during logout
       console.error('Failed to logout:', error);
@@ -68,6 +66,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         styleOverrides: {
           body: {
             backgroundColor: '#F5F5F7',
+            paddingBottom: 40,
           },
         },
       },
