@@ -15,6 +15,7 @@ import {
   IconButton,
   Fade,
   Backdrop,
+  InputAdornment,
 } from '@mui/material';
 import shadows from '@mui/material/styles/shadows';
 
@@ -32,7 +33,7 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
-import { EditIcon, Trash2 } from 'lucide-react';
+import { EditIcon, Trash2, User, UserRoundPen } from 'lucide-react';
 const username = 'narak';
 const gender = 'male';
 
@@ -240,6 +241,9 @@ const EditAccountModal = ({ open, onClose }) => {
             <Box
               sx={{
                 width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
               }}
             >
               {/* PROFILE CONTAINER */}
@@ -290,7 +294,41 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Button>
                 </Box>
               </Box>
-              {/* Clear Image Button */}
+
+              {/* INPUTS CONTAINER */}
+              <Box component={'div'}>
+                {/* FIRST NAME INPUT */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="body2" fontWeight="bold">
+                    First Name{' '}
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                  </Typography>
+
+                  <Controller
+                    name="first_name"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        {...field}
+                        error={!!errors.first_name}
+                        helperText={errors.first_name?.message}
+                        placeholder="Enter your first name"
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <UserRoundPen size={20} />
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+              </Box>
             </Box>
           </form>
         </Box>
