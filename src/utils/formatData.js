@@ -142,15 +142,15 @@ export function formatTeacherDetail(teacherData) {
   const { email } = teacherData.data.User;
   const { first_name, last_name, gender, dob, phone_number, address } =
     teacherData.data.Info;
-  const formattedData = [
-    { label: 'Teacher ID', value: teacherData.data.teacher_id },
-    { label: 'Teacher Name', value: `${first_name} ${last_name}` },
-    { label: 'Gender', value: gender },
-    { label: 'Date of Birth', value: dob },
-    { label: 'Phone Number', value: phone_number },
-    { label: 'Email', value: email },
-    { label: 'Street Address', value: address },
-  ];
+  const formattedData = {
+    'Teacher ID': teacherData.data.teacher_id ,
+    'Full Name': `${first_name} ${last_name}` ,
+    'Gender': gender ,
+    'Date of Birth': dob ,
+    'Phone Number': phone_number ,
+    'Email': email ,
+    'Street Address': address }
+  ;
   return formattedData;
 }
 
@@ -181,9 +181,9 @@ export const transformSchoolProfile = (user) => {
   if (!profileSchools) return {};
 
   return {
-    schoolId : profileSchools.school_id || 'N/A',
+    schoolId: profileSchools.school_id || 'N/A',
     schoolName: profileSchools.school_name || 'Not provided',
-    schoolPhoneNumber:formatPhoneNumber(profileSchools.school_phone_number) ?? 'Not provided',
+    schoolPhoneNumber: formatPhoneNumber(profileSchools.school_phone_number) ?? 'Not provided',
     schoolAddress: profileSchools.school_address || 'Not provided',
   };
 };
@@ -307,6 +307,6 @@ export const transformMarkAttendancetTable = (apiResponse) => {
     phone: item.Info.phone_number,
     address: item.Info.address,
     dob: item.Info.dob,
-    status: null, 
+    status: null,
   }))
 };
