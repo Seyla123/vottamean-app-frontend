@@ -143,14 +143,14 @@ export function formatTeacherDetail(teacherData) {
   const { first_name, last_name, gender, dob, phone_number, address } =
     teacherData.data.Info;
   const formattedData = {
-    'Teacher ID': teacherData.data.teacher_id ,
-    'Full Name': `${first_name} ${last_name}` ,
-    'Gender': gender ,
-    'Date of Birth': dob ,
-    'Phone Number': phone_number ,
-    'Email': email ,
-    'Street Address': address }
-  ;
+    'Teacher ID': teacherData.data.teacher_id,
+    'Full Name': `${first_name} ${last_name}`,
+    Gender: gender,
+    'Date of Birth': dob,
+    'Phone Number': phone_number,
+    Email: email,
+    'Street Address': address,
+  };
   return formattedData;
 }
 
@@ -177,7 +177,7 @@ export const transformUserProfile = (user) => {
 // Transform School Profile Data
 export const transformSchoolProfile = (user) => {
   const profileKey = getProfileKey(user.data.role);
-  const profileSchools = user?.data[profileKey]?.Schools?.[0];
+  const profileSchools = user?.data[profileKey]?.School?.[0];
 
   if (!profileSchools) return {};
 
@@ -227,7 +227,7 @@ export const getUserProfileUpdateData = (user) => {
 // Transform School Data for Updates
 export const getSchoolData = (user) => {
   const profileKey = getProfileKey(user.data.role);
-  const profileSchools = user?.data[profileKey]?.Schools?.[0];
+  const profileSchools = user?.data[profileKey]?.School?.[0];
 
   if (!profileSchools) return {};
 
