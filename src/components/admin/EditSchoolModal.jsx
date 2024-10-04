@@ -21,6 +21,7 @@ import { setSnackbar } from '../../store/slices/uiSlice';
 // Material UI components
 import {
   Box,
+  Button,
   Grid,
   InputAdornment,
   Modal,
@@ -286,6 +287,27 @@ const EditSchoolModal = ({ open, onClose }) => {
                     />
                   )}
                 />
+              </Box>
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <Grid item xs={6}>
+              {/* BUTTONS */}
+              <Box
+                component={'div'}
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  gap: 2,
+                }}
+              >
+                {/* CANCEL BUTTON */}
+                <Button variant="outlined" fullWidth onClick={onClose}>
+                  Cancel
+                </Button>
+                {/* SAVE CHANGES BUTTON */}
+                <Button type="submit" variant="contained" fullWidth>
+                  Save Changes
+                </Button>
               </Box>
             </Grid>
           </Grid>

@@ -560,27 +560,28 @@ const EditAccountModal = ({ open, onClose }) => {
                   />
                 </Box>
               </Grid>
+
+              <Grid item xs={6}></Grid>
+              <Grid item xs={6}>
+                <Box
+                  component={'div'}
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    gap: 2,
+                  }}
+                >
+                  {/* CANCEL BUTTON */}
+                  <Button variant="outlined" fullWidth onClick={onClose}>
+                    Cancel
+                  </Button>
+                  {/* SAVE CHANGES BUTTON */}
+                  <Button type="submit" variant="contained" fullWidth>
+                    Save Changes
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
-
-            <Divider />
-
-            <Box
-              component={'div'}
-              sx={{
-                width: '100%',
-                display: 'flex',
-                gap: 2,
-              }}
-            >
-              {/* CANCEL BUTTON */}
-              <Button variant="outlined" fullWidth onClick={onClose}>
-                Cancel
-              </Button>
-              {/* SAVE CHANGES BUTTON */}
-              <Button type="submit" variant="contained" fullWidth>
-                Save Changes
-              </Button>
-            </Box>
           </Box>
         </form>
       </Box>
