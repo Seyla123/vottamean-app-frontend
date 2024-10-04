@@ -71,7 +71,8 @@ const Layout = ({ teacherSite, adminSite }) => {
       },
     },
   });
-
+  
+  // Combines first and last name from the user object, or falls back to 'Username'
   const username = useMemo(() => {
     return (
       `${user?.adminProfile?.Info?.first_name || ''} ${user?.adminProfile?.Info?.last_name || ''}`.trim() ||
@@ -81,6 +82,7 @@ const Layout = ({ teacherSite, adminSite }) => {
 
   const gender = user?.adminProfile?.Info?.gender || '';
 
+  // Generates an avatar URL using the username and gender
   const getAvatarUrl = useMemo(() => {
     const getAvatarStyle = (gender) => {
       switch (gender?.toLowerCase()) {
