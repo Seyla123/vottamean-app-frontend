@@ -104,7 +104,7 @@ const AccountSettingsPage = () => {
           sx={{
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'row' },
-            height: '80vh',
+            height: '100%',
           }}
         >
           <TabContext value={value}>
