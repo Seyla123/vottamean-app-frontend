@@ -12,6 +12,13 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import { useGetSubjectsQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
 
+// Define table columns title
+const tableTiles = [
+  { id: 'subject_id', label: 'Subject ID' },
+  { id: 'subject_name', label: 'Subject Name' },
+  { id: 'description', label: 'Subject Description' },
+];
+
 function SubjectListPage() {
   // useState: "data to be displayed" and "data to be deleted"
   const [rows, setRows] = useState([]);
@@ -97,13 +104,6 @@ function SubjectListPage() {
   const handleEdit = (row) => {
     navigate(`/admin/subjects/update/${row.subject_id}`);
   };
-
-  // Define table columns title
-  const tableTiles = [
-    { id: 'subject_id', label: 'Subject ID' },
-    { id: 'subject_name', label: 'Subject Name' },
-    { id: 'description', label: 'Subject Description' },
-  ];
 
   // Define formatted data to display
   const subjectData = data.data.map((item) => {
