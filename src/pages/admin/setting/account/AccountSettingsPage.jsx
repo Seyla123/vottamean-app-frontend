@@ -63,16 +63,6 @@ const AccountSettingsPage = () => {
     setValue(newValue);
   };
 
-  // Handle edit button click
-  const handleEditUser = () => {
-    navigate('/admin/settings/account/update-me');
-  };
-
-  // Handle edit school button click
-  const handleEditSchool = () => {
-    navigate('/admin/settings/account/update-school');
-  };
-
   // Handle delete button click
   const handleDeleteAccount = async () => {
     try {
@@ -151,8 +141,6 @@ const AccountSettingsPage = () => {
                 profilePhoto={userData.photo}
                 adminProfileData={userData.userProfile}
                 schoolProfileData={userData.schoolProfile}
-                handleEditSchool={handleEditSchool}
-                handleEditUser={handleEditUser}
               />
             </TabPanel>
 

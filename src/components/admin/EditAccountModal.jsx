@@ -46,14 +46,17 @@ import {
   UserRoundPen,
   Users,
 } from 'lucide-react';
-import profile from '../../assets/images/default-profile.png';
-const username = 'narak';
-const gender = 'male';
+import RandomAvatar from '../common/RandomAvatar';
 
-const EditAccountModal = ({ open, onClose }) => {
+const EditAccountModal = ({
+  open,
+  onClose,
+  profilePhoto,
+  userName,
+  userGender,
+}) => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // - Redux hooks update user api
   const [
@@ -79,6 +82,9 @@ const EditAccountModal = ({ open, onClose }) => {
 
   // - State to store the preview URL of the selected image
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Add a new state to track if the profile photo should be removed
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   // - Form state management
   const {
@@ -111,6 +117,11 @@ const EditAccountModal = ({ open, onClose }) => {
     }
   }, [isSuccess, userProfile, reset]);
 
+  // Function to generate DiceBear URL
+  const generateAvatarUrl = (username, gender) => {
+    return `https://api.dicebear.com/6.x/big-smile/svg?seed=${encodeURIComponent(username)}&gender=${encodeURIComponent(gender)}`;
+  };
+
   // - Handle image file selection and preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -138,8 +149,9 @@ const EditAccountModal = ({ open, onClose }) => {
     const isDataChanged =
       JSON.stringify(currentData) !== JSON.stringify(originalData);
     const isImageUploaded = selectedFile !== null;
+    const isPhotoRemoved = removePhoto;
 
-    if (!isDataChanged && !isImageUploaded) {
+    if (!isDataChanged && !isImageUploaded && !isPhotoRemoved) {
       dispatch(
         setSnackbar({
           open: true,
@@ -152,10 +164,14 @@ const EditAccountModal = ({ open, onClose }) => {
 
     // Create a new FormData object for multipart/form-data
     const formData = new FormData();
-    // Append the selected image file if it exists
+    
+    // Handle photo upload or removal
     if (selectedFile) {
       formData.append('photo', selectedFile);
+    } else if (isPhotoRemoved) {
+      formData.append('remove_photo', 'true');
     }
+
     // Append the other fields, excluding the old photo URL if it's part of the `data`
     Object.keys(data).forEach((key) => {
       if (key !== 'photo') {
@@ -240,15 +256,21 @@ const EditAccountModal = ({ open, onClose }) => {
           >
             {/* PROFILE CONTAINER */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar
-                src={
-                  previewUrl ||
-                  userProfile?.data?.adminProfile?.Info.photo ||
-                  profile
-                }
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-              />
+              {/* PROFILE IMAGE */}
+              {!removePhoto && (previewUrl || profilePhoto) ? (
+                <Avatar
+                  src={previewUrl || profilePhoto}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140 }}
+                />
+              ) : (
+                <Avatar
+                  src={generateAvatarUrl(userName, userGender)}
+                  alt="Random Avatar"
+                  sx={{ width: 140, height: 140 }}
+                />
+              )}
+
               {/* UPLOAD PROFILE IMAGE */}
               <input
                 accept="image/*"
@@ -280,6 +302,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   onClick={() => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
+                    setRemovePhoto(true);
                   }}
                 >
                   Remove

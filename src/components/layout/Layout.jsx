@@ -7,13 +7,14 @@ import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
 import Logo from '../../assets/images/Logo.svg';
+import RandomAvatar from '../common/RandomAvatar'; // Add this import at the top of the file
 
 import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import userProfile from '../../assets/images/user.png';
 import SnackbarComponent from '../common/SnackbarComponent';
+
 const Layout = ({ teacherSite, adminSite }) => {
   // 1. Initialize navigation and location hooks for routing
   const navigate = useNavigate();
@@ -72,6 +73,15 @@ const Layout = ({ teacherSite, adminSite }) => {
     },
   });
 
+  const username =
+    user?.adminProfile?.Info?.first_name +
+    ' ' +
+    user?.adminProfile?.Info?.last_name;
+
+  const gender = user?.adminProfile?.Info?.gender || '';
+
+  const userImage = user?.adminProfile?.Info?.photo;
+
   // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
   const router = React.useMemo(() => {
     return {
@@ -107,12 +117,15 @@ const Layout = ({ teacherSite, adminSite }) => {
       // 11. Set the session object, which includes current user details like name, email, and image
       session={{
         user: {
-          name:
-            user?.adminProfile?.Info?.first_name +
-              ' ' +
-              user?.adminProfile?.Info?.last_name || 'Username',
+          name: username || 'Username',
           email: user?.email || 'Useremail001@gmail.com',
-          image: user?.image || userProfile,
+          image: userImage ? userImage : (
+            <RandomAvatar
+              username={username}
+              gender={gender}
+              size={40} // Adjust size as needed
+            />
+          ),
         },
       }}
       // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)

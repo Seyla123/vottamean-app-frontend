@@ -10,14 +10,12 @@ const RandomAvatar = ({ username, gender, size = 40 }) => {
       <Avatar
         src={avatarUrl}
         alt={`Avatar for ${username}`}
-        sx={{ width: size, height: size }}
+        sx={{
+          width: size,
+          height: size,
+          bgcolor: '#eee',
+        }}
       />
-      <Typography variant="body2" sx={{ mt: 1 }}>
-        {username}
-      </Typography>
-      <Typography variant="caption" color="text.secondary">
-        {gender}
-      </Typography>
     </Box>
   );
 };

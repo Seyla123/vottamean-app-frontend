@@ -46,7 +46,7 @@ export const formatTimeTo12Hour = (timeString) => {
 
 // Utility: Get Full Name from API response
 export const getFullName = (info) =>
-  info ? capitalize(`${info.first_name} ${info.last_name}`) : 'N/A';
+  info ? `${info.first_name} ${info.last_name}` : 'N/A';
 
 // Helper function to determine profile key
 export const getProfileKey = (role) =>
@@ -56,4 +56,4 @@ export const getProfileKey = (role) =>
 export const formatStartEndTime = (classData) => {
   const time = `${formatTimeTo12Hour(classData.start_time)} - ${formatTimeTo12Hour(classData.end_time)}`;
   return time;
-}
+};

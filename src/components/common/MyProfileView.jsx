@@ -29,8 +29,6 @@ const MyProfileView = ({
   profilePhoto,
   adminProfileData,
   schoolProfileData,
-  handleEditSchool,
-  handleEditUser,
 }) => {
   const [openModal, setOpenModal] = useState(null);
 
@@ -40,20 +38,6 @@ const MyProfileView = ({
 
   const handleCloseModal = () => {
     setOpenModal(null);
-  };
-
-  const handleSaveUserData = (newData) => {
-    if (handleEditUser) {
-      handleEditUser(newData);
-    }
-    handleCloseModal();
-  };
-
-  const handleSaveSchoolData = (newData) => {
-    if (handleEditSchool) {
-      handleEditSchool(newData);
-    }
-    handleCloseModal();
   };
 
   const {
@@ -96,11 +80,21 @@ const MyProfileView = ({
               textAlign: 'center',
             }}
           >
-            <Avatar
-              src={profilePhoto}
-              sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
-            />
-            <Typography variant="h5" gutterBottom>
+            {profilePhoto ? (
+              <Avatar
+                src={profilePhoto}
+                alt={userName}
+                sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
+              />
+            ) : (
+              <RandomAvatar
+                username={userName}
+                gender={userGender}
+                size={120}
+              />
+            )}
+
+            <Typography variant="h5" gutterBottom mt={2}>
               {userName}
             </Typography>
             <Typography variant="body1" color="text.secondary" gutterBottom>
@@ -219,7 +213,13 @@ const MyProfileView = ({
 
       {/* Modals */}
       {openModal === 'account' && (
-        <EditAccountModal open={true} onClose={handleCloseModal} />
+        <EditAccountModal
+          open={true}
+          onClose={handleCloseModal}
+          profilePhoto={profilePhoto}
+          userName={userName}
+          userGender={userGender}
+        />
       )}
       {openModal === 'school' && (
         <EditSchoolModal open={true} onClose={handleCloseModal} />
