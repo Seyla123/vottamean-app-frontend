@@ -14,6 +14,7 @@ import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import SnackbarComponent from '../common/SnackbarComponent';
+import { getUserProfileData } from '../../utils/formatData';
 
 const Layout = ({ teacherSite, adminSite }) => {
   // 1. Initialize navigation and location hooks for routing
@@ -81,6 +82,7 @@ const Layout = ({ teacherSite, adminSite }) => {
   const gender = user?.adminProfile?.Info?.gender || '';
 
   const userImage = user?.adminProfile?.Info?.photo;
+  const avatarUrl = `https://api.dicebear.com/6.x/big-smile/svg?seed=${username}&gender=${gender}`;
 
   // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
   const router = React.useMemo(() => {
@@ -119,13 +121,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         user: {
           name: username || 'Username',
           email: user?.email || 'Useremail001@gmail.com',
-          image: userImage ? userImage : (
-            <RandomAvatar
-              username={username}
-              gender={gender}
-              size={40} // Adjust size as needed
-            />
-          ),
+          image: userImage ? userImage : avatarUrl,
         },
       }}
       // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)
