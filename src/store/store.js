@@ -20,10 +20,10 @@ const store = configureStore({
     auth: authReducer,
     teachers: teacherReducer,
     attendance: attendanceReducer,
-    classes: classReducer,
     subjects: subjectReducer,
-    [classApi.reducerPath]: classApi.reducer,
+    classes: classReducer,
     [subjectApi.reducerPath]: subjectApi.reducer,
+    [classApi.reducerPath]: classApi.reducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
@@ -33,8 +33,8 @@ const store = configureStore({
       authApi.middleware,
       attendanceApi.middleware,
       teacherApi.middleware,
-      classApi.middleware,
       subjectApi.middleware,
+      classApi.middleware,
     ),
 });
 
