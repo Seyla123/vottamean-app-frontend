@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 import { useLogoutMutation } from '../../services/authApi';
@@ -7,14 +7,12 @@ import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
 import Logo from '../../assets/images/Logo.svg';
-import RandomAvatar from '../common/RandomAvatar'; // Add this import at the top of the file
 
 import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import SnackbarComponent from '../common/SnackbarComponent';
-import { getUserProfileData } from '../../utils/formatData';
 
 const Layout = ({ teacherSite, adminSite }) => {
   // 1. Initialize navigation and location hooks for routing
@@ -74,15 +72,31 @@ const Layout = ({ teacherSite, adminSite }) => {
     },
   });
 
-  const username =
-    user?.adminProfile?.Info?.first_name +
-    ' ' +
-    user?.adminProfile?.Info?.last_name;
+  const username = useMemo(() => {
+    return (
+      `${user?.adminProfile?.Info?.first_name || ''} ${user?.adminProfile?.Info?.last_name || ''}`.trim() ||
+      'Username'
+    );
+  }, [user]);
 
   const gender = user?.adminProfile?.Info?.gender || '';
 
-  const userImage = user?.adminProfile?.Info?.photo;
-  const avatarUrl = `https://api.dicebear.com/6.x/big-smile/svg?seed=${username}&gender=${gender}`;
+  const getAvatarUrl = useMemo(() => {
+    const getAvatarStyle = (gender) => {
+      switch (gender?.toLowerCase()) {
+        case 'male':
+          return 'avataaars';
+        case 'female':
+          return 'lorelei';
+        default:
+          return 'bottts';
+      }
+    };
+
+    const avatarStyle = getAvatarStyle(gender);
+    const randomParam = Math.random().toString(36).substring(7);
+    return `https://api.dicebear.com/6.x/${avatarStyle}/svg?seed=${encodeURIComponent(username)}&r=${randomParam}`;
+  }, [username, gender]);
 
   // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
   const router = React.useMemo(() => {
@@ -119,9 +133,9 @@ const Layout = ({ teacherSite, adminSite }) => {
       // 11. Set the session object, which includes current user details like name, email, and image
       session={{
         user: {
-          name: username || 'Username',
+          name: username,
           email: user?.email || 'Useremail001@gmail.com',
-          image: userImage ? userImage : avatarUrl,
+          image: user?.adminProfile?.Info?.photo || getAvatarUrl,
         },
       }}
       // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)

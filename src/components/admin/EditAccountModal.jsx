@@ -164,7 +164,7 @@ const EditAccountModal = ({
 
     // Create a new FormData object for multipart/form-data
     const formData = new FormData();
-    
+
     // Handle photo upload or removal
     if (selectedFile) {
       formData.append('photo', selectedFile);
@@ -264,10 +264,10 @@ const EditAccountModal = ({
                   sx={{ width: 140, height: 140 }}
                 />
               ) : (
-                <Avatar
-                  src={generateAvatarUrl(userName, userGender)}
-                  alt="Random Avatar"
-                  sx={{ width: 140, height: 140 }}
+                <RandomAvatar
+                  username={userName}
+                  gender={userGender}
+                  size={140}
                 />
               )}
 
