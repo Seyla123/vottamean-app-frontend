@@ -1,33 +1,32 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { Typography, Box } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { Typography, Box } from '@mui/material';
-
+// import components
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-
+// import validator, style, api and uiSlice
+import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import { containerInput, timeInput } from '../../../styles/classPeriod';
-import { useNavigate } from 'react-router-dom';
-
 import { useCreateClassPeriodMutation } from '../../../services/classPeriodApi';
 
-// Validation schema
-import { ClassPeriodValidator } from '../../../validators/validationSchemas';
-
 function ClassPeriodCreatePage() {
+  const navigate = useNavigate();
+
+  // useCreateSubjectMutation : returns a function to create a subject
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const navigate = useNavigate();
 
   // Redux hook for creating class period
   const [createClass, { error: apiError }] = useCreateClassPeriodMutation();
 
-  // Initialize useForm with yup validation schema
+  // yup validator
   const {
     handleSubmit,
     formState: { errors },
