@@ -12,7 +12,7 @@ import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
 // Image and Icon
-import { User, KeyRound } from 'lucide-react';
+import { UserRoundPen, Settings } from 'lucide-react';
 
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
@@ -119,11 +119,12 @@ const AccountSettingsPage = () => {
                 variant="scrollable"
                 onChange={handleChange}
                 aria-label="Vertical tabs"
+                sx={{ width: '160px' }}
               >
                 <Tab
                   label="Profile"
                   value="1"
-                  icon={<User size={18} />}
+                  icon={<UserRoundPen size={18} />}
                   iconPosition="start"
                   sx={{
                     display: 'flex',
@@ -131,9 +132,9 @@ const AccountSettingsPage = () => {
                   }}
                 />
                 <Tab
-                  label="Security"
+                  label="Account"
                   value="2"
-                  icon={<KeyRound size={18} />}
+                  icon={<Settings size={18} />}
                   iconPosition="start"
                   sx={{
                     display: 'flex',

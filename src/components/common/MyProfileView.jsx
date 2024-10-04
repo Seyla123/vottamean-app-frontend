@@ -219,18 +219,10 @@ const MyProfileView = ({
 
       {/* Modals */}
       {openModal === 'account' && (
-        <EditAccountModal
-          open={true}
-          onClose={handleCloseModal}
-
-        />
+        <EditAccountModal open={true} onClose={handleCloseModal} />
       )}
       {openModal === 'school' && (
-        <EditSchoolModal
-          open={true}
-          onClose={handleCloseModal}
-     
-        />
+        <EditSchoolModal open={true} onClose={handleCloseModal} />
       )}
     </Box>
   );
