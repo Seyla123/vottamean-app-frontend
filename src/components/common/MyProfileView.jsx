@@ -146,22 +146,22 @@ const MyProfileView = ({
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
               <InfoItem
-                icon={<PhoneIcon />}
+                icon={<PhoneIcon size={20} />}
                 label="Contact"
                 value={userPhoneNumber}
               />
               <InfoItem
-                icon={<HomeIcon />}
+                icon={<HomeIcon size={20} />}
                 label="Address"
                 value={userAddress}
               />
               <InfoItem
-                icon={<PersonIcon />}
+                icon={<PersonIcon size={20} />}
                 label="Gender"
                 value={userGender}
               />
               <InfoItem
-                icon={<CakeIcon />}
+                icon={<CakeIcon size={20} />}
                 label="Date of Birth"
                 value={userDOB}
               />
@@ -193,22 +193,22 @@ const MyProfileView = ({
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
               <InfoItem
-                icon={<SchoolIcon />}
+                icon={<SchoolIcon size={20} />}
                 label="School Name"
                 value={schoolName}
               />
               <InfoItem
-                icon={<HomeIcon />}
+                icon={<HomeIcon size={20} />}
                 label="School Address"
                 value={schoolAddress}
               />
               <InfoItem
-                icon={<PhoneIcon />}
+                icon={<PhoneIcon size={20} />}
                 label="School Contact"
                 value={schoolPhoneNumber}
               />
               <InfoItem
-                icon={<IdCardIcon />}
+                icon={<IdCardIcon size={20} />}
                 label="School ID"
                 value={schoolId}
               />
@@ -238,9 +238,11 @@ const InfoItem = ({ icon, label, value }) => (
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'primary.main',
+          border: 1,
           borderRadius: 2,
-          color: 'white',
+          // backgroundColor: 'primary.main',
+          borderColor: 'divider',
+          color: 'primary.main',
         }}
       >
         {icon}
