@@ -29,7 +29,7 @@ export const subjectApi = baseApi.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Subjects'],
+      providesTags: ['Subjects'],
     }),
 
     // CREATE subject
@@ -40,7 +40,7 @@ export const subjectApi = baseApi.injectEndpoints({
         body: subjectData,
         credentials: 'include',
       }),
-      invalidatesTags: ['Subjects'],
+      providesTags: ['Subjects'],
     }),
 
     // UPDATE a subject by ID
@@ -51,7 +51,7 @@ export const subjectApi = baseApi.injectEndpoints({
         body: formData,
         credentials: 'include',
       }),
-      invalidatesTags: ['Subjects'],
+      providesTags: ['Subjects'],
     }),
   }),
 });
