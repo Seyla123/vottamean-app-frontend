@@ -65,22 +65,23 @@ const MyProfileView = ({
     schoolProfileData;
 
   return (
-    <Box sx={{ margin: 'auto', p: 2 }}>
+    <Box
+      component={'section'}
+      sx={{
+        margin: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        height: '100%',
+      }}
+    >
       {/* Header */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 4,
-        }}
-      >
-        <Typography variant="h4" component="h1" fontWeight="bold">
-          {title}
-        </Typography>
-      </Box>
 
-      <Grid container spacing={4}>
+      <Typography variant="h5" component="h5" fontWeight="bold">
+        {title}
+      </Typography>
+
+      <Grid container spacing={3}>
         {/* Profile Section */}
         <Grid item xs={12} md={4}>
           <Box

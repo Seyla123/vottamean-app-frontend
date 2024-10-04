@@ -10,6 +10,8 @@ import {
   TextField,
   CircularProgress,
   Typography,
+  Modal,
+  Divider,
 } from '@mui/material';
 
 // Redux Hooks and APIs
@@ -140,7 +142,7 @@ const EditSchoolModal = () => {
   if (!isSuccess || !userProfile) {
     return <Typography variant="h6">No user data found</Typography>;
   }
-  
+
   return <div>EditSchoolModal</div>;
 };
 

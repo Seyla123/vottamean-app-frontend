@@ -1,8 +1,9 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tab, Typography, Card } from '@mui/material';
+import { Tab, Typography, Card, Tabs, Box } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 
 // Components
 import FormComponent from '../../../../components/common/FormComponent';
@@ -44,6 +45,9 @@ const AccountSettingsPage = () => {
 
   // Local state for tab
   const [value, setValue] = useState('1');
+
+  // Determine if the screen size is mobile
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
@@ -96,44 +100,70 @@ const AccountSettingsPage = () => {
       subTitle={'Manage your account settings'}
     >
       <Card sx={shadow}>
-        <TabContext value={value}>
-          {/* TAB LIST */}
-          <TabList onChange={handleChange} aria-label="Account tabs">
-            <Tab
-              label="My Profile"
-              value="1"
-              icon={<User size={18} />}
-              iconPosition="start"
-            />
-            <Tab
-              label="Security"
-              value="2"
-              icon={<KeyRound size={18} />}
-              iconPosition="start"
-            />
-          </TabList>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            height: '80vh',
+          }}
+        >
+          <TabContext value={value}>
+            <Box
+              sx={{
+                borderRight: isMobile ? 'none' : 1,
+                borderColor: 'divider',
+              }}
+            >
+              <TabList
+                orientation={isMobile ? 'horizontal' : 'vertical'}
+                variant="scrollable"
+                onChange={handleChange}
+                aria-label="Vertical tabs"
+              >
+                <Tab
+                  label="Profile"
+                  value="1"
+                  icon={<User size={18} />}
+                  iconPosition="start"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                />
+                <Tab
+                  label="Security"
+                  value="2"
+                  icon={<KeyRound size={18} />}
+                  iconPosition="start"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                />
+              </TabList>
+            </Box>
 
-          {/* TAB CONTENT */}
-          <TabPanel sx={{ px: 0, py: 2 }} value="1">
-            {/* MY PROFILE VIEW */}
-            <MyProfileView
-              title={'My Profile'}
-              profilePhoto={userData.photo}
-              adminProfileData={userData.userProfile}
-              schoolProfileData={userData.schoolProfile}
-              handleEditSchool={handleEditSchool}
-              handleEditUser={handleEditUser}
-            />
-          </TabPanel>
+            <TabPanel sx={{ flexGrow: 1 }} value="1">
+              {/* MY PROFILE VIEW */}
+              <MyProfileView
+                title={'Profile'}
+                profilePhoto={userData.photo}
+                adminProfileData={userData.userProfile}
+                schoolProfileData={userData.schoolProfile}
+                handleEditSchool={handleEditSchool}
+                handleEditUser={handleEditUser}
+              />
+            </TabPanel>
 
-          <TabPanel sx={{ px: 0, py: 2 }} value="2">
-            {/* SECURITY VIEW */}
-            <SecurityView
-              title={'Security'}
-              handleDeleteAccount={handleDeleteAccount}
-            />
-          </TabPanel>
-        </TabContext>
+            <TabPanel sx={{ flexGrow: 1 }} value="2">
+              {/* SECURITY VIEW */}
+              <SecurityView
+                title={'Security'}
+                handleDeleteAccount={handleDeleteAccount}
+              />
+            </TabPanel>
+          </TabContext>
+        </Box>
       </Card>
     </FormComponent>
   );
