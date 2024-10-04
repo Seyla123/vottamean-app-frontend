@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import RandomAvatar from '../common/RandomAvatar';
 import EditAccountModal from '../admin/EditAccountModal';
+import EditSchoolModal from '../admin/EditSchoolModal';
 
 import {
   PencilLine as EditIcon,
@@ -31,25 +32,28 @@ const MyProfileView = ({
   handleEditSchool,
   handleEditUser,
 }) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(null);
 
-  // Remove the userData state as it's not being used effectively
-  // const [userData, setUserData] = useState({...});
-
-  const handleOpenEditModal = () => {
-    setIsEditModalOpen(true);
+  const handleOpenModal = (modalType) => {
+    setOpenModal(modalType);
   };
 
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
+  const handleCloseModal = () => {
+    setOpenModal(null);
   };
 
   const handleSaveUserData = (newData) => {
-    // Call handleEditUser directly with the new data
     if (handleEditUser) {
       handleEditUser(newData);
     }
-    handleCloseEditModal();
+    handleCloseModal();
+  };
+
+  const handleSaveSchoolData = (newData) => {
+    if (handleEditSchool) {
+      handleEditSchool(newData);
+    }
+    handleCloseModal();
   };
 
   const {
@@ -134,16 +138,10 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleOpenEditModal}
+                onClick={() => handleOpenModal('account')}
               >
                 Edit
               </Button>
-
-              <EditAccountModal
-                open={isEditModalOpen}
-                onClose={handleCloseEditModal}
-                onSave={handleSaveUserData}
-              />
             </Box>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
@@ -172,7 +170,6 @@ const MyProfileView = ({
         </Grid>
 
         {/* School Information */}
-
         <Grid item xs={12}>
           <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
             <Box
@@ -188,7 +185,7 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleEditSchool}
+                onClick={() => handleOpenModal('school')}
               >
                 Edit
               </Button>
@@ -219,6 +216,22 @@ const MyProfileView = ({
           </Box>
         </Grid>
       </Grid>
+
+      {/* Modals */}
+      {openModal === 'account' && (
+        <EditAccountModal
+          open={true}
+          onClose={handleCloseModal}
+
+        />
+      )}
+      {openModal === 'school' && (
+        <EditSchoolModal
+          open={true}
+          onClose={handleCloseModal}
+     
+        />
+      )}
     </Box>
   );
 };
