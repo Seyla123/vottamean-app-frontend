@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-<<<<<<< HEAD
 import { useCreatePaymentIntentMutation } from '../../services/paymentApi';
-=======
-import { useCreatePaymentIntentMutation } from '../../services/paymentApi'; // Ensure this path is correct
->>>>>>> b7e7e94 (feature : implement the subscription page)
 
 const PaymentForm = () => {
   const stripe = useStripe();
