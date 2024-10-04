@@ -27,7 +27,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { UserRoundPen } from 'lucide-react';
+import { NotebookPen, Phone } from 'lucide-react';
 
 const EditSchoolModal = ({ open, onClose }) => {
   // - State to store user data for the school
@@ -199,16 +199,90 @@ const EditSchoolModal = ({ open, onClose }) => {
                       {...field}
                       error={!!errors.school_name}
                       helperText={errors.school_name?.message}
-                      placeholder="Enter your first name"
+                      placeholder="Enter your school name"
                       slotProps={{
                         input: {
                           startAdornment: (
                             <InputAdornment position="start">
-                              <UserRoundPen size={20} />
+                              <NotebookPen size={20} />
                             </InputAdornment>
                           ),
                         },
                       }}
+                    />
+                  )}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              {/* SCHOOL CONTACT INPUT */}
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                }}
+              >
+                <Typography variant="body2" fontWeight="bold">
+                  School Contact
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+
+                <Controller
+                  name="school_phone_number"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      {...field}
+                      error={!!errors.school_phone_number}
+                      helperText={errors.school_phone_number?.message}
+                      placeholder="Enter your school contact"
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Phone size={20} />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={12}>
+              {/* SCHOOL ADDRESS INPUT */}
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                }}
+              >
+                <Typography variant="body2" fontWeight="bold">
+                  School Street & Address
+                </Typography>
+
+                <Controller
+                  name="school_address"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      multiline
+                      minRows={5}
+                      variant="outlined"
+                      fullWidth
+                      {...field}
+                      error={!!errors.school_address}
+                      helperText={errors.school_address?.message}
+                      placeholder="Phnom Penh, Street 210, ..."
                     />
                   )}
                 />
