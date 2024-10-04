@@ -1,8 +1,9 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tab, Typography, Card } from '@mui/material';
+import { Tab, Typography, Card, Tabs, Box } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 
 // Components
 import FormComponent from '../../../../components/common/FormComponent';
@@ -11,7 +12,7 @@ import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
 // Image and Icon
-import { User, KeyRound } from 'lucide-react';
+import { UserRoundPen, Settings } from 'lucide-react';
 
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
@@ -45,6 +46,9 @@ const AccountSettingsPage = () => {
   // Local state for tab
   const [value, setValue] = useState('1');
 
+  // Determine if the screen size is mobile
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
   // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
     if (user) {
@@ -57,16 +61,6 @@ const AccountSettingsPage = () => {
   // Handle tab switch
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-
-  // Handle edit button click
-  const handleEditUser = () => {
-    navigate('/admin/settings/account/update-me');
-  };
-
-  // Handle edit school button click
-  const handleEditSchool = () => {
-    navigate('/admin/settings/account/update-school');
   };
 
   // Handle delete button click
@@ -96,44 +90,69 @@ const AccountSettingsPage = () => {
       subTitle={'Manage your account settings'}
     >
       <Card sx={shadow}>
-        <TabContext value={value}>
-          {/* TAB LIST */}
-          <TabList onChange={handleChange} aria-label="Account tabs">
-            <Tab
-              label="My Profile"
-              value="1"
-              icon={<User size={18} />}
-              iconPosition="start"
-            />
-            <Tab
-              label="Security"
-              value="2"
-              icon={<KeyRound size={18} />}
-              iconPosition="start"
-            />
-          </TabList>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            height: '100%',
+          }}
+        >
+          <TabContext value={value}>
+            <Box
+              sx={{
+                borderRight: isMobile ? 'none' : 1,
+                borderColor: 'divider',
+              }}
+            >
+              <TabList
+                orientation={isMobile ? 'horizontal' : 'vertical'}
+                variant="scrollable"
+                onChange={handleChange}
+                aria-label="Vertical tabs"
+                sx={{ width: '160px' }}
+              >
+                <Tab
+                  label="Profile"
+                  value="1"
+                  icon={<UserRoundPen size={18} />}
+                  iconPosition="start"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                />
+                <Tab
+                  label="Account"
+                  value="2"
+                  icon={<Settings size={18} />}
+                  iconPosition="start"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                />
+              </TabList>
+            </Box>
 
-          {/* TAB CONTENT */}
-          <TabPanel sx={{ px: 0, py: 2 }} value="1">
-            {/* MY PROFILE VIEW */}
-            <MyProfileView
-              title={'My Profile'}
-              profilePhoto={userData.photo}
-              adminProfileData={userData.userProfile}
-              schoolProfileData={userData.schoolProfile}
-              handleEditSchool={handleEditSchool}
-              handleEditUser={handleEditUser}
-            />
-          </TabPanel>
+            <TabPanel sx={{ flexGrow: 1 }} value="1">
+              {/* MY PROFILE VIEW */}
+              <MyProfileView
+                title={'Profile'}
+                profilePhoto={userData.photo}
+                adminProfileData={userData.userProfile}
+                schoolProfileData={userData.schoolProfile}
+              />
+            </TabPanel>
 
-          <TabPanel sx={{ px: 0, py: 2 }} value="2">
-            {/* SECURITY VIEW */}
-            <SecurityView
-              title={'Security'}
-              handleDeleteAccount={handleDeleteAccount}
-            />
-          </TabPanel>
-        </TabContext>
+            <TabPanel sx={{ flexGrow: 1 }} value="2">
+              {/* SECURITY VIEW */}
+              <SecurityView
+                title={'Security'}
+                handleDeleteAccount={handleDeleteAccount}
+              />
+            </TabPanel>
+          </TabContext>
+        </Box>
       </Card>
     </FormComponent>
   );

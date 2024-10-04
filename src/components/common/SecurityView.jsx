@@ -19,14 +19,14 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
       component={'section'}
       sx={{
         margin: 'auto',
-        p: 2,
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
+        gap: 3,
+        height: '100%',
       }}
     >
       {/* HEADER */}
-      <Typography variant="h4" component="h1" fontWeight="bold" sx={{ mb: 4 }}>
+      <Typography variant="h5" component="h5" fontWeight="bold">
         {title}
       </Typography>
 

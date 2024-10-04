@@ -46,14 +46,17 @@ import {
   UserRoundPen,
   Users,
 } from 'lucide-react';
-import profile from '../../assets/images/default-profile.png';
-const username = 'narak';
-const gender = 'male';
+import RandomAvatar from '../common/RandomAvatar';
 
-const EditAccountModal = ({ open, onClose }) => {
+const EditAccountModal = ({
+  open,
+  onClose,
+  profilePhoto,
+  userName,
+  userGender,
+}) => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // - Redux hooks update user api
   const [
@@ -79,6 +82,9 @@ const EditAccountModal = ({ open, onClose }) => {
 
   // - State to store the preview URL of the selected image
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Add a new state to track if the profile photo should be removed
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   // - Form state management
   const {
@@ -111,6 +117,11 @@ const EditAccountModal = ({ open, onClose }) => {
     }
   }, [isSuccess, userProfile, reset]);
 
+  // Function to generate DiceBear URL
+  const generateAvatarUrl = (username, gender) => {
+    return `https://api.dicebear.com/6.x/big-smile/svg?seed=${encodeURIComponent(username)}&gender=${encodeURIComponent(gender)}`;
+  };
+
   // - Handle image file selection and preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -138,8 +149,9 @@ const EditAccountModal = ({ open, onClose }) => {
     const isDataChanged =
       JSON.stringify(currentData) !== JSON.stringify(originalData);
     const isImageUploaded = selectedFile !== null;
+    const isPhotoRemoved = removePhoto;
 
-    if (!isDataChanged && !isImageUploaded) {
+    if (!isDataChanged && !isImageUploaded && !isPhotoRemoved) {
       dispatch(
         setSnackbar({
           open: true,
@@ -152,10 +164,14 @@ const EditAccountModal = ({ open, onClose }) => {
 
     // Create a new FormData object for multipart/form-data
     const formData = new FormData();
-    // Append the selected image file if it exists
+
+    // Handle photo upload or removal
     if (selectedFile) {
       formData.append('photo', selectedFile);
+    } else if (isPhotoRemoved) {
+      formData.append('remove_photo', 'true');
     }
+
     // Append the other fields, excluding the old photo URL if it's part of the `data`
     Object.keys(data).forEach((key) => {
       if (key !== 'photo') {
@@ -166,27 +182,6 @@ const EditAccountModal = ({ open, onClose }) => {
 
     try {
       await updateUserProfile(formData).unwrap();
-      onClose();
-    } catch (error) {
-      console.error('Error updating profile:', error);
-    }
-  };
-
-  // - Snackbar notifications based on update status
-  useEffect(() => {
-    if (isUpdateLoading) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
-      );
-    } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: updateError?.data?.message || 'Update failed',
-          severity: 'error',
-        }),
-      );
-    } else if (isUpdateSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -194,16 +189,18 @@ const EditAccountModal = ({ open, onClose }) => {
           severity: 'success',
         }),
       );
-      navigate('/admin/settings/account');
+      onClose();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'Update failed',
+          severity: 'error',
+        }),
+      );
     }
-  }, [
-    isUpdateLoading,
-    isUpdateError,
-    isUpdateSuccess,
-    updateError,
-    dispatch,
-    navigate,
-  ]);
+  };
 
   if (isLoading) {
     return <CircularProgress />;
@@ -259,15 +256,21 @@ const EditAccountModal = ({ open, onClose }) => {
           >
             {/* PROFILE CONTAINER */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar
-                src={
-                  previewUrl ||
-                  userProfile?.data?.adminProfile?.Info.photo ||
-                  profile
-                }
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-              />
+              {/* PROFILE IMAGE */}
+              {!removePhoto && (previewUrl || profilePhoto) ? (
+                <Avatar
+                  src={previewUrl || profilePhoto}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140 }}
+                />
+              ) : (
+                <RandomAvatar
+                  username={userName}
+                  gender={userGender}
+                  size={140}
+                />
+              )}
+
               {/* UPLOAD PROFILE IMAGE */}
               <input
                 accept="image/*"
@@ -299,6 +302,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   onClick={() => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
+                    setRemovePhoto(true);
                   }}
                 >
                   Remove
@@ -560,27 +564,28 @@ const EditAccountModal = ({ open, onClose }) => {
                   />
                 </Box>
               </Grid>
+
+              <Grid item xs={6}></Grid>
+              <Grid item xs={6}>
+                <Box
+                  component={'div'}
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    gap: 2,
+                  }}
+                >
+                  {/* CANCEL BUTTON */}
+                  <Button variant="outlined" fullWidth onClick={onClose}>
+                    Cancel
+                  </Button>
+                  {/* SAVE CHANGES BUTTON */}
+                  <Button type="submit" variant="contained" fullWidth>
+                    {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
-
-            <Divider />
-
-            <Box
-              component={'div'}
-              sx={{
-                width: '100%',
-                display: 'flex',
-                gap: 2,
-              }}
-            >
-              {/* CANCEL BUTTON */}
-              <Button variant="outlined" fullWidth onClick={onClose}>
-                Cancel
-              </Button>
-              {/* SAVE CHANGES BUTTON */}
-              <Button type="submit" variant="contained" fullWidth>
-                Save Changes
-              </Button>
-            </Box>
           </Box>
         </form>
       </Box>

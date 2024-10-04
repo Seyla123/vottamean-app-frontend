@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 import { useLogoutMutation } from '../../services/authApi';
@@ -12,8 +12,8 @@ import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import userProfile from '../../assets/images/user.png';
 import SnackbarComponent from '../common/SnackbarComponent';
+
 const Layout = ({ teacherSite, adminSite }) => {
   // 1. Initialize navigation and location hooks for routing
   const navigate = useNavigate();
@@ -71,6 +71,34 @@ const Layout = ({ teacherSite, adminSite }) => {
       },
     },
   });
+  
+  // Combines first and last name from the user object, or falls back to 'Username'
+  const username = useMemo(() => {
+    return (
+      `${user?.adminProfile?.Info?.first_name || ''} ${user?.adminProfile?.Info?.last_name || ''}`.trim() ||
+      'Username'
+    );
+  }, [user]);
+
+  const gender = user?.adminProfile?.Info?.gender || '';
+
+  // Generates an avatar URL using the username and gender
+  const getAvatarUrl = useMemo(() => {
+    const getAvatarStyle = (gender) => {
+      switch (gender?.toLowerCase()) {
+        case 'male':
+          return 'avataaars';
+        case 'female':
+          return 'lorelei';
+        default:
+          return 'bottts';
+      }
+    };
+
+    const avatarStyle = getAvatarStyle(gender);
+    const randomParam = Math.random().toString(36).substring(7);
+    return `https://api.dicebear.com/6.x/${avatarStyle}/svg?seed=${encodeURIComponent(username)}&r=${randomParam}`;
+  }, [username, gender]);
 
   // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
   const router = React.useMemo(() => {
@@ -107,12 +135,9 @@ const Layout = ({ teacherSite, adminSite }) => {
       // 11. Set the session object, which includes current user details like name, email, and image
       session={{
         user: {
-          name:
-            user?.adminProfile?.Info?.first_name +
-              ' ' +
-              user?.adminProfile?.Info?.last_name || 'Username',
+          name: username,
           email: user?.email || 'Useremail001@gmail.com',
-          image: user?.image || userProfile,
+          image: user?.adminProfile?.Info?.photo || getAvatarUrl,
         },
       }}
       // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)

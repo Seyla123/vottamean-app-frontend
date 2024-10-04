@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import RandomAvatar from '../common/RandomAvatar';
 import EditAccountModal from '../admin/EditAccountModal';
+import EditSchoolModal from '../admin/EditSchoolModal';
 
 import {
   PencilLine as EditIcon,
@@ -28,28 +29,15 @@ const MyProfileView = ({
   profilePhoto,
   adminProfileData,
   schoolProfileData,
-  handleEditSchool,
-  handleEditUser,
 }) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(null);
 
-  // Remove the userData state as it's not being used effectively
-  // const [userData, setUserData] = useState({...});
-
-  const handleOpenEditModal = () => {
-    setIsEditModalOpen(true);
+  const handleOpenModal = (modalType) => {
+    setOpenModal(modalType);
   };
 
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-  };
-
-  const handleSaveUserData = (newData) => {
-    // Call handleEditUser directly with the new data
-    if (handleEditUser) {
-      handleEditUser(newData);
-    }
-    handleCloseEditModal();
+  const handleCloseModal = () => {
+    setOpenModal(null);
   };
 
   const {
@@ -65,22 +53,23 @@ const MyProfileView = ({
     schoolProfileData;
 
   return (
-    <Box sx={{ margin: 'auto', p: 2 }}>
+    <Box
+      component={'section'}
+      sx={{
+        margin: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        height: '100%',
+      }}
+    >
       {/* Header */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 4,
-        }}
-      >
-        <Typography variant="h4" component="h1" fontWeight="bold">
-          {title}
-        </Typography>
-      </Box>
 
-      <Grid container spacing={4}>
+      <Typography variant="h5" component="h5" fontWeight="bold">
+        {title}
+      </Typography>
+
+      <Grid container spacing={3}>
         {/* Profile Section */}
         <Grid item xs={12} md={4}>
           <Box
@@ -91,11 +80,21 @@ const MyProfileView = ({
               textAlign: 'center',
             }}
           >
-            <Avatar
-              src={profilePhoto}
-              sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
-            />
-            <Typography variant="h5" gutterBottom>
+            {profilePhoto ? (
+              <Avatar
+                src={profilePhoto}
+                alt={userName}
+                sx={{ width: 120, height: 120, margin: 'auto', mb: 2 }}
+              />
+            ) : (
+              <RandomAvatar
+                username={userName}
+                gender={userGender}
+                size={120}
+              />
+            )}
+
+            <Typography variant="h5" gutterBottom mt={2}>
               {userName}
             </Typography>
             <Typography variant="body1" color="text.secondary" gutterBottom>
@@ -133,36 +132,30 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleOpenEditModal}
+                onClick={() => handleOpenModal('account')}
               >
                 Edit
               </Button>
-
-              <EditAccountModal
-                open={isEditModalOpen}
-                onClose={handleCloseEditModal}
-                onSave={handleSaveUserData}
-              />
             </Box>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
               <InfoItem
-                icon={<PhoneIcon />}
+                icon={<PhoneIcon size={20} />}
                 label="Contact"
                 value={userPhoneNumber}
               />
               <InfoItem
-                icon={<HomeIcon />}
+                icon={<HomeIcon size={20} />}
                 label="Address"
                 value={userAddress}
               />
               <InfoItem
-                icon={<PersonIcon />}
+                icon={<PersonIcon size={20} />}
                 label="Gender"
                 value={userGender}
               />
               <InfoItem
-                icon={<CakeIcon />}
+                icon={<CakeIcon size={20} />}
                 label="Date of Birth"
                 value={userDOB}
               />
@@ -171,7 +164,6 @@ const MyProfileView = ({
         </Grid>
 
         {/* School Information */}
-
         <Grid item xs={12}>
           <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
             <Box
@@ -187,7 +179,7 @@ const MyProfileView = ({
               <Button
                 variant="outlined"
                 startIcon={<EditIcon size={20} />}
-                onClick={handleEditSchool}
+                onClick={() => handleOpenModal('school')}
               >
                 Edit
               </Button>
@@ -195,22 +187,22 @@ const MyProfileView = ({
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={3}>
               <InfoItem
-                icon={<SchoolIcon />}
+                icon={<SchoolIcon size={20} />}
                 label="School Name"
                 value={schoolName}
               />
               <InfoItem
-                icon={<HomeIcon />}
+                icon={<HomeIcon size={20} />}
                 label="School Address"
                 value={schoolAddress}
               />
               <InfoItem
-                icon={<PhoneIcon />}
+                icon={<PhoneIcon size={20} />}
                 label="School Contact"
                 value={schoolPhoneNumber}
               />
               <InfoItem
-                icon={<IdCardIcon />}
+                icon={<IdCardIcon size={20} />}
                 label="School ID"
                 value={schoolId}
               />
@@ -218,6 +210,20 @@ const MyProfileView = ({
           </Box>
         </Grid>
       </Grid>
+
+      {/* Modals */}
+      {openModal === 'account' && (
+        <EditAccountModal
+          open={true}
+          onClose={handleCloseModal}
+          profilePhoto={profilePhoto}
+          userName={userName}
+          userGender={userGender}
+        />
+      )}
+      {openModal === 'school' && (
+        <EditSchoolModal open={true} onClose={handleCloseModal} />
+      )}
     </Box>
   );
 };
@@ -232,9 +238,11 @@ const InfoItem = ({ icon, label, value }) => (
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'primary.main',
+          border: 1,
           borderRadius: 2,
-          color: 'white',
+          // backgroundColor: 'primary.main',
+          borderColor: 'divider',
+          color: 'primary.main',
         }}
       >
         {icon}
