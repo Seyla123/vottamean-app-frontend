@@ -9,6 +9,7 @@ const SubscriptionButton = ({ planType, adminId }) => {
       const { url } = await createCheckoutSession({
         plan_type: planType.toLowerCase(),
         admin_id: adminId,
+        payment_method_id: paymentMethod.id,
       }).unwrap();
 
       // Redirect to Stripe Checkout

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import { useCreatePaymentIntentMutation } from '../../services/paymentApi'; // Ensure this path is correct
+import { useCreatePaymentIntentMutation } from '../../services/paymentApi';
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -30,9 +30,9 @@ const PaymentForm = () => {
     // Create PaymentIntent on the server with the payment method ID
     const { data: paymentIntentData, error: paymentIntentError } =
       await createPaymentIntent({
-        admin_id: '1', // Include admin ID if necessary
-        plan_type: planType, // Ensure this is set correctly
-        payment_method_id: paymentMethod.id, // This should be the payment method ID from Stripe
+        admin_id: '1',
+        plan_type: planType,
+        payment_method_id: paymentMethod.id,
       });
 
     // Check for errors in the API call
@@ -48,7 +48,7 @@ const PaymentForm = () => {
     const { error, paymentIntent } = await stripe.confirmCardPayment(
       client_secret,
       {
-        payment_method: paymentMethod.id, // Use the payment method ID here
+        payment_method: paymentMethod.id,
       },
     );
 
