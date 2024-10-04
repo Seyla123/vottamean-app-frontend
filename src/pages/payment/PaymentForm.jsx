@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+<<<<<<< HEAD
 import { useCreatePaymentIntentMutation } from '../../services/paymentApi';
+=======
+import { useCreatePaymentIntentMutation } from '../../services/paymentApi'; // Ensure this path is correct
+>>>>>>> b7e7e94 (feature : implement the subscription page)
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -30,9 +34,9 @@ const PaymentForm = () => {
     // Create PaymentIntent on the server with the payment method ID
     const { data: paymentIntentData, error: paymentIntentError } =
       await createPaymentIntent({
-        admin_id: '1',
-        plan_type: planType,
-        payment_method_id: paymentMethod.id,
+        admin_id: '1', // Include admin ID if necessary
+        plan_type: planType, // Ensure this is set correctly
+        payment_method_id: paymentMethod.id, // This should be the payment method ID from Stripe
       });
 
     // Check for errors in the API call
@@ -48,7 +52,11 @@ const PaymentForm = () => {
     const { error, paymentIntent } = await stripe.confirmCardPayment(
       client_secret,
       {
+<<<<<<< HEAD
         payment_method: paymentMethod.id,
+=======
+        payment_method: paymentMethod.id, // Use the payment method ID here
+>>>>>>> b7e7e94 (feature : implement the subscription page)
       },
     );
 
