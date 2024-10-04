@@ -27,6 +27,7 @@ import {
   Modal,
   TextField,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import { NotebookPen, Phone } from 'lucide-react';
 
@@ -34,7 +35,6 @@ const EditSchoolModal = ({ open, onClose }) => {
   // - State to store user data for the school
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [originData, setOriginaData] = useState();
 
   // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
@@ -96,8 +96,6 @@ const EditSchoolModal = ({ open, onClose }) => {
       return;
     }
 
-    console.log('Submitted data:', data);
-
     try {
       await updateUserProfile(data).unwrap();
     } catch (error) {
@@ -107,11 +105,7 @@ const EditSchoolModal = ({ open, onClose }) => {
 
   // Handle UI feedback
   useEffect(() => {
-    if (isUpdateLoading) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
-      );
-    } else if (isUpdateError) {
+    if (isUpdateError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -127,7 +121,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           severity: 'success',
         }),
       );
-      navigate('/admin/settings/account');
+      onClose();
     }
   }, [
     isUpdateLoading,
@@ -306,7 +300,7 @@ const EditSchoolModal = ({ open, onClose }) => {
                 </Button>
                 {/* SAVE CHANGES BUTTON */}
                 <Button type="submit" variant="contained" fullWidth>
-                  Save Changes
+                  {isUpdateLoading ? 'Saving...' : 'Save Changes'}
                 </Button>
               </Box>
             </Grid>

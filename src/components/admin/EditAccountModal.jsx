@@ -166,27 +166,6 @@ const EditAccountModal = ({ open, onClose }) => {
 
     try {
       await updateUserProfile(formData).unwrap();
-      onClose();
-    } catch (error) {
-      console.error('Error updating profile:', error);
-    }
-  };
-
-  // - Snackbar notifications based on update status
-  useEffect(() => {
-    if (isUpdateLoading) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
-      );
-    } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: updateError?.data?.message || 'Update failed',
-          severity: 'error',
-        }),
-      );
-    } else if (isUpdateSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -194,16 +173,18 @@ const EditAccountModal = ({ open, onClose }) => {
           severity: 'success',
         }),
       );
-      navigate('/admin/settings/account');
+      onClose();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'Update failed',
+          severity: 'error',
+        }),
+      );
     }
-  }, [
-    isUpdateLoading,
-    isUpdateError,
-    isUpdateSuccess,
-    updateError,
-    dispatch,
-    navigate,
-  ]);
+  };
 
   if (isLoading) {
     return <CircularProgress />;
@@ -577,7 +558,7 @@ const EditAccountModal = ({ open, onClose }) => {
                   </Button>
                   {/* SAVE CHANGES BUTTON */}
                   <Button type="submit" variant="contained" fullWidth>
-                    Save Changes
+                    {isUpdateLoading ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </Box>
               </Grid>
