@@ -17,7 +17,18 @@ import { useCreateSubjectMutation } from '../../../services/subjectApi';
 function SubjectCreatePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
+  // useCreateSubjectMutation : returns a function to create a subject
+  const [
+    createSubject,
+    {
+      isLoading: isCreating,
+      isError: isUpdateError,
+      isSuccess: isCreateSuccess,
+      error: updateError,
+    },
+  ] = useCreateSubjectMutation();
+
   // yup validator
   const {
     control,
@@ -32,34 +43,32 @@ function SubjectCreatePage() {
     },
   });
 
-  // useCreateSubjectMutation : returns a function to create a subject
-  const [ createSubject, {
-      isLoading: isCreating,
-      isError: isUpdateError,
-      isSuccess: isCreateSuccess,
-      error: updateError }
-  ] = useCreateSubjectMutation();
-
   // Show a snackbar with messages during creating (progress, failure, success)
   useEffect(() => {
     if (isCreating) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Creating...',
-        severity: 'info'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Creating...',
+          severity: 'info',
+        }),
+      );
     } else if (isUpdateError) {
-      dispatch( setSnackbar({
+      dispatch(
+        setSnackbar({
           open: true,
           message: updateError.data.message,
           severity: 'error',
-        }));
+        }),
+      );
     } else if (isCreateSuccess) {
-      dispatch( setSnackbar({
+      dispatch(
+        setSnackbar({
           open: true,
           message: 'Subject created successfully',
           severity: 'success',
-        }));
+        }),
+      );
       navigate('/admin/subjects');
     }
   }, [dispatch, isUpdateError, isCreating, isCreateSuccess]);
@@ -82,7 +91,9 @@ function SubjectCreatePage() {
       >
         <CardComponent title={'Subject Information'}>
           <Stack sx={fieldContainer}>
-            <Typography color={errors.subject_name ? 'red' : 'inherit'}>Subject's Name</Typography>
+            <Typography color={errors.subject_name ? 'red' : 'inherit'}>
+              Subject's Name
+            </Typography>
             <Controller
               name="subject_name"
               control={control}
@@ -107,7 +118,9 @@ function SubjectCreatePage() {
                 <TextField
                   {...field}
                   error={!!errors.description}
-                  helperText={errors.description ? errors.description.message : ''}
+                  helperText={
+                    errors.description ? errors.description.message : ''
+                  }
                   multiline
                   minRows={5}
                   placeholder="description"
