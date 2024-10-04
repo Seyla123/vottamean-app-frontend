@@ -11,7 +11,10 @@ import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 // Payment
 import PaymentPage from '../pages/payment/PaymentPage';
+import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
+import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
 import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
+import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
 
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
@@ -51,7 +54,6 @@ import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 
 import SchoolUpdatePage from '../pages/admin/setting/account/SchoolUpdatePage';
 
-import AccountProfilePage from '../pages/admin/setting/account/AccountProfilePage';
 import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
@@ -115,8 +117,16 @@ const routesConfig = [
   },
   {
     path: '/payment',
-    element: <PaymentPage />,
+    element: <SubscriptionPlansPage />,
     children: [
+      {
+        path: 'success',
+        element: <PaymentSuccessPage />,
+      },
+      {
+        path: 'failure',
+        element: <PaymentFailurePage />,
+      },
       {
         path: 'payment-required',
         element: <PaymentRequiredPage />,
