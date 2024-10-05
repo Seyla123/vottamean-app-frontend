@@ -141,11 +141,19 @@ export const genderSchema = Yup.string()
 
 //Class Valid
 export const ClassValidator = Yup.object().shape({
-  class_name: Yup.string().required('Class name is required'),
-  description: Yup.string().optional(),
+  class_name: Yup
+  .string()
+  .required('Class name is required')
+  .min(3, 'Subject name must be 3 characters up')
+  .max(50, 'Subject name is too long'),
+  description: Yup
+  .string()
+  .trim()
+  .max(225, 'description is too long')
+  .optional()
 });
 
-//Class Valid
+//Subject Valid
 export const SubjectValidator = Yup.object().shape({
   subject_name: Yup
   .string()
