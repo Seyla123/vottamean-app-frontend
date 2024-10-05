@@ -42,6 +42,8 @@ function SubjectListPage() {
   useEffect(() => {
     // set the rows state when subject records are fetched successfully
     if (data && isSuccess) {
+      // subjects data fetched from api
+      const subjectData = data.data;
       setRows(subjectData);
     }
   
@@ -66,7 +68,7 @@ function SubjectListPage() {
       }));
       navigate('/admin/subjects');
     }
-  }, [data, dispatch, isSuccess, isDeleteSuccess, isDeleting, isDeleteError ]);
+  }, [ data, dispatch, isSuccess, isDeleting, isDeleteError, isDeleteSuccess ]);
   
   // loading the data until it successfully fetched
   if (isLoading) {
@@ -105,22 +107,12 @@ function SubjectListPage() {
     navigate(`/admin/subjects/update/${row.subject_id}`);
   };
 
-  // Define formatted data to display
-  const subjectData = data.data.map((item) => {
-    const { subject_id, subject_name, description } = item;
-    return {
-      subject_id,
-      subject_name,
-      description
-    };
-  });
-
   return (
     <FormComponent
       title="Subject List"
-      subTitle={`There are total ${rows.length} Subjects`}
+      subTitle={`Total Subjects: ${rows.length}`}
     >
-      <Stack direction={'row'} gap={1} alignSelf={'flex-end'}>
+      <Stack direction={'row'} alignSelf={'flex-end'}>
         <Link to={'/admin/subjects/create'}>
           <Button
             size="large"
