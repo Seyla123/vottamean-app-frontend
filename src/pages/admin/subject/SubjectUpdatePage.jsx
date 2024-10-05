@@ -75,10 +75,9 @@ function SubjectUpdatePage() {
 
   // Submit handler
   const onSubmit = async () => {
-      const { subject_name, description } = getValues(); // Get values from form
-      const formData = { subject_name, description };
-      await updateSubject({ id, formData }).unwrap(); // Pass formData for mutation
-
+    const { subject_name, description } = getValues();
+    const formData = { subject_name, description };
+    await updateSubject({ id, formData }).unwrap();
   };
 
   // Back button handler
