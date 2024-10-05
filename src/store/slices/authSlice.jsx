@@ -55,6 +55,16 @@ const authSlice = createSlice({
         }
       }
     );
+
+    // Handle profile update
+    builder.addMatcher(
+      authApi.endpoints.updateProfile.matchFulfilled,
+      (state, { payload }) => {
+        if (payload.status === 'success' && payload.data) {
+          state.user = payload.data;
+        }
+      }
+    );
   },
 });
 
