@@ -1,21 +1,35 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Typography, Stack, TextField } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { fieldContainer } from '../../../styles/authStyle';
+// import components
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-import { useCreateSubjectMutation } from '../../../services/subjectApi';
+// import validator, style, api and uiSlice
 import { SubjectValidator } from '../../../validators/validationSchemas';
+import { fieldContainer } from '../../../styles/authStyle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useCreateSubjectMutation } from '../../../services/subjectApi';
 
 function SubjectCreatePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // useCreateSubjectMutation : returns a function to create a subject
+  const [
+    createSubject,
+    {
+      isLoading: isCreating,
+      isError: isUpdateError,
+      isSuccess: isCreateSuccess,
+      error: updateError,
+    },
+  ] = useCreateSubjectMutation();
+
+  // yup validator
   const {
     control,
     handleSubmit,
@@ -29,20 +43,15 @@ function SubjectCreatePage() {
     },
   });
 
-  const [
-    createSubject,
-    {
-      isLoading: isCreating,
-      isError: isUpdateError,
-      isSuccess: isCreateSuccess,
-      error: updateError,
-    },
-  ] = useCreateSubjectMutation();
-
+  // Show a snackbar with messages during creating (progress, failure, success)
   useEffect(() => {
     if (isCreating) {
       dispatch(
-        setSnackbar({ open: true, message: 'Creating...', severity: 'info' }),
+        setSnackbar({
+          open: true,
+          message: 'Creating...',
+          severity: 'info',
+        }),
       );
     } else if (isUpdateError) {
       dispatch(
@@ -69,7 +78,6 @@ function SubjectCreatePage() {
       const { subject_name, description } = getValues();
       const formData = { subject_name, description };
       await createSubject(formData).unwrap();
-      console.log(formData);
     } catch (err) {
       console.log('error message :', err);
     }
@@ -82,9 +90,10 @@ function SubjectCreatePage() {
         subTitle={'Please Fill Subject information'}
       >
         <CardComponent title={'Subject Information'}>
-          {/* subject subject_name input container */}
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Subject's Name</Typography>
+            <Typography color={errors.subject_name ? 'red' : 'inherit'}>
+              Subject's Name
+            </Typography>
             <Controller
               name="subject_name"
               control={control}
@@ -100,7 +109,6 @@ function SubjectCreatePage() {
               )}
             />
           </Stack>
-          {/* description input container */}
           <Stack sx={fieldContainer}>
             <Typography variant="body1">Description</Typography>
             <Controller
@@ -108,15 +116,18 @@ function SubjectCreatePage() {
               control={control}
               render={({ field }) => (
                 <TextField
+                  {...field}
+                  error={!!errors.description}
+                  helperText={
+                    errors.description ? errors.description.message : ''
+                  }
                   multiline
                   minRows={5}
                   placeholder="description"
-                  {...field}
                 />
               )}
             />
           </Stack>
-          {/* Button Container  */}
           <ButtonContainer
             rightBtn={handleSubmit(onSubmit)}
             leftBtnTitle={'Cancel'}

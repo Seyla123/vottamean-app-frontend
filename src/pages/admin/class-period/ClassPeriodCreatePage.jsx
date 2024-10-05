@@ -1,33 +1,73 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { Typography, Box } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { Typography, Box } from '@mui/material';
-
+// import components
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-
-import { containerInput, timeInput } from '../../../styles/classPeriod';
-import { useNavigate } from 'react-router-dom';
-
-import { useCreateClassPeriodMutation } from '../../../services/classPeriodApi';
-
-// Validation schema
+// import validator, style, api and uiSlice
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
+import { containerInput, timeInput } from '../../../styles/classPeriod';
+import { useCreateClassPeriodMutation } from '../../../services/classPeriodApi';
+import { setSnackbar } from '../../../store/slices/uiSlice';
 
 function ClassPeriodCreatePage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // useCreateSubjectMutation : returns a function to create a subject
+  const [createClass, { isLoading, isError, isSuccess, error }] =
+    useCreateClassPeriodMutation();
+
+  // useEffect: set values for start and end time
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const navigate = useNavigate();
 
-  // Redux hook for creating class period
-  const [createClass, { error: apiError }] = useCreateClassPeriodMutation();
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Creating...',
+          severity: 'info'
+        }),
+      );
+    } else if (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data.message,
+          severity: 'warning',
+        }),
+      );
+    } else if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data.message || 'Error creating class period',
+          severity: 'error',
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Created successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/class-periods');
+    }
+  }, [isLoading, isError, isSuccess, dispatch, navigate]);
 
-  // Initialize useForm with yup validation schema
+  // yup validator
   const {
     handleSubmit,
     formState: { errors },
@@ -52,8 +92,6 @@ function ClassPeriodCreatePage() {
         end_time: formattedEndTime,
         ...data,
       }).unwrap();
-
-      navigate(`/admin/class-periods`);
     } catch (error) {
       console.log('Failed to create class period:', error);
     }
@@ -67,7 +105,9 @@ function ClassPeriodCreatePage() {
       >
         <CardComponent title={'Class Period Information'}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
+            <DemoContainer
+              components={['TimePicker', 'TimePicker', 'TimePicker']}
+            >
               <Box sx={containerInput}>
                 <Box>
                   <Typography
@@ -139,12 +179,6 @@ function ClassPeriodCreatePage() {
             rightBtnTitle={'Add Period'}
           />
 
-          {/* Display API error if any */}
-          {apiError && (
-            <Typography color="red">
-              Failed to create class period. Try again.
-            </Typography>
-          )}
         </CardComponent>
       </FormComponent>
     </>

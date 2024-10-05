@@ -2,28 +2,34 @@ import { useState, useEffect } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { Typography, Box } from '@mui/material';
 import { containerInput, timeInput } from '../../../styles/classPeriod';
 import { useNavigate, useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { ClassPeriodValidator } from '../../../validators/validationSchemas';
+import { useDispatch } from 'react-redux';
+// import components
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-import dayjs from 'dayjs';
-import {
-  useGetClassPeriodByIdQuery,
-  useUpdateClassPeriodMutation,
-} from '../../../services/classPeriodApi';
+// import validator, uiSlice and  api 
+import { ClassPeriodValidator } from '../../../validators/validationSchemas';
+import { setSnackbar } from '../../../store/slices/uiSlice';
+import { useGetClassPeriodByIdQuery, useUpdateClassPeriodMutation } from '../../../services/classPeriodApi';
                                                                                                                                                                                                                                                                                                                                                
 function ClassPeriodUpdatePage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const { data, error, isLoading } = useGetClassPeriodByIdQuery(id);
-  const [updateClassPeriod, { isSuccess, isError, isLoading: isUpdating }] = useUpdateClassPeriodMutation();
+
+  // Fetch calss period details
+  const { data, isLoading } = useGetClassPeriodByIdQuery(id);
+
+  // Mutation for updating subject
+  const [updateClassPeriod, { isUpdating, isUpdateError, isSuccess, error }] = useUpdateClassPeriodMutation();
 
   // State for time picker
   const [startTime, setStartTime] = useState(null);
@@ -59,6 +65,34 @@ function ClassPeriodUpdatePage() {
     }
   }, [data, setValue]);
 
+  useEffect(() => {
+    if (isUpdating) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updating...',
+          severity: 'info' }),
+      );
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'Error updating class period',
+          severity: 'error',
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/class-periods');
+    }
+  }, [isUpdating, isUpdateError, isSuccess, dispatch, error, navigate]);
+
   const onClickNext = async () => {
     const formattedStartTime = startTime.format('HH:mm:ss');
     const formattedEndTime = endTime.format('HH:mm:ss');
@@ -68,21 +102,13 @@ function ClassPeriodUpdatePage() {
         start_time: formattedStartTime,
         end_time: formattedEndTime,
       });
-      console.log('Class Period Created:', result);
-      navigate(`/admin/class-periods`);
     } catch (error) {
       console.log('Failed to update class period:', error);
     }
   };
 
   // Handle stages
-  if (isLoading) {
-    return <CircularIndeterminate />;
-  }
-
-  if (isSuccess) {
-    navigate(`/admin/class-periods`);
-  }
+  if (isLoading)  return <CircularIndeterminate />;
 
   return (
     <>

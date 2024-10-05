@@ -1,122 +1,146 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+// refactoered with validation
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import CardComponent from '../../../components/common/CardComponent';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Stack, TextField } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+// import components
 import FormComponent from '../../../components/common/FormComponent';
+import CardComponent from '../../../components/common/CardComponent';
+import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import ButtonContainer from '../../../components/common/ButtonContainer';
-import LoadingCircle from '../../../components/loading/LoadingCircle';
-import {
-  useGetClassesByIdQuery,
-  useUpdateClassesDataMutation,
-} from '../../../services/classApi';
+// import style, api and uiSlice
+import { ClassValidator } from '../../../validators/validationSchemas';
+import { fieldContainer } from '../../../styles/authStyle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
+import { useGetClassesByIdQuery, useUpdateClassesDataMutation } from '../../../services/classApi';
 
 function ClassUpdatePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-   // Get the id from the url parameter
   const { id } = useParams();
-  
-  // useGetClassesByIdQuery : 
-  const { data, isLoading, fetchError } = useGetClassesByIdQuery(id);
 
-  // formdata : 
-  const [formData, setFormData] = useState({
-    class_name: '',
-    description: '',
+  // Fetch class details
+  const { data, fetchError, isLoading, isSuccess } = useGetClassesByIdQuery(id);
+  
+  // Mutation for updating class
+  const [updateClassesData, {
+    isLoading: isUpdating,
+    isError: isUpdateError,
+    isSuccess: isUpdatedSuccess,
+    error: updateError
+  }] = useUpdateClassesDataMutation();
+
+  // Setup form with react-hook-form
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(ClassValidator),
+    defaultValues: {
+      class_name: '',
+      description: '',
+    },
   });
 
-  //useUpdateClassesDataMutation : 
-  const [updateClassesData, { isLoading:isUpdating, isError:isUpdateError,isSuccess:isUpdatedSuccess,error:updateError }] =
-    useUpdateClassesDataMutation();
-
-  // Update local state when class data is fetched
+  // Fetch and set form data when the class is successfully fetched
   useEffect(() => {
-    if (data && data.data) {
-      setFormData({
-        class_name: data.data.class_name || '',
-        description: data.data.description || '',
-      });
+    if (data && isSuccess) {
+      setValue('class_name', data.data.class_name || '');
+      setValue('description', data.data.description || '');
     }
-  }, [data]);
+  }, [data, isSuccess, setValue]);
 
-  // When the update is in progress, show a snackbar with a message "Updating..."
-  // When the update is failed, show a snackbar with an error message
-  // When the update is successful, show a snackbar with a success message and navigate to the class list page
-  useEffect(()=>{
-    if(isUpdating){
-      dispatch(setSnackbar({ open:true , message: 'Updating...' ,severity : 'info'}));
-    }else if(isUpdateError){
-      dispatch(setSnackbar({ open:true , message: updateError.data.message , severity : 'error'}));
-    }else if(isUpdatedSuccess){
-      dispatch(setSnackbar({ open:true , message: 'Updated successfully', severity :'success'}));
+  // Handle update mutation lifecycle (loading, success, error)
+  useEffect(() => {
+    if (isUpdating) {
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Updating...',
+        severity: 'info'
+      }));
+    } else if (isUpdateError) {
+      dispatch( setSnackbar({
+        open: true,
+        message: updateError.data.message,
+        severity: 'error'
+      }));
+    } else if (isUpdatedSuccess) {
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Updated successfully',
+        severity: 'success'
+      }));
       navigate('/admin/classes');
     }
-  },[dispatch, isUpdateError, isUpdatedSuccess, isUpdating])
+  }, [isUpdating, isUpdateError, isUpdatedSuccess, updateError, dispatch, navigate]);
 
-  // Handle input change and update local state
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+  // Submit handler
+  const onSubmit = async () => {
+      const { class_name, description } = getValues();
+      const formData = { class_name, description };
+      await updateClassesData({ id, formData }).unwrap();
+
   };
-  // Handle cancel button click
+
+  // Back button handler
   const onClickBack = () => {
     navigate('/admin/classes');
   };
 
-  // Handle update submit
-  const onSubmit = async () => {
-    try {
-      await updateClassesData({ id, formData }).unwrap();
-    } catch (error) {
-      console.error('Update failed', error);
-    }
-  };
-
   if (isLoading) {
-    return <LoadingCircle />;
+    return <CircularIndeterminate />;
   }
-  if (fetchError) return <p>Error loading class data.</p>;
+
+  if (fetchError) return <p>Error loading class: {fetchError.message}</p>;
 
   return (
-    <FormComponent
-      title={'Update Class'}
-      subTitle={'Please fill class information'}
-    >
-      <CardComponent title={'Class Information'}>
-        <Stack>
-          <Typography variant="body1">Class's Name</Typography>
-          <TextField
-            name="class_name"
-            value={formData.class_name}
-            onChange={handleInputChange}
-            placeholder="Class name"
+    <>
+      <FormComponent title={'Update Class'} subTitle={'Please Fill class information'}>
+        <CardComponent title={'Class Information'}>
+          <Stack sx={fieldContainer}>
+            <Typography color={errors.class_name ? 'red' : 'inherit'}>Class's Name</Typography>
+            <Controller
+              name="class_name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.class_name}
+                  helperText={errors.class_name ? errors.class_name.message : ''}
+                />
+              )}
+            />
+          </Stack>
+          <Stack sx={fieldContainer}>
+            <Typography variant="body1">Description</Typography>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.description}
+                  helperText={errors.description ? errors.description.message : ''}
+                  multiline
+                  minRows={5}
+                />
+              )}
+            />
+          </Stack>
+          <ButtonContainer
+            leftBtn={onClickBack}
+            rightBtn={handleSubmit(onSubmit)}
+            leftBtnTitle={'Cancel'}
+            rightBtnTitle={'Update'}
           />
-        </Stack>
-        <Stack>
-          <Typography variant="body1">Description</Typography>
-          <TextField
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            multiline
-            minRows={5}
-            placeholder="Description"
-          />
-        </Stack>
-        <ButtonContainer
-          leftBtn={onClickBack}
-          rightBtn={onSubmit}
-          leftBtnTitle={'Cancel'}
-          rightBtnTitle={'Update'}
-        />
-      </CardComponent>
-    </FormComponent>
+        </CardComponent>
+      </FormComponent>
+    </>
   );
 }
 

@@ -10,6 +10,7 @@ import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
 import teacherReducer from './slices/teacherSlice';
 import classReducer from './slices/classSlice';
+import subjectReducer from './slices/subjectSlice';
 import uiReducer from './slices/uiSlice';
 
 const store = configureStore({
@@ -19,9 +20,10 @@ const store = configureStore({
     auth: authReducer,
     teachers: teacherReducer,
     attendance: attendanceReducer,
+    subjects: subjectReducer,
     classes: classReducer,
-    [classApi.reducerPath]: classApi.reducer,
     [subjectApi.reducerPath]: subjectApi.reducer,
+    [classApi.reducerPath]: classApi.reducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
@@ -31,8 +33,8 @@ const store = configureStore({
       authApi.middleware,
       attendanceApi.middleware,
       teacherApi.middleware,
-      classApi.middleware,
       subjectApi.middleware,
+      classApi.middleware,
     ),
 });
 

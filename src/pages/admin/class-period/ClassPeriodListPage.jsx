@@ -11,52 +11,62 @@ import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../s
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatHelper';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
+// Define table columns title
+const tableTitles = [
+  { id: 'period_id', label: 'ID' },
+  { id: 'start_time', label: 'Start Time' },
+  { id: 'end_time', label: 'End Time' },
+  { id: 'period', label: 'Period' },
+];
+
 function ClassPeriodListPage() {
+  // useState: "data to be displayed" and "data to be deleted"
+  const [rows, setRows] = useState([]);
+  const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // rows : Array of objects representing the data to be displayed in the table
-  // classPeriodToDelete : a selected class period to be deleted
-  const [rows, setRows] = useState([]);
-  const [classPeriodToDelete, setclassPeriodToDelete] = useState(null);
   const { modal } = useSelector((state) => state.ui);
 
-  // useGetClassPeriodByIdQuery : a hook that returns a function to fetch a class period record by its id
-  // useDeleteClassPeriodMutation : a hook that returns a function to delete an class period record
+  // useGetClassPeriodQuery : return a function to fetch all subject records
   const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
-  const [
-    deleteClassPeriod, {
+
+  // useDeleteClassPeriodMutation : returns a function to delete a subject
+  const [ deleteClassPeriod, {
       isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error
-    }
+      error }
   ] = useDeleteClassPeriodMutation();
 
-  // when the class period records are fetched successfully, then set the rows state
   useEffect(() => {
+    // set the rows state when subject records are fetched successfully
     if (data && isSuccess) {
       setRows(periodData);
     }
-  }, [data, isSuccess, isDeleteSuccess]);
 
-  // When the delete is in progress, show a snackbar with a message "Deleting..."
-  // When the delete is failed, show a snackbar with an error message
-  // When the delete is successful, show a snackbar with a success message and navigate to the class period list page
-  useEffect(() => {
+    // Show a snackbar with messages during delete (progress, failure, success)
     if (isDeleting) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
-      );
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Deleting...',
+        severity: 'info'
+      }));
     } else if (isDeleteError) {
-      dispatch(setSnackbar({ open: true, message: error.data.message, severity: 'error', }),);
+      dispatch( setSnackbar({
+        open: true,
+        message: error.data.message,
+        severity: 'error'
+      }));
     } else if (isDeleteSuccess) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success', }),
-      );
+      dispatch( setSnackbar({
+        open: true,
+        message: 'Deleted successfully',
+        severity: 'success'
+      }));
       navigate('/admin/class-periods');
     }
-  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
+  }, [  data, dispatch, isSuccess, isDeleting, isDeleteSuccess, isDeleteError ]);
 
   // Handle loading state
   if (isLoading) {
@@ -70,7 +80,7 @@ function ClassPeriodListPage() {
 
   // Handle DELETE action
   const handleDelete = (rows) => {
-    setclassPeriodToDelete(rows);
+    setClassPeriodToDelete(rows);
     dispatch(setModal({ open: true }));
   };
 
@@ -93,14 +103,6 @@ function ClassPeriodListPage() {
   const handleEdit = (row) => {
     navigate(`/admin/class-periods/update/${row.period_id}`);
   };
-
-  // Define table columns title
-  const tableTitles = [
-    { id: 'period_id', label: 'ID' },
-    { id: 'start_time', label: 'Start Time' },
-    { id: 'end_time', label: 'End Time' },
-    { id: 'period', label: 'Period' },
-  ];
 
   // Define formatted data to display
   const periodData = data.data.map((item) => {
