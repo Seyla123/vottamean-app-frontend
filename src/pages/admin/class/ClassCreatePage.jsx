@@ -94,7 +94,10 @@ function ClassCreatePage() {
       >
         <CardComponent title={'Class Information'}>
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Class's Name</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Class's Name
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="class_name"
               control={control}
@@ -118,7 +121,10 @@ function ClassCreatePage() {
             />
           </Stack>
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Description</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Description
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="description"
               control={control}
