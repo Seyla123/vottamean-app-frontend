@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Stack, TextField } from '@mui/material';
+import { Typography, Stack, TextField, InputAdornment } from '@mui/material';
+import { BookText, ScrollText } from 'lucide-react';
 // Import component
 import { useForm, Controller } from 'react-hook-form';
 import CardComponent from '../../../components/common/CardComponent';
@@ -102,9 +103,16 @@ function ClassCreatePage() {
                   placeholder="class's name"
                   {...field}
                   error={!!errors.class_name}
-                  helperText={
-                    errors.class_name ? errors.class_name.message : ''
-                  }
+                  helperText={ errors.class_name ? errors.class_name.message : '' }
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BookText size={20} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               )}
             />
@@ -116,14 +124,26 @@ function ClassCreatePage() {
               control={control}
               render={({ field }) => (
                 <TextField
-                {...field}
+                  {...field}
                   error={!!errors.description}
-                  helperText={
-                    errors.description ? errors.description.message : ''
-                  }
                   multiline
                   minRows={5}
                   placeholder="description"
+                  helperText={errors.description ? errors.description.message : ''}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ScrollText size={20} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                  sx={{
+                    '.MuiInputBase-root': {
+                      alignItems: 'flex-start',
+                    },
+                  }}
                 />
               )}
             />
