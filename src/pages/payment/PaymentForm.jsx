@@ -48,11 +48,7 @@ const PaymentForm = () => {
     const { error, paymentIntent } = await stripe.confirmCardPayment(
       client_secret,
       {
-<<<<<<< HEAD
         payment_method: paymentMethod.id,
-=======
-        payment_method: paymentMethod.id, // Use the payment method ID here
->>>>>>> b7e7e94 (feature : implement the subscription page)
       },
     );
 
