@@ -92,8 +92,9 @@ function SubjectCreatePage() {
       >
         <CardComponent title={'Subject Information'}>
           <Stack sx={fieldContainer}>
-            <Typography color={errors.subject_name ? 'red' : 'inherit'}>
+            <Typography variant="body2" fontWeight="bold">
               Subject's Name
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
             <Controller
               name="subject_name"
@@ -120,7 +121,10 @@ function SubjectCreatePage() {
             />
           </Stack>
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Description</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Description
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="description"
               control={control}
