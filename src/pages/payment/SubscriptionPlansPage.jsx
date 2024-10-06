@@ -8,15 +8,21 @@ import {
   Button,
 } from '@mui/material';
 import SubscriptionButton from './SubscriptionButton';
+import CancelSubscription from './CancelSubscription';
 import PaymentPage from './PaymentPage';
+import { useGetUserProfileQuery } from '../../services/userApi';
 
 const SubscriptionPlansPage = () => {
+  const { data: userData } = useGetUserProfileQuery();
+
+  // Get admin_id from user profile's adminProfile
+  const adminId = userData?.data?.adminProfile?.admin_id;
+  console.log('Admin ID For Stripe Payemnt:', adminId);
+
   const plans = [
     { type: 'Monthly', price: '$9.99/month', id: 1 },
     { type: 'Yearly', price: '$69.99/year', id: 2 },
   ];
-
-  const adminId = '1';
 
   return (
     <Box sx={{ p: 4 }}>
@@ -62,11 +68,18 @@ const SubscriptionPlansPage = () => {
           </Card>
         ))}
       </Box>
+
+      {/* Include the PaymentPage component for payment handling */}
       <Typography variant="h4" sx={{ mt: 4 }} gutterBottom align="center">
         Testing the Custom UI Payment
       </Typography>
       <PaymentPage />
-      {/* Include the PaymentPage component for payment handling */}
+
+      {/* Add the CancelSubscription component */}
+      <Typography variant="h4" sx={{ mt: 4 }} gutterBottom align="center">
+        Cancel your Subscription
+      </Typography>
+      <CancelSubscription adminId={adminId} />
     </Box>
   );
 };
