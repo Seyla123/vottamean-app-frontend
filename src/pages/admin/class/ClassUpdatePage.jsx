@@ -104,7 +104,10 @@ function ClassUpdatePage() {
       <FormComponent title={'Update Class'} subTitle={'Please Fill class information'}>
         <CardComponent title={'Class Information'}>
           <Stack sx={fieldContainer}>
-            <Typography color={errors.class_name ? 'red' : 'inherit'}>Class's Name</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Class's Name
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="class_name"
               control={control}
@@ -127,7 +130,10 @@ function ClassUpdatePage() {
             />
           </Stack>
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Description</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Description
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="description"
               control={control}
