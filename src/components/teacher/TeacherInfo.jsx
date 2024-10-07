@@ -14,8 +14,7 @@ import {
   Typography,
   Stack,
   FormControl,
-  Select,
-  InputAdornment,
+  Select
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -23,7 +22,6 @@ import dayjs from 'dayjs';
 
 // Redux hooks and actions
 import { useNavigate } from 'react-router-dom';
-import { UserRoundPlus, Phone } from 'lucide-react';
 
 // Custom components
 import SubHeader from './SubHeader';
@@ -50,7 +48,11 @@ const validationSchema = yup.object({
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
     .typeError('Invalid date format'),
-  address: yup.string().required('Address is required'),
+  address: yup
+    .string()
+    .nullable()
+    .notRequired()
+    .max(200, 'Address must be less than 200 characters'),
 });
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
@@ -120,15 +122,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                       error={!!errors.firstName}
                       helperText={errors.firstName?.message}
                       fullWidth
-                      slotProps={{
-                        input: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <UserRoundPlus size={20} />
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
                     />
                   )}
                 />
@@ -152,15 +145,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                       error={!!errors.lastName}
                       helperText={errors.lastName?.message}
                       fullWidth
-                      slotProps={{
-                        input: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <UserRoundPlus size={20} />
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
                     />
                   )}
                 />
@@ -263,15 +247,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber?.message}
                   fullWidth
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Phone size={20} />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               )}
             />
@@ -305,6 +280,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             justifyContent={'flex-end'}
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 0.5, sm: 1 }}
+            marginTop={{ xs: 2, sm: 0 }}
           >
             <Button
               fullWidth
@@ -337,15 +313,8 @@ const boxContainer = {
   },
 };
 const profileBox = {
-  // border: '1px solid',
-  // borderColor: '#E0E0E0',
   width: '100%',
-  // borderRadius: '8px',
   bgcolor: '#ffffff',
-  // marginTop: {
-  //   xs: '32px',
-  //   sm: '0px',
-  // },
   padding: {
     xs: 2,
     sm: 3,
