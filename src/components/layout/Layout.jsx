@@ -31,26 +31,28 @@ const Layout = ({ teacherSite, adminSite }) => {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const userEmail = user.email;
+    if (user && user.email) {
+      const userEmail = user.email;
 
-    if (user.role === 'admin') {
-      const newUserData = user.adminProfile.Info;
-      setUserData({
-        email: userEmail || '',
-        gender: newUserData.gender || '',
-        photo: newUserData.photo || '',
-        firstName: newUserData.first_name || '',
-        lastName: newUserData.last_name || '',
-      });
-    } else if (user.role === 'teacher') {
-      const newUserData = user.teacherProfile.Info;
-      setUserData({
-        email: userEmail || '',
-        gender: newUserData.gender || '',
-        photo: newUserData.photo || '',
-        firstName: newUserData.first_name || '',
-        lastName: newUserData.last_name || '',
-      });
+      if (user.role === 'admin' && user.adminProfile && user.adminProfile.Info) {
+        const newUserData = user.adminProfile.Info;
+        setUserData({
+          email: userEmail,
+          gender: newUserData.gender || '',
+          photo: newUserData.photo || '',
+          firstName: newUserData.first_name || '',
+          lastName: newUserData.last_name || '',
+        });
+      } else if (user.role === 'teacher' && user.teacherProfile && user.teacherProfile.Info) {
+        const newUserData = user.teacherProfile.Info;
+        setUserData({
+          email: userEmail,
+          gender: newUserData.gender || '',
+          photo: newUserData.photo || '',
+          firstName: newUserData.first_name || '',
+          lastName: newUserData.last_name || '',
+        });
+      }
     }
   }, [user]);
 
