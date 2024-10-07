@@ -1,11 +1,11 @@
 // React and third-party libraries
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
+import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Material UI components
 import {
@@ -25,13 +25,13 @@ import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 import { PhoneOutgoing, School } from 'lucide-react';
 import FormFooter from './FormFooter';
 
-const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
+import { useSignupMutation } from '../../services/authApi';
+
+const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
-  // New state to track submission
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [signup,{isLoading, isError, isSuccess, error}] = useSignupMutation();
   const {
     register,
     handleSubmit,
@@ -50,28 +50,40 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
     }
   }, [formData, setValue]);
 
-  const handleFormSubmit = async (data) => {
+useEffect(() => {
+if(isError){
+    dispatch(setSnackbar({
+      open: true,
+      severity: 'error',
+      message: error.data.message,
+    }))
+  }else if(isSuccess){
+    dispatch(setSnackbar({
+      open: true,
+      severity: 'success',
+      message: 'Your account has been successfully created. Please verify your email.',
+    }))
+  }
+})
+  const handleFormSubmit = async(data) => {
     const formattedData = {
-      ...formData,
+      email: formData.email,
+      password: formData.password,
+      passwordConfirm: formData.passwordConfirm,
+      address: formData.address,
+      dob: formData.dob,
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      gender: formData.gender,
+      phone_number: formData.phone_number,
       school_name: data.school_name,
       school_phone_number: data.school_phone_number,
       school_address: data.school_address,
-    };
-
-    console.log('Form Data in Step 4 :', formattedData);
-
-    dispatch(updateFormData(formattedData));
-
-    if (onFormChange) {
-      onFormChange(formattedData);
     }
-
-    if (onSubmit) {
-      setIsSubmitting(true); // Set to true when submission starts
-      await onSubmit(); // Wait for the API call
-      setIsSubmitting(false); // Set back to false when done
-    }
+    handleFormChange(formattedData);
+    await signup(formattedData).unwrap();
   };
+
   return (
     <Box
       sx={{
@@ -185,9 +197,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
               type="submit"
               fullWidth
               size="large"
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <CircularProgress size={24} color="inherit" />
               ) : (
                 'Register'

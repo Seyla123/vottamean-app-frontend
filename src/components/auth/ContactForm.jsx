@@ -26,7 +26,7 @@ import { ContactInformationValidator } from '../../validators/validationSchemas'
 import { Phone } from 'lucide-react';
 import FormFooter from './FormFooter';
 
-const ContactForm = ({ handleNext, handleBack }) => {
+const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form); // Fetch form data from Redux
 
@@ -50,7 +50,7 @@ const ContactForm = ({ handleNext, handleBack }) => {
 
   // Handle form submission
   const onSubmit = (data) => {
-    dispatch(updateFormData(data)); // Update Redux state with the form data
+    handleFormChange(data);
     handleNext(); // Navigate to the next step
   };
 

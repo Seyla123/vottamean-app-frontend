@@ -33,7 +33,7 @@ import dayjs from 'dayjs';
 // Validator
 import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
-const PersonalDetailsForm = ({ handleNext, handleBack }) => {
+const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
   // Initialize dispatch and form data from Redux
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
@@ -73,7 +73,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack }) => {
       dob: formattedDob,
     };
 
-    dispatch(updateFormData(updatedData)); // Dispatch updated data to Redux
+    handleFormChange(updatedData);
     handleNext(); // Proceed to the next step
   };
 

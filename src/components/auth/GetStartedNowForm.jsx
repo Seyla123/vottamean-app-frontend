@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Typography,
@@ -16,12 +15,11 @@ import {
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 import { getStartSignupValidator } from '../../validators/validationSchemas';
-import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
+import { EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
-const GetStartedNowForm = ({ handleNext }) => {
+const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
   const {
@@ -43,7 +41,7 @@ const GetStartedNowForm = ({ handleNext }) => {
   }, [formData, setValue]);
 
   const onSubmit = (data) => {
-    dispatch(updateFormData(data));
+    handleFormChange(data);
     handleNext();
   };
 
