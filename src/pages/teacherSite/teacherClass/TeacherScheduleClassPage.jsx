@@ -91,7 +91,7 @@ function TeacherScheduleClassPage() {
                       subject={classData.subject}
                       students={classData.students}
                       time={formatStartEndTime(classData)}
-                      classIcon={teacher}
+                      classIcon={teacherImage}
                       randomColor={cardColor}
                     />
                   </Box>
