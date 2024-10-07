@@ -1,5 +1,10 @@
+// React and third-party libraries
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm, Controller } from 'react-hook-form';
+
+// Material UI components
 import {
   TextField,
   MenuItem,
@@ -10,14 +15,18 @@ import {
   Stack,
   FormControl,
   Select,
+  InputAdornment,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import SubHeader from './SubHeader';
 import dayjs from 'dayjs';
+
+// Redux hooks and actions
+import { useNavigate } from 'react-router-dom';
+import { UserRoundPlus, Phone } from 'lucide-react';
+
+// Custom components
+import SubHeader from './SubHeader';
 
 // Define validation schema
 const validationSchema = yup.object({
@@ -47,6 +56,8 @@ const validationSchema = yup.object({
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
+
+  // Define form methods validation
   const {
     control,
     handleSubmit,
@@ -86,7 +97,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
-          <Box sx={valueBoxOne}>
+          <Box sx={profilePic}>
             <Avatar sx={imgStyle} alt="profile picture" src="r" />
           </Box>
           <SubHeader title={'Teacher Information'} />
@@ -94,17 +105,30 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             {/* First Name */}
             <Box sx={{ flex: 1, width: '100%' }}>
               <Box sx={textFieldGap}>
-                <Typography>First Name</Typography>
+                <Typography variant="body2" fontWeight="bold">
+                  First Name {''}
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
                 <Controller
                   name="firstName"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
+                      type="text"
                       placeholder="First Name"
                       error={!!errors.firstName}
                       helperText={errors.firstName?.message}
                       fullWidth
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <UserRoundPlus size={20} />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
                     />
                   )}
                 />
@@ -113,17 +137,30 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             {/* Last Name */}
             <Box sx={{ flex: 1, width: '100%' }}>
               <Box sx={textFieldGap}>
-                <Typography>Last Name</Typography>
+                <Typography variant="body2" fontWeight="bold">
+                  Last Name {''}
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
                 <Controller
                   name="lastName"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
+                      type="text"
                       placeholder="Last Name"
                       error={!!errors.lastName}
                       helperText={errors.lastName?.message}
                       fullWidth
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <UserRoundPlus size={20} />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
                     />
                   )}
                 />
@@ -132,7 +169,9 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
           </Box>
           {/* Gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Gender</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Gender <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="gender"
               control={control}
@@ -144,9 +183,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                     error={!!errors.gender}
                     renderValue={(selected) => {
                       if (!selected) {
-                        return (
-                          <Box sx={{ color: '#B5B5B5' }}>Select Gender</Box>
-                        );
+                        return <Box sx={{ color: '#B5B5B5' }}>Gender</Box>;
                       }
                       return selected;
                     }}
@@ -171,7 +208,10 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
           </Box>
           {/* Date of Birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Date of Birth</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Date of Birth{' '}
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="dob"
               control={control}
@@ -209,7 +249,10 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
           </Box>
           {/* Phone Number */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Contact Number</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Contact Number {''}
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="phoneNumber"
               control={control}
@@ -220,25 +263,37 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber?.message}
                   fullWidth
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Phone size={20} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               )}
             />
           </Box>
           {/* Address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography>Address</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Street Address{' '}
+            </Typography>
             <Controller
               name="address"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
-                  placeholder="Address"
+                  placeholder="Phnom Penh, Street 210, ..."
+                  type="text"
                   error={!!errors.address}
                   helperText={errors.address?.message}
                   fullWidth
                   multiline
-                  minRows={2}
+                  minRows={5}
                 />
               )}
             />
@@ -249,7 +304,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             alignSelf={'flex-end'}
             justifyContent={'flex-end'}
             width={{ xs: '100%', sm: '340px' }}
-            gap={{ xs: 1, sm: 2 }}
+            gap={{ xs: 0.5, sm: 1 }}
           >
             <Button
               fullWidth
@@ -275,17 +330,22 @@ export default TeacherInfo;
 const boxContainer = {
   width: '100%',
   marginTop: '16px',
+  padding: '0px',
   gap: {
     xs: '12px',
     sm: 3,
   },
 };
 const profileBox = {
-  border: '1px solid',
-  borderColor: '#E0E0E0',
-  borderRadius: '8px',
+  // border: '1px solid',
+  // borderColor: '#E0E0E0',
+  width: '100%',
+  // borderRadius: '8px',
   bgcolor: '#ffffff',
-  marginTop: '32px',
+  // marginTop: {
+  //   xs: '32px',
+  //   sm: '0px',
+  // },
   padding: {
     xs: 2,
     sm: 3,
@@ -300,7 +360,7 @@ const profileBox = {
   flexDirection: 'column',
   position: 'relative',
 };
-const valueBoxOne = {
+const profilePic = {
   width: 100,
   height: 100,
   borderRadius: '50%',
