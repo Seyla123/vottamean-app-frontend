@@ -7,7 +7,6 @@ import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
 import Logo from '../../assets/images/Logo.svg';
-import { getUserProfileData } from '../../utils/formatData';
 import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -55,7 +54,6 @@ const Layout = ({ teacherSite, adminSite }) => {
     }
   }, [user]);
 
-  console.log(userData);
 
   // 3. Initialize the logout mutation using the custom API hook
   const [logout] = useLogoutMutation();
