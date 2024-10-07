@@ -18,10 +18,10 @@ const EmptyList = ({ image, title, description }) => {
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
-          height: '70vh',
+          height: '50vh',
         }}
       >
-        <Box sx={{ width: '300px', height: '200px', mb: '2rem' }}>
+        <Box sx={{ width: '300px', height: 'auto' }}>
           {image && <StyledImage src={image} alt={title || 'Empty list'} />}
         </Box>
         {title && (

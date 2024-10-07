@@ -27,6 +27,8 @@ import classHeaderImg5 from '../../../assets/images/class-header-img-5.avif';
 import classHeaderImg6 from '../../../assets/images/class-header-img-6.avif';
 import { shadow } from '../../../styles/global';
 import FormComponent from '../../../components/common/FormComponent';
+import emptyClassesImage from '../../../assets/images/teacher-99.svg';
+
 const headerImages = [
   classHeaderImg1,
   classHeaderImg2,
@@ -205,15 +207,34 @@ function TeacherScheduleClassPage() {
     </Grid>
   );
 
-  if (isSuccess && classesData.length === 0) {
+  const renderContent = () => {
+    if (isLoading) {
+      return renderSkeleton();
+    }
+
+    if (filteredClasses.length === 0) {
+      return (
+        <EmptyList
+          image={emptyClassesImage}
+          title="No classes scheduled"
+          description={`You don't have any classes scheduled for ${selectedDay === 'All' ? 'any day' : selectedDay}.`}
+        />
+      );
+    }
+
     return (
-      <EmptyList
-        image={EmptyList}
-        title="No classes found"
-        description="It looks like your classes list is empty. Add some classes to get started!"
-      />
+      <Grid container spacing={2}>
+        {filteredClasses.map((classData) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={classData.session_id}>
+            <ClassListItem
+              classData={classData}
+              onClick={() => handleClassClick(classData.session_id)}
+            />
+          </Grid>
+        ))}
+      </Grid>
     );
-  }
+  };
 
   const renderDaySelector = () => {
     if (isMobile) {
@@ -274,24 +295,10 @@ function TeacherScheduleClassPage() {
   return (
     <FormComponent
       title="Class Schedule"
-      subTitle={` You have ${classesData.length} classes scheduled`}
+      subTitle={`You have ${classesData.length} classes scheduled`}
     >
       {renderDaySelector()}
-
-      {isLoading ? (
-        renderSkeleton()
-      ) : (
-        <Grid container spacing={2}>
-          {filteredClasses.map((classData) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={classData.session_id}>
-              <ClassListItem
-                classData={classData}
-                onClick={() => handleClassClick(classData.session_id)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      )}
+      {renderContent()}
     </FormComponent>
   );
 }
