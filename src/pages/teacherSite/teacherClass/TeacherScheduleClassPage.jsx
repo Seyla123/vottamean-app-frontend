@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -8,6 +8,8 @@ import {
   Box,
   Skeleton,
   Divider,
+  Tabs,
+  Tab
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { Clock, Calendar, Users } from 'lucide-react';
@@ -76,12 +78,25 @@ function TeacherScheduleClassPage() {
   } = useGetTeacherScheduleClassesQuery();
 
   const [classesData, setClassesData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
     if (getTeacherClasses && isSuccess) {
       setClassesData(getTeacherClasses.data || []);
     }
   }, [getTeacherClasses, isSuccess]);
+
+  const categories = useMemo(() => {
+    const uniqueCategories = ['All', ...new Set(classesData.map(c => c.class_name))];
+    return uniqueCategories;
+  }, [classesData]);
+
+  const filteredClasses = useMemo(() => {
+    if (selectedCategory === 'All') {
+      return classesData;
+    }
+    return classesData.filter(c => c.class_name === selectedCategory);
+  }, [classesData, selectedCategory]);
 
   if (isError) {
     return (
@@ -93,6 +108,10 @@ function TeacherScheduleClassPage() {
 
   const handleClassClick = (sessionId) => {
     navigate(`/teacher/mark-attendance/${sessionId}`);
+  };
+
+  const handleCategoryChange = (event, newValue) => {
+    setSelectedCategory(newValue);
   };
 
   const renderSkeleton = () => (
@@ -127,11 +146,26 @@ function TeacherScheduleClassPage() {
       <Typography variant="subtitle1" gutterBottom>
         You have {classesData.length} classes scheduled
       </Typography>
+      
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs 
+          value={selectedCategory} 
+          onChange={handleCategoryChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="class categories"
+        >
+          {categories.map((category) => (
+            <Tab label={category} value={category} key={category} />
+          ))}
+        </Tabs>
+      </Box>
+
       {isLoading ? (
         renderSkeleton()
       ) : (
         <Grid container spacing={3}>
-          {classesData.map((classData) => (
+          {filteredClasses.map((classData) => (
             <Grid item xs={12} sm={6} key={classData.session_id}>
               <ClassListItem
                 classData={classData}
