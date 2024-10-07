@@ -8,6 +8,12 @@ import {
   Skeleton,
   Tabs,
   Tab,
+  Select,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { Clock, Calendar, Users } from 'lucide-react';
@@ -31,6 +37,7 @@ const headerImages = [
 ];
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
+  width: '100%',
   overflow: 'hidden',
   cursor: 'pointer',
   transition: 'all 0.3s ease-in-out',
@@ -72,11 +79,12 @@ const ClassListItem = ({ classData, onClick }) => {
         sx={{
           position: 'relative',
           backgroundImage: `url(${headerImage})`,
-          bgSize: 'top',
-          bgRepeat: 'no-repeat',
-          bgPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
           height: '120px',
           width: '100%',
+          transition: 'background-size 0.3s ease-in-out',
+          backgroundSize: '180% auto',
         }}
       >
         <Box
@@ -94,21 +102,23 @@ const ClassListItem = ({ classData, onClick }) => {
             justifyContent: 'center',
           }}
         >
-          <Typography variant="h5" fontWeight={'bold'} gutterBottom>
+          <Typography variant="h6" fontWeight={'bold'} gutterBottom noWrap>
             {classData.class_name}
           </Typography>
-          <Typography variant="body1">{classData.subject}</Typography>
+          <Typography variant="body2" noWrap>
+            {classData.subject}
+          </Typography>
         </Box>
       </Box>
-      <Box sx={{ padding: 3 }}>
+      <Box sx={{ padding: 2 }}>
         <IconWrapper>
-          <Calendar size={18} />
+          <Calendar size={16} />
           <Typography variant="body2" textTransform="capitalize">
             {classData.day}
           </Typography>
         </IconWrapper>
         <IconWrapper sx={{ my: 1 }}>
-          <Clock size={18} />
+          <Clock size={16} />
           <Typography variant="body2">
             {classData.start_time.slice(0, 5)} -{' '}
             {classData.end_time.slice(0, 5)}
@@ -116,7 +126,7 @@ const ClassListItem = ({ classData, onClick }) => {
           </Typography>
         </IconWrapper>
         <IconWrapper>
-          <Users size={18} />
+          <Users size={16} />
           <Typography variant="body2">{classData.students} students</Typography>
         </IconWrapper>
       </Box>
@@ -126,6 +136,8 @@ const ClassListItem = ({ classData, onClick }) => {
 
 function TeacherScheduleClassPage() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const {
     data: getTeacherClasses,
     error,
@@ -176,13 +188,13 @@ function TeacherScheduleClassPage() {
   };
 
   const handleDayChange = (event, newValue) => {
-    setSelectedDay(newValue);
+    setSelectedDay(isMobile ? event.target.value : newValue);
   };
 
   const renderSkeleton = () => (
-    <Grid container spacing={3}>
+    <Grid container spacing={2}>
       {[...Array(4)].map((_, index) => (
-        <Grid item xs={12} sm={6} key={index}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
           <Skeleton
             variant="rectangular"
             height={200}
@@ -196,43 +208,82 @@ function TeacherScheduleClassPage() {
   if (isSuccess && classesData.length === 0) {
     return (
       <EmptyList
-        image="/path/to/empty-classes-image.svg"
+        image={EmptyList}
         title="No classes found"
         description="It looks like your classes list is empty. Add some classes to get started!"
       />
     );
   }
 
+  const renderDaySelector = () => {
+    if (isMobile) {
+      return (
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="day-select-label">Select Day</InputLabel>
+          <Select
+            labelId="day-select-label"
+            id="day-select"
+            value={selectedDay}
+            label="Select Day"
+            onChange={handleDayChange}
+          >
+            {days.map((day) => (
+              <MenuItem key={day} value={day}>
+                {day}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      );
+    } else {
+      return (
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            mb: 2,
+            width: '100%',
+          }}
+        >
+          <Tabs
+            value={selectedDay}
+            onChange={handleDayChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            aria-label="class days"
+          >
+            {days.map((day) => (
+              <Tab
+                label={day}
+                value={day}
+                key={day}
+                sx={{
+                  textTransform: 'capitalize',
+                  minWidth: 'auto',
+                  padding: '6px 12px',
+                }}
+              />
+            ))}
+          </Tabs>
+        </Box>
+      );
+    }
+  };
+
   return (
     <FormComponent
       title="Class Schedule"
       subTitle={` You have ${classesData.length} classes scheduled`}
     >
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-        <Tabs
-          value={selectedDay}
-          onChange={handleDayChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="class days"
-        >
-          {days.map((day) => (
-            <Tab
-              label={day}
-              value={day}
-              key={day}
-              sx={{ textTransform: 'capitalize' }}
-            />
-          ))}
-        </Tabs>
-      </Box>
+      {renderDaySelector()}
 
       {isLoading ? (
         renderSkeleton()
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           {filteredClasses.map((classData) => (
-            <Grid item xs={12} sm={6} key={classData.session_id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={classData.session_id}>
               <ClassListItem
                 classData={classData}
                 onClick={() => handleClassClick(classData.session_id)}
