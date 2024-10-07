@@ -14,8 +14,6 @@ const initialState = {
   school_name: '',
   school_address: '',
   school_phone_number: '',
-  class_name: '',
-  Description: '',
 };
 
 export const formSlice = createSlice({
