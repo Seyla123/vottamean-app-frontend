@@ -52,11 +52,14 @@ const AccountSettingsPage = () => {
   // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
     if (user) {
+      console.log(user);
+
       const transformedData = getUserProfileData(user);
       setUserData(transformedData);
       dispatch(updateFormData(transformedData));
+      console.log(userData.userProfile);
     }
-  }, [user]);
+  }, [user, dispatch]);
 
   // Handle tab switch
   const handleChange = (event, newValue) => {
@@ -139,7 +142,7 @@ const AccountSettingsPage = () => {
               <MyProfileView
                 title={'Profile'}
                 profilePhoto={userData.photo}
-                adminProfileData={userData.userProfile}
+                userData={userData.userProfile}
                 schoolProfileData={userData.schoolProfile}
               />
             </TabPanel>

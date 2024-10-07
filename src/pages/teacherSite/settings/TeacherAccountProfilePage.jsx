@@ -1,149 +1,164 @@
-import React, { useState } from 'react';
-import {
-  Tab,
-  Box,
-  Stack,
-  Typography,
-  Button,
-  Avatar,
-  Divider,
-} from '@mui/material';
+// React and third-party libraries
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Tab, Typography, Card, Tabs, Box } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Trash2, KeyRound, School, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import FormComponent from '../../../components/common/FormComponent';
-import CardComponent from '../../../components/common/CardComponent';
-import CardInformation from '../../../components/common/CardInformation';
+import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 
-function TeacherAccountProfilePage() {
+// Components
+import FormComponent from '../../../components/common/FormComponent';
+
+import MyProfileView from '../../../components/common/MyProfileView';
+import SecurityView from '../../../components/common/SecurityView';
+
+// Image and Icon
+import { UserRoundPen, Settings } from 'lucide-react';
+
+// Redux hooks and API
+import { useDispatch } from 'react-redux';
+import { updateFormData } from '../../../store/slices/formSlice';
+import {
+  useGetUserProfileQuery,
+  useDeleteUserAccountMutation,
+} from '../../../services/userApi';
+
+// User Profile Data formatting
+import { getUserProfileData } from '../../../utils/formatData';
+import { shadow } from '../../../styles/global';
+
+const AccountSettingsPage = () => {
+  // - Initialize dispatch and navigate hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Redux API calls to get user profile
+  const { data: user, isLoading, error, isSuccess } = useGetUserProfileQuery();
+  // Redux API calls to delete user
+  const [deleteUserAccount] = useDeleteUserAccountMutation();
+
+  // Local state for transformed data
+  const [userData, setUserData] = useState({
+    userProfile: {},
+    schoolProfile: {},
+    photo: '',
+  });
+
+  // Local state for tab
   const [value, setValue] = useState('1');
-  const clickEdit = () => {
-    console.log('edit');
-  };
-  const clickDeteleAccount = () => {
-    console.log('delete account');
-  };
+
+  // Determine if the screen size is mobile
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
+  // - When the user data is fetched, format the data and set the user data in the state
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      const transformedData = getUserProfileData(user);
+      console.log('this data :', user);
+
+      setUserData(transformedData);
+      dispatch(updateFormData(transformedData));
+      console.log(userData.userProfile);
+    }
+  }, [user, dispatch]);
+
+  // Handle tab switch
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const teacher = {
-    Username: 'Sokha Sambath',
-    Age: 22,
-    Gender: 'Female',
-    'Date of Birth': '05/12/1990',
-    Phone: '0987654321',
-    Email: 'sokhasambath@gmail.com',
-    Address: 'Phnom Penh, Cambodia',
+
+  // Handle delete button click
+  const handleDeleteAccount = async () => {
+    try {
+      console.log('Deleting current user');
+      await deleteUserAccount().unwrap();
+      console.log('Account deleted successfully');
+
+      navigate('/auth/signin');
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
   };
-  const school = {
-    'School Name': 'Sambath High School',
-    'Phone number': '023456789',
-    Address: 'Phnom Penh, Cambodia',
-  };
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Error loading user data</Typography>;
+  }
+
   return (
     <FormComponent
-      title={'Account Profile'}
-      subTitle={'Manage your account information and settings'}
+      title={'Account Settings'}
+      subTitle={'Manage your account settings'}
     >
-      <Box sx={{ width: '100%', typography: 'body1' }}>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-            <TabList onChange={handleChange} aria-label="Account tabs">
-              <Tab
-                label="General"
-                value="1"
-                icon={<User size={18} />}
-                iconPosition="start"
-              />
-              <Tab
-                label="Advanced"
-                value="2"
-                icon={<KeyRound size={18} />}
-                iconPosition="start"
-              />
-            </TabList>
-          </Box>
-          {/* tab general */}
-          <TabPanel value="1" sx={{ px: 0, py: 2 }}>
-            <Stack direction={'column'} gap={4}>
-              {/* user profile information */}
-              <CardComponent
-                title={'User Information'}
-                icon={<User size={24} />}
-                handleEdit={clickEdit}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <Avatar
-                    src="https://plus.unsplash.com/premium_photo-1661942126259-fb08e7cce1e2?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    sx={{ width: 80, height: 80, mr: 3 }}
-                  />
-                  <Typography variant="h6">{teacher.Username}</Typography>
-                </Box>
-                <CardInformation data={teacher} />
-              </CardComponent>
-              {/* school information */}
-              <CardComponent
-                title={'School Information'}
-                icon={<School size={24} />}
-                handleEdit={clickEdit}
-              >
-                <CardInformation data={school} />
-              </CardComponent>
-            </Stack>
-          </TabPanel>
-          {/* tap advanced */}
-          <TabPanel value="2" sx={{ px: 0, py: 2 }}>
-            <CardComponent
-              title={'Login and Security'}
-              icon={<KeyRound size={24} />}
+      <Card sx={shadow}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            height: '100%',
+          }}
+        >
+          <TabContext value={value}>
+            <Box
+              sx={{
+                borderRight: isMobile ? 'none' : 1,
+                borderColor: 'divider',
+              }}
             >
-              <Stack direction={'column'} gap={3}>
-                {/* change password */}
-                <Box>
-                  <Typography variant="h6" gutterBottom>
-                    Change Password
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mb={2}>
-                    It's a good idea to use a strong password that you're not
-                    using elsewhere
-                  </Typography>
-                  <Link
-                    to="/change-password"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Button
-                      variant="outlined"
-                      startIcon={<KeyRound size={18} />}
-                    >
-                      Change Password
-                    </Button>
-                  </Link>
-                </Box>
-                <Divider />
-                {/* delete account */}
-                <Box>
-                  <Typography variant="h6" gutterBottom>
-                    Account Ownership
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mb={2}>
-                    Permanently delete your account from WaveTrack service
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={clickDeteleAccount}
-                    startIcon={<Trash2 size={18} />}
-                  >
-                    Delete Account
-                  </Button>
-                </Box>
-              </Stack>
-            </CardComponent>
-          </TabPanel>
-        </TabContext>
-      </Box>
+              <TabList
+                orientation={isMobile ? 'horizontal' : 'vertical'}
+                variant="scrollable"
+                onChange={handleChange}
+                aria-label="Vertical tabs"
+                sx={{ width: '160px' }}
+              >
+                <Tab
+                  label="Profile"
+                  value="1"
+                  icon={<UserRoundPen size={18} />}
+                  iconPosition="start"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                />
+                <Tab
+                  label="Account"
+                  value="2"
+                  icon={<Settings size={18} />}
+                  iconPosition="start"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                />
+              </TabList>
+            </Box>
+
+            <TabPanel sx={{ flexGrow: 1 }} value="1">
+              {/* MY PROFILE VIEW */}
+              <MyProfileView
+                title={'Profile'}
+                profilePhoto={userData.photo}
+                userData={userData.userProfile}
+              />
+            </TabPanel>
+
+            <TabPanel sx={{ flexGrow: 1 }} value="2">
+              {/* SECURITY VIEW */}
+              <SecurityView
+                title={'Security'}
+                handleDeleteAccount={handleDeleteAccount}
+              />
+            </TabPanel>
+          </TabContext>
+        </Box>
+      </Card>
     </FormComponent>
   );
-}
+};
 
-export default TeacherAccountProfilePage;
+export default AccountSettingsPage;

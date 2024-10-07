@@ -69,6 +69,7 @@ import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage'
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
 import ChangePasswordForm from '../pages/admin/setting/account/ChangePasswordForm';
+import TeacherDashboardPage from '../pages/teacherSite/dashboard/TeacherDashboardPage';
 // Routes configuration
 const routesConfig = [
   {
@@ -136,9 +137,13 @@ const routesConfig = [
         children: [
           {
             path: '',
-            element: <TeacherScheduleClassPage />,
+            element: <TeacherDashboardPage />,
           },
         ],
+      },
+      {
+        path: 'classes',
+        element: <TeacherScheduleClassPage />,
       },
       {
         path: 'mark-attendance/:id',

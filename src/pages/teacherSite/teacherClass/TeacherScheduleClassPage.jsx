@@ -1,25 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import FormComponent from '../../../components/common/FormComponent';
-import ClassCard from '../../../components/teacherSite/ClassCard';
-import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
-import { Grid2, Box } from '@mui/material';
-import teacherImage from '../../../assets/images/teacher-35.svg';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Typography,
+  Grid,
+  Paper,
+  Box,
+  Skeleton,
+  Tabs,
+  Tab,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
+  Button,
+  Menu,
+} from '@mui/material';
+import { styled } from '@mui/system';
+import { Clock, Calendar, Users, ListFilter } from 'lucide-react';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
-import { formatStartEndTime } from '../../../utils/formatHelper';
-import ClassNotFound from '../../../components/teacherSite/ClassNotFound';
-import { Link } from 'react-router-dom';
 import EmptyList from '../../../components/common/EmptyList';
-// colors for card
-const colors = [
-  '#e7f7ff',
-  '#fffaeb',
-  '#ffebcb',
-  '#f1fcd9',
-  '#ffece9',
-  '#e7eaff',
+import classHeaderImg1 from '../../../assets/images/study-bg.avif';
+import classHeaderImg2 from '../../../assets/images/class-header-img-2.avif';
+import classHeaderImg3 from '../../../assets/images/class-header-img-3.avif';
+import classHeaderImg4 from '../../../assets/images/class-header-img-4.avif';
+import classHeaderImg5 from '../../../assets/images/class-header-img-5.avif';
+import classHeaderImg6 from '../../../assets/images/class-header-img-6.avif';
+import { shadow } from '../../../styles/global';
+import FormComponent from '../../../components/common/FormComponent';
+import emptyClassesImage from '../../../assets/images/teacher-99.svg';
+
+const headerImages = [
+  classHeaderImg1,
+  classHeaderImg2,
+  classHeaderImg3,
+  classHeaderImg4,
+  classHeaderImg5,
+  classHeaderImg6,
 ];
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  width: '100%',
+  overflow: 'hidden',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease-in-out',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: shadow.boxShadow,
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: `0 12px 20px rgba(0, 0, 0, 0.1)`,
+  },
+}));
+
+const IconWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.text.secondary,
+  '& > svg': {
+    marginRight: theme.spacing(1),
+  },
+}));
+
+const ClassListItem = ({ classData, onClick }) => {
+  const dayIndex = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ].indexOf(classData.day.toLowerCase());
+  const headerImage = headerImages[dayIndex % headerImages.length];
+
+  return (
+    <StyledPaper onClick={onClick}>
+      <Box
+        sx={{
+          position: 'relative',
+          backgroundImage: `url(${headerImage})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          height: '120px',
+          width: '100%',
+          transition: 'background-size 0.3s ease-in-out',
+          backgroundSize: '180% auto',
+        }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            bottom: 0,
+            zIndex: 10,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            padding: 2,
+            color: 'white',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="h6" fontWeight={'bold'} gutterBottom noWrap>
+            {classData.class_name}
+          </Typography>
+          <Typography variant="body2" noWrap>
+            {classData.subject}
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{ padding: 2 }}>
+        <IconWrapper>
+          <Calendar size={16} />
+          <Typography variant="body2" textTransform="capitalize">
+            {classData.day}
+          </Typography>
+        </IconWrapper>
+        <IconWrapper sx={{ my: 1 }}>
+          <Clock size={16} />
+          <Typography variant="body2">
+            {classData.start_time.slice(0, 5)} -{' '}
+            {classData.end_time.slice(0, 5)}
+            {classData.start_time.slice(6, 7) === 'PM' ? 'PM' : 'AM'}
+          </Typography>
+        </IconWrapper>
+        <IconWrapper>
+          <Users size={16} />
+          <Typography variant="body2">{classData.students} students</Typography>
+        </IconWrapper>
+      </Box>
+    </StyledPaper>
+  );
+};
+
 function TeacherScheduleClassPage() {
-  // useGetTeacherScheduleClassesQuery : This is the data fetching hook for the teacher classes,fetch the classes schedule for the current day
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const {
     data: getTeacherClasses,
     error,
@@ -28,83 +147,164 @@ function TeacherScheduleClassPage() {
     isError,
   } = useGetTeacherScheduleClassesQuery();
 
-  // classesData : This is the state for the classes
   const [classesData, setClassesData] = useState([]);
+  const [selectedDay, setSelectedDay] = useState('All');
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  // It will set the state of the classes based on the data from the hook
   useEffect(() => {
     if (getTeacherClasses && isSuccess) {
-      const fetchedData = getTeacherClasses.data;
-      setClassesData(fetchedData);
+      setClassesData(getTeacherClasses.data || []);
     }
   }, [getTeacherClasses, isSuccess]);
 
-  // error handler
+  const days = [
+    'All',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  const filteredClasses = useMemo(() => {
+    if (selectedDay === 'All') {
+      return classesData;
+    }
+    return classesData.filter(
+      (c) => c.day.toLowerCase() === selectedDay.toLowerCase(),
+    );
+  }, [classesData, selectedDay]);
+
   if (isError) {
-    return <div>Error loading class data: {error.data.message}</div>;
-  }
-
-  // This is the function for rendering the skeleton while loading
-  const renderedSkeleton = () =>
-    [...Array(6)].map((_, i) => (
-      <Grid2 size={{ xs: 12, md: 6 }} key={i}>
-        <ClassCardSkeleton />
-      </Grid2>
-    ));
-
-  // This is the handling for no classes found
-  if (isSuccess && classesData.length == 0) {
     return (
-      <EmptyList
-        image={teacherImage}
-        title="No classes found"
-        description="It looks like your classes list is empty. Add some classes to get started!"
-      />
+      <Typography color="error">
+        Error loading class data: {error.data?.message || 'Unknown error'}
+      </Typography>
     );
   }
 
+  const handleClassClick = (sessionId) => {
+    navigate(`/teacher/mark-attendance/${sessionId}`);
+  };
+
+  const handleFilterClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDayChange = (day) => {
+    setSelectedDay(day);
+    handleFilterClose();
+  };
+
+  const renderSkeleton = () => (
+    <Grid container spacing={2}>
+      {[...Array(4)].map((_, index) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+          <Skeleton
+            variant="rectangular"
+            height={200}
+            sx={{ borderRadius: 4 }}
+          />
+        </Grid>
+      ))}
+    </Grid>
+  );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return renderSkeleton();
+    }
+
+    if (filteredClasses.length === 0) {
+      return (
+        <EmptyList
+          image={emptyClassesImage}
+          title="No classes scheduled"
+          description={`You don't have any classes scheduled for ${selectedDay === 'All' ? 'any day' : selectedDay}.`}
+        />
+      );
+    }
+
+    return (
+      <Grid container spacing={2}>
+        {filteredClasses.map((classData) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={classData.session_id}>
+            <ClassListItem
+              classData={classData}
+              onClick={() => handleClassClick(classData.session_id)}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    );
+  };
+
+  const renderDaySelector = () => {
+    if (isMobile) {
+      return (
+        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            variant="outlined"
+            startIcon={<ListFilter size={20} />}
+            onClick={handleFilterClick}
+          >
+            {selectedDay === 'All' ? 'Filter by Day' : selectedDay}
+          </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleFilterClose}
+          >
+            {days.map((day) => (
+              <MenuItem
+                key={day}
+                onClick={() => handleDayChange(day)}
+                selected={day === selectedDay}
+              >
+                {day}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
+      );
+    } else {
+      return (
+        <>
+          <Tabs
+            value={selectedDay}
+            onChange={(_, newValue) => setSelectedDay(newValue)}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ borderBottom: 1, borderColor: 'divider' }}
+          >
+            {days.map((day) => (
+              <Tab
+                key={day}
+                label={day}
+                value={day}
+                sx={{ textTransform: 'capitalize' }}
+              />
+            ))}
+          </Tabs>
+        </>
+      );
+    }
+  };
+
   return (
-    <>
-      <FormComponent
-        title="Class Schedule"
-        subTitle={`These are ${classesData.length} classes`}
-      >
-        <Grid2 container spacing={2}>
-          {isLoading ? (
-            // Render skeleton while loading
-            renderedSkeleton()
-          ) : classesData.length > 0 ? (
-            // Render actual class cards once loading is complete
-            classesData.map((classData, index) => {
-              const cardColor = colors[index % colors.length];
-              // const randomBorder = border[index % border.length];
-              return (
-                <Grid2 size={{ xs: 12, md: 6 }} key={classData.session_id}>
-                  <Box
-                    component={Link}
-                    to={`/teacher/mark-attendance/${classData.session_id}`}
-                    sx={{ color: 'black' }}
-                  >
-                    <ClassCard
-                      className={classData.class_name}
-                      day={classData.day}
-                      subject={classData.subject}
-                      students={classData.students}
-                      time={formatStartEndTime(classData)}
-                      classIcon={teacherImage}
-                      randomColor={cardColor}
-                    />
-                  </Box>
-                </Grid2>
-              );
-            })
-          ) : (
-            // Handle no class found
-            <ClassNotFound />
-          )}
-        </Grid2>
-      </FormComponent>
-    </>
+    <FormComponent
+      title="Class Schedule"
+      subTitle={`You have ${classesData.length} classes scheduled`}
+    >
+      {renderDaySelector()}
+      {renderContent()}
+    </FormComponent>
   );
 }
 

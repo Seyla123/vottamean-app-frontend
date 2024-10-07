@@ -94,8 +94,8 @@ const teacherSiteNavigation = [
     icon: <HomeIcon />,
   },
   {
-    segment: 'teacher/sessions',
-    title: 'Sessions',
+    segment: 'teacher/classes',
+    title: 'Classes',
     icon: <CalendarMonthIcon />,
   },
 

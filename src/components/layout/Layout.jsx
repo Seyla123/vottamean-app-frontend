@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 import { useLogoutMutation } from '../../services/authApi';
@@ -7,7 +7,6 @@ import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
 import Logo from '../../assets/images/Logo.svg';
-
 import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -15,6 +14,14 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import SnackbarComponent from '../common/SnackbarComponent';
 
 const Layout = ({ teacherSite, adminSite }) => {
+  const [userData, setUserData] = useState({
+    email: '',
+    gender: '',
+    photo: '',
+    firstName: '',
+    lastName: '',
+  });
+
   // 1. Initialize navigation and location hooks for routing
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,6 +29,32 @@ const Layout = ({ teacherSite, adminSite }) => {
 
   // 2. Fetch the current user from the Redux store to get user details
   const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user && user.email) {
+      const userEmail = user.email;
+
+      if (user.role === 'admin' && user.adminProfile && user.adminProfile.Info) {
+        const newUserData = user.adminProfile.Info;
+        setUserData({
+          email: userEmail,
+          gender: newUserData.gender || '',
+          photo: newUserData.photo || '',
+          firstName: newUserData.first_name || '',
+          lastName: newUserData.last_name || '',
+        });
+      } else if (user.role === 'teacher' && user.teacherProfile && user.teacherProfile.Info) {
+        const newUserData = user.teacherProfile.Info;
+        setUserData({
+          email: userEmail,
+          gender: newUserData.gender || '',
+          photo: newUserData.photo || '',
+          firstName: newUserData.first_name || '',
+          lastName: newUserData.last_name || '',
+        });
+      }
+    }
+  }, [user]);
 
   // 3. Initialize the logout mutation using the custom API hook
   const [logout] = useLogoutMutation();
@@ -71,18 +104,12 @@ const Layout = ({ teacherSite, adminSite }) => {
       },
     },
   });
-  
+
   // Combines first and last name from the user object, or falls back to 'Username'
   const username = useMemo(() => {
-    return (
-      `${user?.adminProfile?.Info?.first_name || ''} ${user?.adminProfile?.Info?.last_name || ''}`.trim() ||
-      'Username'
-    );
-  }, [user]);
+    return `${userData.firstName} ${userData.lastName}`.trim() || 'Username';
+  }, [userData.firstName, userData.lastName]);
 
-  const gender = user?.adminProfile?.Info?.gender || '';
-
-  // Generates an avatar URL using the username and gender
   const getAvatarUrl = useMemo(() => {
     const getAvatarStyle = (gender) => {
       switch (gender?.toLowerCase()) {
@@ -95,10 +122,10 @@ const Layout = ({ teacherSite, adminSite }) => {
       }
     };
 
-    const avatarStyle = getAvatarStyle(gender);
+    const avatarStyle = getAvatarStyle(userData.gender);
     const randomParam = Math.random().toString(36).substring(7);
     return `https://api.dicebear.com/6.x/${avatarStyle}/svg?seed=${encodeURIComponent(username)}&r=${randomParam}`;
-  }, [username, gender]);
+  }, [username, userData.gender]);
 
   // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
   const router = React.useMemo(() => {
@@ -136,8 +163,8 @@ const Layout = ({ teacherSite, adminSite }) => {
       session={{
         user: {
           name: username,
-          email: user?.email || 'Useremail001@gmail.com',
-          image: user?.adminProfile?.Info?.photo || getAvatarUrl,
+          email: userData.email || 'Useremail001@gmail.com',
+          image: userData.photo || getAvatarUrl,
         },
       }}
       // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)
