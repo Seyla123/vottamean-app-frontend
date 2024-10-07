@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSignupMutation } from '../../services/authApi';
 import { updateFormData } from '../../store/slices/formSlice';
 import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
 import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
 import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Stepper,
   Step,
   StepLabel,
   Typography,
-  Button,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import { User, Users, Contact, School } from 'lucide-react';
 // IMAGES & ICONS
@@ -28,16 +23,15 @@ import image4 from '../../assets/images/image-4.webp';
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
-  const [signup] = useSignupMutation();
-  const navigate = useNavigate();
 
   const [activeStep, setActiveStep] = useState(0);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+  useEffect(() => {
+    console.log('Updated formData:', formData);
+  }, [formData]);
 
   const handleFormChange = (stepData) => {
     dispatch(updateFormData(stepData));
+    console.log('stepdata :', stepData);
   };
 
   const handleBack = () => {
@@ -46,44 +40,6 @@ const RegisterPage = () => {
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const formattedData = {
-        email: formData.email,
-        password: formData.password,
-        passwordConfirm: formData.passwordConfirm,
-        address: formData.address,
-        dob: formData.dob,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        gender: formData.gender,
-        phone_number: formData.phone_number,
-        school_name: formData.school_name,
-        school_address: formData.school_address,
-        school_phone_number: formData.school_phone_number,
-      };
-
-      await signup(formattedData).unwrap();
-
-      setSnackbarMessage(
-        'Your account has been successfully created. Please verify your email.',
-      );
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
-      // navigate('/auth/signin');
-    } catch (err) {
-      setSnackbarMessage(
-        'There was an issue with your signup. Please try again.',
-      );
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-    }
   };
 
   const steps = [
@@ -115,23 +71,18 @@ const RegisterPage = () => {
       handleNext={handleNext}
     />,
     <PersonalDetailsForm
-      formData={formData}
       handleFormChange={handleFormChange}
       handleNext={handleNext}
       handleBack={handleBack}
     />,
     <ContactForm
-      formData={formData}
       handleFormChange={handleFormChange}
       handleNext={handleNext}
       handleBack={handleBack}
     />,
     <CreateSchoolForm
-      formData={formData}
-      handleFormChange={handleFormChange}
       handleBack={handleBack}
-      onSubmit={handleSubmit}
-      onFormChange={handleFormChange}
+      handleFormChange={handleFormChange}
     />,
   ];
 
@@ -291,20 +242,6 @@ const RegisterPage = () => {
         {/* FORM COMPONENTs */}
         {stepFormComponents[activeStep]}
       </Box>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };
