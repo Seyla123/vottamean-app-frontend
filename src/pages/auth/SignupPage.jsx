@@ -1,225 +1,251 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import PersonIcon from '@mui/icons-material/Person';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
-import SchoolIcon from '@mui/icons-material/School';
-
-// Redux hooks
-import { useDispatch, useSelector } from 'react-redux';
-
-// React hooks
-import { useState } from 'react';
-
-// Mutation hook for signup API
-import { useSignupMutation } from '../../services/authApi';
-
-// Redux slices
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { updateFormData } from '../../store/slices/formSlice';
-
-// Material UI components for layout and stepper
+import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
+import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
+import ContactForm from '../../components/auth/ContactForm';
+import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
 import {
   Box,
-  Container,
-  Step,
   Stepper,
+  Step,
   StepLabel,
   Typography,
-  Alert,
-  Snackbar,
-  IconButton,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { User, Users, Contact, School } from 'lucide-react';
+// IMAGES & ICONS
+import Logo from '../../assets/images/Logo.svg';
+import image1 from '../../assets/images/image-1.jpg';
+import image2 from '../../assets/images/image-2.jpg';
+import image3 from '../../assets/images/image-3.webp';
+import image4 from '../../assets/images/image-4.webp';
 
-// Custom component for card layout
-import AuthContainerCard from '../../components/auth/AuthContainerCard';
-
-/**
- * Components corresponding to each step
- * Step 1: @param Account details form
- * Step 2: @param Personal info form
- * Step 3: @param Contact info form
- * Step 4: @param School info form
- */
-import GetStartSignUpForm from '../../components/auth/GetStartSignUpForm';
-import PersonalInformationForm from '../../components/auth/PersonalInformationForm';
-import ContactInformationForm from '../../components/auth/ContactInformationForm';
-import RegisterSchoolForm from '../../components/auth/RegisterSchoolForm';
-
-// Stepper labels for each step in the signup process
-const steps = [
-  'Account details',
-  'Personal information',
-  'Contact information',
-  'School information',
-];
-
-function SignupPage() {
-  // 1. Initialize dispatch for updating Redux store
+const SignupPage = () => {
+  // Dispatch the action to update the form data
   const dispatch = useDispatch();
 
-  // 2. Get form data from Redux store
-  const formData = useSelector((state) => state.form);
+  // State variable to keep track of the current step
+  const [activeStep, setActiveStep] = useState(0);
 
-  // 3. Manage the current step of the signup process
-  const [stepActive, setStepActive] = useState(0);
-
-  // 4. Hook for calling signup API and tracking its state
-  const [signup] = useSignupMutation();
-
-  // 5. Manage the submission state and Snackbar
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-
-  // 6. Function to handle form data changes and update Redux store
+  // Function to handle the form data change
   const handleFormChange = (stepData) => {
-    dispatch(updateFormData(stepData)); // Update form data in the Redux store
+    dispatch(updateFormData(stepData));
   };
 
-  // 7. Function to move to the previous step
-  const handleBack = () => setStepActive((prev) => prev - 1);
-
-  // 8. Function to move to the next step
-  const handleNext = () => setStepActive((prev) => prev + 1);
-
-  // 9. Function to submit form data to the API at the final step
-  const handleSubmit = async () => {
-    try {
-      // 9.1 Format data for API submission
-      const formattedData = {
-        email: formData.email,
-        password: formData.password,
-        passwordConfirm: formData.passwordConfirm,
-        address: formData.address,
-        dob: formData.dob,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        gender: formData.gender,
-        phone_number: formData.phone_number,
-        school_name: formData.school_name,
-        school_address: formData.school_address,
-        school_phone_number: formData.school_phone_number,
-      };
-
-      // 9.2 Send the formatted data to the API
-      await signup(formattedData).unwrap();
-
-      // 9.3 On success, set a success message and open Snackbar
-      setSnackbarMessage(
-        'Your account has been successfully created. Please verify your email.',
-      );
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
-      
-    } catch (err) {
-      // 9.4 On error, set an error message and open Snackbar
-      setSnackbarMessage(
-        'There was an issue with your signup. Please try again.',
-      );
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-    }
+  // Function to go to the previous step
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // 10. Function to handle Snackbar close
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+  // Function to go to the next step
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  // 11. Array of forms, each corresponding to a signup step
-  const stepForms = [
-    <GetStartSignUpForm
-      onClickBack={handleBack}
-      onFormChange={handleFormChange}
-      nextStep={handleNext}
+  // Array of steps to display in the stepper
+  const steps = [
+    {
+      label: 'Get Started Now',
+      description: 'Create your own email and password',
+      icon: <User size={24} />,
+    },
+    {
+      label: 'Personal details',
+      description: 'Provide your personal details',
+      icon: <Users size={24} />,
+    },
+    {
+      label: 'Contact Details',
+      description: 'Provide your contact information',
+      icon: <Contact size={24} />,
+    },
+    {
+      label: 'School Information',
+      description: 'Enter school information',
+      icon: <School size={24} />,
+    },
+  ];
+
+  // Array of components to render in each step
+  const stepFormComponents = [
+    <GetStartedNowForm
+      handleFormChange={handleFormChange}
+      handleNext={handleNext}
     />,
-    <PersonalInformationForm
-      onClickBack={handleBack}
-      onFormChange={handleFormChange}
-      nextStep={handleNext}
+    <PersonalDetailsForm
+      handleFormChange={handleFormChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
     />,
-    <ContactInformationForm
-      onClickBack={handleBack}
-      onFormChange={handleFormChange}
-      nextStep={handleNext}
+    <ContactForm
+      handleFormChange={handleFormChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
     />,
-    <RegisterSchoolForm
-      onClickBack={handleBack}
-      onFormChange={handleFormChange}
-      onSubmit={handleSubmit} // Final submit at the last step
+    <CreateSchoolForm
+      handleBack={handleBack}
+      handleFormChange={handleFormChange}
     />,
   ];
 
-  // Define step icons
-  const stepIcons = {
-    1: AccountCircleIcon,
-    2: PersonIcon,
-    3: ContactMailIcon,
-    4: SchoolIcon,
-  };
-
-  // Custom StepIcon component
-  function CustomStepIcon(props) {
-    const { active, completed, className, icon } = props;
-    const IconComponent = stepIcons[icon];
-
-    return (
-      <IconComponent
-        className={className}
-        style={{
-          color: active ? '#6c63ff' : completed ? '#bdbdbd' : '#bdbdbd',
-        }}
-      />
-    );
-  }
+  const CustomIconBox = ({ icon }) => (
+    <Box
+      sx={{
+        width: 40,
+        height: 40,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 2,
+        backgroundColor: '#fff',
+        padding: '8px',
+      }}
+    >
+      {icon}
+    </Box>
+  );
 
   return (
-    <Container
-      maxWidth="lg"
-      sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+    <Box
+      component={'section'}
+      sx={{
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        p: 2,
+        gap: 2,
+        bgcolor: 'white',
+      }}
     >
-      {/* 12. Display Stepper at the top to show current step */}
-      <Box sx={{ width: 1, paddingTop: { xs: 3, md: 4 } }}>
-        <Stepper activeStep={stepActive} alternativeLabel>
-          {steps.map((label, index) => (
-            <Step key={label}>
-              <StepLabel  StepIconComponent={CustomStepIcon}>{label}</StepLabel>
-            </Step>
+      {/* RIGHT CONTAINER */}
+      <Box
+        component={'div'}
+        sx={{
+          display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          bgcolor: '#F5F5F7',
+          borderRadius: 2,
+          p: 2,
+          overflow: 'hidden',
+        }}
+      >
+        {/* STEPPER */}
+        <Box
+          component={'div'}
+          sx={{ px: { xs: 0, md: 4 }, position: 'relative', zIndex: 10 }}
+        >
+          <Stepper
+            activeStep={activeStep}
+            orientation="vertical"
+            sx={{ mt: 4 }}
+          >
+            {steps.map((step, index) => (
+              <Step
+                key={index}
+                sx={{
+                  opacity: activeStep === index ? 1 : 0.5,
+                  transition: 'opacity 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
+                }}
+              >
+                <StepLabel
+                  icon={<CustomIconBox icon={step.icon} />}
+                  optional={
+                    <Typography variant="body2" color="grey.300">
+                      {step.description}
+                    </Typography>
+                  }
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: 'bold' }}
+                    color="common.white"
+                  >
+                    {step.label}
+                  </Typography>
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+
+        {/* IMAGE CONTAINER */}
+        <Box
+          component={'div'}
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
+        >
+          {[image1, image2, image3, image4].map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              alt={`Image ${index + 1}`}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                opacity: activeStep === index ? 1 : 0,
+                transform: `translateX(${(index - activeStep) * 100}%)`,
+                transition:
+                  'opacity 0.8s ease-in-out, transform 0.8s cubic-bezier(0.83, 0, 0.17, 1)',
+              }}
+            />
           ))}
-        </Stepper>
+
+          {/* IMAGE OVERLAY */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background:
+                ' linear-gradient(145deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+        </Box>
       </Box>
 
-      {/* 13. Show the form for the current step */}
-      <AuthContainerCard sideCard={stepActive === 3 ? 'right' : 'left'}>
-        {stepForms[stepActive]}
-      </AuthContainerCard>
-
-      {/* 14. Display Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleSnackbarClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
+      {/* LEFT CONTAINER */}
+      <Box
+        component={'div'}
+        sx={{
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+        }}
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Container>
+        {/* LOGO */}
+        <img
+          src={Logo}
+          alt="wavetrack logo"
+          style={{
+            width: '150px',
+            position: 'absolute',
+            top: '10px',
+            left: '10px',
+            zIndex: 10,
+          }}
+        />
+        {/* FORM COMPONENTs */}
+        {stepFormComponents[activeStep]}
+      </Box>
+    </Box>
   );
-}
+};
 
 export default SignupPage;
