@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useCreatePaymentIntentMutation } from '../../services/paymentApi';
+import { useGetUserProfileQuery } from '../../services/userApi';
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [createPaymentIntent, { isLoading, isSuccess }] =
     useCreatePaymentIntentMutation();
+
+  const { data: userData } = useGetUserProfileQuery();
+
+  // Get admin_id from user profile's adminProfile
+  const adminId = userData?.data?.adminProfile?.admin_id;
+  console.log('Admin ID:', adminId);
+
   const [planType, setPlanType] = useState('monthly');
 
   const handleSubmit = async (e) => {
@@ -44,8 +52,7 @@ const PaymentForm = () => {
     console.log('Plan Type :', planType);
     console.log('Payment Data :', paymentIntentData);
 
-    // Check for errors in the API call
-    if (!paymentIntentData || paymentIntentError) {
+    if (paymentIntentError) {
       console.log('[Payment Intent Error]', paymentIntentError);
       return;
     }

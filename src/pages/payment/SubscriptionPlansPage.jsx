@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-} from '@mui/material';
+import { Box, Typography, Card, CardContent, CardActions } from '@mui/material';
 import SubscriptionButton from './SubscriptionButton';
 import CancelSubscription from './CancelSubscription';
 import PaymentPage from './PaymentPage';
