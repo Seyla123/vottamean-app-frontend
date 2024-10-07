@@ -12,6 +12,11 @@ const PaymentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!stripe || !elements || !adminId) {
+      console.error('Stripe or elements not loaded, or admin ID missing');
+      return;
+    }
+
     // Get card details from Stripe's CardElement
     const cardElement = elements.getElement(CardElement);
 
@@ -27,13 +32,17 @@ const PaymentForm = () => {
       return;
     }
 
-    // Create PaymentIntent on the server with the payment method ID
+    // Create PaymentIntent on the server with the payment method ID and admin_id
     const { data: paymentIntentData, error: paymentIntentError } =
       await createPaymentIntent({
-        admin_id: '1', // Include admin ID if necessary
-        plan_type: planType, // Ensure this is set correctly
-        payment_method_id: paymentMethod.id, // This should be the payment method ID from Stripe
+        admin_id: adminId,
+        plan_type: planType,
+        payment_method_id: paymentMethod.id,
       });
+
+    console.log('Payment Method ID :', paymentMethod.id);
+    console.log('Plan Type :', planType);
+    console.log('Payment Data :', paymentIntentData);
 
     // Check for errors in the API call
     if (!paymentIntentData || paymentIntentError) {
