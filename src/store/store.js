@@ -1,10 +1,8 @@
+// Store Configuration
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { authApi } from '../services/authApi';
-import { classApi } from '../services/classApi';
-import { attendanceApi } from '../services/attendanceApi';
-import { teacherApi } from '../services/teacherApi';
-import { subjectApi } from '../services/subjectApi';
+
+// Redux Slice Reducers
 import formReducer from './slices/formSlice';
 import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
@@ -13,8 +11,16 @@ import classReducer from './slices/classSlice';
 import subjectReducer from './slices/subjectSlice';
 import uiReducer from './slices/uiSlice';
 
+// APIs Reducers
+import { authApi } from '../services/authApi';
+import { classApi } from '../services/classApi';
+import { attendanceApi } from '../services/attendanceApi';
+import { teacherApi } from '../services/teacherApi';
+import { subjectApi } from '../services/subjectApi';
+
 const store = configureStore({
   reducer: {
+    // Redux Slice Reducers
     ui: uiReducer,
     form: formReducer,
     auth: authReducer,
@@ -22,12 +28,15 @@ const store = configureStore({
     attendance: attendanceReducer,
     subjects: subjectReducer,
     classes: classReducer,
+
+    // APIs Reducers
     [subjectApi.reducerPath]: subjectApi.reducer,
     [classApi.reducerPath]: classApi.reducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
   },
+  // Middleware for API calls
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       authApi.middleware,
@@ -38,6 +47,7 @@ const store = configureStore({
     ),
 });
 
+// Persist Store
 setupListeners(store.dispatch);
 
 export default store;

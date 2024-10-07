@@ -20,9 +20,31 @@ export const paymentApi = baseApi.injectEndpoints({
         body: paymentData,
       }),
     }),
+
+    // Define the Stripe endpoint to create a checkout session
+    createCheckoutSession: builder.mutation({
+      query: (sessionData) => ({
+        url: 'payments/create-checkout-session',
+        method: 'POST',
+        body: sessionData,
+      }),
+    }),
+
+    // Define the Stripe endpoint to cancel a payment intent
+    cancelPaymentIntent: builder.mutation({
+      query: (paymentData) => ({
+        url: 'payments/cancel-subscription',
+        method: 'POST',
+        body: paymentData,
+      }),
+    }),
   }),
 });
 
 // Export the hooks for the custom endpoints
-export const { useGetPaymentQuery, useCreatePaymentIntentMutation } =
-  paymentApi;
+export const {
+  useGetPaymentQuery,
+  useCreatePaymentIntentMutation,
+  useCreateCheckoutSessionMutation,
+  useCancelPaymentIntentMutation,
+} = paymentApi;

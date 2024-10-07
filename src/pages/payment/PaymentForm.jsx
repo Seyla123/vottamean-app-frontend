@@ -1,40 +1,63 @@
 import React, { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useCreatePaymentIntentMutation } from '../../services/paymentApi';
+
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [createPaymentIntent, { isLoading, isSuccess }] =
     useCreatePaymentIntentMutation();
-
   const [planType, setPlanType] = useState('monthly');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!stripe || !elements || !adminId) {
+      console.error('Stripe or elements not loaded, or admin ID missing');
+      return;
+    }
+
     // Get card details from Stripe's CardElement
     const cardElement = elements.getElement(CardElement);
 
-    // Create PaymentIntent on the server
-    const { data: paymentIntentData } = await createPaymentIntent({
-      plan_type: planType,
-      payment_method_id: cardElement.id,
-    });
+    // Create a payment method
+    const { error: paymentMethodError, paymentMethod } =
+      await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
 
-    if (!paymentIntentData || !stripe) return;
+    if (paymentMethodError) {
+      console.log('[Payment Method Error]', paymentMethodError);
+      return;
+    }
 
+    // Create PaymentIntent on the server with the payment method ID and admin_id
+    const { data: paymentIntentData, error: paymentIntentError } =
+      await createPaymentIntent({
+        admin_id: adminId,
+        plan_type: planType,
+        payment_method_id: paymentMethod.id,
+      });
+
+    console.log('Payment Method ID :', paymentMethod.id);
+    console.log('Plan Type :', planType);
+    console.log('Payment Data :', paymentIntentData);
+
+    // Check for errors in the API call
+    if (!paymentIntentData || paymentIntentError) {
+      console.log('[Payment Intent Error]', paymentIntentError);
+      return;
+    }
+
+    // Destructure client_secret from the response
     const { client_secret } = paymentIntentData;
 
     // Confirm the payment on the client
     const { error, paymentIntent } = await stripe.confirmCardPayment(
       client_secret,
       {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: 'Your Name',
-          },
-        },
+        payment_method: paymentMethod.id,
       },
     );
 
