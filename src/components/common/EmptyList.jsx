@@ -21,7 +21,7 @@ const EmptyList = ({ image, title, description }) => {
           height: '70vh',
         }}
       >
-        <Box sx={{ width: '300px', height: '200px' }}>
+        <Box sx={{ width: '300px', height: '200px', mb: '2rem' }}>
           {image && <StyledImage src={image} alt={title || 'Empty list'} />}
         </Box>
         {title && (
