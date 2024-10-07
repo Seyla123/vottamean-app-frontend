@@ -8,15 +8,14 @@ import {
   Skeleton,
   Tabs,
   Tab,
-  Select,
   MenuItem,
   useMediaQuery,
   useTheme,
-  FormControl,
-  InputLabel,
+  Button,
+  Menu,
 } from '@mui/material';
 import { styled } from '@mui/system';
-import { Clock, Calendar, Users } from 'lucide-react';
+import { Clock, Calendar, Users, ListFilter } from 'lucide-react';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
 import EmptyList from '../../../components/common/EmptyList';
 import classHeaderImg1 from '../../../assets/images/study-bg.avif';
@@ -150,6 +149,7 @@ function TeacherScheduleClassPage() {
 
   const [classesData, setClassesData] = useState([]);
   const [selectedDay, setSelectedDay] = useState('All');
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     if (getTeacherClasses && isSuccess) {
@@ -189,8 +189,17 @@ function TeacherScheduleClassPage() {
     navigate(`/teacher/mark-attendance/${sessionId}`);
   };
 
-  const handleDayChange = (event, newValue) => {
-    setSelectedDay(isMobile ? event.target.value : newValue);
+  const handleFilterClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDayChange = (day) => {
+    setSelectedDay(day);
+    handleFilterClose();
   };
 
   const renderSkeleton = () => (
@@ -239,55 +248,51 @@ function TeacherScheduleClassPage() {
   const renderDaySelector = () => {
     if (isMobile) {
       return (
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="day-select-label">Select Day</InputLabel>
-          <Select
-            labelId="day-select-label"
-            id="day-select"
-            value={selectedDay}
-            label="Select Day"
-            onChange={handleDayChange}
+        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            variant="outlined"
+            startIcon={<ListFilter size={20} />}
+            onClick={handleFilterClick}
+          >
+            {selectedDay === 'All' ? 'Filter by Day' : selectedDay}
+          </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleFilterClose}
           >
             {days.map((day) => (
-              <MenuItem key={day} value={day}>
+              <MenuItem
+                key={day}
+                onClick={() => handleDayChange(day)}
+                selected={day === selectedDay}
+              >
                 {day}
               </MenuItem>
             ))}
-          </Select>
-        </FormControl>
+          </Menu>
+        </Box>
       );
     } else {
       return (
-        <Box
-          sx={{
-            borderBottom: 1,
-            borderColor: 'divider',
-            mb: 2,
-            width: '100%',
-          }}
-        >
+        <>
           <Tabs
             value={selectedDay}
-            onChange={handleDayChange}
+            onChange={(_, newValue) => setSelectedDay(newValue)}
             variant="scrollable"
             scrollButtons="auto"
-            allowScrollButtonsMobile
-            aria-label="class days"
+            sx={{ borderBottom: 1, borderColor: 'divider' }}
           >
             {days.map((day) => (
               <Tab
+                key={day}
                 label={day}
                 value={day}
-                key={day}
-                sx={{
-                  textTransform: 'capitalize',
-                  minWidth: 'auto',
-                  padding: '6px 12px',
-                }}
+                sx={{ textTransform: 'capitalize' }}
               />
             ))}
           </Tabs>
-        </Box>
+        </>
       );
     }
   };

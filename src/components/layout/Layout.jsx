@@ -54,7 +54,6 @@ const Layout = ({ teacherSite, adminSite }) => {
     }
   }, [user]);
 
-
   // 3. Initialize the logout mutation using the custom API hook
   const [logout] = useLogoutMutation();
 
