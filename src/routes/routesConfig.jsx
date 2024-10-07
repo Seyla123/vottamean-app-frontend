@@ -13,7 +13,6 @@ import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 import PaymentPage from '../pages/payment/PaymentPage';
 import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
 
-import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 
 // admin
@@ -340,16 +339,6 @@ const routesConfig = [
   {
     path: '/unauthorized',
     element: <UnauthorizedPage />,
-  },
-  {
-    path: '*',
-    element: <Layout />,
-    children: [
-      {
-        path: '',
-        element: <NotFoundPage />,
-      },
-    ],
   },
 ];
 
