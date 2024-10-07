@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Tab,
   Box,
@@ -10,12 +10,25 @@ import {
 } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Trash2, KeyRound, School, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
+import { useGetUserProfileQuery } from '../../../services/userApi';
+import { useDispatch } from 'react-redux';
 
 function TeacherAccountProfilePage() {
+  // - Initialize dispatch and navigate hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Redux API calls to get user profile
+  const { data: user, isLoading, error, isSuccess } = useGetUserProfileQuery();
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const [value, setValue] = useState('1');
   const clickEdit = () => {
     console.log('edit');

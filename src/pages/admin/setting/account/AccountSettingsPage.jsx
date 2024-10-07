@@ -51,6 +51,7 @@ const AccountSettingsPage = () => {
 
   // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
+    console.log(user);
     if (user) {
       const transformedData = getUserProfileData(user);
       setUserData(transformedData);
