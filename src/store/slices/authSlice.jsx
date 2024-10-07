@@ -45,16 +45,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
     });
-
-    // Handle profile update
-    builder.addMatcher(
-      authApi.endpoints.updateProfile.matchFulfilled,
-      (state, { payload }) => {
-        if (payload.status === 'success' && payload.data) {
-          state.user = payload.data;
-        }
-      }
-    );
   },
 });
 
