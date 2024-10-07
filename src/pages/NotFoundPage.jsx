@@ -1,15 +1,32 @@
 import React from 'react';
 import { Box, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import notFoundImage from '../assets/images/404-page-not-found.svg';
 
 const NotFoundPage = ({
   imageUrl = notFoundImage,
   title = '404: Page Not Found',
-  description = "Oops! why you're here? We're sorry, but the page you're looking for doesn't exist.",
-  buttonText = 'Go back to Dashboard',
-  buttonLink = '/',
+  description = "Oops! Why you're here? We're sorry, but the page you're looking for doesn't exist.",
+  buttonText = 'Go to Dashboard',
 }) => {
+  const { user } = useSelector((state) => state.auth);
+
+  const getDashboardLink = () => {
+    if (!user) return '/admin/dashboard';
+
+    switch (user.role) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'teacher':
+        return '/teacher/dashboard';
+      default:
+        return '/';
+    }
+  };
+
+  const dashboardLink = getDashboardLink();
+
   return (
     <Container maxWidth="sm">
       <Box
@@ -55,7 +72,7 @@ const NotFoundPage = ({
         </Box>
         <Button
           component={Link}
-          to={buttonLink}
+          to={dashboardLink}
           variant="contained"
           color="primary"
           size="large"
