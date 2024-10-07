@@ -6,7 +6,8 @@ import { useGetUserProfileQuery } from '../../services/userApi';
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const [createPaymentIntent, { isLoading, isSuccess }] = useCreatePaymentIntentMutation();
+  const [createPaymentIntent, { isLoading, isSuccess }] =
+    useCreatePaymentIntentMutation();
 
   const { data: userData } = useGetUserProfileQuery();
 
@@ -20,7 +21,7 @@ const PaymentForm = () => {
     e.preventDefault();
 
     if (!stripe || !elements || !adminId) {
-      console.error("Stripe or elements not loaded, or admin ID missing");
+      console.error('Stripe or elements not loaded, or admin ID missing');
       return;
     }
 
@@ -28,10 +29,11 @@ const PaymentForm = () => {
     const cardElement = elements.getElement(CardElement);
 
     // Create a payment method
-    const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-    });
+    const { error: paymentMethodError, paymentMethod } =
+      await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
 
     if (paymentMethodError) {
       console.log('[Payment Method Error]', paymentMethodError);
@@ -39,11 +41,16 @@ const PaymentForm = () => {
     }
 
     // Create PaymentIntent on the server with the payment method ID and admin_id
-    const { data: paymentIntentData, error: paymentIntentError } = await createPaymentIntent({
-      admin_id: adminId,
-      plan_type: planType,
-      payment_method_id: paymentMethod.id,
-    });
+    const { data: paymentIntentData, error: paymentIntentError } =
+      await createPaymentIntent({
+        admin_id: adminId,
+        plan_type: planType,
+        payment_method_id: paymentMethod.id,
+      });
+
+    console.log('Payment Method ID :', paymentMethod.id);
+    console.log('Plan Type :', planType);
+    console.log('Payment Data :', paymentIntentData);
 
     if (paymentIntentError) {
       console.log('[Payment Intent Error]', paymentIntentError);
@@ -54,9 +61,12 @@ const PaymentForm = () => {
     const { client_secret } = paymentIntentData;
 
     // Confirm the payment on the client
-    const { error, paymentIntent } = await stripe.confirmCardPayment(client_secret, {
-      payment_method: paymentMethod.id,
-    });
+    const { error, paymentIntent } = await stripe.confirmCardPayment(
+      client_secret,
+      {
+        payment_method: paymentMethod.id,
+      },
+    );
 
     if (error) {
       console.log('[Payment error]', error);
