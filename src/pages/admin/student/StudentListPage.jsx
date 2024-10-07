@@ -26,7 +26,7 @@ const columns = [
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { modal, snackbar } = useSelector((state) => state.ui);
+  const { modal } = useSelector((state) => state.ui);
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('');
@@ -42,9 +42,7 @@ const StudentListPage = () => {
   useEffect(() => {
     if (isSuccess && data) {
       const formattedStudents = formatStudentsList(data.data);
-      setRows(formattedStudents);
-      console.log('this rows : ', rows);
-      
+      setRows(formattedStudents);   
     }
   }, [isSuccess, data,dispatch]);
 
@@ -52,16 +50,21 @@ const StudentListPage = () => {
   if (isError) {
     console.log('error message :', error.data.message);
   }
-  //filter change by Student
+  //filter change 
   const handleChange = (event) => {
     setFilter(event.target.value);
   };
+   // Handle Search by  name
+   const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   // Handle for goes to edit page
   const handleEdit = (row) => {
     navigate(`/admin/students/update/${row.id}`);
   };
 
-   // When the delete is in progress, show a snackbar with a message "Deleting..."
+  // When the delete is in progress, show a snackbar with a message "Deleting..."
   // When the delete is failed, show a snackbar with an error message
   // When the delete is successful, show a snackbar with a success message and navigate to the class list page
   useEffect(()=>{
@@ -137,7 +140,7 @@ const StudentListPage = () => {
               sx={{ width: '100%', maxWidth: '700px' }}
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
             />
           </Stack>
         </Box>

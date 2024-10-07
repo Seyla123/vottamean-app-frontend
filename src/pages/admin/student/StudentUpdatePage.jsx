@@ -44,7 +44,7 @@ const StudentCreatePage = () => {
     <>
 
       <FormComponent
-        title={"Add Student"}
+        title={"Update Student"}
         subTitle={"Please fill Students Indformation"}
       >
          <Tabs
