@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Box, Stack } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
-import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -11,10 +10,10 @@ import {
   useDeleteStudentsDataMutation,
   useGetStudentsDataQuery,
 } from '../../../services/studentApi';
-import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import { formatStudentsList } from '../../../utils/formatData';
-import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
+import { setSnackbar } from '../../../store/slices/uiSlice';
+import StudentListTable from '../../../components/student/StudentListTable';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -26,11 +25,10 @@ const columns = [
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { modal } = useSelector((state) => state.ui);
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('');
-  const [selectedStudent, setSelectedStudent] = useState(null);
+
 
   // Fetch students using the API hook
   const { data, isLoading, isError, isSuccess } = useGetStudentsDataQuery({
@@ -59,11 +57,6 @@ const StudentListPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  // Handle for goes to edit page
-  const handleEdit = (row) => {
-    navigate(`/admin/students/update/${row.id}`);
-  };
-
   // When the delete is in progress, show a snackbar with a message "Deleting..."
   // When the delete is failed, show a snackbar with an error message
   // When the delete is successful, show a snackbar with a success message and navigate to the class list page
@@ -77,25 +70,6 @@ const StudentListPage = () => {
       navigate('/admin/students');
     }
   },[dispatch, isDeleteError, isDeleteSuccess, isDeleting])
-
-  // Handle delete clicked
-  const handleDelete = (row) => {
-    setSelectedStudent(row.id);
-    dispatch(setModal({ open: true }));
-  };
-  // handle confirm deletion
-  const handleDeleteConfirmed = async () => {
-    dispatch(setModal({ open: false }));
-    await deleteStudent(selectedStudent).unwrap();
-
-  };
-  // Handle for delete All
-  const handleSelectedDelete = () => {
-    console.log('Delete all');
-  };
-  const handleView = (row) => {
-    navigate(`/admin/students/${row.id}`);
-  }
 
 //Loading Data
   if (isLoading) {
@@ -144,24 +118,9 @@ const StudentListPage = () => {
             />
           </Stack>
         </Box>
+        {/* Student Table */}
+        <StudentListTable />
 
-        <DataTable
-          rows={rows}
-          columns={columns}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onView={handleView}
-          onSelectedDelete={handleSelectedDelete}
-          emptyTitle={'No Student'}
-          emptySubTitle={'No Student Available'}
-        />
-
-        <DeleteConfirmationModal
-          open={modal.open}
-          onClose={() => dispatch(setModal({ open: false }))}
-          onConfirm={handleDeleteConfirmed}
-          itemName="Student"
-        />
       </FormComponent>
     </Box>
   );
