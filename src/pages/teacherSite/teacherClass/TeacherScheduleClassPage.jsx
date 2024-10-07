@@ -1,25 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import FormComponent from '../../../components/common/FormComponent';
-import ClassCard from '../../../components/teacherSite/ClassCard';
-import ClassCardSkeleton from '../../../components/loading/ClassCardSkeleton';
-import { Grid2, Box } from '@mui/material';
-import teacherImage from '../../../assets/images/teacher-35.svg';
+import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  Grid,
+  Paper,
+  Box,
+  Skeleton,
+  Divider,
+} from '@mui/material';
+import { styled } from '@mui/system';
+import { Clock, Calendar, Users } from 'lucide-react';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
-import { formatStartEndTime } from '../../../utils/formatHelper';
-import ClassNotFound from '../../../components/teacherSite/ClassNotFound';
-import { Link } from 'react-router-dom';
 import EmptyList from '../../../components/common/EmptyList';
-// colors for card
-const colors = [
-  '#e7f7ff',
-  '#fffaeb',
-  '#ffebcb',
-  '#f1fcd9',
-  '#ffece9',
-  '#e7eaff',
-];
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+}));
+
+const IconWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.text.secondary,
+  '& > svg': {
+    marginRight: theme.spacing(1),
+  },
+}));
+
+const ClassListItem = ({ classData, onClick }) => (
+  <StyledPaper onClick={onClick}>
+    <Typography variant="h6" gutterBottom color="primary">
+      {classData.class_name}
+    </Typography>
+    <Typography variant="body1" color="text.secondary" gutterBottom>
+      {classData.subject}
+    </Typography>
+    <Divider sx={{ my: 2 }} />
+    <IconWrapper>
+      <Calendar size={18} />
+      <Typography variant="body2" textTransform="capitalize">
+        {classData.day}
+      </Typography>
+    </IconWrapper>
+    <IconWrapper sx={{ my: 1 }}>
+      <Clock size={18} />
+      <Typography variant="body2">
+        {classData.start_time.slice(0, 5)} - {classData.end_time.slice(0, 5)}
+      </Typography>
+    </IconWrapper>
+    <IconWrapper>
+      <Users size={18} />
+      <Typography variant="body2">{classData.students} students</Typography>
+    </IconWrapper>
+    <Box mt="auto" pt={2}>
+      <Typography variant="caption" color="text.secondary">
+        Session ID: {classData.session_id}
+      </Typography>
+    </Box>
+  </StyledPaper>
+);
+
 function TeacherScheduleClassPage() {
-  // useGetTeacherScheduleClassesQuery : This is the data fetching hook for the teacher classes,fetch the classes schedule for the current day
+  const navigate = useNavigate();
   const {
     data: getTeacherClasses,
     error,
@@ -28,35 +75,44 @@ function TeacherScheduleClassPage() {
     isError,
   } = useGetTeacherScheduleClassesQuery();
 
-  // classesData : This is the state for the classes
   const [classesData, setClassesData] = useState([]);
 
-  // It will set the state of the classes based on the data from the hook
   useEffect(() => {
     if (getTeacherClasses && isSuccess) {
-      const fetchedData = getTeacherClasses.data;
-      setClassesData(fetchedData);
+      setClassesData(getTeacherClasses.data || []);
     }
   }, [getTeacherClasses, isSuccess]);
 
-  // error handler
   if (isError) {
-    return <div>Error loading class data: {error.data.message}</div>;
+    return (
+      <Typography color="error">
+        Error loading class data: {error.data?.message || 'Unknown error'}
+      </Typography>
+    );
   }
 
-  // This is the function for rendering the skeleton while loading
-  const renderedSkeleton = () =>
-    [...Array(6)].map((_, i) => (
-      <Grid2 size={{ xs: 12, md: 6 }} key={i}>
-        <ClassCardSkeleton />
-      </Grid2>
-    ));
+  const handleClassClick = (sessionId) => {
+    navigate(`/teacher/mark-attendance/${sessionId}`);
+  };
 
-  // This is the handling for no classes found
-  if (isSuccess && classesData.length == 0) {
+  const renderSkeleton = () => (
+    <Grid container spacing={3}>
+      {[...Array(4)].map((_, index) => (
+        <Grid item xs={12} sm={6} key={index}>
+          <Skeleton
+            variant="rectangular"
+            height={200}
+            sx={{ borderRadius: 4 }}
+          />
+        </Grid>
+      ))}
+    </Grid>
+  );
+
+  if (isSuccess && classesData.length === 0) {
     return (
       <EmptyList
-        image={teacherImage}
+        image="/path/to/empty-classes-image.svg"
         title="No classes found"
         description="It looks like your classes list is empty. Add some classes to get started!"
       />
@@ -64,47 +120,28 @@ function TeacherScheduleClassPage() {
   }
 
   return (
-    <>
-      <FormComponent
-        title="Class Schedule"
-        subTitle={`These are ${classesData.length} classes`}
-      >
-        <Grid2 container spacing={2}>
-          {isLoading ? (
-            // Render skeleton while loading
-            renderedSkeleton()
-          ) : classesData.length > 0 ? (
-            // Render actual class cards once loading is complete
-            classesData.map((classData, index) => {
-              const cardColor = colors[index % colors.length];
-              // const randomBorder = border[index % border.length];
-              return (
-                <Grid2 size={{ xs: 12, md: 6 }} key={classData.session_id}>
-                  <Box
-                    component={Link}
-                    to={`/teacher/mark-attendance/${classData.session_id}`}
-                    sx={{ color: 'black' }}
-                  >
-                    <ClassCard
-                      className={classData.class_name}
-                      day={classData.day}
-                      subject={classData.subject}
-                      students={classData.students}
-                      time={formatStartEndTime(classData)}
-                      classIcon={teacherImage}
-                      randomColor={cardColor}
-                    />
-                  </Box>
-                </Grid2>
-              );
-            })
-          ) : (
-            // Handle no class found
-            <ClassNotFound />
-          )}
-        </Grid2>
-      </FormComponent>
-    </>
+    <Container maxWidth="lg">
+      <Typography variant="h4" component="h1" gutterBottom>
+        Class Schedule
+      </Typography>
+      <Typography variant="subtitle1" gutterBottom>
+        You have {classesData.length} classes scheduled
+      </Typography>
+      {isLoading ? (
+        renderSkeleton()
+      ) : (
+        <Grid container spacing={3}>
+          {classesData.map((classData) => (
+            <Grid item xs={12} sm={6} key={classData.session_id}>
+              <ClassListItem
+                classData={classData}
+                onClick={() => handleClassClick(classData.session_id)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Container>
   );
 }
 
