@@ -110,10 +110,9 @@ function ClassPeriodCreatePage() {
             >
               <Box sx={containerInput}>
                 <Box>
-                  <Typography
-                    color={!startTime && errors.start_time ? 'red' : 'inherit'}
-                  >
+                  <Typography variant="body2" fontWeight="bold">
                     Start time
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                   </Typography>
                   <TimePicker
                     sx={timeInput}
@@ -140,10 +139,9 @@ function ClassPeriodCreatePage() {
                   />
                 </Box>
                 <Box>
-                  <Typography
-                    color={!endTime && errors.end_time ? 'red' : 'inherit'}
-                  >
+                  <Typography variant="body2" fontWeight="bold">
                     End time
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                   </Typography>
                   <TimePicker
                     sx={timeInput}

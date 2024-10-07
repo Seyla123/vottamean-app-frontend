@@ -124,8 +124,9 @@ function ClassPeriodUpdatePage() {
               >
                 <Box sx={containerInput}>
                   <Box>
-                    <Typography>
+                    <Typography variant="body2" fontWeight="bold">
                       Start time
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                     </Typography>
                     <TimePicker
                       sx={timeInput}
@@ -148,10 +149,9 @@ function ClassPeriodUpdatePage() {
                     />
                   </Box>
                   <Box>
-                    <Typography
-                      color={!!errors.end_time ? 'red' : 'inherit'}
-                    >
+                    <Typography variant="body2" fontWeight="bold">
                       End time
+                      <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                     </Typography>
                     <TimePicker
                       sx={timeInput}

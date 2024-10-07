@@ -3,7 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Typography, Stack, TextField } from '@mui/material';
+import { Typography, Stack, TextField, InputAdornment } from '@mui/material';
+import { Library, ScrollText } from 'lucide-react';
 // import components
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
@@ -91,26 +92,39 @@ function SubjectCreatePage() {
       >
         <CardComponent title={'Subject Information'}>
           <Stack sx={fieldContainer}>
-            <Typography color={errors.subject_name ? 'red' : 'inherit'}>
+            <Typography variant="body2" fontWeight="bold">
               Subject's Name
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
             <Controller
               name="subject_name"
               control={control}
               render={({ field }) => (
                 <TextField
-                  placeholder="subject's name"
                   {...field}
+                  placeholder="subject's name"
                   error={!!errors.subject_name}
                   helperText={
                     errors.subject_name ? errors.subject_name.message : ''
                   }
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Library size={20} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               )}
             />
           </Stack>
           <Stack sx={fieldContainer}>
-            <Typography variant="body1">Description</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              Description
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
             <Controller
               name="description"
               control={control}
@@ -118,12 +132,24 @@ function SubjectCreatePage() {
                 <TextField
                   {...field}
                   error={!!errors.description}
-                  helperText={
-                    errors.description ? errors.description.message : ''
-                  }
                   multiline
                   minRows={5}
                   placeholder="description"
+                  helperText={ errors.description ? errors.description.message : ''}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ScrollText size={20} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                  sx={{
+                    '.MuiInputBase-root': {
+                      alignItems: 'flex-start',
+                    },
+                  }}
                 />
               )}
             />
