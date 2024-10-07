@@ -1,42 +1,66 @@
+// React and third-party libraries
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Box, Tabs, Tab, Typography, Card, Grid2, Grid } from '@mui/material';
-import dayjs from 'dayjs';
 
+// Mui Component
+import dayjs from 'dayjs';
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Card,
+  Grid,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+
+// Icon from lucide
+import {
+  User,
+  KeyRound,
+  CalendarRange,
+  UsersRound,
+  FolderDown,
+  Settings,
+} from 'lucide-react';
+
+// Redux Slice
+import { setSnackbar } from '../../store/slices/uiSlice';
+
+// Sign up Teacher Api
+import { useSignUpTeacherMutation } from '../../services/teacherApi';
+
+// Custom Components
 import TeacherInfo from './TeacherInfo';
 import AccountInfo from './AccountInfo';
-import { setSnackbar } from '../../store/slices/uiSlice';
-import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import LoadingCircle from '../../components/loading/LoadingCircle';
 import { shadow } from '../../styles/global';
-import { User, KeyRound } from 'lucide-react';
 
 function FormInfo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
+
+  // Responsive in mobile mode
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [value, setValue] = useState('1');
   const [isTeacherInfoValid, setIsTeacherInfoValid] = useState(false);
   const [teacherData, setTeacherData] = useState({});
   const [formError, setFormError] = useState('');
 
+  // Sign up Teacher Api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
-
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     if (isLoading) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Signing up...',
+          message: 'Signing up Teacher account...',
           severity: 'info',
           autoHideDuration: 6000,
         }),
@@ -64,6 +88,7 @@ function FormInfo() {
     }
   }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
 
+  // Check dob validation in acc info before submitting
   const handleAccountSubmit = async (data) => {
     const today = dayjs();
     const dob = dayjs(data.dob);
@@ -79,12 +104,13 @@ function FormInfo() {
       return;
     }
 
+    // set default values for the form
     const payload = {
       email: data.email,
       password: data.password,
       passwordConfirm: data.passwordConfirm,
       address: data.address || '',
-      dob: dob.format('YYYY-MM-DD'),
+      dob: dob.format('YYYY-MM-DD'), // format the dob
       first_name: data.firstName || '',
       last_name: data.lastName || '',
       gender: data.gender || '',
@@ -92,6 +118,7 @@ function FormInfo() {
     };
 
     try {
+      // Send the formatted data to the API
       await signUpTeacher(payload).unwrap();
       setFormError('');
     } catch (err) {
@@ -100,6 +127,7 @@ function FormInfo() {
     }
   };
 
+  // Handle continue to account info after validating correct
   const handleNextClick = (isValid, data) => {
     if (isValid) {
       setTeacherData(data);
@@ -108,53 +136,62 @@ function FormInfo() {
     }
   };
 
+  // Handle back
   const handleBack = () => {
     setValue('1');
   };
 
+  // loading state
   if (isLoading) return <LoadingCircle />;
-
-  const isMobile = windowWidth < 600;
 
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: {
-          xs: 'column',
-          sm: 'row',
-        },
-        gap: {
-          xs: '16px',
-          sm: 3,
-        },
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: { xs: 2, sm: 3 },
       }}
     >
-      <Card sx={styles.container}>
-        <Box sx={styles.sidebar(isMobile)}>
+      <Card
+        sx={cardContainer}
+      >
+        {/* Sidebar tabs */}
+        <Box
+          sx={{
+            width: { xs: '100%', sm: '200px' },
+            borderRight: { sm: '1px solid #e0e0e0' },
+          }}
+        >
           <Tabs
             orientation={isMobile ? 'horizontal' : 'vertical'}
             value={value}
             variant={isMobile ? 'fullWidth' : 'scrollable'}
             onChange={(event, newValue) => setValue(newValue)}
-            sx={styles.tabs(isMobile)}
           >
             <Tab
               label="Personal"
               icon={<User size={18} />}
               value="1"
-              sx={styles.tab}
+              sx={tabStyle}
             />
             <Tab
               label="Account"
               icon={<KeyRound size={18} />}
               value="2"
-              sx={styles.tab}
+              sx={tabStyle}
               disabled={!isTeacherInfoValid}
             />
           </Tabs>
         </Box>
-        <Box sx={{ ...styles.content, padding: 0 }}>
+        {/* Contents */}
+        <Box
+          sx={{
+            flex: 1,
+            p: 3,
+            backgroundColor: '#ffffff',
+            overflowY: 'auto',
+          }}
+        >
           {value === '1' && (
             <TeacherInfo
               handleNextClick={handleNextClick}
@@ -170,45 +207,37 @@ function FormInfo() {
           )}
         </Box>
       </Card>
+      {/* Info Box */}
       <Box
-        sx={{
-          display: { md: 'block', sm: 'none', xs: 'none' },
-          backgroundColor: 'white',
-          width: {
-            xs: '100%',
-            sm: '330px',
-          },
-          ...shadow,
-        }}
+        sx={infoBox}
       >
-        <Box sx={styles.text}>
-          <Typography>By setting up teacher accounts </Typography>
-          <Grid item xs={6} sx={styles.gridContainer}>
-            <Box sx={styles.gridItem}>
-              <User />
-            </Box>
-            <Typography variant="body2">Generate attendance reports</Typography>
-          </Grid>
-          <Grid item xs={6} sx={styles.gridContainer}>
-            <Box sx={styles.gridItem}>
-              <User />
-            </Box>
-            <Typography variant="body2">
-              Access their class schedules
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sx={styles.gridContainer}>
-            <Box sx={styles.gridItem}>
-              <User />
-            </Box>
-            <Typography variant="body2">
-              Administrators enable teachers to efficiently monitor student
-              attendance
-            </Typography>
+        <Box>
+          <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
+            By setting up teacher accounts
+          </Typography>
+          <Grid container spacing={2}>
+            <GridInfo
+              icon={<FolderDown color={theme.palette.primary.main} />}
+              text="Export attendance reports"
+            />
+            <GridInfo
+              icon={<CalendarRange color={theme.palette.primary.main} />}
+              text="Gain access to class schedules"
+            />
+            <GridInfo
+              icon={<UsersRound color={theme.palette.primary.main} />}
+              text="Administrators enable teachers to efficiently monitor student attendance"
+            />
           </Grid>
         </Box>
-        <Box sx={{ display: { md: 'block', xs: 'none' } }}>
-          <Typography sx={{ ...styles.text }}>
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <Settings color={theme.palette.primary.main} />
+            <Typography variant="body2" fontWeight="medium">
+              Gain better teacher experiences with our streamlined system
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary">
             This streamlined process allows educators to focus on delivering
             quality instruction while ensuring that administrative tasks are
             handled smoothly and effectively.
@@ -219,74 +248,75 @@ function FormInfo() {
   );
 }
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: { xs: 'column', sm: 'row' },
-    width: '100%',
-    height: '100%',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    ...shadow,
-  },
-  sidebar: (isMobile) => ({
-    width: isMobile ? '100%' : '200px',
-    backgroundColor: '#ffffff',
-    borderRight: isMobile ? 'none' : '1px solid #E0E0E0',
-    borderBottom: isMobile ? '1px solid #E0E0E0' : 'none',
-  }),
-  tabs: (isMobile) => ({
-    '& .MuiTabs-indicator': {
-      // left: isMobile ? 'auto' : 0,
-      // right: isMobile ? 'auto' : 'auto',
-    },
-  }),
-  tab: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: '8px',
-    borderRadius: '8px',
-    // marginBottom: '8px',
-    // padding: '12px 16px',
-    '&.Mui-selected': {
-      // backgroundColor: '#f0f7ff',
-    },
-    '&.Mui-disabled': {
-      color: '#bdbdbd',
-    },
-  },
-  content: {
-    flex: 1,
-    padding: '24px',
-    backgroundColor: '#f5f5f5',
-    overflowY: 'auto',
-  },
-  text: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-    alignContent: 'center',
-    justifyContent: 'center',
-    padding: 2,
-  },
-  gridContainer: {
-    display: 'flex',
-    justifyContent: 'start',
-    alignItems: 'center',
-    gap: 1,
-  },
-  gridItem: {
-    border: '1px solid #E0E0E0',
-    width: '100%',
-    maxWidth: '40px',
-    borderRadius: '8px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '40px',
+// Grid Info Box
+const GridInfo = ({ icon, text }) => (
+  <Grid item xs={12}>
+    <Box
+      sx={gridBox}
+    >
+      <Box
+        sx={miniInfo}
+      >
+        {icon}
+      </Box>
+      <Typography variant="body2">{text}</Typography>
+    </Box>
+  </Grid>
+);
+export default FormInfo;
+
+// Styles 
+const cardContainer = {
+  display: 'flex',
+  flexDirection: { xs: 'column', sm: 'row' },
+  width: '100%',
+  height: '100%',
+  borderRadius: 1,
+  overflow: 'hidden',
+  ...shadow,
+}
+const tabStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  gap: 1,
+  borderRadius: 1,
+  '&.Mui-disabled': {
+    color: 'text.disabled',
   },
 };
-
-export default FormInfo;
+const infoBox = {
+  width: {
+    xs: '100%',
+    sm: '360px',
+  },
+  display: { xs: 'flex', sm: 'none', md: 'flex' },
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: 2,
+  width: { xs: '100%', sm: '360px' },
+  bgcolor: '#ffffff',
+  p: 2,
+  borderRadius: 1,
+  ...shadow,
+};
+const gridBox ={
+  display: 'flex',
+  alignItems: 'center',
+  gap: 2,
+  p: 1,
+  borderRadius: 2,
+  border: 1,
+  borderColor: '#f4f4f4',
+  boxShadow: '0px 1px 2px rgba(0,0,0,0.1)',
+}
+const miniInfo = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 40,
+  height: 40,
+  borderRadius: 1,
+}
