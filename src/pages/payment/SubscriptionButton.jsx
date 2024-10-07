@@ -1,26 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCreateCheckoutSessionMutation } from '../../services/paymentApi';
+import { Button } from '@mui/material';
 
 const SubscriptionButton = ({ planType, adminId }) => {
-  const [createCheckoutSession] = useCreateCheckoutSessionMutation();
+  const [createCheckoutSession, { isLoading }] =
+    useCreateCheckoutSessionMutation();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleCheckout = async () => {
+    if (!adminId) {
+      console.error('Admin ID is missing. Cannot proceed with checkout.');
+      return;
+    }
+
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+
     try {
       const { url } = await createCheckoutSession({
         plan_type: planType.toLowerCase(),
         admin_id: adminId,
-        // payment_method_id: paymentMethod.id,
       }).unwrap();
 
       // Redirect to Stripe Checkout
       window.location.href = url;
     } catch (error) {
-      // Handle error (e.g., show a message to the user)
       console.error('Failed to create checkout session', error);
+      alert(
+        'There was an error while creating the checkout session. Please try again.',
+      );
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  return <button onClick={handleCheckout}>Subscribe to {planType} Plan</button>;
+  return (
+    <Button
+      onClick={handleCheckout}
+      variant="contained"
+      color="primary"
+      disabled={isLoading || isProcessing}
+    >
+      {isLoading || isProcessing
+        ? 'Processing...'
+        : `Subscribe to ${planType} Plan`}
+    </Button>
+  );
 };
 
 export default SubscriptionButton;
