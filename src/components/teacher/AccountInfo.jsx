@@ -1,4 +1,3 @@
-// React and third-party libraries
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,7 +14,7 @@ import {
 } from '@mui/material';
 
 // Icons from Lucide
-import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 // Custom components
 import SubHeader from './SubHeader';
@@ -64,15 +63,6 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Mail size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
             />
           </Box>
           {/* Password */}
@@ -88,26 +78,14 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockKeyhole size={20} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      size="icon"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <EyeIcon size={20} />
-                      )}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </IconButton>
-                  ),
-                },
+                  </InputAdornment>
+                ),
               }}
             />
           </Box>
@@ -125,26 +103,14 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               {...register('passwordConfirm')}
               error={!!errors.passwordConfirm}
               helperText={errors.passwordConfirm?.message}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockKeyhole size={20} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      size="icon"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <EyeIcon size={20} />
-                      )}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </IconButton>
-                  ),
-                },
+                  </InputAdornment>
+                ),
               }}
             />
           </Box>
@@ -155,6 +121,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
             justifyContent={'flex-end'}
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 1, sm: 2 }}
+            marginTop={{ xs: 2, sm: 0 }}
           >
             <Button
               onClick={handleBack}
@@ -176,15 +143,10 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
 
 export default AccountInfo;
 
+// Styles
 const profileBox = {
-  border: '1px solid',
-  borderColor: '#E0E0E0',
-  borderRadius: '8px',
+  width: '100%',
   bgcolor: '#ffffff',
-  marginTop: {
-    xs: '32px',
-    sm: '0px',
-  },
   padding: {
     xs: 2,
     sm: 3,
@@ -199,7 +161,6 @@ const profileBox = {
   flexDirection: 'column',
   position: 'relative',
 };
-
 const textFieldGap = {
   display: 'flex',
   gap: 0.5,
