@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container,
   Typography,
   Grid,
   Paper,
   Box,
   Skeleton,
-  Divider,
   Tabs,
   Tab,
 } from '@mui/material';
