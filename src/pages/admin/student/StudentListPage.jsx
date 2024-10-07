@@ -15,13 +15,6 @@ import { formatStudentsList } from '../../../utils/formatData';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import StudentListTable from '../../../components/student/StudentListTable';
 
-const columns = [
-  { id: 'name', label: 'Name' },
-  { id: 'gender', label: 'Gender' },
-  { id: 'email', label: 'Email' },
-  { id: 'phone', label: 'Phone Number' },
-];
-
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

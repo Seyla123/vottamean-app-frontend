@@ -4,8 +4,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import TextFieldComponent from '../common/TextFieldComponent';
 import SelectField from '../common/SelectField';
 import { Box, Typography, Stack, Avatar } from '@mui/material';
+import { useEffect } from 'react';
 import userProfile from '../../assets/images/default-profile.png';
+import {usePostStudentsDataMutation} from '../../services/studentApi';
+import { useGetClassesDataQuery } from '../../services/classApi';
+import { createFormSchema } from '../../validators/validationSchemas';
+
 function StudentFrom() {
+    const [rows, setRows] = useState([]);
   const [newStudent, setNewStudent] = useState({
     firstName: '',
     lastName: '',
@@ -16,11 +22,43 @@ function StudentFrom() {
     email: '',
     address: '',
   });
+  const schema = createFormSchema([
+    'firstName',
+    'lastName',
+    'className',
+    'gender',
+    'dob',
+    'phoneNumber',
+    'email',
+    'address'
+  ]);
+
+  const [postStudentsData, { isLoading: isPostingData }] = usePostStudentsDataMutation();
+
+// Filter class data for option Selection
+  const { data: classData, isLoading, error } = useGetClassesDataQuery();
+  useEffect(() => {
+    if (classData && Array.isArray(classData.data)) {
+      const classes = classData.data.map((classItem) => ({
+        value: classItem.class_name,  
+        label: classItem.class_name,  
+      }));
+      setRows(classes);
+    }
+  }, [classData]);
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({ ...prev, [name]: value }));
   };
+  if (isLoading) {
+    return <div>Loading classes...</div>; // Show a loading state
+  }
+
+  if (error) {
+    return <div>Error fetching classes: {error.message}</div>; // Show an error message
+  }
   return (
     <>
       {/* container img */}
@@ -67,7 +105,7 @@ function StudentFrom() {
           name="className"
           value={newStudent.className}
           onChange={handleInputChange}
-          options={classOptions}
+          options={rows}
           placeholder={'select class'}
         />
       </Box>
@@ -166,8 +204,4 @@ const genderOptions = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
   { value: 'Prefer not to say', label: 'Prefer not to say' },
-];
-const classOptions = [
-  { value: 'Class A', label: 'Class A' },
-  { value: 'Class B', label: 'Class B' },
 ];

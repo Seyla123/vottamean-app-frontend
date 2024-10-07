@@ -49,7 +49,7 @@ const StudentDetailPage = () => {
   };
 
   const handleUpdateStudent = () => {
-    navigate(`/dashboard/students/update/${student?.data?.id}`);
+    navigate(`/admin/students/update/${id}`);
   };
 
     // When the delete is in progress, show a snackbar with a message "Deleting..."
@@ -67,15 +67,15 @@ const StudentDetailPage = () => {
   },[dispatch, isDeleteError, isDeleteSuccess, isDeleting])
 
 
-  const clickDeleteStudent = (id) => {
-    setSelectedStudent({id});
+  const clickDeleteStudent = () => {
+    setSelectedStudent(id);
     dispatch(setModal({ open: true }));
   };
 
   // handle confirm deletion
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    await deleteStudent(selectedStudent).unwrap();
+    await deleteStudent(selectedStudent.id).unwrap();
 
   };
 

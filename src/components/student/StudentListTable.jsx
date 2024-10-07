@@ -15,8 +15,9 @@ import { setSnackbar, setModal } from '../../store/slices/uiSlice';
 const columns = [
   { id: 'name', label: 'Name' },
   { id: 'gender', label: 'Gender' },
-  { id: 'email', label: 'Email' },
-  { id: 'phone', label: 'Phone Number' },
+  { id: 'Date of Birth', label: 'Date Of Birth' },
+  { id: 'class', label: 'Class Name' },
+  { id: 'address', label: 'Address' },
 ];
 
 const StudentListTable = () => {

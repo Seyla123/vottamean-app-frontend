@@ -32,10 +32,10 @@ export const studentApi = baseApi.injectEndpoints({
     }),
     //Update Class
     updateStudentsData: builder.mutation({
-      query: ({id, studentData}) => ({
+      query: ({id, updates}) => ({
         url: `students/${id}`,
-        method: 'PUT',
-        body: studentData,
+        method: 'PATCH',
+        body: updates,
         credentials: 'include',
       }),
       invalidatesTags: ['Students'],

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Box,
   Tab,
   Tabs
 } from "@mui/material";
@@ -10,10 +9,14 @@ import CardComponent from "../../../components/common/CardComponent";
 import ButtonContainer from "../../../components/common/ButtonContainer";
 import StudentFrom from "../../../components/student/StudentForm";
 import GardianForm from "../../../components/student/GardianForm";
+import { usePostStudentsDataMutation } from "../../../services/studentApi";
 const StudentCreatePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
+  const [isStudentInfoValid, setIsStudentInfoValid] = useState(false);
+  const [postStudentsData, { isLoading: isPostingData }] = usePostStudentsDataMutation();
 
+  
   const handleCancel = () => {
     if (activeTab === 0) {
       navigate("/admin/students/create");
@@ -34,20 +37,17 @@ const StudentCreatePage = () => {
     setActiveTab(newValue);
   };
 
-
-
   return (
     <FormComponent title="Add Student" subTitle="Please Fill Student information">
       {/* Tab  */}
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
-            aria-label="tabs example"
             textColor="primary"
             indicatorColor="primary"
           >
             <Tab label="Student Information" />
-            <Tab label="Guardian Information" />
+            <Tab label="Guardian Information" disabled={!isStudentInfoValid}/>
           </Tabs>
       <CardComponent title={activeTab===0 ? "Student Information" : "Guardian Information"}>
         
@@ -63,6 +63,7 @@ const StudentCreatePage = () => {
         {/* buttons container */}
         <ButtonContainer
           rightBtn={handleNext}
+          leftBtn={handleCancel}
           leftBtnTitle="Cancel"
           rightBtnTitle={activeTab === 0 ? "Next" : "Submit"}
         />

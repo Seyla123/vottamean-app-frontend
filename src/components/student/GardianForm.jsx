@@ -25,7 +25,7 @@ function GardianForm() {
           <TextFieldComponent
             customStyle={{ flexGrow: 1 }}
             name="firstName"
-            value={newGuardian.lastName}
+            value={newGuardian.firstName}
             onChange={handleInputChange}
             placeholder={'first name'}
           />
