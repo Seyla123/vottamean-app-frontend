@@ -1,88 +1,70 @@
 import React from 'react';
-import { Box, Button, Typography, Container, keyframes } from '@mui/material';
+import { Box, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
-import notFoundImg from '../assets/images/notfound.png';
+import notFoundImage from '../assets/images/404-page-not-found.svg';
 
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
-
-function NotFoundPage() {
+const NotFoundPage = ({
+  imageUrl = notFoundImage,
+  title = '404: Page Not Found',
+  description = "Oops! why you're here? We're sorry, but the page you're looking for doesn't exist.",
+  buttonText = 'Go back to Dashboard',
+  buttonLink = '/',
+}) => {
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="sm">
       <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight="100vh"
-        textAlign="center"
         sx={{
-          animation: `${fadeIn} 0.5s ease-out`,
-          padding: { xs: 2, md: 4 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 3,
+          minHeight: '100vh',
+          textAlign: 'center',
         }}
       >
-        {/* Image Section */}
         <Box
-          component="img"
-          src={notFoundImg}
-          alt="Not Found"
           sx={{
             width: '100%',
-            maxWidth: '400px',
-            height: 'auto',
-            marginBottom: '2rem',
-            filter: 'drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04))',
-          }}
-        />
-        <Typography
-          variant="h3"
-          component="h1"
-          gutterBottom
-          sx={{
-            fontWeight: 'bold',
-            color: 'primary.main',
-            marginBottom: '1rem',
-          }}
-        >
-          Oops! Page not found.
-        </Typography>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
             maxWidth: '600px',
-            marginBottom: '2rem',
-            color: 'text.secondary',
+            height: '300px',
           }}
         >
-          The page you are looking for might have been removed, had its name
-          changed, or is temporarily unavailable.
-        </Typography>
+          <img
+            src={imageUrl}
+            alt="404 Not Found"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </Box>
+        <Box sx={{ width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+          <Typography
+            variant="h4"
+            component="h4"
+            fontWeight={'bold'}
+            gutterBottom
+          >
+            {title}
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            {description}
+          </Typography>
+        </Box>
         <Button
           component={Link}
-          to="/admin/dashboard"
+          to={buttonLink}
           variant="contained"
           color="primary"
           size="large"
-          sx={{
-            mt: 2,
-            px: 4,
-            py: 1.5,
-            textTransform: 'none',
-            fontSize: '1.1rem',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            '&:hover': {
-              boxShadow: '0 6px 8px rgba(0, 0, 0, 0.15)',
-            },
-          }}
         >
-          Back to Dashboard
+          {buttonText}
         </Button>
       </Box>
     </Container>
   );
-}
+};
 
 export default NotFoundPage;
