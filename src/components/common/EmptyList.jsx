@@ -3,9 +3,9 @@ import { Box, Typography, Container } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledImage = styled('img')({
-  maxWidth: '300px',
-  height: 'auto',
-  marginBottom: (theme) => theme.spacing(2),
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
 });
 
 const EmptyList = ({ image, title, description }) => {
@@ -21,7 +21,9 @@ const EmptyList = ({ image, title, description }) => {
           height: '70vh',
         }}
       >
-        {image && <StyledImage src={image} alt={title || 'Empty list'} />}
+        <Box sx={{ width: '300px', height: '200px' }}>
+          {image && <StyledImage src={image} alt={title || 'Empty list'} />}
+        </Box>
         {title && (
           <Typography
             variant="h5"
