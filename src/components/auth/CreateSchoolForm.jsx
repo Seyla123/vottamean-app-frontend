@@ -28,10 +28,14 @@ import FormFooter from './FormFooter';
 import { useSignupMutation } from '../../services/authApi';
 
 const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
-  const dispatch = useDispatch();
+  // Get the form data from the Redux store
   const formData = useSelector((state) => state.form);
+  const dispatch = useDispatch();
 
-  const [signup,{isLoading, isError, isSuccess, error}] = useSignupMutation();
+  // useSignupMutation : Use the signup mutation to send the form data to the server
+  const [signup, { isLoading, isError, isSuccess, error }] = useSignupMutation();
+
+  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
@@ -42,6 +46,7 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
     defaultValues: formData,
   });
 
+  // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
       setValue('school_name', formData.school_name);
@@ -50,22 +55,39 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
     }
   }, [formData, setValue]);
 
-useEffect(() => {
-if(isError){
-    dispatch(setSnackbar({
-      open: true,
-      severity: 'error',
-      message: error.data.message,
-    }))
-  }else if(isSuccess){
-    dispatch(setSnackbar({
-      open: true,
-      severity: 'success',
-      message: 'Your account has been successfully created. Please verify your email.',
-    }))
-  }
-})
-  const handleFormSubmit = async(data) => {
+  // Handle the error and success messages from the signup api call
+  useEffect(() => {
+    if (isError) {
+      // If there is an error, show a snackbar with the error message
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: error.data.message,
+        })
+      );
+    } else if (isSuccess) {
+      // If the signup is successful, show a snackbar with a success message
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: 'Your account has been successfully created. Please verify your email.',
+        })
+      );
+    }
+  });
+  
+  /**
+   * Handle the form submission.
+   * 1. Create the formatted form data by combining the form data from the Redux store
+   *    with the school data from the current form.
+   * 2. Call the handleFormChange prop to update the form data in the Redux store.
+   * 3. Call the signup mutation with the formatted form data.
+   * 4. Wait for the mutation to complete and unwrap the response.
+   * @param {Object} data The school form data.
+   */
+  const handleFormSubmit = async (data) => {
     const formattedData = {
       email: formData.email,
       password: formData.password,
@@ -79,7 +101,7 @@ if(isError){
       school_name: data.school_name,
       school_phone_number: data.school_phone_number,
       school_address: data.school_address,
-    }
+    };
     handleFormChange(formattedData);
     await signup(formattedData).unwrap();
   };

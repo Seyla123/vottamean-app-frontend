@@ -11,13 +11,11 @@ import {
   Button,
   Select,
   InputAdornment,
-  Link,
   MenuItem,
 } from '@mui/material';
 
 // Redux hooks and actions
 import { useSelector, useDispatch } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
 import { UserRoundPlus } from 'lucide-react';
 
 // Custom components
@@ -34,8 +32,7 @@ import dayjs from 'dayjs';
 import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
 const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
-  // Initialize dispatch and form data from Redux
-  const dispatch = useDispatch();
+  // Fetch form data from Redux
   const formData = useSelector((state) => state.form);
 
   // Initialize useForm with validation schema and default values
@@ -66,17 +63,15 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
   // Handle form submission
   const onSubmit = (data) => {
     const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
-
+    // format data before dispatching
     const updatedData = {
       ...data,
       gender,
       dob: formattedDob,
     };
-
-    handleFormChange(updatedData);
-    handleNext(); // Proceed to the next step
+    handleFormChange(updatedData);// Update the form data in Redux
+    handleNext(); // Navigate to the next step
   };
-
   return (
     <Box
       sx={{

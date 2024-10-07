@@ -18,10 +18,13 @@ import { getStartSignupValidator } from '../../validators/validationSchemas';
 import { EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
 const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
+  // State to track whether the password input should be shown
   const [showPassword, setShowPassword] = useState(false);
 
+  // Fetch form data from Redux
   const formData = useSelector((state) => state.form);
 
+  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
@@ -32,6 +35,7 @@ const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
     defaultValues: formData,
   });
 
+  // When the component mounts, pre-fill the form with the data from Redux
   useEffect(() => {
     if (formData) {
       setValue('email', formData.email);
@@ -40,9 +44,10 @@ const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
     }
   }, [formData, setValue]);
 
+  // Handle form submission
   const onSubmit = (data) => {
-    handleFormChange(data);
-    handleNext();
+    handleFormChange(data); // Update the form data in Redux
+    handleNext(); // Navigate to the next step
   };
 
   return (
