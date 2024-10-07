@@ -1,11 +1,11 @@
 // React and third-party libraries
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
+import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Material UI components
 import {
@@ -25,13 +25,17 @@ import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 import { PhoneOutgoing, School } from 'lucide-react';
 import FormFooter from './FormFooter';
 
-const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
-  const dispatch = useDispatch();
+import { useSignupMutation } from '../../services/authApi';
+
+const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
+  // Get the form data from the Redux store
   const formData = useSelector((state) => state.form);
+  const dispatch = useDispatch();
 
-  // New state to track submission
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // useSignupMutation : Use the signup mutation to send the form data to the server
+  const [signup, { isLoading, isError, isSuccess, error }] = useSignupMutation();
 
+  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
@@ -42,6 +46,7 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
     defaultValues: formData,
   });
 
+  // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
       setValue('school_name', formData.school_name);
@@ -50,28 +55,57 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
     }
   }, [formData, setValue]);
 
+  // Handle the error and success messages from the signup api call
+  useEffect(() => {
+    if (isError) {
+      // If there is an error, show a snackbar with the error message
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: error.data.message,
+        })
+      );
+    } else if (isSuccess) {
+      // If the signup is successful, show a snackbar with a success message
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: 'Your account has been successfully created. Please verify your email.',
+        })
+      );
+    }
+  });
+  
+  /**
+   * Handle the form submission.
+   * 1. Create the formatted form data by combining the form data from the Redux store
+   *    with the school data from the current form.
+   * 2. Call the handleFormChange prop to update the form data in the Redux store.
+   * 3. Call the signup mutation with the formatted form data.
+   * 4. Wait for the mutation to complete and unwrap the response.
+   * @param {Object} data The school form data.
+   */
   const handleFormSubmit = async (data) => {
     const formattedData = {
-      ...formData,
+      email: formData.email,
+      password: formData.password,
+      passwordConfirm: formData.passwordConfirm,
+      address: formData.address,
+      dob: formData.dob,
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      gender: formData.gender,
+      phone_number: formData.phone_number,
       school_name: data.school_name,
       school_phone_number: data.school_phone_number,
       school_address: data.school_address,
     };
-
-    console.log('Form Data in Step 4 :', formattedData);
-
-    dispatch(updateFormData(formattedData));
-
-    if (onFormChange) {
-      onFormChange(formattedData);
-    }
-
-    if (onSubmit) {
-      setIsSubmitting(true); // Set to true when submission starts
-      await onSubmit(); // Wait for the API call
-      setIsSubmitting(false); // Set back to false when done
-    }
+    handleFormChange(formattedData);
+    await signup(formattedData).unwrap();
   };
+
   return (
     <Box
       sx={{
@@ -185,9 +219,9 @@ const CreateSchoolForm = ({ onSubmit, onFormChange, handleBack }) => {
               type="submit"
               fullWidth
               size="large"
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <CircularProgress size={24} color="inherit" />
               ) : (
                 'Register'

@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
 
 // Material UI components
 import {
@@ -14,11 +13,9 @@ import {
   Typography,
   Button,
   InputAdornment,
-  Link,
 } from '@mui/material';
 
 // Custom components
-import GoBackButton from '../common/GoBackButton';
 import HeaderTitle from './HeaderTitle';
 
 // Validator
@@ -26,18 +23,19 @@ import { ContactInformationValidator } from '../../validators/validationSchemas'
 import { Phone } from 'lucide-react';
 import FormFooter from './FormFooter';
 
-const ContactForm = ({ handleNext, handleBack }) => {
-  const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form); // Fetch form data from Redux
+const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
+  // Fetch form data from Redux
+  const formData = useSelector((state) => state.form);
 
+  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue, // Set form values programmatically
+    setValue,
   } = useForm({
     resolver: yupResolver(ContactInformationValidator),
-    defaultValues: formData, // Set initial form values from Redux
+    defaultValues: formData,
   });
 
   // Pre-fill form data when component mounts
@@ -50,7 +48,7 @@ const ContactForm = ({ handleNext, handleBack }) => {
 
   // Handle form submission
   const onSubmit = (data) => {
-    dispatch(updateFormData(data)); // Update Redux state with the form data
+    handleFormChange(data); // Update the form data in Redux
     handleNext(); // Navigate to the next step
   };
 

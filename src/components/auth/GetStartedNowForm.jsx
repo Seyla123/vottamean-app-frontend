@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateFormData } from '../../store/slices/formSlice';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Typography,
@@ -16,14 +15,16 @@ import {
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 import { getStartSignupValidator } from '../../validators/validationSchemas';
-import { Eye, EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
+import { EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
-const GetStartedNowForm = ({ handleNext }) => {
+const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
+  // State to track whether the password input should be shown
   const [showPassword, setShowPassword] = useState(false);
 
-  const dispatch = useDispatch();
+  // Fetch form data from Redux
   const formData = useSelector((state) => state.form);
 
+  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
@@ -34,6 +35,7 @@ const GetStartedNowForm = ({ handleNext }) => {
     defaultValues: formData,
   });
 
+  // When the component mounts, pre-fill the form with the data from Redux
   useEffect(() => {
     if (formData) {
       setValue('email', formData.email);
@@ -42,9 +44,10 @@ const GetStartedNowForm = ({ handleNext }) => {
     }
   }, [formData, setValue]);
 
+  // Handle form submission
   const onSubmit = (data) => {
-    dispatch(updateFormData(data));
-    handleNext();
+    handleFormChange(data); // Update the form data in Redux
+    handleNext(); // Navigate to the next step
   };
 
   return (
