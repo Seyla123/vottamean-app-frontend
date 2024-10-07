@@ -2,8 +2,8 @@ import React from 'react';
 import { Box, Typography, Avatar, Chip, Grid } from '@mui/material';
 import RandomAvatar from './RandomAvatar';
 
-const ProfileSection = ({ profilePhoto, adminProfileData }) => {
-  const { userName, userEmail, userGender, userId } = adminProfileData;
+const ProfileSection = ({ profilePhoto, userData }) => {
+  const { userName, userEmail, userGender, userId } = userData;
 
   return (
     <Grid item xs={12} md={4}>

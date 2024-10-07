@@ -162,7 +162,7 @@ export const transformUserProfile = (user) => {
   if (!profileInfo) return {};
 
   return {
-    userId: user.data[profileKey]?.user_id || 'N/A',
+    userId: user.data?.id || 'N/A',
     userName: getFullName(profileInfo),
     Age: getAge(profileInfo.dob) || 'Not provided',
     userGender: profileInfo.gender || 'Not specified',

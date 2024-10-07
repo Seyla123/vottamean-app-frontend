@@ -8,11 +8,10 @@ import EditSchoolModal from '../admin/EditSchoolModal';
 const MyProfileView = ({
   title,
   profilePhoto,
-  adminProfileData,
+  userData,
   schoolProfileData,
 }) => {
   const [openModal, setOpenModal] = useState(null);
-
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
   };
@@ -37,22 +36,21 @@ const MyProfileView = ({
       </Typography>
 
       <Grid container spacing={3}>
-        <ProfileSection
-          profilePhoto={profilePhoto}
-          adminProfileData={adminProfileData}
-        />
+        <ProfileSection profilePhoto={profilePhoto} userData={userData} />
         <InformationSection
           title="Personal Information"
-          data={adminProfileData}
+          data={userData}
           onEdit={() => handleOpenModal('account')}
           infoType="personal"
         />
-        <InformationSection
-          title="School Information"
-          data={schoolProfileData}
-          onEdit={() => handleOpenModal('school')}
-          infoType="school"
-        />
+        {schoolProfileData && (
+          <InformationSection
+            title="School Information"
+            data={schoolProfileData}
+            onEdit={() => handleOpenModal('school')}
+            infoType="school"
+          />
+        )}
       </Grid>
 
       {/* Modals */}
@@ -61,11 +59,11 @@ const MyProfileView = ({
           open={true}
           onClose={handleCloseModal}
           profilePhoto={profilePhoto}
-          userName={adminProfileData.userName}
-          userGender={adminProfileData.userGender}
+          userName={userData.userName}
+          userGender={userData.userGender}
         />
       )}
-      {openModal === 'school' && (
+      {openModal === 'school' && schoolProfileData && (
         <EditSchoolModal open={true} onClose={handleCloseModal} />
       )}
     </Box>
