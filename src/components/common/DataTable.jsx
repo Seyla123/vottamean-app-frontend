@@ -14,13 +14,18 @@ import {
   Tooltip,
   TablePagination,
   Typography,
+  ListItemIcon,
+  ListItemText,
+  MenuList,
+  Divider,
 } from '@mui/material';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
 import EmptyDataImage from '../../assets/images/empty-data.svg';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
-import { useSelector } from 'react-redux';
+
+import { FileText, Trash2, Pencil } from 'lucide-react';
 
 /**
  * DataTable Component
@@ -291,9 +296,27 @@ const DataTable = ({
           anchorEl={anchorEl}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleEdit}>Edit</MenuItem>
-          <MenuItem onClick={handleDelete}>Delete</MenuItem>
-          <MenuItem onClick={handleView}>View</MenuItem>
+          <MenuList disablePadding>
+            <MenuItem onClick={handleEdit}>
+              <ListItemIcon>
+                <Pencil size={20} />
+              </ListItemIcon>
+              <ListItemText>Edit</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleView}>
+              <ListItemIcon>
+                <FileText size={20} />
+              </ListItemIcon>
+              <ListItemText>View Details</ListItemText>
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleDelete}>
+              <ListItemIcon>
+                <Trash2 size={20} />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
+          </MenuList>
         </Menu>
       </TableContainer>
       <DeleteConfirmationModal
