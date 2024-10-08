@@ -112,8 +112,11 @@ const routesConfig = [
   },
   {
     path: '/payment',
-    element: <SubscriptionPlansPage />,
     children: [
+      {
+        path: '',
+        element: <SubscriptionPlansPage />,
+      },
       {
         path: 'success',
         element: <PaymentSuccessPage />,

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-} from '@mui/material';
+import { Box, Typography, Card, CardContent, CardActions } from '@mui/material';
 import SubscriptionButton from './SubscriptionButton';
 import CancelSubscription from './CancelSubscription';
 import PaymentPage from './PaymentPage';
@@ -14,6 +7,8 @@ import { useGetUserProfileQuery } from '../../services/userApi';
 
 const SubscriptionPlansPage = () => {
   const { data: userData } = useGetUserProfileQuery();
+
+  console.log('User Data SUB :', userData?.data?.subscriptions[0].plan_type);
 
   // Get admin_id from user profile's adminProfile
   const adminId = userData?.data?.adminProfile?.admin_id;
