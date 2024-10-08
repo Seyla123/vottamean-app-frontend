@@ -86,7 +86,11 @@ const EditModal = ({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               fullWidth
-              value={formData[field.name] ? dayjs(formData[field.name], 'HH:mm') : null}
+              value={
+                formData[field.name]
+                  ? dayjs(formData[field.name], 'HH:mm')
+                  : null
+              }
               onChange={(newValue) => {
                 handleChange({
                   target: {
@@ -123,9 +127,7 @@ const EditModal = ({
             slotProps={{
               input: {
                 startAdornment: field.icon && (
-                  <InputAdornment position="start">
-                    {field.icon}
-                  </InputAdornment>
+                  <InputAdornment position="start">{field.icon}</InputAdornment>
                 ),
               },
             }}
