@@ -14,7 +14,7 @@ import {
   Typography,
   Stack,
   FormControl,
-  Select
+  Select,
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -26,34 +26,6 @@ import { useNavigate } from 'react-router-dom';
 // Custom components
 import SubHeader from './SubHeader';
 
-// Define validation schema
-const validationSchema = yup.object({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
-  phoneNumber: yup
-    .string()
-    .required('Phone number is required')
-    .matches(
-      /^\d{9,15}$/,
-      'Phone number must be between 9 and 15 digits and numeric.',
-    )
-    .test(
-      'length',
-      'Phone number must be between 9 and 15 digits',
-      (value) => value && value.length >= 9 && value.length <= 15,
-    ),
-  gender: yup.string().required('Gender is required'),
-  dob: yup
-    .string()
-    .required('Date of birth is required')
-    .max(new Date(), 'Date of birth cannot be in the future')
-    .typeError('Invalid date format'),
-  address: yup
-    .string()
-    .nullable()
-    .notRequired()
-    .max(200, 'Address must be less than 200 characters'),
-});
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const navigate = useNavigate();
@@ -355,3 +327,48 @@ const imgStyle = {
     sm: 160,
   },
 };
+
+// Define validation schema
+export const validationSchema = yup.object({
+  firstName: yup
+    .string()
+    .required('First name is required')
+    .matches(
+      /^[A-Za-z]+( [A-Za-z]+)*$/,
+      'Name must contain only alphabetic characters and single spaces between words',
+    )
+    .min(2, 'Name must be at least 2 characters long')
+    .max(40, 'Name must be less than 40 characters'),
+  lastName: yup
+    .string()
+    .required('Last name is required')
+    .matches(
+      /^[A-Za-z]+( [A-Za-z]+)*$/,
+      'Name must contain only alphabetic characters and single spaces between words',
+    )
+    .min(2, 'Name must be at least 2 characters long')
+    .max(40, 'Name must be less than 40 characters'),
+  phoneNumber: yup
+    .string()
+    .required('Phone number is required')
+    .matches(
+      /^\d{9,15}$/,
+      'Phone number must be between 9 and 15 digits and numeric.',
+    )
+    .test(
+      'length',
+      'Phone number must be between 9 and 15 digits',
+      (value) => value && value.length >= 9 && value.length <= 15,
+    ),
+  gender: yup.string().required('Gender is required'),
+  dob: yup
+    .string()
+    .required('Date of birth is required')
+    .max(new Date(), 'Date of birth cannot be in the future')
+    .typeError('Invalid date format'),
+  address: yup
+    .string()
+    .nullable()
+    .notRequired()
+    .max(200, 'Address must be less than 200 characters'),
+});

@@ -296,7 +296,6 @@ const infoBox = {
   justifyContent: 'space-between',
   alignItems: 'center',
   gap: 2,
-  width: { xs: '100%', sm: '360px' },
   bgcolor: '#ffffff',
   p: 2,
   borderRadius: 1,

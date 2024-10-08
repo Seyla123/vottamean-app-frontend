@@ -312,3 +312,21 @@ export const transformMarkAttendancetTable = (apiResponse) => {
     status: null,
   }));
 };
+
+// Format teacher form data for updating
+export const formatTeacherFormData = (teacherData) => {
+  if (teacherData && teacherData.data && teacherData.data.Info) {
+    const Info = teacherData.data.Info;
+    return {
+      firstName: Info.first_name || '',
+      lastName: Info.last_name || '',
+      phoneNumber: Info.phone_number || '',
+      gender: Info.gender || '',
+      dob: Info.dob || null,
+      address: Info.address || '',
+    };
+  }
+  return null;
+};
+
+

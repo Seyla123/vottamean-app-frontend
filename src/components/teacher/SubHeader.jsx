@@ -4,13 +4,10 @@ import React from 'react';
 const SubHeader = ({ title }) => {
   return (
     <Box sx={subHeader}>
-      <Typography fontSize={16} fontWeight={'bold'} marginBottom={2}>
+      <Typography variant='formTitle' fontWeight={'bold'} gutterBottom>
         {title}
       </Typography>
-      <Divider
-        color="#797979"
-        sx={{ width: '100%', borderBottomWidth: 1, color: 'black' }}
-      />
+      <Divider sx={{ borderWidth: 1, borderColor: "text.secondary" }} />
     </Box>
   );
 };
