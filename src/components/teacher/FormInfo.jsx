@@ -152,9 +152,7 @@ function FormInfo() {
         gap: { xs: 2, sm: 3 },
       }}
     >
-      <Card
-        sx={cardContainer}
-      >
+      <Card sx={cardContainer}>
         {/* Sidebar tabs */}
         <Box
           sx={{
@@ -208,9 +206,7 @@ function FormInfo() {
         </Box>
       </Card>
       {/* Info Box */}
-      <Box
-        sx={infoBox}
-      >
+      <Box sx={infoBox}>
         <Box>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
             By setting up teacher accounts
@@ -251,21 +247,15 @@ function FormInfo() {
 // Grid Info Box
 const GridInfo = ({ icon, text }) => (
   <Grid item xs={12}>
-    <Box
-      sx={gridBox}
-    >
-      <Box
-        sx={miniInfo}
-      >
-        {icon}
-      </Box>
+    <Box sx={gridBox}>
+      <Box sx={miniInfo}>{icon}</Box>
       <Typography variant="body2">{text}</Typography>
     </Box>
   </Grid>
 );
 export default FormInfo;
 
-// Styles 
+// Styles
 const cardContainer = {
   display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
@@ -274,7 +264,7 @@ const cardContainer = {
   borderRadius: 1,
   overflow: 'hidden',
   ...shadow,
-}
+};
 const tabStyle = {
   display: 'flex',
   flexDirection: 'row',
@@ -287,10 +277,6 @@ const tabStyle = {
   },
 };
 const infoBox = {
-  width: {
-    xs: '100%',
-    sm: '360px',
-  },
   display: { xs: 'flex', sm: 'none', md: 'flex' },
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -301,7 +287,7 @@ const infoBox = {
   borderRadius: 1,
   ...shadow,
 };
-const gridBox ={
+const gridBox = {
   display: 'flex',
   alignItems: 'center',
   gap: 2,
@@ -310,7 +296,7 @@ const gridBox ={
   border: 1,
   borderColor: '#f4f4f4',
   boxShadow: '0px 1px 2px rgba(0,0,0,0.1)',
-}
+};
 const miniInfo = {
   display: 'flex',
   justifyContent: 'center',
@@ -318,4 +304,4 @@ const miniInfo = {
   width: 40,
   height: 40,
   borderRadius: 1,
-}
+};
