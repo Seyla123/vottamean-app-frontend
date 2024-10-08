@@ -20,6 +20,7 @@ import {
   Divider,
   Button,
   CircularProgress,
+  Box,
 } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import EmptyDataImage from '../../assets/images/empty-image.svg';
@@ -80,12 +81,12 @@ const DataTable = ({
   onDelete,
   onView,
   onSelectedDelete,
-  hideColumns,
+  hideColumns = [],
   emptyTitle,
   emptySubTitle,
   showNO,
   isLoading = false,
-  idField = 'id', // New prop to specify the unique identifier field
+  idField = 'id',
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -239,13 +240,7 @@ const DataTable = ({
         <TableBody sx={{ position: 'relative' }}>
           {isLoading ? (
             <LoadingTable columns={columns} />
-          ) : rows.length === 0 ? (
-            <EmptyTable
-              columns={columns}
-              emptyTitle={emptyTitle}
-              emptySubTitle={emptySubTitle}
-            />
-          ) : (
+          ) : rows.length > 0 ? (
             paginatedRows.map((row, index) => {
               const isItemSelected = isSelected(row[idField]);
               const labelId = `enhanced-table-checkbox-${index}`;
@@ -258,7 +253,6 @@ const DataTable = ({
                   aria-checked={isItemSelected}
                   tabIndex={-1}
                   key={row[idField]}
-                  
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -282,6 +276,12 @@ const DataTable = ({
                 </TableRow>
               );
             })
+          ) : (
+            <EmptyTable
+              columns={columns}
+              emptyTitle={emptyTitle}
+              emptySubTitle={emptySubTitle}
+            />
           )}
         </TableBody>
       </Table>
@@ -343,7 +343,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
       <TableCell
         colSpan={columns.length + 2}
         sx={{
-          height: '400px',
+          height: '600px',
           textAlign: 'center',
           verticalAlign: 'middle',
         }}
@@ -357,16 +357,17 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
             height: '100%',
           }}
         >
-          <img
-            src={EmptyDataImage}
-            alt="empty"
-            style={{
-              width: '100%',
-              maxWidth: '200px',
-              objectFit: 'contain',
-              marginBottom: '16px',
-            }}
-          />
+          <Box sx={{ width: '100%', height: '300px' }}>
+            <img
+              src={EmptyDataImage}
+              alt="empty"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+              }}
+            />
+          </Box>
           <Typography variant="h6" gutterBottom>
             {emptyTitle}
           </Typography>

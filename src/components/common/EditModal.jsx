@@ -26,7 +26,7 @@ const EditModal = ({
   initialData,
   onSubmit,
 }) => {
-  const [formData, setFormData] = useState(initialData || {});
+  const [formData, setFormData] = useState(initialData || {});  
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
