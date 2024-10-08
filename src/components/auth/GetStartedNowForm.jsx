@@ -17,7 +17,7 @@ import FormFooter from './FormFooter';
 import { getStartSignupValidator } from '../../validators/validationSchemas';
 import { EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
-const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
+const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
   // State to track whether the password input should be shown
   const [showPassword, setShowPassword] = useState(false);
 
@@ -174,6 +174,26 @@ const GetStartedNowForm = ({ handleNext ,handleFormChange}) => {
                 },
               }}
             />
+          </Box>
+
+          {/* REQUIREMENT */}
+          <Box>
+            <Typography variant="body2" fontWeight="bold">
+              Register Requirements{' '}
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
+            <Typography variant="body1">
+              <Box component={'ul'} sx={{ mt: 1 }}>
+                <Box component={'li'}>At least 8 characters.</Box>
+                <Box component={'li'}>Contain at least one number.</Box>
+                <Box component={'li'}>
+                  Contain at least one uppercase letter.
+                </Box>
+                <Box component={'li'}>
+                  Contain at least one special character.
+                </Box>
+              </Box>
+            </Typography>
           </Box>
 
           {/* AGREE WITH TERMS */}

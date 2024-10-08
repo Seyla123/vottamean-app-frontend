@@ -80,7 +80,8 @@ export const passwordSchema = Yup.string()
   .required('Password is required')
   .min(8, 'Password must be at least 8 characters')
   .matches(/[a-zA-Z]/, 'Password must contain at least one letter')
-  .matches(/[0-9]/, 'Password must contain at least one number');
+  .matches(/[0-9]/, 'Password must contain at least one number')
+  .matches(/[\W_]/, 'Password must contain at least one special character');
 
 // Confirm password validator
 export const passwordConfirmSchema = Yup.string()
@@ -98,6 +99,7 @@ export const newPasswordSchema = Yup.string()
   .min(8, 'New password must be at least 8 characters')
   .matches(/[a-zA-Z]/, 'New password must contain at least one letter')
   .matches(/[0-9]/, 'New password must contain at least one number')
+  .matches(/[\W_]/, 'Password must contain at least one special character')
   .notOneOf(
     [Yup.ref('currentPassword'), null],
     'New password cannot be the same as the old password',
@@ -112,11 +114,18 @@ export const newPasswordConfirmSchema = Yup.string()
 export const phoneSchema = Yup.string()
   .trim()
   .required('Phone number is required')
-  .matches(/^\d{9,15}$/, 'Phone number must be between 09 and 15 digits')
   .test(
     'length',
-    'Phone number must be between 09 and 15 digits',
-    (value) => value && value.length >= 9 && value.length <= 15,
+    'Phone number must be between 9 and 15 digits (excluding country code)',
+    (value) => {
+      // Extract the number part (after the country code)
+      const numberPart = value && value.replace(/[^0-9]/g, '');
+      return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
+    },
+  )
+  .matches(
+    /^\+\d{1,3}\s\d{1,3}.*$/,
+    'Phone number must start with a country code and area code (e.g., +855 23 ...)',
   );
 
 // Address validator
@@ -141,30 +150,26 @@ export const genderSchema = Yup.string()
 
 //Class Valid
 export const ClassValidator = Yup.object().shape({
-  class_name: Yup
-  .string()
-  .required('Class name is required')
-  .min(3, 'Subject name must be 3 characters up')
-  .max(50, 'Subject name is too long'),
-  description: Yup
-  .string()
-  .trim()
-  .max(225, 'description is too long')
-  .optional()
+  class_name: Yup.string()
+    .required('Class name is required')
+    .min(3, 'Subject name must be 3 characters up')
+    .max(50, 'Subject name is too long'),
+  description: Yup.string()
+    .trim()
+    .max(225, 'description is too long')
+    .optional(),
 });
 
 //Subject Valid
 export const SubjectValidator = Yup.object().shape({
-  subject_name: Yup
-  .string()
-  .required('Subject name is required')
-  .min(3, 'Subject name must be 3 characters up')
-  .max(50, 'Subject name is too long'),
-  description: Yup
-  .string()
-  .trim()
-  .max(225, 'description is too long')
-  .optional()
+  subject_name: Yup.string()
+    .required('Subject name is required')
+    .min(3, 'Subject name must be 3 characters up')
+    .max(50, 'Subject name is too long'),
+  description: Yup.string()
+    .trim()
+    .max(225, 'description is too long')
+    .optional(),
 });
 
 // Start Time & End Time Validator
@@ -187,21 +192,13 @@ export const endTimeSchema = Yup.string()
 
 // Class validation
 export const classSchema = Yup.string().required('Class is required');
+
 export const subjectSchema = Yup.string().required('Subject is required');
 
+export const createSessionSchema = Yup.string().required(
+  'This field is required',
+);
 
-// export const subjectSchema = Yup.string()
-//   .trim()
-//   .required('Subject is required')
-//   .min(3, 'Subject name must be at least 3 characters long')
-//   .max(50, 'Subject name must be less than 50 characters');
-
-// export const descriptionSchema = Yup.string()
-//   .trim()
-//   .required('Description cannot be empty')
-//   .max(255, 'Description must be less than 255 characters');
-
-export const createSessionSchema = Yup.string().required('This field is required');
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
   const schemaFields = {
@@ -226,10 +223,10 @@ export const createFormSchema = (fields) => {
     start_time: startTimeSchema,
     end_time: endTimeSchema,
     subjectName: subjectSchema,
-    teacher_id : createSessionSchema, 
-    class_id : createSessionSchema,
-    period_id : createSessionSchema,
-    day_id : createSessionSchema,
+    teacher_id: createSessionSchema,
+    class_id: createSessionSchema,
+    period_id: createSessionSchema,
+    day_id: createSessionSchema,
     subject_name: subjectSchema,
     // Add more schemas as needed
   };
@@ -343,5 +340,5 @@ export const SessionValidator = createFormSchema([
   'class_id',
   'period_id',
   'day_id',
-  'subject_id'
-])
+  'subject_id',
+]);

@@ -69,7 +69,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
       gender,
       dob: formattedDob,
     };
-    handleFormChange(updatedData);// Update the form data in Redux
+    handleFormChange(updatedData); // Update the form data in Redux
     handleNext(); // Navigate to the next step
   };
   return (
