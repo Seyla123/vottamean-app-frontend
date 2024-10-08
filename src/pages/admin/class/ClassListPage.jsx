@@ -13,11 +13,11 @@ import EditModal from '../../../components/common/EditModal';
 import ViewModal from '../../../components/common/ViewModal';
 // import api and uiSlice
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
-import { 
-  useDeleteClassesDataMutation, 
-  useGetClassesDataQuery, 
-  usePostClassesDataMutation, 
-  useUpdateClassesDataMutation 
+import {
+  useDeleteClassesDataMutation,
+  useGetClassesDataQuery,
+  usePostClassesDataMutation,
+  useUpdateClassesDataMutation,
 } from '../../../services/classApi';
 
 // Define table columns title
@@ -40,7 +40,15 @@ const ClassListPage = () => {
 
   // API hooks
   const { data, isLoading, isSuccess, isError } = useGetClassesDataQuery();
-  const [deleteClasses, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError }] = useDeleteClassesDataMutation();
+  const [
+    deleteClasses,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error: deleteError,
+    },
+  ] = useDeleteClassesDataMutation();
   const [postClassesData] = usePostClassesDataMutation();
   const [updateClassesData] = useUpdateClassesDataMutation();
 
@@ -50,13 +58,35 @@ const ClassListPage = () => {
     }
 
     if (isDeleting) {
-      dispatch(setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }));
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
     } else if (isDeleteError) {
-      dispatch(setSnackbar({ open: true, message: deleteError.data?.message || 'Failed to delete class', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: deleteError.data?.message || 'Failed to delete class',
+          severity: 'error',
+        }),
+      );
     } else if (isDeleteSuccess) {
-      dispatch(setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
     }
-  }, [data, isSuccess, isDeleting, isDeleteError, isDeleteSuccess, dispatch, deleteError]);
+  }, [
+    data,
+    isSuccess,
+    isDeleting,
+    isDeleteError,
+    isDeleteSuccess,
+    dispatch,
+    deleteError,
+  ]);
 
   if (isLoading) {
     return <CircularIndeterminate />;
@@ -69,20 +99,47 @@ const ClassListPage = () => {
   const handleCreate = async (formData) => {
     try {
       await postClassesData(formData).unwrap();
-      dispatch(setSnackbar({ open: true, message: 'Class created successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class created successfully',
+          severity: 'success',
+        }),
+      );
       setCreateModalOpen(false);
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to create class', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to create class',
+          severity: 'error',
+        }),
+      );
     }
   };
 
   const handleEdit = async (formData) => {
     try {
-      await updateClassesData({ id: selectedClass.class_id, ...formData }).unwrap();
-      dispatch(setSnackbar({ open: true, message: 'Class updated successfully', severity: 'success' }));
+      await updateClassesData({
+        id: selectedClass.class_id,
+        ...formData,
+      }).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class updated successfully',
+          severity: 'success',
+        }),
+      );
       setEditModalOpen(false);
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to update class', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to update class',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -95,9 +152,21 @@ const ClassListPage = () => {
     dispatch(setModal({ open: false }));
     try {
       await deleteClasses(selectedClass.class_id).unwrap();
-      dispatch(setSnackbar({ open: true, message: 'Class deleted successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class deleted successfully',
+          severity: 'success',
+        }),
+      );
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to delete class', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to delete class',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -113,10 +182,22 @@ const ClassListPage = () => {
 
   const handleSelectedDelete = async (selectedIds) => {
     try {
-      await Promise.all(selectedIds.map(id => deleteClasses(id).unwrap()));
-      dispatch(setSnackbar({ open: true, message: 'Selected classes deleted successfully', severity: 'success' }));
+      await Promise.all(selectedIds.map((id) => deleteClasses(id).unwrap()));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Selected classes deleted successfully',
+          severity: 'success',
+        }),
+      );
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to delete selected classes', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to delete selected classes',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -205,6 +286,6 @@ const ClassListPage = () => {
       />
     </FormComponent>
   );
-}
+};
 
 export default ClassListPage;
