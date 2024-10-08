@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useGetAllAttendanceQuery, useDeleteAttendanceMutation } from "../../../../services/attendanceApi";
 import { setModal, setSnackbar } from "../../../../store/slices/uiSlice";
 import { transformAttendanceData } from "../../../../utils/formatData";
-import { Button } from "@mui/material";
-import { DownloadIcon } from "lucide-react";
 import FormComponent from "../../../../components/common/FormComponent";
 import AttendanceTable from "../../../../components/attendance/AttendanceReportTable";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
@@ -27,14 +25,14 @@ const AttendanceReportPage = () => {
   const dispatch = useDispatch();
 
   // - rows: the attendance records that are currently being displayed on the page
-  const [ rows, setRows ] = useState([]);
+  const [rows, setRows] = useState([]);
 
   // - filter: the current filter data attendance records
   // - filterLabel: the label of the current filter that is displayed on the page
   const filter = useSelector((state) => state.attendance.filter);
 
   // - itemToDelete: the item that is currently being deleted
-  const [ itemToDelete, setItemToDelete ] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
@@ -49,6 +47,8 @@ const AttendanceReportPage = () => {
     if (isSuccess && allAttendanceData) {
       const formattedData = transformAttendanceData(allAttendanceData.data);
       setRows(formattedData);
+      console.log(formattedData);
+
     }
   }, [allAttendanceData, isDeleted]);
 
@@ -86,13 +86,13 @@ const AttendanceReportPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-console.log('this filter :', filter);
+  console.log('this filter :', filter);
 
 
   return (
     <FormComponent title={"Attendance Report"} subTitle={"Report"}>
       <ReportHeader data={rows} title={filter.filterLabel} />
-      <AttendanceFilter/>
+      <AttendanceFilter />
       <AttendanceTable
         rows={rows}
         columns={columns}
@@ -101,14 +101,6 @@ console.log('this filter :', filter);
         handleView={onView}
         loading={isFetching}
       />
-      <Button
-        variant="contained"
-        endIcon={<DownloadIcon size={16} />}
-        onClick={() => console.log('Export clicked')}
-        sx={{ alignSelf: "flex-end" }}
-      >
-        Export List
-      </Button>
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
