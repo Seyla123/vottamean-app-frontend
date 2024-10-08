@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Stack, Box, Button, IconButton } from '@mui/material';
-import { PlusIcon, Trash2 } from 'lucide-react';
+import { Stack, Box, Button } from '@mui/material';
+import { PlusIcon } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import FormComponent from '../../../components/common/FormComponent';
 import DataTable from '../../../components/common/DataTable';
@@ -14,6 +14,7 @@ import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { teacherData } from '../../../utils/formatData';
 import { setSnackbar } from '../../../store/slices/uiSlice';
+import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -29,57 +30,50 @@ const TeacherListPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
 
-  // Get all teachers
   const {
     data: allTeachersData,
     isLoading,
     isSuccess,
-  } = useGetAllTeachersQuery({
-    search: searchTerm,
-  });
-  // Delete teacher
+    isError,
+  } = useGetAllTeachersQuery({ search: searchTerm });
+
   const [deleteTeacher] = useDeleteTeacherMutation();
 
-  // Format teacher data and set it in the state
   useEffect(() => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
     }
-  }, [allTeachersData, isSuccess]);
+  }, [allTeachersData, isSuccess, searchTerm]);
 
-  // Handle Search by teacher name
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Handle Edit action
   const handleEdit = (row) => {
-    navigate(`/admin/teachers/update/${row.id}`);
+    setSelectedTeacherId(row.id);
+    setIsUpdateOpen(true);
   };
 
-  // Handle View action
   const handleView = (row) => {
     navigate(`/admin/teachers/${row.id}`);
   };
 
-
-  // Handle Delete a single teacher
   const handleDelete = (row) => {
     setSelectedItems([row.id]);
     setIsOpen(true);
   };
 
-  // Handle delete multiple teachers
   const handleMultiDelete = (selected) => {
     if (selected.length > 0) {
-      setSelectedItems(selected); 
+      setSelectedItems(selected);
       setIsOpen(true);
     }
   };
 
-  // Handle Confirm Delete for both single and multiple teachers
   const confirmDelete = async () => {
     setIsOpen(false);
     try {
@@ -90,30 +84,11 @@ const TeacherListPage = () => {
           severity: 'info',
         }),
       );
-      // Delete each selected teacher row
-      let newRows = [...rows];
-      // Access the item of the selected rows
+
       for (const id of selectedItems) {
-        try {
-          await deleteTeacher(id).unwrap();
-          // Remove the deleted teacher from the list of rows
-          newRows = newRows.filter((row) => row.id !== id);
-          // create a new aray of rows excluding the deleted teachers
-        } catch (error) {
-          console.error('Error deleting teacher:', error);
-          dispatch(
-            setSnackbar({
-              open: true,
-              message: `Error deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-              severity: 'error',
-            }),
-          );
-          // Stop the deletion process
-          return;
-        }
+        await deleteTeacher(id).unwrap();
       }
-      // Update the state with the new list of rows
-      setRows(newRows);
+
       dispatch(
         setSnackbar({
           open: true,
@@ -131,16 +106,15 @@ const TeacherListPage = () => {
         }),
       );
     } finally {
-      setSelectedItems([]); // Clear selectedItems
+      setSelectedItems([]);
     }
   };
 
-  // loading state
   if (isLoading) {
     return <LoadingCircle />;
   }
-  // error state
-  if (!isSuccess) {
+
+  if (isError) {
     return <div>Error fetching data</div>;
   }
 
@@ -149,12 +123,7 @@ const TeacherListPage = () => {
       title="Teacher List"
       subTitle={`There are ${rows.length} Teachers`}
     >
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        mb={2}
-      >
+      <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
         <Link to="/admin/teachers/create">
           <Button
             size="large"
@@ -182,7 +151,7 @@ const TeacherListPage = () => {
         onView={handleView}
         hideColumns={['phoneNumber', 'email']}
         emptyTitle="No Teachers"
-        emptySubTitle="No Teachers Available"
+        emptySubTitle="No Teachers Available. Click 'ADD TEACHER' to create one."
         onSelectedDelete={handleMultiDelete}
       />
       <DeleteConfirmationModal
@@ -190,6 +159,11 @@ const TeacherListPage = () => {
         onClose={() => setIsOpen(false)}
         onConfirm={confirmDelete}
         itemName={` Teacher${selectedItems.length > 1 ? 's' : ''} `}
+      />
+       <UpdateTeacherForm
+        isOpen={isUpdateOpen}
+        onClose={() => setIsUpdateOpen(false)}
+        teacherId={selectedTeacherId}
       />
     </FormComponent>
   );
