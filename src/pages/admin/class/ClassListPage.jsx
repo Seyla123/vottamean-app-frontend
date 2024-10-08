@@ -233,12 +233,6 @@ const ClassListPage = () => {
           />
         </Stack>
       </Box>
-      <DeleteConfirmationModal
-        open={modal.open}
-        onClose={() => dispatch(setModal({ open: false }))}
-        onConfirm={handleDeleteConfirmed}
-        itemName="Class"
-      />
 
       <DataTable
         rows={rows}
@@ -283,6 +277,13 @@ const ClassListPage = () => {
         title="View Class"
         description="Class details"
         data={selectedClass}
+      />
+
+      <DeleteConfirmationModal
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleDeleteConfirmed}
+        itemName={`${selectedClass?.class_name}`}
       />
     </FormComponent>
   );

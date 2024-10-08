@@ -13,13 +13,14 @@ import {
   MenuItem,
   Tooltip,
   TablePagination,
-  Box,
   Typography,
 } from '@mui/material';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
 import EmptyDataImage from '../../assets/images/empty-data.svg';
+import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
+import { useSelector } from 'react-redux';
 
 /**
  * DataTable Component
@@ -73,23 +74,44 @@ const DataTable = ({
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
 
   const handleSelectAllClick = (event) => {
-    const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
-    setSelected(newSelected);
+    if (event.target.checked) {
+      const newSelecteds = rows.map((n) => n.id || n.class_id);
+      setSelected(newSelecteds);
+      console.log('All rows selected:', newSelecteds);
+    } else {
+      setSelected([]);
+      console.log('All rows deselected');
+    }
   };
 
   const handleCheckboxClick = (event, id) => {
     event.stopPropagation();
-    setSelected((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((item) => item !== id)
-        : [...prevSelected, id],
-    );
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+    console.log('Selected row ID:', id);
+    console.log('Updated selected IDs:', newSelected);
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -121,12 +143,24 @@ const DataTable = ({
   };
 
   const handleSelectedDelete = () => {
-    if (onSelectedDelete) {
-      const selectedData = rows.filter((row) => selected.includes(row.id));
-      console.log('Selected data to delete:', selectedData);
-      onSelectedDelete(selected);
+    if (selected.length > 0) {
+      setIsDeleteModalOpen(true);
+    } else {
+      console.log('No rows selected for deletion');
     }
-    setSelected([]);
+  };
+
+  const handleConfirmDelete = () => {
+    if (onSelectedDelete) {
+      console.log('Deleting selected rows:', selected);
+      onSelectedDelete(selected);
+      setSelected([]);
+    }
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -144,106 +178,131 @@ const DataTable = ({
   );
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px' }}
-    >
-      <Table className="min-w-full" aria-label="reusable table" size="small">
-        <TableHead
-          sx={{
-            bgcolor: '#f8f8f8',
-            height: '60px',
-          }}
-        >
-          <TableRow>
-            <TableCell padding="checkbox">
-              <Checkbox
-                indeterminate={
-                  selected.length > 0 && selected.length < rows.length
-                }
-                checked={rows.length > 0 && selected.length === rows.length}
-                onChange={handleSelectAllClick}
-              />
-            </TableCell>
-            {showNO && <TableCell align="left">N/O</TableCell>}
-            {columns.map((column) =>
-              !isMobile || !hideColumns.includes(column.id) ? (
-                <TableCell key={column.id} align={column.align || 'left'}>
-                  {column.label}
-                </TableCell>
-              ) : null,
-            )}
-            <TableCell align="right">
-              {selected.length > 0 && (
-                <Tooltip title="Delete selected">
-                  <IconButton onClick={handleSelectedDelete} color="error">
-                    <DeleteForeverIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.length === 0 ? (
-            <EmptyTable
-              columns={columns}
-              emptyTitle={emptyTitle}
-              emptySubTitle={emptySubTitle}
-            />
-          ) : (
-            paginatedRows.map((row, index) => {
-              const isItemSelected = isSelected(row.id);
-              return (
-                <TableRow key={row.id} selected={isItemSelected}>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isItemSelected}
-                      onClick={(event) => handleCheckboxClick(event, row.id)}
-                    />
-                  </TableCell>
-                  {showNO && <TableCell>{index + 1}</TableCell>}
-                  {columns.map((column) =>
-                    !isMobile || !hideColumns.includes(column.id) ? (
-                      <TableCell key={column.id} align={column.align || 'left'}>
-                        {row[column.id]}
-                      </TableCell>
-                    ) : null,
-                  )}
-                  <TableCell align="right">
-                    <IconButton onClick={(event) => handleMenuOpen(event, row)}>
-                      <MoreHoriz />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-      <Menu
-        id="basic-menu"
-        open={Boolean(anchorEl)}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
+    <>
+      <TableContainer
+        component={Paper}
+        sx={{ boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px' }}
       >
-        <MenuItem onClick={handleEdit}>Edit</MenuItem>
-        <MenuItem onClick={handleDelete}>Delete</MenuItem>
-        <MenuItem onClick={handleView}>View</MenuItem>
-      </Menu>
-    </TableContainer>
+        <Table className="min-w-full" aria-label="reusable table" size="small">
+          <TableHead
+            sx={{
+              bgcolor: '#f8f8f8',
+              height: '60px',
+            }}
+          >
+            <TableRow>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  indeterminate={
+                    selected.length > 0 && selected.length < rows.length
+                  }
+                  checked={rows.length > 0 && selected.length === rows.length}
+                  onChange={handleSelectAllClick}
+                />
+              </TableCell>
+              {showNO && <TableCell align="left">N/O</TableCell>}
+              {columns.map((column) =>
+                !isMobile || !hideColumns.includes(column.id) ? (
+                  <TableCell key={column.id} align={column.align || 'left'}>
+                    {column.label}
+                  </TableCell>
+                ) : null,
+              )}
+              <TableCell align="right">
+                {selected.length > 0 && (
+                  <Tooltip title="Delete selected">
+                    <IconButton onClick={handleSelectedDelete} color="error">
+                      <DeleteForeverIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.length === 0 ? (
+              <EmptyTable
+                columns={columns}
+                emptyTitle={emptyTitle}
+                emptySubTitle={emptySubTitle}
+              />
+            ) : (
+              paginatedRows.map((row, index) => {
+                const isItemSelected = isSelected(row.id || row.class_id);
+                const labelId = `enhanced-table-checkbox-${index}`;
+
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) =>
+                      handleCheckboxClick(event, row.id || row.class_id)
+                    }
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.id || row.class_id}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={isItemSelected}
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                    </TableCell>
+                    {showNO && <TableCell>{index + 1}</TableCell>}
+                    {columns.map((column) =>
+                      !isMobile || !hideColumns.includes(column.id) ? (
+                        <TableCell
+                          key={column.id}
+                          align={column.align || 'left'}
+                        >
+                          {row[column.id]}
+                        </TableCell>
+                      ) : null,
+                    )}
+                    <TableCell align="right">
+                      <IconButton
+                        onClick={(event) => handleMenuOpen(event, row)}
+                      >
+                        <MoreHoriz />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        <Menu
+          id="basic-menu"
+          open={Boolean(anchorEl)}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+          anchorEl={anchorEl}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleEdit}>Edit</MenuItem>
+          <MenuItem onClick={handleDelete}>Delete</MenuItem>
+          <MenuItem onClick={handleView}>View</MenuItem>
+        </Menu>
+      </TableContainer>
+      <DeleteConfirmationModal
+        open={isDeleteModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={`${selected.length} selected item${selected.length > 1 ? 's' : ''}`}
+      />
+    </>
   );
 };
 
