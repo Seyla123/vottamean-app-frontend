@@ -14,17 +14,21 @@ import {
 } from '@mui/material';
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
+import PasswordIndicator from './PasswordIndicator';
 import { getStartSignupValidator } from '../../validators/validationSchemas';
 import { EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
 const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
-  // State to track whether the password input should be shown
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    number: false,
+    letter: false,
+    special: false,
+  });
 
-  // Fetch form data from Redux
   const formData = useSelector((state) => state.form);
 
-  // Initialize useForm with validation schema and default values
   const {
     register,
     handleSubmit,
@@ -35,7 +39,6 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
     defaultValues: formData,
   });
 
-  // When the component mounts, pre-fill the form with the data from Redux
   useEffect(() => {
     if (formData) {
       setValue('email', formData.email);
@@ -44,10 +47,33 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
     }
   }, [formData, setValue]);
 
-  // Handle form submission
+  // Validate password whenever it changes
+  useEffect(() => {
+    validatePassword(formData.password);
+  }, [formData.password]);
+
+  const validatePassword = (password) => {
+    if (password) {
+      setPasswordValidation({
+        length: password.length >= 8,
+        number: /[0-9]/.test(password),
+        letter: /[a-zA-Z]/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      });
+    } else {
+      // Reset validation state if password is empty
+      setPasswordValidation({
+        length: false,
+        number: false,
+        letter: false,
+        special: false,
+      });
+    }
+  };
+
   const onSubmit = (data) => {
-    handleFormChange(data); // Update the form data in Redux
-    handleNext(); // Navigate to the next step
+    handleFormChange(data);
+    handleNext();
   };
 
   return (
@@ -111,6 +137,10 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
               fullWidth
               type={showPassword ? 'text' : 'password'}
               {...register('password')}
+              onChange={(e) => {
+                validatePassword(e.target.value);
+                setValue('password', e.target.value);
+              }}
               error={!!errors.password}
               helperText={errors.password?.message}
               placeholder="Create password"
@@ -176,31 +206,35 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
             />
           </Box>
 
-          {/* REQUIREMENT */}
-          <Box>
+          {/* PASSWORD VALIDITY INDICATORS */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
             <Typography variant="body2" fontWeight="bold">
-              Register Requirements{' '}
+              Register Requirement{' '}
               <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <Typography variant="body1">
-              <Box component={'ul'} sx={{ mt: 1 }}>
-                <Box component={'li'}>At least 8 characters.</Box>
-                <Box component={'li'}>Contain at least one number.</Box>
-                <Box component={'li'}>
-                  Contain at least one uppercase letter.
-                </Box>
-                <Box component={'li'}>
-                  Contain at least one special character.
-                </Box>
-              </Box>
-            </Typography>
+            <PasswordIndicator
+              isValid={passwordValidation.length}
+              message="At least 8 characters."
+            />
+            <PasswordIndicator
+              isValid={passwordValidation.letter}
+              message="Contain at least one letter."
+            />
+            <PasswordIndicator
+              isValid={passwordValidation.number}
+              message="Contain at least one number."
+            />
+            <PasswordIndicator
+              isValid={passwordValidation.special}
+              message="Contain at least one special character."
+            />
           </Box>
 
           {/* AGREE WITH TERMS */}
           <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox />
             <Typography variant="body2" component={'span'}>
-              I agree with the{' '}
+              I agree with the
               <Link
                 href="/auth/term"
                 sx={{ display: 'inline-block' }}
@@ -219,7 +253,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           </Button>
 
           {/* FORM FOOTER */}
-          <FormFooter href={'/auth/signin'} />
+          <FormFooter href={'/auth/login'} />
         </Box>
       </form>
     </Box>
