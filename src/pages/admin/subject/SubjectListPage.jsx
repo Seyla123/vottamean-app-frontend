@@ -34,12 +34,19 @@ function SubjectListPage() {
   const { modal } = useSelector((state) => state.ui);
 
   const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
-  const [deleteSubject, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError }] = useDeleteSubjectMutation();
+  const [
+    deleteSubject,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error: deleteError,
+    },
+  ] = useDeleteSubjectMutation();
   const [createSubject] = useCreateSubjectMutation();
   const [updateSubject] = useUpdateSubjectMutation();
 
   useEffect(() => {
-    console.log(data);
     if (data && isSuccess) {
       setRows(data.data);
     }
@@ -104,7 +111,7 @@ function SubjectListPage() {
     try {
       const result = await updateSubject({
         id: selectedSubject.subject_id,
-        formData
+        formData,
       }).unwrap();
       if (result.error) {
         throw new Error(result.error);
@@ -121,7 +128,9 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.message || 'Failed to update subject. The subject may no longer exist.',
+          message:
+            error.message ||
+            'Failed to update subject. The subject may no longer exist.',
           severity: 'error',
         }),
       );
@@ -151,7 +160,9 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.message || 'Failed to delete subject. The subject may no longer exist.',
+          message:
+            error.message ||
+            'Failed to delete subject. The subject may no longer exist.',
           severity: 'error',
         }),
       );
@@ -170,10 +181,14 @@ function SubjectListPage() {
 
   const handleSelectedDelete = async (selectedIds) => {
     try {
-      const results = await Promise.all(selectedIds.map((id) => deleteSubject(id).unwrap()));
-      const failedDeletions = results.filter(result => result.error);
+      const results = await Promise.all(
+        selectedIds.map((id) => deleteSubject(id).unwrap()),
+      );
+      const failedDeletions = results.filter((result) => result.error);
       if (failedDeletions.length > 0) {
-        throw new Error(`Failed to delete ${failedDeletions.length} subjects. They may no longer exist.`);
+        throw new Error(
+          `Failed to delete ${failedDeletions.length} subjects. They may no longer exist.`,
+        );
       }
       dispatch(
         setSnackbar({
@@ -186,7 +201,8 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.message || 'Failed to delete some or all selected subjects',
+          message:
+            error.message || 'Failed to delete some or all selected subjects',
           severity: 'error',
         }),
       );
