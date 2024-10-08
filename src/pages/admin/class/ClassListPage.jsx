@@ -245,6 +245,8 @@ const ClassListPage = () => {
         emptyTitle={'No Class'}
         emptySubTitle={'No Class Available'}
         isLoading={isLoading}
+        showNO={false}
+        idField="class_id"
       />
 
       <CreateModal

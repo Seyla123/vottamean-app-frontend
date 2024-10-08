@@ -8,8 +8,18 @@ import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CreateModal from '../../../components/common/CreateModal';
-import { useGetClassPeriodQuery, useDeleteClassPeriodMutation, useCreateClassPeriodMutation } from '../../../services/classPeriodApi';
-import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatHelper';
+import EditModal from '../../../components/common/EditModal';
+import {
+  useGetClassPeriodQuery,
+  useDeleteClassPeriodMutation,
+  useCreateClassPeriodMutation,
+  useUpdateClassPeriodMutation,
+} from '../../../services/classPeriodApi';
+import {
+  calculatePeriod,
+  formatTimeTo12Hour,
+  formatTimeToHHMM,
+} from '../../../utils/formatHelper';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 // Define table columns title
@@ -25,6 +35,8 @@ function ClassPeriodListPage() {
   const [rows, setRows] = useState([]);
   const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingClassPeriod, setEditingClassPeriod] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,15 +46,21 @@ function ClassPeriodListPage() {
   const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
 
   // useDeleteClassPeriodMutation : returns a function to delete a subject
-  const [ deleteClassPeriod, {
+  const [
+    deleteClassPeriod,
+    {
       isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error }
+      error,
+    },
   ] = useDeleteClassPeriodMutation();
 
   // useCreateClassPeriodMutation : returns a function to create a new subject
-  const [createClassPeriod, { isLoading: isCreating, isSuccess: isCreateSuccess, isError: isCreateError, error: createError }] = useCreateClassPeriodMutation();
+  const [createClassPeriod] = useCreateClassPeriodMutation();
+
+  // useUpdateClassPeriodMutation : returns a function to update a subject
+  const [updateClassPeriod] = useUpdateClassPeriodMutation();
 
   useEffect(() => {
     // set the rows state when subject records are fetched successfully
@@ -52,26 +70,31 @@ function ClassPeriodListPage() {
 
     // Show a snackbar with messages during delete (progress, failure, success)
     if (isDeleting) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Deleting...',
-        severity: 'info'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleting...',
+          severity: 'info',
+        }),
+      );
     } else if (isDeleteError) {
-      dispatch( setSnackbar({
-        open: true,
-        message: error.data.message,
-        severity: 'error'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data.message,
+          severity: 'error',
+        }),
+      );
     } else if (isDeleteSuccess) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Deleted successfully',
-        severity: 'success'
-      }));
-      navigate('/admin/class-periods');
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
     }
-  }, [  data, dispatch, isSuccess, isDeleting, isDeleteSuccess, isDeleteError ]);
+  }, [data, dispatch, isSuccess, isDeleting, isDeleteSuccess, isDeleteError]);
 
   // Handle loading state
   if (isLoading) {
@@ -102,18 +125,58 @@ function ClassPeriodListPage() {
   const handleCreateSubmit = async (formData) => {
     try {
       await createClassPeriod(formData).unwrap();
-      dispatch(setSnackbar({
-        open: true,
-        message: 'Class period created successfully',
-        severity: 'success'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class period created successfully',
+          severity: 'success',
+        }),
+      );
       setIsCreateModalOpen(false);
     } catch (err) {
-      dispatch(setSnackbar({
-        open: true,
-        message: err.data?.message || 'Failed to create class period',
-        severity: 'error'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: err.data?.message || 'Failed to create class period',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  // Handle EDIT action
+  const handleEdit = (row) => {
+    const formattedRow = {
+      ...row,
+      start_time: formatTimeToHHMM(row.start_time),
+      end_time: formatTimeToHHMM(row.end_time),
+    };
+    setEditingClassPeriod(formattedRow);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (formData) => {
+    try {
+      await updateClassPeriod({
+        id: editingClassPeriod.period_id,
+        ...formData,
+      }).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class period updated successfully',
+          severity: 'success',
+        }),
+      );
+      setIsEditModalOpen(false);
+    } catch (err) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: err.data?.message || 'Failed to update class period',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -125,11 +188,6 @@ function ClassPeriodListPage() {
   // Handle DETAIL action
   const handleView = (row) => {
     navigate(`/admin/class-periods/${row.period_id}`);
-  };
-
-  // Handle EDIT action
-  const handleEdit = (row) => {
-    navigate(`/admin/class-periods/update/${row.period_id}`);
   };
 
   // Define formatted data to display
@@ -144,6 +202,11 @@ function ClassPeriodListPage() {
   });
 
   const createFields = [
+    { name: 'start_time', label: 'Start Time', type: 'time', required: true },
+    { name: 'end_time', label: 'End Time', type: 'time', required: true },
+  ];
+
+  const editFields = [
     { name: 'start_time', label: 'Start Time', type: 'time', required: true },
     { name: 'end_time', label: 'End Time', type: 'time', required: true },
   ];
@@ -175,6 +238,16 @@ function ClassPeriodListPage() {
         onSubmit={handleCreateSubmit}
       />
 
+      <EditModal
+        open={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Class Period"
+        description="Update the details for this class period"
+        fields={editFields}
+        initialData={editingClassPeriod}
+        onSubmit={handleEditSubmit}
+      />
+
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
@@ -190,9 +263,12 @@ function ClassPeriodListPage() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={'period_id'}
+        hideColumns={['period_id']}
         emptyTitle="No Class Periods"
         emptySubTitle="No class periods available"
+        isLoading={isLoading}
+        showNO={false}
+        idField="period_id"
       />
     </FormComponent>
   );

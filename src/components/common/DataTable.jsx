@@ -77,6 +77,7 @@ const DataTable = ({
   emptySubTitle,
   showNO,
   isLoading = false,
+  idField = 'id', // New prop to specify the unique identifier field
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -89,7 +90,7 @@ const DataTable = ({
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id || n.class_id);
+      const newSelecteds = rows.map((n) => n[idField]);
       setSelected(newSelecteds);
       console.log('All rows selected:', newSelecteds);
     } else {
@@ -238,19 +239,17 @@ const DataTable = ({
             />
           ) : (
             paginatedRows.map((row, index) => {
-              const isItemSelected = isSelected(row.id || row.class_id);
+              const isItemSelected = isSelected(row[idField]);
               const labelId = `enhanced-table-checkbox-${index}`;
 
               return (
                 <TableRow
                   hover
-                  onClick={(event) =>
-                    handleCheckboxClick(event, row.id || row.class_id)
-                  }
+                  onClick={(event) => handleCheckboxClick(event, row[idField])}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row.id || row.class_id}
+                  key={row[idField]}
                   selected={isItemSelected}
                 >
                   <TableCell padding="checkbox">

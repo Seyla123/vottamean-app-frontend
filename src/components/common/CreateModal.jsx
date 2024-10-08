@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, Typography, Box, InputAdornment } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, Typography, Box, InputAdornment, MenuItem } from '@mui/material';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) => {
   const [formData, setFormData] = useState({});
@@ -55,16 +59,28 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
         );
       case 'time':
         return (
-          <TextField
-            type="time"
-            fullWidth
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            error={!!errors[field.name]}
-            helperText={errors[field.name]}
-            variant="outlined"
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              fullWidth
+              value={formData[field.name] ? dayjs(formData[field.name], 'HH:mm') : null}
+              onChange={(newValue) => {
+                handleChange({
+                  target: {
+                    name: field.name,
+                    value: newValue ? newValue.format('HH:mm') : '',
+                  },
+                });
+              }}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  variant: 'outlined',
+                  error: !!errors[field.name],
+                  helperText: errors[field.name],
+                },
+              }}
+            />
+          </LocalizationProvider>
         );
       default:
         return (

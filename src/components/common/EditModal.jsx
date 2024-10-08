@@ -12,6 +12,10 @@ import {
   InputAdornment,
   MenuItem,
 } from '@mui/material';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const EditModal = ({
   open,
@@ -79,16 +83,28 @@ const EditModal = ({
         );
       case 'time':
         return (
-          <TextField
-            type="time"
-            fullWidth
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            error={!!errors[field.name]}
-            helperText={errors[field.name]}
-            variant="outlined"
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              fullWidth
+              value={formData[field.name] ? dayjs(formData[field.name], 'HH:mm') : null}
+              onChange={(newValue) => {
+                handleChange({
+                  target: {
+                    name: field.name,
+                    value: newValue ? newValue.format('HH:mm') : '',
+                  },
+                });
+              }}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  variant: 'outlined',
+                  error: !!errors[field.name],
+                  helperText: errors[field.name],
+                },
+              }}
+            />
+          </LocalizationProvider>
         );
       default:
         return (
