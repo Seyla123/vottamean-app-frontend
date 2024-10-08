@@ -138,8 +138,8 @@ const EditModal = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ pt: 4 }}>
-        <Typography variant="h5" fontWeight={'bold'}>
+      <Box sx={{ p: 4 }}>
+        <Typography variant="h4" fontWeight={'bold'} pb={2}>
           {title}
         </Typography>
         {description && (
@@ -147,7 +147,7 @@ const EditModal = ({
             {description}
           </Typography>
         )}
-      </DialogTitle>
+      </Box>
       <DialogContent>
         <Stack spacing={2} mt={2}>
           {fields.map((field) => (
