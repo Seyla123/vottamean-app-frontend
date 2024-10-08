@@ -30,6 +30,7 @@ const StudentUpdatePage = () => {
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [profileImg, setProfileImg] = useState('');
 
   const [newStudent, setNewStudent] = useState({
     firstName: '',
@@ -40,23 +41,13 @@ const StudentUpdatePage = () => {
     phoneNumber: '',
     email: '',
     address: '',
-  });
-
-  const [newGuardian, setNewGuardian] = useState({
     guardianName: '',
     guardianRelationship: '',
     guardianEmail: '',
     guardianPhoneNumber: '',
   });
-
-  const {
-    data: studentData,
-    isLoading,
-    fetchError,
-  } = useGetStudentsByIdQuery(id);
-console.log(studentData);
-  const [
-    updatedStudent,
+  const { data: studentData,isLoading,fetchError} = useGetStudentsByIdQuery(id);
+  const [  updatedStudent,
     {
       isLoading: isUpdating,
       isError: isUpdateError,
@@ -66,8 +57,7 @@ console.log(studentData);
   ] = useUpdateStudentsDataMutation();
 
   // Filter class data for option Selection
-  const { data: classData, error } = useGetClassesDataQuery();
-  const [profileImg, setProfileImg] = useState('');
+  const { data: classData} = useGetClassesDataQuery();
 
   // State to hold initial form data for changes comparison
   const [initialFormData, setInitialFormData] = useState(null);
@@ -83,33 +73,27 @@ console.log(studentData);
 
   useEffect(() => {
     if (studentData) {
-      const guardianInfo={
-        guardianName: studentData.guardian_name || '',
-        guardianRelationship:studentData.guardian_relationship || '',
-        guardianEmail:studentData.guardian_email || '',
-        guardianPhoneNumber:studentData.guardian_phone_number || '',
-      }
-      setNewGuardian(guardianInfo);
-      setInitialFormData(guardianInfo);
-
-      const { Info } = studentData.data;
+      const { Info, guardian_name, guardian_email, guardian_relationship, guardian_phone_number, class_id } = studentData.data;
       const studentInfo = {
         firstName: Info.first_name || '',
         lastName: Info.last_name || '',
         phoneNumber: Info.phone_number || '',
-        className: Info.class_id || '',
+        className: class_id || '',
         gender: Info.gender || '',
         dob: Info.dob ? dayjs(Info.dob) : null,
         address: Info.address || '',
+        guardianName: guardian_name || '',
+        guardianRelationship: guardian_relationship || '',
+        guardianEmail: guardian_email || '',
+        guardianPhoneNumber: guardian_phone_number || '',
       };
       setNewStudent(studentInfo);
       setInitialFormData(studentInfo);
       setProfileImg(Info.photo);
     }
-
   }, [studentData]);
 
-
+  // Snackbar for showing Messages
   useEffect(() => {
     if (isUpdating) {
       dispatch(
@@ -156,25 +140,17 @@ console.log(studentData);
     }
     setNewStudent((data) => ({ ...data, [name]: value }));
   };
-
+//Handles  Gender Change
   const handleGenderChange = (event) => {
     setNewStudent((data) => ({ ...data, gender: event.target.value }));
   };
+  //Handle Class Channge
   const handleClassChange = (event) => {
     setNewStudent((data) => ({ ...data, className: event.target.value }));
   };
-
+//Validation Form
   const validateForm = () => {
-    const {
-      phoneNumber,
-      firstName,
-      lastName,
-      gender,
-      className,
-      dob,
-      address,
-
-    } = newStudent;
+    const { phoneNumber,firstName,lastName, gender,  className,  dob,  address,  guardianName,  guardianRelationship,  guardianEmail,  guardianPhoneNumber} = newStudent;
     if (
       !firstName ||
       !lastName ||
@@ -182,7 +158,11 @@ console.log(studentData);
       !gender ||
       !className ||
       !dob ||
-      !address
+      !address ||
+      !guardianName ||
+      !guardianRelationship ||
+      !guardianEmail ||
+      !guardianPhoneNumber
     ) {
       dispatch(
         setSnackbar({
@@ -193,7 +173,7 @@ console.log(studentData);
       );
       return false;
     }
-    if (!/^\d{9,15}$/.test(phoneNumber)) {
+    if (!/^\d{9,15}$/.test(phoneNumber && guardianPhoneNumber)) {
       dispatch(
         setSnackbar({
           open: true,
@@ -205,21 +185,21 @@ console.log(studentData);
     }
     return true;
   };
+  // isFormDataUnchanged: Use for testing if Data is changed
   const isFormDataUnchanged = () => {
     return JSON.stringify(newStudent) === JSON.stringify(initialFormData);
   };
-
-  const handleGuardianChange = (e) => {
-    const { name, value } = e.target;
-    setNewGuardian((prev) => ({ ...prev, [name]: value }));
+// onSubmitStudent : function forsubmit Student Form 
+  const onSubmitStudent = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    if (activeTab === 0) {
+      setActiveTab(1);
+    }
   };
-
+  //onSubmit : Submit Data to Backend
   const onSubmit = async (e) => {
     e.preventDefault();
-    // validation failed
-    if (!validateForm()) {
-      return;
-    }
     if (isFormDataUnchanged()) {
       dispatch(
         setSnackbar({
@@ -229,18 +209,12 @@ console.log(studentData);
           autoHideDuration: 6000,
         }),
       );
-      if (activeTab === 0) {
-        navigate("/admin/students");
-      } else {
-        setActiveTab(1);
-      }
     }
+    if (!validateForm()) return;
     try {
       await updatedStudent({
-        id, // get the id of the teacher to update
+        id,
         updates: {
-          ...newStudent,
-          ...newGuardian,
           first_name: newStudent.firstName,
           last_name: newStudent.lastName,
           className: newStudent.className,
@@ -248,14 +222,12 @@ console.log(studentData);
           dob: newStudent.dob ? newStudent.dob.format('YYYY-MM-DD') : null,
           phone_number: newStudent.phoneNumber,
           address: newStudent.address,
-          guardian_email: newGuardian.guardianEmail,
-          guardian_name: newGuardian.guardianName,
-          guardian_phone_number: newGuardian.guardianPhoneNumber,
-          guardian_relationship: newGuardian.guardianRelationship,
+          guardian_email: newStudent.guardianEmail,
+          guardian_name: newStudent.guardianName,
+          guardian_phone_number: newStudent.guardianPhoneNumber,
+          guardian_relationship: newStudent.guardianRelationship,
         },
       }).unwrap();
-      // console.log(newStudent);
-      // console.log(newGuardian);
     } catch (error) {
       console.error('Update failed', error);
     }
@@ -400,16 +372,15 @@ console.log(studentData);
               placeholder={'address'}
             />
           </Box>
-
           <ButtonContainer
             leftBtn={() => navigate('/admin/students')}
-            rightBtn={onSubmit}
+            rightBtn={onSubmitStudent}
             leftBtnTitle="Cancel"
             rightBtnTitle="Update Student"
           />
         </CardComponent>
       )}
-
+      {/*  Tab For Submissions All Data ( Guardian and Student) */}
       {activeTab === 1 && (
         <CardComponent title="Guardian Information">
           <Stack>
@@ -421,8 +392,8 @@ console.log(studentData);
             <TextFieldComponent
               customStyle={{ flexGrow: 1 }}
               name="guardianName"
-              value={newGuardian.guardianName}
-              onChange={handleGuardianChange}
+              value={newStudent.guardianName}
+              onChange={handleInputChange}
               placeholder={'full name'}
             />
           </Stack>
@@ -434,8 +405,8 @@ console.log(studentData);
             </Typography>
             <TextFieldComponent
               name="guardianRelationship"
-              value={newGuardian.guardianRelationship}
-              onChange={handleGuardianChange}
+              value={newStudent.guardianRelationship}
+              onChange={handleInputChange}
               placeholder={'relationship'}
             />
           </Box>
@@ -447,8 +418,8 @@ console.log(studentData);
             </Typography>
             <TextFieldComponent
               name="guardianEmail"
-              value={newGuardian.guardianEmail}
-              onChange={handleGuardianChange}
+              value={newStudent.guardianEmail}
+              onChange={handleInputChange}
               placeholder={'email'}
             />
           </Box>
@@ -460,12 +431,11 @@ console.log(studentData);
             </Typography>
             <TextFieldComponent
               name="guardianPhoneNumber"
-              value={newGuardian.guardianPhoneNumber}
-              onChange={handleGuardianChange}
+              value={newStudent.guardianPhoneNumber}
+              onChange={handleInputChange}
               placeholder={'phone number'}
             />
           </Box>
-
           <ButtonContainer
             leftBtn={() => setActiveTab(0)}
             rightBtn={onSubmit}
@@ -477,7 +447,6 @@ console.log(studentData);
     </FormComponent>
   );
 };
-
 export default StudentUpdatePage;
 const imgStyle = {
   width: {
