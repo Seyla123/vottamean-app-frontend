@@ -51,7 +51,7 @@ function TeacherDetailPage() {
   const handleEdit = () => {
     setSelectedTeacherId(id);
     setIsUpdateOpen(true);
-};
+  };
 
   // Open delete confirmation modal when user clicks on delete button
   const handleDelete = () => {
@@ -93,17 +93,19 @@ function TeacherDetailPage() {
       <FormComponent
         title="Teacher Detail"
         subTitle="These are the teacher's detailed information"
-      ></FormComponent>
-      {/* Card Component */}
-      <CardComponent
-        title="Teacher Information"
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-        data={teacherData.data}
-        imgUrl={teacherData.data.Info.photo}>
-        {/* Card Data */}
-        <CardInformation data={formattedTeacher} />
-      </CardComponent>
+      >
+        {/* Card Component */}
+        <CardComponent
+          title="Teacher Information"
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          data={teacherData.data}
+          imgUrl={teacherData.data.Info.photo}
+        >
+          {/* Card Data */}
+          <CardInformation data={formattedTeacher} />
+        </CardComponent>
+      </FormComponent>
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
         open={isOpen}
@@ -112,7 +114,7 @@ function TeacherDetailPage() {
         itemName="Teacher"
       />
       {/* Update teacher form */}
-       <UpdateTeacherForm
+      <UpdateTeacherForm
         isOpen={isUpdateOpen}
         onClose={() => setIsUpdateOpen(false)}
         teacherId={selectedTeacherId}
