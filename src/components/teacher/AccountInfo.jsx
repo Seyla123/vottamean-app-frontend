@@ -12,6 +12,7 @@ import {
   IconButton,
   InputAdornment,
 } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 
 // Icons from Lucide
 import { Eye, EyeOff } from 'lucide-react';
@@ -123,17 +124,17 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
             gap={{ xs: 1, sm: 2 }}
             marginTop={{ xs: 2, sm: 0 }}
           >
-            <Button
+            <StyledButton
               onClick={handleBack}
               fullWidth
               variant="outlined"
               color="inherit"
             >
               Back
-            </Button>
-            <Button fullWidth variant="contained" type="submit">
+            </StyledButton>
+            <StyledButton fullWidth variant="contained" type="submit">
               Add Teacher
-            </Button>
+            </StyledButton>
           </Stack>
         </Box>
       </form>

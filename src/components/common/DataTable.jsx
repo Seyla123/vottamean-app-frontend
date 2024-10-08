@@ -13,13 +13,22 @@ import {
   MenuItem,
   Tooltip,
   TablePagination,
-  Box,
   Typography,
+  ListItemIcon,
+  ListItemText,
+  MenuList,
+  Divider,
+  Button,
+  CircularProgress,
+  Box,
 } from '@mui/material';
-import MoreHoriz from '@mui/icons-material/MoreHoriz';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import StyledButton from './StyledMuiButton';
 import { useMediaQuery } from '@mui/material';
-import EmptyDataImage from '../../assets/images/empty-data.svg';
+import EmptyDataImage from '../../assets/images/empty-image.svg';
+import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
+
+import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
+import { shadow } from '../../styles/global';
 
 /**
  * DataTable Component
@@ -31,7 +40,7 @@ import EmptyDataImage from '../../assets/images/empty-data.svg';
  * - Pagination
  * - Row selection (single and multi-select)
  * - Responsive design with column hiding for mobile views
- * - Action menu for each row (edit and delete)
+ * - Action menu for each row (view, edit, and delete)
  * - Bulk delete functionality
  * - Empty state handling
  *
@@ -40,10 +49,14 @@ import EmptyDataImage from '../../assets/images/empty-data.svg';
  * @param {Object[]} columns - Array of column definitions (id, label, align)
  * @param {Function} onEdit - Callback function for row edit action
  * @param {Function} onDelete - Callback function for row delete action
+ * @param {Function} onView - Callback function for row view action
  * @param {Function} onSelectedDelete - Callback function for bulk delete action
  * @param {string[]} hideColumns - Array of column ids to hide on mobile views
  * @param {string} emptyTitle - Title to display when the table is empty
  * @param {string} emptySubTitle - Subtitle to display when the table is empty
+ * @param {boolean} showNO - Flag to show or hide row numbers
+ * @param {boolean} isLoading - Flag to show loading state
+ * @param {string} idField - Field name for the unique identifier of each row
  *
  * Usage:
  * <DataTable
@@ -51,10 +64,14 @@ import EmptyDataImage from '../../assets/images/empty-data.svg';
  *   columns={columnDefinitions}
  *   onEdit={handleEdit}
  *   onDelete={handleDelete}
+ *   onView={handleView}
  *   onSelectedDelete={handleBulkDelete}
  *   hideColumns={['columnToHide']}
  *   emptyTitle="No data available"
  *   emptySubTitle="Add some data to see it in the table"
+ *   showNO={true}
+ *   isLoading={false}
+ *   idField="id"
  * />
  */
 
@@ -65,31 +82,54 @@ const DataTable = ({
   onDelete,
   onView,
   onSelectedDelete,
-  hideColumns,
+  hideColumns = [],
   emptyTitle,
   emptySubTitle,
   showNO,
+  isLoading = false,
+  idField = 'id',
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
 
   const handleSelectAllClick = (event) => {
-    const newSelected = event.target.checked ? rows.map((n) => n.id) : [];
-    setSelected(newSelected);
+    if (event.target.checked) {
+      const newSelecteds = rows.map((n) => n[idField]);
+      setSelected(newSelecteds);
+      console.log('All rows selected:', newSelecteds);
+    } else {
+      setSelected([]);
+      console.log('All rows deselected');
+    }
   };
 
   const handleCheckboxClick = (event, id) => {
     event.stopPropagation();
-    setSelected((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((item) => item !== id)
-        : [...prevSelected, id],
-    );
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+    console.log('Selected row ID:', id);
+    console.log('Updated selected IDs:', newSelected);
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -121,12 +161,24 @@ const DataTable = ({
   };
 
   const handleSelectedDelete = () => {
-    if (onSelectedDelete) {
-      const selectedData = rows.filter((row) => selected.includes(row.id));
-      console.log('Selected data to delete:', selectedData);
-      onSelectedDelete(selected);
+    if (selected.length > 0) {
+      setIsDeleteModalOpen(true);
+    } else {
+      console.log('No rows selected for deletion');
     }
-    setSelected([]);
+  };
+
+  const handleConfirmDelete = () => {
+    if (onSelectedDelete) {
+      console.log('Deleting selected rows:', selected);
+      onSelectedDelete(selected);
+      setSelected([]);
+    }
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -144,15 +196,11 @@ const DataTable = ({
   );
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px' }}
-    >
+    <TableContainer component={Paper} sx={shadow}>
       <Table className="min-w-full" aria-label="reusable table" size="small">
         <TableHead
           sx={{
-            bgcolor: '#f8f8f8',
-            height: '60px',
+            height: '80px',
           }}
         >
           <TableRow>
@@ -173,33 +221,44 @@ const DataTable = ({
                 </TableCell>
               ) : null,
             )}
-            <TableCell align="right">
-              {selected.length > 0 && (
+            {selected.length > 0 ? (
+              <TableCell align="right" sx={{ maxWidth: '50px' }}>
                 <Tooltip title="Delete selected">
-                  <IconButton onClick={handleSelectedDelete} color="error">
-                    <DeleteForeverIcon />
-                  </IconButton>
+                  <StyledButton
+                    onClick={handleSelectedDelete}
+                    color="error"
+                    startIcon={<Trash2 size={18} />}
+                  >
+                    Delete
+                  </StyledButton>
                 </Tooltip>
-              )}
-            </TableCell>
+              </TableCell>
+            ) : (
+              <TableCell align="right"></TableCell>
+            )}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {rows.length === 0 ? (
-            <EmptyTable
-              columns={columns}
-              emptyTitle={emptyTitle}
-              emptySubTitle={emptySubTitle}
-            />
-          ) : (
+        <TableBody sx={{ position: 'relative' }}>
+          {isLoading ? (
+            <LoadingTable columns={columns} />
+          ) : rows.length > 0 ? (
             paginatedRows.map((row, index) => {
-              const isItemSelected = isSelected(row.id);
+              const isItemSelected = isSelected(row[idField]);
+              const labelId = `enhanced-table-checkbox-${index}`;
+
               return (
-                <TableRow key={row.id} selected={isItemSelected}>
+                <TableRow
+                  hover
+                  onClick={(event) => handleCheckboxClick(event, row[idField])}
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  key={row[idField]}
+                >
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isItemSelected}
-                      onClick={(event) => handleCheckboxClick(event, row.id)}
+                      inputProps={{ 'aria-labelledby': labelId }}
                     />
                   </TableCell>
                   {showNO && <TableCell>{index + 1}</TableCell>}
@@ -212,24 +271,32 @@ const DataTable = ({
                   )}
                   <TableCell align="right">
                     <IconButton onClick={(event) => handleMenuOpen(event, row)}>
-                      <MoreHoriz />
+                      <EllipsisVertical size={18} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               );
             })
+          ) : (
+            <EmptyTable
+              columns={columns}
+              emptyTitle={emptyTitle}
+              emptySubTitle={emptySubTitle}
+            />
           )}
         </TableBody>
       </Table>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {!isLoading && rows.length > 0 && (
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
       <Menu
         id="basic-menu"
         open={Boolean(anchorEl)}
@@ -239,31 +306,91 @@ const DataTable = ({
         anchorEl={anchorEl}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEdit}>Edit</MenuItem>
-        <MenuItem onClick={handleDelete}>Delete</MenuItem>
-        <MenuItem onClick={handleView}>View</MenuItem>
+        <MenuList>
+          <MenuItem onClick={handleEdit}>
+            <ListItemIcon>
+              <Pencil size={18} />
+            </ListItemIcon>
+            <ListItemText>Edit</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleView}>
+            <ListItemIcon>
+              <FileText size={18} />
+            </ListItemIcon>
+            <ListItemText>View Details</ListItemText>
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleDelete}>
+            <ListItemIcon sx={{ color: 'error.main' }}>
+              <Trash2 size={18} />
+            </ListItemIcon>
+            <ListItemText sx={{ color: 'error.main' }}>Delete</ListItemText>
+          </MenuItem>
+        </MenuList>
       </Menu>
+      <DeleteConfirmationModal
+        open={isDeleteModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={`${selected.length} selected item${selected.length > 1 ? 's' : ''}`}
+      />
     </TableContainer>
   );
 };
 
 const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
   return (
-    <TableRow sx={{ width: 1, height: '500px' }}>
-      <TableCell colSpan={columns.length + 1} align="center" width={1}>
-        <img
-          src={EmptyDataImage}
-          alt="not found"
+    <TableRow>
+      <TableCell
+        colSpan={columns.length + 2}
+        sx={{
+          height: '600px',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+        }}
+      >
+        <div
           style={{
-            width: '100%',
-            maxWidth: '200px',
-            objectFit: 'contain',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
           }}
-        />
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          {emptyTitle}
-        </Typography>
-        <Typography variant="body2">{emptySubTitle}</Typography>
+        >
+          <Box sx={{ width: '100%', height: '300px' }}>
+            <img
+              src={EmptyDataImage}
+              alt="empty"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+              }}
+            />
+          </Box>
+          <Typography variant="h6" gutterBottom>
+            {emptyTitle}
+          </Typography>
+          <Typography variant="body2">{emptySubTitle}</Typography>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+const LoadingTable = ({ columns }) => {
+  return (
+    <TableRow>
+      <TableCell
+        colSpan={columns.length + 2}
+        sx={{
+          height: '400px',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+        }}
+      >
+        <CircularProgress />
       </TableCell>
     </TableRow>
   );

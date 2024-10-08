@@ -11,6 +11,7 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import { Search as SearchIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -124,9 +125,9 @@ function TeacherListPage() {
         <Box>
             <Header header="TEACHER LIST" subheader="There are 24 teachers" />
             <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mb: 2 }}>
-                <Button variant="contained" sx={{ width: { xs: '130px', sm: '170px' } }}>
+                <StyledButton variant="contained" sx={{ width: { xs: '130px', sm: '170px' } }}>
                     ADD TEACHER
-                </Button>
+                </StyledButton>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', gap: 2, mb: 3 }}>
                 <TextField
@@ -152,7 +153,7 @@ function TeacherListPage() {
                         ),
                     }}
                 />
-                <Button
+                <StyledButton
                     variant="contained"
                     sx={{
                         height: '40px',
@@ -162,7 +163,7 @@ function TeacherListPage() {
                     }}
                 >
                     Search
-                </Button>
+                </StyledButton>
             </Box>
             <Box sx={{ width: '100%', mx: 'auto' }}>
                 <Paper>

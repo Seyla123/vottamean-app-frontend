@@ -59,3 +59,9 @@ export const formatStartEndTime = (classData) => {
   const time = `${formatTimeTo12Hour(classData.start_time)} - ${formatTimeTo12Hour(classData.end_time)}`;
   return time;
 };
+
+// Utility: Format time to HH:MM
+export const formatTimeToHHMM = (time) => {
+  const [hours, minutes] = time.split(':');
+  return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+};

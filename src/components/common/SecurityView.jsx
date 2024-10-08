@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Typography, Box, Button, Card } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 // Image and Icon
@@ -50,9 +51,9 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
           </Typography>
         </Box>
         <Link to={'change-password'}>
-          <Button variant="outlined" startIcon={<Lock size={20} />}>
+          <StyledButton variant="outlined" startIcon={<Lock size={20} />}>
             Change password
-          </Button>
+          </StyledButton>
         </Link>
       </Box>
 
@@ -76,14 +77,14 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
             action cannot be undone.
           </Typography>
         </Box>
-        <Button
+        <StyledButton
           variant="outlined"
           startIcon={<Trash2 size={20} />}
           color="error"
           onClick={() => setIsOpen(true)}
         >
           Delete account
-        </Button>
+        </StyledButton>
       </Box>
 
       {/* DELETE CONFIRMATION MODAL */}

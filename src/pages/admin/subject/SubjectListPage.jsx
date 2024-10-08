@@ -1,146 +1,284 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
 import { Stack, Button } from '@mui/material';
 import { PlusIcon } from 'lucide-react';
-// import components
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-// import api and uiSlice
+import CreateModal from '../../../components/common/CreateModal';
+import EditModal from '../../../components/common/EditModal';
+import ViewModal from '../../../components/common/ViewModal';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
-import { useGetSubjectsQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
+import {
+  useGetSubjectsQuery,
+  useDeleteSubjectMutation,
+  useCreateSubjectMutation,
+  useUpdateSubjectMutation,
+} from '../../../services/subjectApi';
 
-// Define table columns title
-const tableTiles = [
+const tableTitles = [
   { id: 'subject_id', label: 'Subject ID' },
   { id: 'subject_name', label: 'Subject Name' },
   { id: 'description', label: 'Subject Description' },
 ];
 
 function SubjectListPage() {
-  // useState: "data to be displayed" and "data to be deleted"
   const [rows, setRows] = useState([]);
-  const [subjectToDelete, setSubjectToDelete] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { modal } = useSelector((state) => state.ui);
 
-  // useGetSubjectsQuery : return a function to fetch all subject records
   const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
-
-  // useDeleteSubjectMutation : returns a function to delete a subject
-  const [ deleteSubject,
-    { isLoading: isDeleting,
+  const [
+    deleteSubject,
+    {
+      isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error }
-    ] = useDeleteSubjectMutation();
+      error: deleteError,
+    },
+  ] = useDeleteSubjectMutation();
+  const [createSubject] = useCreateSubjectMutation();
+  const [updateSubject] = useUpdateSubjectMutation();
 
   useEffect(() => {
-    // set the rows state when subject records are fetched successfully
     if (data && isSuccess) {
-      // subjects data fetched from api
-      const subjectData = data.data;
-      setRows(subjectData);
+      setRows(data.data);
     }
-  
-    // Show a snackbar with messages during delete (progress, failure, success)
+
     if (isDeleting) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Deleting...',
-        severity: 'info',
-      }));
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
     } else if (isDeleteError) {
-      dispatch( setSnackbar({
-        open: true,
-        message: error?.data?.message || 'Failed to delete subject',
-        severity: 'error',
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: deleteError.data?.message || 'Failed to delete subject',
+          severity: 'error',
+        }),
+      );
     } else if (isDeleteSuccess) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Deleted successfully',
-        severity: 'success',
-      }));
-      navigate('/admin/subjects');
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
     }
-  }, [ data, dispatch, isSuccess, isDeleting, isDeleteError, isDeleteSuccess ]);
-  
-  // loading the data until it successfully fetched
-  if (isLoading) {
-    return <CircularIndeterminate />;
-  }
+  }, [
+    data,
+    isSuccess,
+    isDeleting,
+    isDeleteError,
+    isDeleteSuccess,
+    dispatch,
+    deleteError,
+  ]);
 
-  // Handle error state
-  if (isError) {
-    console.log('error message :', error.data.message);
-  }
+  if (isLoading) return <CircularIndeterminate />;
+  if (isError) console.log('error message:', isError.data.message);
 
-  // Handle DELETE action
-  const handleDelete = (rows) => {
-    setSubjectToDelete(rows);
+  const handleCreate = async (formData) => {
+    try {
+      await createSubject(formData).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Subject created successfully',
+          severity: 'success',
+        }),
+      );
+      setCreateModalOpen(false);
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to create subject',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  const handleEdit = async (formData) => {
+    try {
+      const result = await updateSubject({
+        id: selectedSubject.subject_id,
+        formData,
+      }).unwrap();
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Subject updated successfully',
+          severity: 'success',
+        }),
+      );
+      setEditModalOpen(false);
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            error.message ||
+            'Failed to update subject. The subject may no longer exist.',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  const handleDelete = (row) => {
+    setSelectedSubject(row);
     dispatch(setModal({ open: true }));
   };
 
-  // Handle delete confirmation modal
-  const confirmDelete = async () => {
+  const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    await deleteSubject(subjectToDelete.subject_id).unwrap();
+    try {
+      const result = await deleteSubject(selectedSubject.subject_id).unwrap();
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Subject deleted successfully',
+          severity: 'success',
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            error.message ||
+            'Failed to delete subject. The subject may no longer exist.',
+          severity: 'error',
+        }),
+      );
+    }
   };
 
-  // Handle DELETE ALL action
-  const handleSelectedDelete = () => {
-    console.log('Delete all');
-  };
-
-  // Handle DETAIL action
   const handleView = (row) => {
-    navigate(`/admin/subjects/${row.subject_id}`);
+    setSelectedSubject(row);
+    setViewModalOpen(true);
   };
 
-  // Handle EDIT action
-  const handleEdit = (row) => {
-    navigate(`/admin/subjects/update/${row.subject_id}`);
+  const handleEditOpen = (row) => {
+    setSelectedSubject(row);
+    setEditModalOpen(true);
   };
+
+  const handleSelectedDelete = async (selectedIds) => {
+    try {
+      const results = await Promise.all(
+        selectedIds.map((id) => deleteSubject(id).unwrap()),
+      );
+      const failedDeletions = results.filter((result) => result.error);
+      if (failedDeletions.length > 0) {
+        throw new Error(
+          `Failed to delete ${failedDeletions.length} subjects. They may no longer exist.`,
+        );
+      }
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Selected subjects deleted successfully',
+          severity: 'success',
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            error.message || 'Failed to delete some or all selected subjects',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  const fields = [
+    { name: 'subject_name', label: 'Subject Name', required: true },
+    { name: 'description', label: 'Description', multiline: true },
+  ];
 
   return (
     <FormComponent
       title="Subject List"
       subTitle={`Total Subjects: ${rows.length}`}
     >
-      <Stack direction={'row'} alignSelf={'flex-end'}>
-        <Link to={'/admin/subjects/create'}>
-          <Button
-            size="large"
-            variant="contained"
-            color="primary"
-            startIcon={<PlusIcon size={20} />}
-          >
-            Add subject
-          </Button>
-        </Link>
+      <Stack direction="row" justifyContent="flex-end">
+        <Button
+          size="large"
+          variant="contained"
+          color="primary"
+          startIcon={<PlusIcon size={20} />}
+          onClick={() => setCreateModalOpen(true)}
+        >
+          ADD SUBJECT
+        </Button>
       </Stack>
-      <DeleteConfirmationModal
-        open={modal.open}
-        onClose={() => dispatch(setModal({ open: false }))}
-        onConfirm={confirmDelete}
-        itemName="Subject"
-      />
 
       <DataTable
         rows={rows}
-        columns={tableTiles}
+        columns={tableTitles}
         onView={handleView}
-        onEdit={handleEdit}
+        onEdit={handleEditOpen}
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={'description'}
-        emptyTitle={'No Subject'}
-        emptySubTitle={'No Subject Available'}
+        hideColumns={['description']}
+        emptyTitle="No Subjects"
+        emptySubTitle="No subjects available"
+        isLoading={isLoading}
+        showNO={false}
+        idField="subject_id"
+      />
+
+      <CreateModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        title="Create New Subject"
+        description="Enter the details for the new subject"
+        fields={fields}
+        onSubmit={handleCreate}
+      />
+
+      <EditModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        title="Edit Subject"
+        description="Update the details for this subject"
+        fields={fields}
+        initialData={selectedSubject}
+        onSubmit={handleEdit}
+      />
+
+      <ViewModal
+        open={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        title="Subject Details"
+        data={selectedSubject}
+      />
+
+      <DeleteConfirmationModal
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleDeleteConfirmed}
+        itemName={
+          selectedSubject ? selectedSubject.subject_name : 'this subject'
+        }
       />
     </FormComponent>
   );

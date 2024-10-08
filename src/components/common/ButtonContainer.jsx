@@ -23,6 +23,7 @@
  */
 import { Stack, Button, Box, Typography, CircularProgress } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
+import StyledButton from './StyledMuiButton';
 
 function ButtonContainer({ rightBtn, leftBtn, rightBtnTitle, leftBtnTitle, isSubmit, isSubmittingTitle }) {
     const navigate = useNavigate();
@@ -33,10 +34,10 @@ function ButtonContainer({ rightBtn, leftBtn, rightBtnTitle, leftBtnTitle, isSub
         <>
             {/* Button Container  */}
             <Stack direction={'row'} alignSelf={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
-                <Button fullWidth variant="outlined" color="white" onClick={leftBtn ? leftBtn : goBackHistory}>
+                <StyledButton fullWidth variant="outlined" color="white" onClick={leftBtn ? leftBtn : goBackHistory}>
                     {leftBtnTitle}
-                </Button>
-                <Button fullWidth variant="contained" onClick={rightBtn}>
+                </StyledButton>
+                <StyledButton fullWidth variant="contained" onClick={rightBtn}>
                     {isSubmit ? <> <Box display="flex" alignItems="center">
                         <CircularProgress size={24} color="inherit" />
                         <Typography variant="body2" style={{ marginLeft: '8px' }}>
@@ -44,7 +45,7 @@ function ButtonContainer({ rightBtn, leftBtn, rightBtnTitle, leftBtnTitle, isSub
                         </Typography>
                     </Box>
                     </> : rightBtnTitle}
-                </Button>
+                </StyledButton>
 
             </Stack>
         </>

@@ -29,6 +29,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 import { NotebookPen, Phone } from 'lucide-react';
 
 const EditSchoolModal = ({ open, onClose }) => {
@@ -295,13 +296,13 @@ const EditSchoolModal = ({ open, onClose }) => {
                 }}
               >
                 {/* CANCEL BUTTON */}
-                <Button variant="outlined" fullWidth onClick={onClose}>
+                <StyledButton variant="outlined" fullWidth onClick={onClose}>
                   Cancel
-                </Button>
+                </StyledButton>
                 {/* SAVE CHANGES BUTTON */}
-                <Button type="submit" variant="contained" fullWidth>
+                <StyledButton type="submit" variant="contained" fullWidth>
                   {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                </Button>
+                </StyledButton>
               </Box>
             </Grid>
           </Grid>

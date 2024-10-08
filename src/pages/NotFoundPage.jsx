@@ -3,6 +3,7 @@ import { Box, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import notFoundImage from '../assets/images/404-page-not-found.svg';
+import StyledButton from '../components/common/StyledMuiButton';
 
 const NotFoundPage = ({
   imageUrl = notFoundImage,
@@ -70,7 +71,7 @@ const NotFoundPage = ({
             {description}
           </Typography>
         </Box>
-        <Button
+        <StyledButton
           component={Link}
           to={dashboardLink}
           variant="contained"
@@ -78,7 +79,7 @@ const NotFoundPage = ({
           size="large"
         >
           {buttonText}
-        </Button>
+        </StyledButton>
       </Box>
     </Container>
   );

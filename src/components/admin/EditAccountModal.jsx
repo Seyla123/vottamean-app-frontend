@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import StyledButton from '../common/StyledMuiButton';
 
 // MUI Components
 import {
@@ -283,7 +284,7 @@ const EditAccountModal = ({
               {/* PROFILE BUTTONS */}
               <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
                 <label htmlFor="photo-upload">
-                  <Button
+                  <StyledButton
                     variant="contained"
                     component="span"
                     size="small"
@@ -291,9 +292,9 @@ const EditAccountModal = ({
                     startIcon={<ImagePlus size={20} />}
                   >
                     Change
-                  </Button>
+                  </StyledButton>
                 </label>
-                <Button
+                <StyledButton
                   variant="outlined"
                   fullWidth
                   size="small"
@@ -306,7 +307,7 @@ const EditAccountModal = ({
                   }}
                 >
                   Remove
-                </Button>
+                </StyledButton>
               </Box>
             </Box>
 
@@ -576,13 +577,13 @@ const EditAccountModal = ({
                   }}
                 >
                   {/* CANCEL BUTTON */}
-                  <Button variant="outlined" fullWidth onClick={onClose}>
+                  <StyledButton variant="outlined" fullWidth onClick={onClose}>
                     Cancel
-                  </Button>
+                  </StyledButton>
                   {/* SAVE CHANGES BUTTON */}
-                  <Button type="submit" variant="contained" fullWidth>
+                  <StyledButton type="submit" variant="contained" fullWidth>
                     {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                  </Button>
+                  </StyledButton>
                 </Box>
               </Grid>
             </Grid>

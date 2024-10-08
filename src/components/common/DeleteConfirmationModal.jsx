@@ -1,13 +1,16 @@
 import React from 'react';
 import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Typography,
 } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import DeleteIcon from '../../assets/icon/delete-icon.png';
 
 /**
@@ -26,7 +29,7 @@ import DeleteIcon from '../../assets/icon/delete-icon.png';
  *
  *   return (
  *     <>
- *       <Button onClick={() => setIsOpen(true)}>Delete Item</Button>
+ *       <StyledButton onClick={() => setIsOpen(true)}>Delete Item</StyledButton>
  *       <DeleteConfirmationModal
  *         open={isOpen}
  *         onClose={() => setIsOpen(false)}
@@ -45,67 +48,62 @@ import DeleteIcon from '../../assets/icon/delete-icon.png';
  */
 
 const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
-    return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-            fullWidth={false}
-            PaperProps={{
-                style: {
-                    width: '450px',
-                    textAlign: 'center',
-                },
-            }}
-        >
-            <DialogContent>
-                <img
-                    src={DeleteIcon}
-                    alt='delete icon'
-                    style={{ width: '60px' }}
-                />
-                <DialogTitle id='alert-dialog-title'>
-                    {'Are you sure?'}
-                </DialogTitle>
-                <DialogContentText id='alert-dialog-description'>
-                    Do you really want to delete this {itemName}? This action
-                    cannot be undone.
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: 1,
-                        gap: 2,
-                        p: 1,
-                    }}
-                >
-                    <Button
-                        onClick={onClose}
-                        variant='outlined'
-                        size='large'
-                        fullWidth
-                        sx={{ border: '1px solid black', color: 'black' }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={onConfirm}
-                        color='error'
-                        variant='contained'
-                        size='large'
-                        fullWidth
-                        autoFocus
-                    >
-                        Delete
-                    </Button>
-                </Box>
-            </DialogActions>
-        </Dialog>
-    );
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      fullWidth={false}
+      PaperProps={{
+        style: {
+          maxWidth: '500px',
+          width: '100%',
+          borderRadius: 8,
+          padding: 8,
+        },
+      }}
+    >
+      <DialogTitle id="alert-dialog-title">
+        <img src={DeleteIcon} alt="delete icon" style={{ width: '60px' }} />
+        <Typography variant="h5" fontWeight={'bold'} mt={2}>
+          {'Delete Permenantly?'}
+        </Typography>
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Do you really want to delete this <b>{itemName}</b>?
+          <br />
+          This action cannot be undone.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}></Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}
+          >
+            <StyledButton onClick={onClose} variant="text" size="large" fullWidth>
+              Cancel
+            </StyledButton>
+            <StyledButton
+              onClick={onConfirm}
+              color="error"
+              variant="contained"
+              size="large"
+              fullWidth
+              autoFocus
+            >
+              Delete
+            </StyledButton>
+          </Grid>
+        </Grid>
+      </DialogActions>
+    </Dialog>
+  );
 };
 
 export default DeleteConfirmationModal;

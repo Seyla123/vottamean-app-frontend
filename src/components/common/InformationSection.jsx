@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button, Divider, Grid } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import {
   PencilLine as EditIcon,
   Mail as EmailIcon,
@@ -43,17 +44,49 @@ const InformationSection = ({ title, data, onEdit, infoType }) => {
   const getInfoItems = () => {
     if (infoType === 'personal') {
       return [
-        { icon: <PhoneIcon size={20} />, label: 'Contact', value: data.userPhoneNumber },
-        { icon: <HomeIcon size={20} />, label: 'Address', value: data.userAddress },
-        { icon: <PersonIcon size={20} />, label: 'Gender', value: data.userGender },
-        { icon: <CakeIcon size={20} />, label: 'Date of Birth', value: data.userDOB },
+        {
+          icon: <PhoneIcon size={20} />,
+          label: 'Contact',
+          value: data.userPhoneNumber,
+        },
+        {
+          icon: <HomeIcon size={20} />,
+          label: 'Address',
+          value: data.userAddress,
+        },
+        {
+          icon: <PersonIcon size={20} />,
+          label: 'Gender',
+          value: data.userGender,
+        },
+        {
+          icon: <CakeIcon size={20} />,
+          label: 'Date of Birth',
+          value: data.userDOB,
+        },
       ];
     } else if (infoType === 'school') {
       return [
-        { icon: <SchoolIcon size={20} />, label: 'School Name', value: data.schoolName },
-        { icon: <HomeIcon size={20} />, label: 'School Address', value: data.schoolAddress },
-        { icon: <PhoneIcon size={20} />, label: 'School Contact', value: data.schoolPhoneNumber },
-        { icon: <IdCardIcon size={20} />, label: 'School ID', value: data.schoolId },
+        {
+          icon: <SchoolIcon size={20} />,
+          label: 'School Name',
+          value: data.schoolName,
+        },
+        {
+          icon: <HomeIcon size={20} />,
+          label: 'School Address',
+          value: data.schoolAddress,
+        },
+        {
+          icon: <PhoneIcon size={20} />,
+          label: 'School Contact',
+          value: data.schoolPhoneNumber,
+        },
+        {
+          icon: <IdCardIcon size={20} />,
+          label: 'School ID',
+          value: data.schoolId,
+        },
       ];
     }
     return [];
@@ -79,13 +112,13 @@ const InformationSection = ({ title, data, onEdit, infoType }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Button
+          <StyledButton
             variant="outlined"
             startIcon={<EditIcon size={20} />}
             onClick={onEdit}
           >
             Edit
-          </Button>
+          </StyledButton>
         </Box>
         <Divider sx={{ my: 2 }} />
         <Grid container spacing={3}>

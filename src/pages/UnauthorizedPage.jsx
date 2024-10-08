@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import unAuthorzedImage from '../assets/images/unauthorize-1.svg';
+import StyledButton from '../components/common/StyledMuiButton';
 
 const UnauthorizedPage = ({
   imageUrl = unAuthorzedImage,
@@ -55,7 +56,7 @@ const UnauthorizedPage = ({
             {description}
           </Typography>
         </Box>
-        <Button
+        <StyledButton
           component={Link}
           to={'/auth/signin'}
           variant="contained"
@@ -63,7 +64,7 @@ const UnauthorizedPage = ({
           size="large"
         >
           {buttonText}
-        </Button>
+        </StyledButton>
       </Box>
     </Container>
   );

@@ -12,6 +12,7 @@ import {
   InputAdornment,
   Link,
 } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 import PasswordIndicator from './PasswordIndicator';
@@ -260,9 +261,9 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           </Box>
 
           {/* SUBMIT BUTTON */}
-          <Button variant="contained" type="submit" fullWidth size="large">
+          <StyledButton variant="contained" type="submit" fullWidth size="large">
             Continue
-          </Button>
+          </StyledButton>
 
           {/* FORM FOOTER */}
           <FormFooter href={'/auth/login'} />
