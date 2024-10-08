@@ -18,14 +18,15 @@ import {
   ListItemText,
   MenuList,
   Divider,
+  Button,
+  CircularProgress,
 } from '@mui/material';
-import MoreHoriz from '@mui/icons-material/MoreHoriz';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMediaQuery } from '@mui/material';
-import EmptyDataImage from '../../assets/images/empty-data.svg';
+import EmptyDataImage from '../../assets/images/empty-image.svg';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
 
-import { FileText, Trash2, Pencil } from 'lucide-react';
+import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
+import { shadow } from '../../styles/global';
 
 /**
  * DataTable Component
@@ -75,6 +76,7 @@ const DataTable = ({
   emptyTitle,
   emptySubTitle,
   showNO,
+  isLoading = false,
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -183,101 +185,100 @@ const DataTable = ({
   );
 
   return (
-    <>
-      <TableContainer
-        component={Paper}
-        sx={{ boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px' }}
-      >
-        <Table className="min-w-full" aria-label="reusable table" size="small">
-          <TableHead
-            sx={{
-              bgcolor: '#f8f8f8',
-              height: '60px',
-            }}
-          >
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={
-                    selected.length > 0 && selected.length < rows.length
-                  }
-                  checked={rows.length > 0 && selected.length === rows.length}
-                  onChange={handleSelectAllClick}
-                />
-              </TableCell>
-              {showNO && <TableCell align="left">N/O</TableCell>}
-              {columns.map((column) =>
-                !isMobile || !hideColumns.includes(column.id) ? (
-                  <TableCell key={column.id} align={column.align || 'left'}>
-                    {column.label}
-                  </TableCell>
-                ) : null,
-              )}
-              <TableCell align="right">
-                {selected.length > 0 && (
-                  <Tooltip title="Delete selected">
-                    <IconButton onClick={handleSelectedDelete} color="error">
-                      <DeleteForeverIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.length === 0 ? (
-              <EmptyTable
-                columns={columns}
-                emptyTitle={emptyTitle}
-                emptySubTitle={emptySubTitle}
+    <TableContainer component={Paper} sx={shadow}>
+      <Table className="min-w-full" aria-label="reusable table" size="small">
+        <TableHead
+          sx={{
+            height: '80px',
+          }}
+        >
+          <TableRow>
+            <TableCell padding="checkbox">
+              <Checkbox
+                indeterminate={
+                  selected.length > 0 && selected.length < rows.length
+                }
+                checked={rows.length > 0 && selected.length === rows.length}
+                onChange={handleSelectAllClick}
               />
-            ) : (
-              paginatedRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id || row.class_id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) =>
-                      handleCheckboxClick(event, row.id || row.class_id)
-                    }
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id || row.class_id}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isItemSelected}
-                        inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                    </TableCell>
-                    {showNO && <TableCell>{index + 1}</TableCell>}
-                    {columns.map((column) =>
-                      !isMobile || !hideColumns.includes(column.id) ? (
-                        <TableCell
-                          key={column.id}
-                          align={column.align || 'left'}
-                        >
-                          {row[column.id]}
-                        </TableCell>
-                      ) : null,
-                    )}
-                    <TableCell align="right">
-                      <IconButton
-                        onClick={(event) => handleMenuOpen(event, row)}
-                      >
-                        <MoreHoriz />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+            </TableCell>
+            {showNO && <TableCell align="left">N/O</TableCell>}
+            {columns.map((column) =>
+              !isMobile || !hideColumns.includes(column.id) ? (
+                <TableCell key={column.id} align={column.align || 'left'}>
+                  {column.label}
+                </TableCell>
+              ) : null,
             )}
-          </TableBody>
-        </Table>
+            {selected.length > 0 ? (
+              <TableCell align="right" sx={{ maxWidth: '50px' }}>
+                <Tooltip title="Delete selected">
+                  <Button
+                    onClick={handleSelectedDelete}
+                    color="error"
+                    startIcon={<Trash2 size={18} />}
+                  >
+                    Delete
+                  </Button>
+                </Tooltip>
+              </TableCell>
+            ) : (
+              <TableCell align="right"></TableCell>
+            )}
+          </TableRow>
+        </TableHead>
+        <TableBody sx={{ position: 'relative' }}>
+          {isLoading ? (
+            <LoadingTable columns={columns} />
+          ) : rows.length === 0 ? (
+            <EmptyTable
+              columns={columns}
+              emptyTitle={emptyTitle}
+              emptySubTitle={emptySubTitle}
+            />
+          ) : (
+            paginatedRows.map((row, index) => {
+              const isItemSelected = isSelected(row.id || row.class_id);
+              const labelId = `enhanced-table-checkbox-${index}`;
+
+              return (
+                <TableRow
+                  hover
+                  onClick={(event) =>
+                    handleCheckboxClick(event, row.id || row.class_id)
+                  }
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  key={row.id || row.class_id}
+                  selected={isItemSelected}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={isItemSelected}
+                      inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                  </TableCell>
+                  {showNO && <TableCell>{index + 1}</TableCell>}
+                  {columns.map((column) =>
+                    !isMobile || !hideColumns.includes(column.id) ? (
+                      <TableCell key={column.id} align={column.align || 'left'}>
+                        {row[column.id]}
+                      </TableCell>
+                    ) : null,
+                  )}
+                  <TableCell align="right">
+                    <IconButton onClick={(event) => handleMenuOpen(event, row)}>
+                      <EllipsisVertical size={18} />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          )}
+        </TableBody>
+      </Table>
+      {!isLoading && rows.length > 0 && (
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -287,65 +288,100 @@ const DataTable = ({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        <Menu
-          id="basic-menu"
-          open={Boolean(anchorEl)}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-          anchorEl={anchorEl}
-          onClose={handleMenuClose}
-        >
-          <MenuList>
-            <MenuItem onClick={handleEdit}>
-              <ListItemIcon>
-                <Pencil size={18} />
-              </ListItemIcon>
-              <ListItemText>Edit</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleView}>
-              <ListItemIcon>
-                <FileText size={18} />
-              </ListItemIcon>
-              <ListItemText>View Details</ListItemText>
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleDelete}>
-              <ListItemIcon>
-                <Trash2 size={18} color="red" />
-              </ListItemIcon>
-              <ListItemText sx={{ color: 'error.main' }}>Delete</ListItemText>
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </TableContainer>
+      )}
+      <Menu
+        id="basic-menu"
+        open={Boolean(anchorEl)}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+      >
+        <MenuList>
+          <MenuItem onClick={handleEdit}>
+            <ListItemIcon>
+              <Pencil size={18} />
+            </ListItemIcon>
+            <ListItemText>Edit</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleView}>
+            <ListItemIcon>
+              <FileText size={18} />
+            </ListItemIcon>
+            <ListItemText>View Details</ListItemText>
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleDelete}>
+            <ListItemIcon sx={{ color: 'error.main' }}>
+              <Trash2 size={18} />
+            </ListItemIcon>
+            <ListItemText sx={{ color: 'error.main' }}>Delete</ListItemText>
+          </MenuItem>
+        </MenuList>
+      </Menu>
       <DeleteConfirmationModal
         open={isDeleteModalOpen}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         itemName={`${selected.length} selected item${selected.length > 1 ? 's' : ''}`}
       />
-    </>
+    </TableContainer>
   );
 };
 
 const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
   return (
-    <TableRow sx={{ width: 1, height: '500px' }}>
-      <TableCell colSpan={columns.length + 1} align="center" width={1}>
-        <img
-          src={EmptyDataImage}
-          alt="not found"
+    <TableRow>
+      <TableCell
+        colSpan={columns.length + 2}
+        sx={{
+          height: '400px',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+        }}
+      >
+        <div
           style={{
-            width: '100%',
-            maxWidth: '200px',
-            objectFit: 'contain',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
           }}
-        />
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          {emptyTitle}
-        </Typography>
-        <Typography variant="body2">{emptySubTitle}</Typography>
+        >
+          <img
+            src={EmptyDataImage}
+            alt="empty"
+            style={{
+              width: '100%',
+              maxWidth: '200px',
+              objectFit: 'contain',
+              marginBottom: '16px',
+            }}
+          />
+          <Typography variant="h6" gutterBottom>
+            {emptyTitle}
+          </Typography>
+          <Typography variant="body2">{emptySubTitle}</Typography>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+const LoadingTable = ({ columns }) => {
+  return (
+    <TableRow>
+      <TableCell
+        colSpan={columns.length + 2}
+        sx={{
+          height: '400px',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+        }}
+      >
+        <CircularProgress />
       </TableCell>
     </TableRow>
   );

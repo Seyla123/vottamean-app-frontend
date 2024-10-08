@@ -244,6 +244,7 @@ const ClassListPage = () => {
         hideColumns={['description']}
         emptyTitle={'No Class'}
         emptySubTitle={'No Class Available'}
+        isLoading={isLoading} 
       />
 
       <CreateModal

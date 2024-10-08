@@ -10,7 +10,10 @@ import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 // import api and uiSlice
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
-import { useGetSubjectsQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
+import {
+  useGetSubjectsQuery,
+  useDeleteSubjectMutation,
+} from '../../../services/subjectApi';
 
 // Define table columns title
 const tableTiles = [
@@ -32,12 +35,15 @@ function SubjectListPage() {
   const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
 
   // useDeleteSubjectMutation : returns a function to delete a subject
-  const [ deleteSubject,
-    { isLoading: isDeleting,
+  const [
+    deleteSubject,
+    {
+      isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error }
-    ] = useDeleteSubjectMutation();
+      error,
+    },
+  ] = useDeleteSubjectMutation();
 
   useEffect(() => {
     // set the rows state when subject records are fetched successfully
@@ -46,30 +52,36 @@ function SubjectListPage() {
       const subjectData = data.data;
       setRows(subjectData);
     }
-  
+
     // Show a snackbar with messages during delete (progress, failure, success)
     if (isDeleting) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Deleting...',
-        severity: 'info',
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleting...',
+          severity: 'info',
+        }),
+      );
     } else if (isDeleteError) {
-      dispatch( setSnackbar({
-        open: true,
-        message: error?.data?.message || 'Failed to delete subject',
-        severity: 'error',
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'Failed to delete subject',
+          severity: 'error',
+        }),
+      );
     } else if (isDeleteSuccess) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Deleted successfully',
-        severity: 'success',
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
       navigate('/admin/subjects');
     }
-  }, [ data, dispatch, isSuccess, isDeleting, isDeleteError, isDeleteSuccess ]);
-  
+  }, [data, dispatch, isSuccess, isDeleting, isDeleteError, isDeleteSuccess]);
+
   // loading the data until it successfully fetched
   if (isLoading) {
     return <CircularIndeterminate />;
@@ -139,8 +151,8 @@ function SubjectListPage() {
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={'description'}
-        emptyTitle={'No Subject'}
-        emptySubTitle={'No Subject Available'}
+        emptyTitle={'You don’t have any subjects yet'}
+        emptySubTitle={'Go ahead and create one now!'}
       />
     </FormComponent>
   );
