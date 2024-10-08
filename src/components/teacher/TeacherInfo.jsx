@@ -246,8 +246,13 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             />
           </Box>
           {/* Buttons */}
-          <Box
-         
+          <Stack
+            direction={'row'}
+            alignSelf={'flex-end'}
+            justifyContent={'flex-end'}
+            width={{ xs: '100%', sm: '340px' }}
+            gap={{ xs: 0.5, sm: 1 }}
+            marginTop={{ xs: 2, sm: 0 }}
           >
             <Button
               fullWidth
@@ -260,7 +265,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             <Button fullWidth type="submit" variant="contained" color="primary">
               Submit
             </Button>
-          </Box>
+          </Stack>
         </Box>
       </form>
     </LocalizationProvider>
