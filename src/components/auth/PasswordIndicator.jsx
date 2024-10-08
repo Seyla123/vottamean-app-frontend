@@ -7,9 +7,9 @@ const PasswordIndicator = ({ isValid, message }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
       {isValid ? (
-        <CheckCircle size={20} color="green" />
+        <CheckCircle size={16} color="green" />
       ) : (
-        <XCircle size={20} color="red" />
+        <XCircle size={16} color="red" />
       )}
       <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
         {message}
