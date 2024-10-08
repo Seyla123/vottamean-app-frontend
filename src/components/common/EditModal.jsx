@@ -26,7 +26,7 @@ const EditModal = ({
   initialData,
   onSubmit,
 }) => {
-  const [formData, setFormData] = useState(initialData || {});  
+  const [formData, setFormData] = useState(initialData || {});
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -138,13 +138,17 @@ const EditModal = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{ pt: 4 }}>
+        <Typography variant="h5" fontWeight={'bold'}>
+          {title}
+        </Typography>
         {description && (
           <Typography variant="body1" gutterBottom>
             {description}
           </Typography>
         )}
+      </DialogTitle>
+      <DialogContent>
         <Stack spacing={2} mt={2}>
           {fields.map((field) => (
             <Box
@@ -162,9 +166,17 @@ const EditModal = ({
           ))}
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+      <DialogActions sx={{ py: 3, px: 3 }}>
+        <Button onClick={onClose} size="large">
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          sx={{ px: 4 }}
+          size="large"
+        >
           Save Changes
         </Button>
       </DialogActions>

@@ -1,11 +1,30 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, Typography, Box, InputAdornment, MenuItem } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Stack,
+  Typography,
+  Box,
+  InputAdornment,
+  MenuItem,
+} from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
-const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) => {
+const CreateModal = ({
+  open,
+  onClose,
+  title,
+  description,
+  fields,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
@@ -31,7 +50,7 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
   const handleSubmit = () => {
     if (validateForm()) {
       onSubmit(formData);
-      setFormData({});  // Reset form after submission
+      setFormData({}); // Reset form after submission
       onClose();
     }
   };
@@ -62,7 +81,11 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               fullWidth
-              value={formData[field.name] ? dayjs(formData[field.name], 'HH:mm') : null}
+              value={
+                formData[field.name]
+                  ? dayjs(formData[field.name], 'HH:mm')
+                  : null
+              }
               onChange={(newValue) => {
                 handleChange({
                   target: {
@@ -99,9 +122,7 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
             slotProps={{
               input: {
                 startAdornment: field.icon && (
-                  <InputAdornment position="start">
-                    {field.icon}
-                  </InputAdornment>
+                  <InputAdornment position="start">{field.icon}</InputAdornment>
                 ),
               },
             }}
@@ -112,24 +133,45 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle sx={{ pt: 4 }}>
+        <Typography variant="h5" fontWeight={'bold'}>
+          {title}
+        </Typography>
+        {description && (
+          <Typography variant="body1" gutterBottom>
+            {description}
+          </Typography>
+        )}
+      </DialogTitle>
       <DialogContent>
-        {description && <Typography variant="body1" gutterBottom>{description}</Typography>}
         <Stack spacing={2} mt={2}>
           {fields.map((field) => (
-            <Box key={field.name} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box
+              key={field.name}
+              sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+            >
               <Typography variant="body2" fontWeight="bold">
                 {field.label}{' '}
-                {field.required && <span style={{ color: 'red', marginLeft: 1 }}>*</span>}
+                {field.required && (
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                )}
               </Typography>
               {renderField(field)}
             </Box>
           ))}
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
+      <DialogActions sx={{ py: 3, px: 3 }}>
+        <Button onClick={onClose} size="large">
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          size="large"
+          sx={{ px: 4 }}
+        >
           Create
         </Button>
       </DialogActions>
