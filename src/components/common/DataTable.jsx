@@ -38,7 +38,7 @@ import { shadow } from '../../styles/global';
  * - Pagination
  * - Row selection (single and multi-select)
  * - Responsive design with column hiding for mobile views
- * - Action menu for each row (edit and delete)
+ * - Action menu for each row (view, edit, and delete)
  * - Bulk delete functionality
  * - Empty state handling
  *
@@ -47,10 +47,14 @@ import { shadow } from '../../styles/global';
  * @param {Object[]} columns - Array of column definitions (id, label, align)
  * @param {Function} onEdit - Callback function for row edit action
  * @param {Function} onDelete - Callback function for row delete action
+ * @param {Function} onView - Callback function for row view action
  * @param {Function} onSelectedDelete - Callback function for bulk delete action
  * @param {string[]} hideColumns - Array of column ids to hide on mobile views
  * @param {string} emptyTitle - Title to display when the table is empty
  * @param {string} emptySubTitle - Subtitle to display when the table is empty
+ * @param {boolean} showNO - Flag to show or hide row numbers
+ * @param {boolean} isLoading - Flag to show loading state
+ * @param {string} idField - Field name for the unique identifier of each row
  *
  * Usage:
  * <DataTable
@@ -58,10 +62,14 @@ import { shadow } from '../../styles/global';
  *   columns={columnDefinitions}
  *   onEdit={handleEdit}
  *   onDelete={handleDelete}
+ *   onView={handleView}
  *   onSelectedDelete={handleBulkDelete}
  *   hideColumns={['columnToHide']}
  *   emptyTitle="No data available"
  *   emptySubTitle="Add some data to see it in the table"
+ *   showNO={true}
+ *   isLoading={false}
+ *   idField="id"
  * />
  */
 
@@ -250,7 +258,7 @@ const DataTable = ({
                   aria-checked={isItemSelected}
                   tabIndex={-1}
                   key={row[idField]}
-                  selected={isItemSelected}
+                  
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
