@@ -286,7 +286,7 @@ const ClassListPage = () => {
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={handleDeleteConfirmed}
-        itemName={`${selectedClass?.class_name}`}
+        itemName={selectedClass?.class_name}
       />
     </FormComponent>
   );

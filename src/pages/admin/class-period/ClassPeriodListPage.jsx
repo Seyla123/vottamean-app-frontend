@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Stack, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Button, Stack } from '@mui/material';
 import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
@@ -9,20 +8,16 @@ import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
+import ViewModal from '../../../components/common/ViewModal';
+import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import {
   useGetClassPeriodQuery,
   useDeleteClassPeriodMutation,
   useCreateClassPeriodMutation,
   useUpdateClassPeriodMutation,
 } from '../../../services/classPeriodApi';
-import {
-  calculatePeriod,
-  formatTimeTo12Hour,
-  formatTimeToHHMM,
-} from '../../../utils/formatHelper';
-import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
+import { calculatePeriod, formatTimeTo12Hour, formatTimeToHHMM } from '../../../utils/formatHelper';
 
-// Define table columns title
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
   { id: 'start_time', label: 'Start Time' },
@@ -30,237 +25,123 @@ const tableTitles = [
   { id: 'period', label: 'Period' },
 ];
 
+
 function ClassPeriodListPage() {
-  // useState: "data to be displayed" and "data to be deleted"
   const [rows, setRows] = useState([]);
-  const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingClassPeriod, setEditingClassPeriod] = useState(null);
+  const [selectedClassPeriod, setSelectedClassPeriod] = useState(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { modal } = useSelector((state) => state.ui);
 
-  // useGetClassPeriodQuery : return a function to fetch all subject records
-  const { data, isError, isLoading, isSuccess } = useGetClassPeriodQuery();
-
-  // useDeleteClassPeriodMutation : returns a function to delete a subject
-  const [
-    deleteClassPeriod,
-    {
-      isLoading: isDeleting,
-      isSuccess: isDeleteSuccess,
-      isError: isDeleteError,
-      error,
-    },
-  ] = useDeleteClassPeriodMutation();
-
-  // useCreateClassPeriodMutation : returns a function to create a new subject
+  const { data, isLoading, isSuccess, isError } = useGetClassPeriodQuery();
+  const [deleteClassPeriod, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError }] = useDeleteClassPeriodMutation();
   const [createClassPeriod] = useCreateClassPeriodMutation();
-
-  // useUpdateClassPeriodMutation : returns a function to update a subject
   const [updateClassPeriod] = useUpdateClassPeriodMutation();
 
   useEffect(() => {
-    // set the rows state when subject records are fetched successfully
     if (data && isSuccess) {
-      setRows(periodData);
+      const formattedData = data.data.map((item) => ({
+        ...item,
+        start_time: formatTimeTo12Hour(item.start_time),
+        end_time: formatTimeTo12Hour(item.end_time),
+        period: calculatePeriod(item.start_time, item.end_time),
+      }));
+      setRows(formattedData);
     }
 
-    // Show a snackbar with messages during delete (progress, failure, success)
     if (isDeleting) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Deleting...',
-          severity: 'info',
-        }),
-      );
+      dispatch(setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }));
     } else if (isDeleteError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data.message,
-          severity: 'error',
-        }),
-      );
+      dispatch(setSnackbar({ open: true, message: deleteError.data?.message || 'Failed to delete class period', severity: 'error' }));
     } else if (isDeleteSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Deleted successfully',
-          severity: 'success',
-        }),
-      );
+      dispatch(setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success' }));
     }
-  }, [data, dispatch, isSuccess, isDeleting, isDeleteSuccess, isDeleteError]);
+  }, [data, isSuccess, isDeleting, isDeleteError, isDeleteSuccess, dispatch, deleteError]);
 
-  // Handle loading state
-  if (isLoading) {
-    return <CircularIndeterminate />;
-  }
+  if (isLoading) return <CircularIndeterminate />;
+  if (isError) console.log('error message:', isError.data.message);
 
-  // Handle error state
-  if (isError) {
-    console.log('error message :', error.data.message);
-  }
+  const handleCreate = async (formData) => {
+    try {
+      await createClassPeriod(formData).unwrap();
+      dispatch(setSnackbar({ open: true, message: 'Class period created successfully', severity: 'success' }));
+      setCreateModalOpen(false);
+    } catch (error) {
+      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to create class period', severity: 'error' }));
+    }
+  };
 
-  // Handle DELETE action
-  const handleDelete = (rows) => {
-    setClassPeriodToDelete(rows);
+  const handleEdit = async (formData) => {
+    try {
+      await updateClassPeriod({ id: selectedClassPeriod.period_id, ...formData }).unwrap();
+      dispatch(setSnackbar({ open: true, message: 'Class period updated successfully', severity: 'success' }));
+      setEditModalOpen(false);
+    } catch (error) {
+      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to update class period', severity: 'error' }));
+    }
+  };
+
+  const handleDelete = (row) => {
+    setSelectedClassPeriod(row);
     dispatch(setModal({ open: true }));
   };
 
-  const confirmDelete = async () => {
+  const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
-  };
-
-  // Handle CREATE action
-  const handleCreate = () => {
-    setIsCreateModalOpen(true);
-  };
-
-  const handleCreateSubmit = async (formData) => {
     try {
-      await createClassPeriod(formData).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Class period created successfully',
-          severity: 'success',
-        }),
-      );
-      setIsCreateModalOpen(false);
-    } catch (err) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: err.data?.message || 'Failed to create class period',
-          severity: 'error',
-        }),
-      );
+      await deleteClassPeriod(selectedClassPeriod.period_id).unwrap();
+      dispatch(setSnackbar({ open: true, message: 'Class period deleted successfully', severity: 'success' }));
+    } catch (error) {
+      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to delete class period', severity: 'error' }));
     }
   };
 
-  // Handle EDIT action
-  const handleEdit = (row) => {
-    const formattedRow = {
-      ...row,
-      start_time: formatTimeToHHMM(row.start_time),
-      end_time: formatTimeToHHMM(row.end_time),
-    };
-    setEditingClassPeriod(formattedRow);
-    setIsEditModalOpen(true);
-  };
-
-  const handleEditSubmit = async (formData) => {
-    try {
-      await updateClassPeriod({
-        id: editingClassPeriod.period_id,
-        ...formData,
-      }).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Class period updated successfully',
-          severity: 'success',
-        }),
-      );
-      setIsEditModalOpen(false);
-    } catch (err) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: err.data?.message || 'Failed to update class period',
-          severity: 'error',
-        }),
-      );
-    }
-  };
-
-  // Handle DELETE ALL action
-  const handleSelectedDelete = () => {
-    console.log('Delete all');
-  };
-
-  // Handle DETAIL action
   const handleView = (row) => {
-    navigate(`/admin/class-periods/${row.period_id}`);
+    setSelectedClassPeriod(row);
+    setViewModalOpen(true);
   };
 
-  // Define formatted data to display
-  const periodData = data.data.map((item) => {
-    const { period_id, start_time, end_time } = item;
-    return {
-      period_id: period_id,
-      start_time: formatTimeTo12Hour(start_time),
-      end_time: formatTimeTo12Hour(end_time),
-      period: calculatePeriod(start_time, end_time),
-    };
-  });
+  const handleEditOpen = (row) => {
+    setSelectedClassPeriod({ ...row, start_time: formatTimeToHHMM(row.start_time), end_time: formatTimeToHHMM(row.end_time) });
+    setEditModalOpen(true);
+  };
 
-  const createFields = [
-    { name: 'start_time', label: 'Start Time', type: 'time', required: true },
-    { name: 'end_time', label: 'End Time', type: 'time', required: true },
-  ];
+  const handleSelectedDelete = async (selectedIds) => {
+    try {
+      await Promise.all(selectedIds.map((id) => deleteClassPeriod(id).unwrap()));
+      dispatch(setSnackbar({ open: true, message: 'Selected class periods deleted successfully', severity: 'success' }));
+    } catch (error) {
+      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to delete selected class periods', severity: 'error' }));
+    }
+  };
 
-  const editFields = [
+  const fields = [
     { name: 'start_time', label: 'Start Time', type: 'time', required: true },
     { name: 'end_time', label: 'End Time', type: 'time', required: true },
   ];
 
   return (
-    <FormComponent
-      title={'Class Period List'}
-      subTitle={`There are total ${rows.length} Class Periods`}
-    >
-      {/* Button to open create modal */}
+    <FormComponent title="Class Period List" subTitle={`Total Class Periods: ${rows.length}`}>
       <Stack direction="row" justifyContent="flex-end">
         <Button
           size="large"
           variant="contained"
           color="primary"
           startIcon={<PlusIcon size={20} />}
-          onClick={handleCreate}
+          onClick={() => setCreateModalOpen(true)}
         >
           ADD PERIOD
         </Button>
       </Stack>
 
-      <CreateModal
-        open={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        title="Create New Class Period"
-        description="Enter the details for the new class period"
-        fields={createFields}
-        onSubmit={handleCreateSubmit}
-      />
-
-      <EditModal
-        open={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        title="Edit Class Period"
-        description="Update the details for this class period"
-        fields={editFields}
-        initialData={editingClassPeriod}
-        onSubmit={handleEditSubmit}
-      />
-
-      <DeleteConfirmationModal
-        open={modal.open}
-        onClose={() => dispatch(setModal({ open: false }))}
-        onConfirm={confirmDelete}
-        itemName="Class Period"
-      />
-
-      {/* Data table to display class periods */}
       <DataTable
         rows={rows}
         columns={tableTitles}
         onView={handleView}
-        onEdit={handleEdit}
+        onEdit={handleEditOpen}
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={['period_id']}
@@ -269,6 +150,39 @@ function ClassPeriodListPage() {
         isLoading={isLoading}
         showNO={false}
         idField="period_id"
+      />
+
+      <CreateModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        title="Create New Class Period"
+        description="Enter the details for the new class period"
+        fields={fields}
+        onSubmit={handleCreate}
+      />
+
+      <EditModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        title="Edit Class Period"
+        description="Update the details for this class period"
+        fields={fields}
+        initialData={selectedClassPeriod}
+        onSubmit={handleEdit}
+      />
+
+      <ViewModal
+        open={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        title="Class Period Details"
+        data={selectedClassPeriod}
+      />
+
+      <DeleteConfirmationModal
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleDeleteConfirmed}
+        itemName={selectedClassPeriod ? `Period ${selectedClassPeriod.period}` : 'this period'}
       />
     </FormComponent>
   );
