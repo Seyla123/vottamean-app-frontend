@@ -296,25 +296,25 @@ const DataTable = ({
           anchorEl={anchorEl}
           onClose={handleMenuClose}
         >
-          <MenuList disablePadding>
+          <MenuList>
             <MenuItem onClick={handleEdit}>
               <ListItemIcon>
-                <Pencil size={20} />
+                <Pencil size={18} />
               </ListItemIcon>
               <ListItemText>Edit</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleView}>
               <ListItemIcon>
-                <FileText size={20} />
+                <FileText size={18} />
               </ListItemIcon>
               <ListItemText>View Details</ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleDelete}>
               <ListItemIcon>
-                <Trash2 size={20} />
+                <Trash2 size={18} color="red" />
               </ListItemIcon>
-              <ListItemText>Delete</ListItemText>
+              <ListItemText sx={{ color: 'error.main' }}>Delete</ListItemText>
             </MenuItem>
           </MenuList>
         </Menu>

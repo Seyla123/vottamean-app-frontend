@@ -89,6 +89,8 @@ function ClassPeriodListPage() {
     await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
   };
 
+  
+
   // Handle DELETE ALL action
   const handleSelectedDelete = () => {
     console.log('Delete all');

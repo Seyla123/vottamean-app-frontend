@@ -1,44 +1,111 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Stack,
+  Typography,
+  Box,
+  InputAdornment,
+} from '@mui/material';
 
-const EditModal = ({ open, onClose, title, description, fields, initialData, onSubmit }) => {
+const EditModal = ({
+  open,
+  onClose,
+  title,
+  description,
+  fields,
+  initialData,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState(initialData || {});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setFormData(initialData || {});
+    setErrors({});
   }, [initialData]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    fields.forEach((field) => {
+      if (field.required && !formData[field.name]) {
+        newErrors[field.name] = 'This field is required';
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = () => {
-    onSubmit(formData);
-    onClose();
+    if (validateForm()) {
+      onSubmit(formData);
+      onClose();
+    }
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <p>{description}</p>
+        {description && (
+          <Typography variant="body1" gutterBottom>
+            {description}
+          </Typography>
+        )}
         <Stack spacing={2} mt={2}>
           {fields.map((field) => (
-            <TextField
+            <Box
               key={field.name}
-              name={field.name}
-              label={field.label}
-              value={formData[field.name] || ''}
-              onChange={handleChange}
-              fullWidth
-            />
+              sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+            >
+              <Typography variant="body2" fontWeight="bold">
+                {field.label}{' '}
+                {field.required && (
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                )}
+              </Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                type={field.type || 'text'}
+                placeholder={field.placeholder || field.label}
+                name={field.name}
+                value={formData[field.name] || ''}
+                onChange={handleChange}
+                error={!!errors[field.name]}
+                helperText={errors[field.name]}
+                multiline={field.multiline}
+                rows={field.multiline ? 4 : 1}
+                slotProps={{
+                  input: {
+                    startAdornment: field.icon && (
+                      <InputAdornment position="start">
+                        {field.icon}
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Box>
           ))}
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">
-          Update
+          Save Changes
         </Button>
       </DialogActions>
     </Dialog>
