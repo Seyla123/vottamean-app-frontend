@@ -12,18 +12,15 @@ import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import { useGetClassesDataQuery } from '../../../services/classApi';
-import {
-  useGetStudentsByIdQuery,
-  useUpdateStudentsDataMutation,
-} from '../../../services/studentApi';
+import {useGetStudentsByIdQuery, useUpdateStudentsDataMutation } from '../../../services/studentApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 
 const genderOptions = [
   { value: 'Male', label: 'Male' },
   { value: 'Female', label: 'Female' },
+  { value: 'Other', label: 'Other' },
 ];
-
 const StudentUpdatePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,6 +28,7 @@ const StudentUpdatePage = () => {
   const [rows, setRows] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [profileImg, setProfileImg] = useState('');
+  const [errors, setErrors] = useState({});
 
   const [newStudent, setNewStudent] = useState({
     firstName: '',
@@ -48,18 +46,9 @@ const StudentUpdatePage = () => {
     guardianPhoneNumber: '',
   });
   const { data: studentData,isLoading,fetchError} = useGetStudentsByIdQuery(id);
-  const [  updatedStudent,
-    {
-      isLoading: isUpdating,
-      isError: isUpdateError,
-      isSuccess: isUpdateSuccess,
-      error: updateError,
-    },
-  ] = useUpdateStudentsDataMutation();
-
+  const [  updatedStudent, { isLoading: isUpdating, isError: isUpdateError,  isSuccess: isUpdateSuccess,  error: updateError }] = useUpdateStudentsDataMutation();
   // Filter class data for option Selection
   const { data: classData} = useGetClassesDataQuery();
-
   // State to hold initial form data for changes comparison
   const [initialFormData, setInitialFormData] = useState(null);
   useEffect(() => {
@@ -71,7 +60,6 @@ const StudentUpdatePage = () => {
       setRows(classes);
     }
   }, [classData]);
-
   useEffect(() => {
     if (studentData) {
       const { Info,guardian_first_name ,guardian_last_name, guardian_email, guardian_relationship, guardian_phone_number, class_id } = studentData.data;
@@ -94,7 +82,6 @@ const StudentUpdatePage = () => {
       setProfileImg(Info.photo);
     }
   }, [studentData]);
-
   // Snackbar for showing Messages
   useEffect(() => {
     if (isUpdating) {
@@ -127,7 +114,6 @@ const StudentUpdatePage = () => {
       navigate('/admin/students');
     }
   }, [dispatch, isUpdateError, isUpdateSuccess, isUpdating]);
-
   const handleInputChange = ({ target: { name, value } }) => {
     // Prevent numeric input for first_name and last_name
     if ((name === 'firstName' || name === 'lastName') && /\d/.test(value)) {
@@ -150,43 +136,27 @@ const StudentUpdatePage = () => {
   const handleClassChange = (event) => {
     setNewStudent((data) => ({ ...data, className: event.target.value }));
   };
-//Validation Form
   const validateForm = () => {
-    const { phoneNumber,firstName,lastName, gender,  className,  dob,  address,  guardianFirstName, guardianLastName, guardianRelationship,  guardianEmail,  guardianPhoneNumber} = newStudent;
-    if (
-      !firstName ||
-      !lastName ||
-      !phoneNumber ||
-      !gender ||
-      !className ||
-      !dob ||
-      !address ||
-      !guardianFirstName ||
-      !guardianLastName||
-      !guardianRelationship ||
-      !guardianEmail ||
-      !guardianPhoneNumber
-    ) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'All fields are required.',
-          severity: 'error',
-        }),
-      );
-      return false;
+    const { phoneNumber, firstName, lastName, gender, className, dob, address, guardianFirstName, guardianLastName, guardianRelationship, guardianEmail, guardianPhoneNumber } = newStudent;
+    const newErrors = {};
+    if (!firstName) newErrors.firstName = 'First name is required.';
+    if (!lastName) newErrors.lastName = 'Last name is required.';
+    if (!gender) newErrors.gender = 'Gender is required.';
+    if (!className) newErrors.className = 'Class is required.';
+    if (!dob) newErrors.dob = 'Date of birth is required.';
+    if (!address) newErrors.address = 'Address is required.';
+    if (!guardianFirstName) newErrors.guardianFirstName = 'Guardian first name is required.';
+    if (!guardianLastName) newErrors.guardianLastName = 'Guardian last name is required.';
+    if (!guardianRelationship) newErrors.guardianRelationship = 'Guardian relationship is required.';
+    if (!guardianEmail) newErrors.guardianEmail = 'Guardian email is required.';
+    if (!/^\d{9,15}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = 'Phone number is require, must be between 9 and 15 digits and numeric.';
     }
-    if (!/^\d{9,15}$/.test(phoneNumber && guardianPhoneNumber)) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Phone Number must be between 9 and 15 digits and numeric.',
-          severity: 'error',
-        }),
-      );
-      return false;
+    if (!/^\d{9,15}$/.test(guardianPhoneNumber)) {
+      newErrors.guardianPhoneNumber = 'Guardian phone number must be between 9 and 15 digits and numeric.';
     }
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
   // isFormDataUnchanged: Use for testing if Data is changed
   const isFormDataUnchanged = () => {
@@ -236,15 +206,10 @@ const StudentUpdatePage = () => {
       console.error('Update failed', error);
     }
   };
-
   if (isLoading) return <LoadingCircle />;
   if (fetchError) return navigate('/admin/students');
-
   return (
-    <FormComponent
-      title="Update Student"
-      subTitle="Please fill Student Information"
-    >
+    <FormComponent title="Update Student" subTitle="Please fill Student Information" >
       <Tabs
         value={activeTab}
         onChange={(event, newValue) => setActiveTab(newValue)}
@@ -273,6 +238,8 @@ const StudentUpdatePage = () => {
                 value={newStudent.firstName}
                 onChange={handleInputChange}
                 placeholder={'first name'}
+                error={!!errors.firstName}
+                helperText={errors.firstName}
               />
             </Box>
             {/* last name */}
@@ -287,6 +254,8 @@ const StudentUpdatePage = () => {
                 value={newStudent.lastName}
                 onChange={handleInputChange}
                 placeholder={'last name'}
+                error={!!errors.lastName}
+                helperText={errors.lastName}
               />
             </Box>
           </Stack>
@@ -302,6 +271,8 @@ const StudentUpdatePage = () => {
               onChange={handleClassChange}
               options={rows}
               placeholder={'select class'}
+              error={!!errors.className}
+              helperText={errors.className}
             />
           </Box>
           <Stack direction={'row'} gap={1}>
@@ -349,6 +320,8 @@ const StudentUpdatePage = () => {
               value={newStudent.phoneNumber}
               onChange={handleInputChange}
               placeholder={'phone number'}
+              error={!!errors.phoneNumber}
+                helperText={errors.phoneNumber}
             />
           </Box>
           {/* email */}
@@ -374,6 +347,8 @@ const StudentUpdatePage = () => {
               value={newStudent.address}
               onChange={handleInputChange}
               placeholder={'address'}
+              error={!!errors.address}
+              helperText={errors.address}
             />
           </Box>
           <ButtonContainer
@@ -400,6 +375,8 @@ const StudentUpdatePage = () => {
                   value={newStudent.guardianFirstName}
                   onChange={handleInputChange}
                   placeholder={'first name'}
+                  error={!!errors.guardianFirstName}
+                  helperText={errors.guardianFirstName}
                 />
               </Box>
               {/* last name */}
@@ -414,6 +391,8 @@ const StudentUpdatePage = () => {
                   value={newStudent.guardianLastName}
                   onChange={handleInputChange}
                   placeholder={'last name'}
+                  error={!!errors.guardianLastName}
+                  helperText={errors.guardianLastName}
                 />
               </Box>
             </Stack>
@@ -428,6 +407,8 @@ const StudentUpdatePage = () => {
               value={newStudent.guardianRelationship}
               onChange={handleInputChange}
               placeholder={'relationship'}
+              error={!!errors.guardianRelationship}
+              helperText={errors.guardianRelationship}
             />
           </Box>
           {/* email */}
@@ -454,6 +435,8 @@ const StudentUpdatePage = () => {
               value={newStudent.guardianPhoneNumber}
               onChange={handleInputChange}
               placeholder={'phone number'}
+              error={!!errors.guardianPhoneNumber}
+              helperText={errors.guardianPhoneNumber}
             />
           </Box>
           <ButtonContainer
@@ -469,12 +452,6 @@ const StudentUpdatePage = () => {
 };
 export default StudentUpdatePage;
 const imgStyle = {
-  width: {
-    xs: 120,
-    sm: 160,
-  },
-  height: {
-    xs: 120,
-    sm: 160,
-  },
+  width: { xs: 120, sm: 160 },
+  height: { xs: 120, sm: 160}
 };
