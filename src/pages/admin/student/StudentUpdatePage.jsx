@@ -41,7 +41,8 @@ const StudentUpdatePage = () => {
     phoneNumber: '',
     email: '',
     address: '',
-    guardianName: '',
+    guardianFirstName: '',
+    guardianLastName: '',
     guardianRelationship: '',
     guardianEmail: '',
     guardianPhoneNumber: '',
@@ -73,7 +74,7 @@ const StudentUpdatePage = () => {
 
   useEffect(() => {
     if (studentData) {
-      const { Info, guardian_name, guardian_email, guardian_relationship, guardian_phone_number, class_id } = studentData.data;
+      const { Info,guardian_first_name ,guardian_last_name, guardian_email, guardian_relationship, guardian_phone_number, class_id } = studentData.data;
       const studentInfo = {
         firstName: Info.first_name || '',
         lastName: Info.last_name || '',
@@ -82,7 +83,8 @@ const StudentUpdatePage = () => {
         gender: Info.gender || '',
         dob: Info.dob ? dayjs(Info.dob) : null,
         address: Info.address || '',
-        guardianName: guardian_name || '',
+        guardianLastName: guardian_last_name || '',
+        guardianFirstName: guardian_first_name || '',
         guardianRelationship: guardian_relationship || '',
         guardianEmail: guardian_email || '',
         guardianPhoneNumber: guardian_phone_number || '',
@@ -150,7 +152,7 @@ const StudentUpdatePage = () => {
   };
 //Validation Form
   const validateForm = () => {
-    const { phoneNumber,firstName,lastName, gender,  className,  dob,  address,  guardianName,  guardianRelationship,  guardianEmail,  guardianPhoneNumber} = newStudent;
+    const { phoneNumber,firstName,lastName, gender,  className,  dob,  address,  guardianFirstName, guardianLastName, guardianRelationship,  guardianEmail,  guardianPhoneNumber} = newStudent;
     if (
       !firstName ||
       !lastName ||
@@ -159,7 +161,8 @@ const StudentUpdatePage = () => {
       !className ||
       !dob ||
       !address ||
-      !guardianName ||
+      !guardianFirstName ||
+      !guardianLastName||
       !guardianRelationship ||
       !guardianEmail ||
       !guardianPhoneNumber
@@ -223,7 +226,8 @@ const StudentUpdatePage = () => {
           phone_number: newStudent.phoneNumber,
           address: newStudent.address,
           guardian_email: newStudent.guardianEmail,
-          guardian_name: newStudent.guardianName,
+          guardian_first_name: newStudent.guardianFirstName,
+          guardian_last_name: newStudent.guardianLastName,
           guardian_phone_number: newStudent.guardianPhoneNumber,
           guardian_relationship: newStudent.guardianRelationship,
         },
@@ -383,20 +387,36 @@ const StudentUpdatePage = () => {
       {/*  Tab For Submissions All Data ( Guardian and Student) */}
       {activeTab === 1 && (
         <CardComponent title="Guardian Information">
-          <Stack>
-            {/* Full Name*/}
-            <Typography variant="body2" fontWeight="bold">
-              Full Name
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextFieldComponent
-              customStyle={{ flexGrow: 1 }}
-              name="guardianName"
-              value={newStudent.guardianName}
-              onChange={handleInputChange}
-              placeholder={'full name'}
-            />
-          </Stack>
+              <Stack direction={'row'} gap={1}>
+              {/* first name */}
+              <Box display="flex" flexDirection="column" gap="4px" width={'100%'}>
+                <Typography variant="body2" fontWeight="bold">
+                  First Name
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <TextFieldComponent
+                  customStyle={{ flexGrow: 1 }}
+                  name="guardianFirstName"
+                  value={newStudent.guardianFirstName}
+                  onChange={handleInputChange}
+                  placeholder={'first name'}
+                />
+              </Box>
+              {/* last name */}
+              <Box display="flex" flexDirection="column" gap="4px" width={'100%'}>
+                <Typography variant="body2" fontWeight="bold">
+                  Last Name
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <TextFieldComponent
+                  customStyle={{ flexGrow: 1 }}
+                  name="guardianLastName"
+                  value={newStudent.guardianLastName}
+                  onChange={handleInputChange}
+                  placeholder={'last name'}
+                />
+              </Box>
+            </Stack>
           {/* relationship */}
           <Box>
             <Typography variant="body2" fontWeight="bold">
