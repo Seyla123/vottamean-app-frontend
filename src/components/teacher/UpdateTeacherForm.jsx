@@ -1,54 +1,71 @@
+// React and third-party libraries
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import {
-  useGetTeacherQuery,
-  useUpdateTeacherMutation,
-} from '../../services/teacherApi';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+// MUI components
 import {
   TextField,
   Box,
   Avatar,
   Typography,
-  Stack,
   Button,
+  Grid,
   Select,
   MenuItem,
   FormControl,
   Divider,
   Modal,
 } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import LoadingCircle from '../../components/loading/LoadingCircle';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers';
-import { setSnackbar } from '../../store/slices/uiSlice';
-import { useDispatch } from 'react-redux';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
-import { useForm, Controller } from 'react-hook-form';
+
+// Redux API
+import {
+  useGetTeacherQuery,
+  useUpdateTeacherMutation,
+} from '../../services/teacherApi';
+
+// Custom components
+import LoadingCircle from '../../components/loading/LoadingCircle';
+import { setSnackbar } from '../../store/slices/uiSlice';
+
+// Yup validation and schema validation
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm, Controller } from 'react-hook-form';
 import { validationSchema } from './TeacherInfo';
 
+// Format data
+import { formatTeacherFormData } from '../../utils/formatData';
+
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // Get teacher information when the modal is open and teacherId is available
   const {
     data: teacherData,
     isLoading,
     isError,
-  } = useGetTeacherQuery(teacherId || id || '');
+  } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId }); // skip if teacherId is not available
+
+
   const [profileImg, setProfileImg] = useState('');
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
+  const [form, setForm] = useState(false); 
 
-  const [updateTeacher, { isLoading: isUpdating }] = useUpdateTeacherMutation();
+  // Update teacher information
+  const [updateTeacher] = useUpdateTeacherMutation();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -61,24 +78,25 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     },
   });
 
+  // Format teacher form data and check dob validation
   useEffect(() => {
-    if (teacherData && teacherData.data && teacherData.data.length > 0) {
-      const { Info } = teacherData.data[0];
-      const teacherInfo = {
-        firstName: Info.first_name || '',
-        lastName: Info.last_name || '',
-        phoneNumber: Info.phone_number || '',
-        gender: Info.gender || '',
-        dob: Info.dob ? dayjs(Info.dob) : null,
-        address: Info.address || '',
-      };
-      reset(teacherInfo);
-      setDob(teacherInfo.dob);
-      setProfileImg(Info.photo);
-      setOriginalData(teacherInfo);
+    if (teacherData && teacherData.data) {
+      const formattedData = formatTeacherFormData(teacherData);
+      if (formattedData) {
+        const teacherInfo = {
+          ...formattedData,
+          dob: formattedData.dob ? dayjs(formattedData.dob) : null,
+        };
+        reset(teacherInfo);
+        setDob(teacherInfo.dob);
+        setOriginalData(teacherInfo);
+      }
     }
   }, [teacherData, reset]);
+
+  // Submit form 
   const onSubmit = async (data) => {
+    // Get the current state of the form and the original data that was loaded for checking changes purposes
     const submittedData = {
       first_name: data.firstName,
       last_name: data.lastName,
@@ -87,11 +105,23 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : null,
       address: data.address,
     };
+    const dataOriginal = {
+      first_name: originalData.firstName,
+      last_name: originalData.lastName,
+      phone_number: originalData.phoneNumber,
+      gender: originalData.gender,
+      dob: originalData.dob
+        ? dayjs(originalData.dob).format('YYYY-MM-DD')
+        : null,
+      address: originalData.address,
+    };
 
-    const hasChanges = Object.keys(originalData).some(
-      (key) => originalData[key] !== submittedData[key],
+    // Check if any of the fields have changed
+    const hasChanges = Object.keys(dataOriginal).some(
+      (key) => dataOriginal[key] !== submittedData[key],
     );
 
+    // If no changes were made, close the modal
     if (!hasChanges) {
       dispatch(
         setSnackbar({
@@ -101,20 +131,22 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           autoHideDuration: 6000,
         }),
       );
+      onClose();
+      navigate('/admin/teachers');
       return;
     }
 
+    // Update the teacher information with the new data 
     try {
       const result = await updateTeacher({
         id: teacherId,
         updates: submittedData,
       }).unwrap();
-
       if (result.status === 'success') {
         dispatch(
           setSnackbar({
             open: true,
-            message: 'Teacher info updated successfully!',
+            message: 'Teacher information updated successfully!',
             severity: 'success',
             autoHideDuration: 6000,
           }),
@@ -137,14 +169,16 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     }
   };
 
+  // Loading and error handling
   if (isLoading) return <LoadingCircle />;
   if (isError)
     return <Typography color="error">Error loading teacher data</Typography>;
 
   return (
     <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
+      aria-labelledby="update-teacher"
+      aria-describedby="update-teacher-info"
+      key={isOpen ? 'open' : 'closed'}
       open={isOpen}
       onClose={onClose}
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -157,6 +191,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           p: 4,
         }}
       >
+        {/* Title */}
         <Typography
           variant="h5"
           component="h2"
@@ -177,9 +212,11 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 marginBottom: 2,
               }}
             >
+              {/* Profile */}
               <Box sx={profilePic}>
                 <Avatar sx={imgStyle} alt="profile picture" src="r" />
               </Box>
+              {/* Button for photo */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Button variant="contained">Change Photo</Button>
                 <Button variant="outlined" color="error">
@@ -188,6 +225,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               </Box>
             </Box>
             <Divider />
+            {/* Form */}
             <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
               {/* First Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
@@ -199,6 +237,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   <Controller
                     name="firstName"
                     control={control}
+                    defaultValue=""
                     render={({ field }) => (
                       <TextField
                         {...field}
@@ -359,35 +398,34 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               />
             </Box>
             {/* Buttons */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-
-                justifyContent: 'flex-end',
-                alignSelf: 'flex-end',
-                gap: 2,
-                marginTop: 2,
-                width: { xs: '100%', sm: '340px' },
-              }}
-            >
-              <Button
-                fullWidth
-                variant="outlined"
-                color="inherit"
-                onClick={onClose}
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  gap: 2,
+                  mt: 2,
+                  width: '100%',
+                }}
               >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-              >
-                Save Changes
-              </Button>
-            </Box>
+                {/* CANCEL BUTTON */}
+                <Button
+                  variant="outlined"
+                  onClick={onClose}
+                  sx={{ width: { xs: '100%', sm: '160px' } }}
+                >
+                  Cancel
+                </Button>
+                {/* SAVE CHANGES BUTTON */}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{ width: { xs: '100%', sm: '160px' } }}
+                >
+                  Save Changes
+                </Button>
+              </Box>
+            </Grid>
           </form>
         </LocalizationProvider>
       </Box>
@@ -396,34 +434,14 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
 };
 
 export default UpdateTeacherForm;
-const profileBox = {
-  // border: '1px solid',
-  // borderColor: '#E0E0E0',
-  // borderRadius: '8px',
-  // bgcolor: '#ffffff',
-  // marginTop: '32px',
-  // padding: 3,
-  // display: 'flex',
-  // flexDirection: 'column',
-  // alignItems: 'start',
-};
-const valueBoxOne = {
-  width: 100,
-  height: 100,
-  borderRadius: '50%',
-  overflow: 'hidden',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  mb: 2,
-};
+// STYLES
 const imgStyle = {
   width: {
-    xs: 120,
+    xs: 140,
     sm: 160,
   },
   height: {
-    xs: 120,
+    xs: 140,
     sm: 160,
   },
 };
@@ -442,14 +460,6 @@ const boxContainer = {
     xs: '12px',
     sm: 3,
   },
-};
-const buttons = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignSelf: 'flex-end',
-  gap: 2,
-  marginTop: 2,
-  width: { xs: '100%', sm: '340px' },
 };
 const profilePic = {
   width: 100,
