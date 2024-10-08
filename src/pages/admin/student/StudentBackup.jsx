@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
 import { Box, Typography, Tab, Stack, Tabs, Avatar } from '@mui/material';
-import userProfile from '../../../assets/images/default-profile.png';
-import SelectField from '../../../components/common/SelectField';
-import TextFieldComponent from '../../../components/common/TextFieldComponent';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { useNavigate, useParams } from 'react-router-dom';
+
+import userProfile from '../../../assets/images/default-profile.png';
+import SelectField from '../../../components/common/SelectField';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
+import TextFieldComponent from '../../../components/common/TextFieldComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
+
 import { useGetClassesDataQuery } from '../../../services/classApi';
-import {
-  useGetStudentsByIdQuery,
-  useUpdateStudentMutation,
-} from '../../../services/studentApi';
-import LoadingCircle from '../../../components/loading/LoadingCircle';
+import { usePostStudentsDataMutation } from '../../../services/studentApi';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 
 const genderOptions = [
@@ -24,15 +24,14 @@ const genderOptions = [
   { value: 'Female', label: 'Female' },
   { value: 'Other', label: 'Other' },
 ];
-const StudentUpdatePage = () => {
-  const { id } = useParams();
+
+const StudentCreatePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [profileImg, setProfileImg] = useState('');
   const [errors, setErrors] = useState({});
-
   const [newStudent, setNewStudent] = useState({
     firstName: '',
     lastName: '',
@@ -48,117 +47,66 @@ const StudentUpdatePage = () => {
     guardianEmail: '',
     guardianPhoneNumber: '',
   });
-  const {
-    data: studentData,
-    isLoading,
-    fetchError,
-  } = useGetStudentsByIdQuery(id);
-  const [
-    updatedStudent,
-    {
-      isLoading: isUpdating,
-      isError: isUpdateError,
-      isSuccess: isUpdateSuccess,
-      error: updateError,
-    },
-  ] = useUpdateStudentMutation();
-  // Filter class data for option Selection
+
   const { data: classData } = useGetClassesDataQuery();
-  // State to hold initial form data for changes comparison
-  const [initialFormData, setInitialFormData] = useState(null);
+  const [createStudent, { isLoading: isCreating, isError, isSuccess, error }] =
+    usePostStudentsDataMutation();
+
   useEffect(() => {
     if (classData && Array.isArray(classData.data)) {
       const classes = classData.data.map((classItem) => ({
-        value: classItem.class_name,
+        value: classItem.class_id,
         label: classItem.class_name,
       }));
       setRows(classes);
     }
   }, [classData]);
-  useEffect(() => {
-    if (studentData) {
-      const {
-        Info,
-        guardian_first_name,
-        guardian_last_name,
-        guardian_email,
-        guardian_relationship,
-        guardian_phone_number,
-        class_id,
-      } = studentData.data;
-      const studentInfo = {
-        firstName: Info.first_name || '',
-        lastName: Info.last_name || '',
-        phoneNumber: Info.phone_number || '',
-        className: class_id || '',
-        gender: Info.gender || '',
-        dob: Info.dob ? dayjs(Info.dob) : null,
-        address: Info.address || '',
-        guardianLastName: guardian_last_name || '',
-        guardianFirstName: guardian_first_name || '',
-        guardianRelationship: guardian_relationship || '',
-        guardianEmail: guardian_email || '',
-        guardianPhoneNumber: guardian_phone_number || '',
-      };
-      setNewStudent(studentInfo);
-      setInitialFormData(studentInfo);
-      setProfileImg(Info.photo);
-    }
-  }, [studentData]);
+
   // Snackbar for showing Messages
   useEffect(() => {
-    if (isUpdating) {
+    if (isCreating) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Updating...',
+          message: 'Creating...',
           severity: 'info',
           autoHideDuration: 6000,
         }),
       );
-    } else if (isUpdateError) {
+    } else if (isError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: updateError.message,
+          message: error.message,
           severity: 'error',
           autoHideDuration: 6000,
         }),
       );
-    } else if (isUpdateSuccess) {
+    } else if (isSuccess) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Updated successfully',
+          message: 'Created successfully',
           severity: 'success',
           autoHideDuration: 6000,
         }),
       );
       navigate('/admin/students');
     }
-  }, [dispatch, isUpdateError, isUpdateSuccess, isUpdating]);
+  }, [dispatch, isError, isSuccess, isCreating]);
+
   const handleInputChange = ({ target: { name, value } }) => {
-    // Prevent numeric input for first_name and last_name
-    if ((name === 'firstName' || name === 'lastName') && /\d/.test(value)) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Names cannot contain numbers.',
-          severity: 'error',
-        }),
-      );
-      return;
-    }
     setNewStudent((data) => ({ ...data, [name]: value }));
   };
-  //Handles  Gender Change
+
   const handleGenderChange = (event) => {
     setNewStudent((data) => ({ ...data, gender: event.target.value }));
   };
-  //Handle Class Channge
+
   const handleClassChange = (event) => {
     setNewStudent((data) => ({ ...data, className: event.target.value }));
   };
+
   const validateForm = () => {
     const {
       phoneNumber,
@@ -190,7 +138,7 @@ const StudentUpdatePage = () => {
     if (!guardianEmail) newErrors.guardianEmail = 'Guardian email is required.';
     if (!/^\d{9,15}$/.test(phoneNumber)) {
       newErrors.phoneNumber =
-        'Phone number is require, must be between 9 and 15 digits and numeric.';
+        'Phone number must be between 9 and 15 digits and numeric.';
     }
     if (!/^\d{9,15}$/.test(guardianPhoneNumber)) {
       newErrors.guardianPhoneNumber =
@@ -199,39 +147,17 @@ const StudentUpdatePage = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
-  // isFormDataUnchanged: Use for testing if Data is changed
-  const isFormDataUnchanged = () => {
-    return JSON.stringify(newStudent) === JSON.stringify(initialFormData);
-  };
-  // onSubmitStudent : function forsubmit Student Form
-  const onSubmitStudent = (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    if (activeTab === 0) {
-      setActiveTab(1);
-    }
-  };
-  //onSubmit : Submit Data to Backend
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (isFormDataUnchanged()) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'No changes made.',
-          severity: 'info',
-          autoHideDuration: 6000,
-        }),
-      );
-    }
     if (!validateForm()) return;
+
     try {
-      await updatedStudent({
-        id,
-        updates: {
+      await createStudent({
+        data: {
           first_name: newStudent.firstName,
           last_name: newStudent.lastName,
-          className: newStudent.className,
+          class_id: newStudent.class_id,
           gender: newStudent.gender,
           dob: newStudent.dob ? newStudent.dob.format('YYYY-MM-DD') : null,
           phone_number: newStudent.phoneNumber,
@@ -244,14 +170,16 @@ const StudentUpdatePage = () => {
         },
       }).unwrap();
     } catch (error) {
-      console.error('Update failed', error);
+      console.error('Creation failed', error);
     }
   };
-  if (isLoading) return <LoadingCircle />;
-  if (fetchError) return navigate('/admin/students');
+  console.log('New Student Data : ', newStudent);
+
+  if (isCreating) return <LoadingCircle />;
+
   return (
     <FormComponent
-      title="Update Student"
+      title="Create Student"
       subTitle="Please fill Student Information"
     >
       <Tabs
@@ -397,17 +325,17 @@ const StudentUpdatePage = () => {
           </Box>
           <ButtonContainer
             leftBtn={() => navigate('/admin/students')}
-            rightBtn={onSubmitStudent}
+            rightBtn={onSubmit}
             leftBtnTitle="Cancel"
-            rightBtnTitle="Update Student"
+            rightBtnTitle="Create Student"
           />
         </CardComponent>
       )}
-      {/*  Tab For Submissions All Data ( Guardian and Student) */}
+      {/* Guardian Information Tab */}
       {activeTab === 1 && (
         <CardComponent title="Guardian Information">
           <Stack direction={'row'} gap={1}>
-            {/* first name */}
+            {/* guardian first name */}
             <Box display="flex" flexDirection="column" gap="4px" width={'100%'}>
               <Typography variant="body2" fontWeight="bold">
                 First Name
@@ -423,7 +351,7 @@ const StudentUpdatePage = () => {
                 helperText={errors.guardianFirstName}
               />
             </Box>
-            {/* last name */}
+            {/* guardian last name */}
             <Box display="flex" flexDirection="column" gap="4px" width={'100%'}>
               <Typography variant="body2" fontWeight="bold">
                 Last Name
@@ -468,7 +396,7 @@ const StudentUpdatePage = () => {
               placeholder={'email'}
             />
           </Box>
-          {/* phone number */}
+          {/* guardian phone number */}
           <Box>
             <Typography variant="body2" fontWeight="bold">
               Phone Number
@@ -487,14 +415,16 @@ const StudentUpdatePage = () => {
             leftBtn={() => setActiveTab(0)}
             rightBtn={onSubmit}
             leftBtnTitle="Previous"
-            rightBtnTitle="Update Guardian"
+            rightBtnTitle="Create Guardian"
           />
         </CardComponent>
       )}
     </FormComponent>
   );
 };
-export default StudentUpdatePage;
+
+export default StudentCreatePage;
+
 const imgStyle = {
   width: { xs: 120, sm: 160 },
   height: { xs: 120, sm: 160 },

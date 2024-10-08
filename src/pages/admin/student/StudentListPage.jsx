@@ -7,8 +7,8 @@ import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
 import { PlusIcon } from 'lucide-react';
 import {
-  useDeleteStudentsDataMutation,
-  useGetStudentsDataQuery,
+  useDeleteStudentMutation,
+  useGetAllStudentsQuery,
 } from '../../../services/studentApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import { formatStudentsList } from '../../../utils/formatData';
@@ -22,49 +22,70 @@ const StudentListPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('');
 
-
   // Fetch students using the API hook
-  const { data, isLoading, isError, isSuccess } = useGetStudentsDataQuery({
+  const { data, isLoading, isError, isSuccess } = useGetAllStudentsQuery({
     search: searchTerm,
   });
 
-  const [deleteStudent, {isLoading: isDeleting, isSuccess: isDeleteSuccess,  isError: isDeleteError,  error } ] = useDeleteStudentsDataMutation();
- 
+  const [
+    deleteStudent,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error,
+    },
+  ] = useDeleteStudentMutation();
+
   useEffect(() => {
     if (isSuccess && data) {
       const formattedStudents = formatStudentsList(data.data);
-      setRows(formattedStudents);   
+      setRows(formattedStudents);
     }
-  }, [isSuccess, data,dispatch]);
+  }, [isSuccess, data, dispatch]);
 
   //If loading is error, show error message
   if (isError) {
     console.log('error message :', error.data.message);
   }
-  //filter change 
+  //filter change
   const handleChange = (event) => {
     setFilter(event.target.value);
   };
-   // Handle Search by  name
-   const handleSearchChange = (event) => {
+  // Handle Search by  name
+  const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   // When the delete is in progress, show a snackbar with a message "Deleting..."
   // When the delete is failed, show a snackbar with an error message
   // When the delete is successful, show a snackbar with a success message and navigate to the class list page
-  useEffect(()=>{
-    if(isDeleting){
-      dispatch(setSnackbar({ open:true , message: 'Deleting...' ,severity : 'info'}));
-    }else if(isDeleteError){
-      dispatch(setSnackbar({ open:true , message: error.data.message , severity : 'error'}));
-    }else if(isDeleteSuccess){
-      dispatch(setSnackbar({ open:true , message: 'Deleted successfully', severity :'success'}));
+  useEffect(() => {
+    if (isDeleting) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data.message,
+          severity: 'error',
+        }),
+      );
+    } else if (isDeleteSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
       navigate('/admin/students');
     }
-  },[dispatch, isDeleteError, isDeleteSuccess, isDeleting])
+  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
 
-//Loading Data
+  //Loading Data
   if (isLoading) {
     return <LoadingCircle />;
   }
@@ -113,7 +134,6 @@ const StudentListPage = () => {
         </Box>
         {/* Student Table */}
         <StudentListTable />
-
       </FormComponent>
     </Box>
   );

@@ -32,7 +32,7 @@ export const classApi = baseApi.injectEndpoints({
     }),
     //Update Class
     updateClassesData: builder.mutation({
-      query: ({id, formData}) => ({
+      query: ({ id, formData }) => ({
         url: `classes/${id}`,
         method: 'PUT',
         body: formData,
@@ -40,16 +40,16 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Classes'],
     }),
-      //Delete Class
-  deleteClassesData: builder.mutation({
-    query: (id) => ({
-      url: `classes/${id}`,
-      method: 'DELETE',
-      credentials: 'include',
-    }), 
-    invalidatesTags: ['Classes'],
+    //Delete Class
+    deleteClassesData: builder.mutation({
+      query: (id) => ({
+        url: `classes/${id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Classes'],
+    }),
   }),
-})
 });
 export const {
   useGetClassesDataQuery,

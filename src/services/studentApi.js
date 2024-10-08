@@ -3,7 +3,7 @@ import { baseApi } from './baseApi';
 export const studentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch classes data
-    getStudentsData: builder.query({
+    getAllStudents: builder.query({
       query: () => ({
         url: 'students',
         method: 'GET',
@@ -11,6 +11,7 @@ export const studentApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Students'],
     }),
+
     //GEt class by id
     getStudentsById: builder.query({
       query: (id) => ({
@@ -20,8 +21,9 @@ export const studentApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Students'],
     }),
+
     //Post Class
-    postStudentsData: builder.mutation({
+    createStudent: builder.mutation({
       query: (data) => ({
         url: `students`,
         method: 'POST',
@@ -31,8 +33,8 @@ export const studentApi = baseApi.injectEndpoints({
       invalidatesTags: ['Students'],
     }),
     //Update Class
-    updateStudentsData: builder.mutation({
-      query: ({id, updates}) => ({
+    updateStudent: builder.mutation({
+      query: ({ id, updates }) => ({
         url: `students/${id}`,
         method: 'PATCH',
         body: updates,
@@ -40,21 +42,21 @@ export const studentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Students'],
     }),
-      //Delete Class
-  deleteStudentsData: builder.mutation({
-    query: (id) => ({
-      url: `students/${id}`,
-      method: 'DELETE',
-      credentials: 'include',
-    }), 
-    invalidatesTags: ['Students'],
+    //Delete Class
+    deleteStudent: builder.mutation({
+      query: (id) => ({
+        url: `students/${id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Students'],
+    }),
   }),
-})
 });
 export const {
-  useGetStudentsDataQuery,
+  useGetAllStudentsQuery,
   useGetStudentsByIdQuery,
-  usePostStudentsDataMutation,
-  useUpdateStudentsDataMutation,
-  useDeleteStudentsDataMutation,
+  useCreateStudentMutation,
+  useUpdateStudentMutation,
+  useDeleteStudentMutation,
 } = studentApi;

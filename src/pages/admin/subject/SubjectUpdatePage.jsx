@@ -14,7 +14,10 @@ import ButtonContainer from '../../../components/common/ButtonContainer';
 import { SubjectValidator } from '../../../validators/validationSchemas';
 import { fieldContainer } from '../../../styles/authStyle';
 import { setSnackbar } from '../../../store/slices/uiSlice';
-import { useGetSubjectByIdQuery, useUpdateSubjectMutation } from '../../../services/subjectApi';
+import {
+  useGetSubjectByIdQuery,
+  useUpdateSubjectMutation,
+} from '../../../services/subjectApi';
 
 function SubjectUpdatePage() {
   const navigate = useNavigate();
@@ -23,9 +26,17 @@ function SubjectUpdatePage() {
 
   // Fetch subject details
   const { data, fetchError, isLoading, isSuccess } = useGetSubjectByIdQuery(id);
-  
+
   // Mutation for updating subject
-  const [updateSubject, { isLoading: isUpdating, isError: isUpdateError, isSuccess: isUpdatedSuccess, error: updateError }] = useUpdateSubjectMutation();
+  const [
+    updateSubject,
+    {
+      isLoading: isUpdating,
+      isError: isUpdateError,
+      isSuccess: isUpdatedSuccess,
+      error: updateError,
+    },
+  ] = useUpdateSubjectMutation();
 
   // Setup form with react-hook-form
   const {
@@ -33,7 +44,7 @@ function SubjectUpdatePage() {
     handleSubmit,
     setValue,
     getValues,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(SubjectValidator),
     defaultValues: {
@@ -53,26 +64,39 @@ function SubjectUpdatePage() {
   // Handle update mutation lifecycle (loading, success, error)
   useEffect(() => {
     if (isUpdating) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Updating...',
-        severity: 'info'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updating...',
+          severity: 'info',
+        }),
+      );
     } else if (isUpdateError) {
-      dispatch( setSnackbar({
-        open: true,
-        message: updateError.data.message,
-        severity: 'error'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError.data.message,
+          severity: 'error',
+        }),
+      );
     } else if (isUpdatedSuccess) {
-      dispatch( setSnackbar({
-        open: true,
-        message: 'Updated successfully',
-        severity: 'success'
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Updated successfully',
+          severity: 'success',
+        }),
+      );
       navigate('/admin/subjects');
     }
-  }, [isUpdating, isUpdateError, isUpdatedSuccess, updateError, dispatch, navigate]);
+  }, [
+    isUpdating,
+    isUpdateError,
+    isUpdatedSuccess,
+    updateError,
+    dispatch,
+    navigate,
+  ]);
 
   // Submit handler
   const onSubmit = async () => {
@@ -94,7 +118,10 @@ function SubjectUpdatePage() {
 
   return (
     <>
-      <FormComponent title={'Update Subject'} subTitle={'Please Fill subject information'}>
+      <FormComponent
+        title={'Update Subject'}
+        subTitle={'Please Fill subject information'}
+      >
         <CardComponent title={'Subject Information'}>
           <Stack sx={fieldContainer}>
             <Typography variant="body2" fontWeight="bold">
@@ -108,7 +135,9 @@ function SubjectUpdatePage() {
                 <TextField
                   {...field}
                   error={!!errors.subject_name}
-                  helperText={errors.subject_name ? errors.subject_name.message : ''}
+                  helperText={
+                    errors.subject_name ? errors.subject_name.message : ''
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -134,7 +163,9 @@ function SubjectUpdatePage() {
                   error={!!errors.description}
                   multiline
                   minRows={5}
-                  helperText={errors.description ? errors.description.message : ''}
+                  helperText={
+                    errors.description ? errors.description.message : ''
+                  }
                   slotProps={{
                     input: {
                       startAdornment: (
