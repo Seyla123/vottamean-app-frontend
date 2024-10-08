@@ -122,7 +122,7 @@ const ClassListPage = () => {
     try {
       await updateClassesData({
         id: selectedClass.class_id,
-        ...formData,
+        formData,
       }).unwrap();
       dispatch(
         setSnackbar({
@@ -244,7 +244,7 @@ const ClassListPage = () => {
         hideColumns={['description']}
         emptyTitle={'No Class'}
         emptySubTitle={'No Class Available'}
-        isLoading={isLoading} 
+        isLoading={isLoading}
       />
 
       <CreateModal
