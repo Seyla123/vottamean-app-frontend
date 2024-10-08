@@ -71,7 +71,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Do you really want to delete this {itemName}?
+          Do you really want to delete this <b>{itemName}</b>?
           <br />
           This action cannot be undone.
         </DialogContentText>
