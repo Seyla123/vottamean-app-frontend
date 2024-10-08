@@ -32,6 +32,68 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
     }
   };
 
+  const renderField = (field) => {
+    switch (field.type) {
+      case 'select':
+        return (
+          <TextField
+            select
+            fullWidth
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            error={!!errors[field.name]}
+            helperText={errors[field.name]}
+            variant="outlined"
+          >
+            {field.options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        );
+      case 'time':
+        return (
+          <TextField
+            type="time"
+            fullWidth
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            error={!!errors[field.name]}
+            helperText={errors[field.name]}
+            variant="outlined"
+          />
+        );
+      default:
+        return (
+          <TextField
+            variant="outlined"
+            fullWidth
+            type={field.type || 'text'}
+            placeholder={field.placeholder || field.label}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            error={!!errors[field.name]}
+            helperText={errors[field.name]}
+            multiline={field.multiline}
+            rows={field.multiline ? 4 : 1}
+            slotProps={{
+              input: {
+                startAdornment: field.icon && (
+                  <InputAdornment position="start">
+                    {field.icon}
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        );
+    }
+  };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{title}</DialogTitle>
@@ -44,28 +106,7 @@ const CreateModal = ({ open, onClose, title, description, fields, onSubmit }) =>
                 {field.label}{' '}
                 {field.required && <span style={{ color: 'red', marginLeft: 1 }}>*</span>}
               </Typography>
-              <TextField
-                variant="outlined"
-                fullWidth
-                type={field.type || 'text'}
-                placeholder={field.placeholder || field.label}
-                name={field.name}
-                value={formData[field.name] || ''}
-                onChange={handleChange}
-                error={!!errors[field.name]}
-                helperText={errors[field.name]}
-                multiline={field.multiline}
-                rows={field.multiline ? 4 : 1}
-                slotProps={{
-                  input: {
-                    startAdornment: field.icon && (
-                      <InputAdornment position="start">
-                        {field.icon}
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
+              {renderField(field)}
             </Box>
           ))}
         </Stack>

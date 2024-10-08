@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, Stack } from '@mui/material';
 import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import { useGetClassPeriodQuery, useDeleteClassPeriodMutation } from '../../../services/classPeriodApi';
+import CreateModal from '../../../components/common/CreateModal';
+import { useGetClassPeriodQuery, useDeleteClassPeriodMutation, useCreateClassPeriodMutation } from '../../../services/classPeriodApi';
 import { calculatePeriod, formatTimeTo12Hour } from '../../../utils/formatHelper';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
@@ -23,7 +24,8 @@ function ClassPeriodListPage() {
   // useState: "data to be displayed" and "data to be deleted"
   const [rows, setRows] = useState([]);
   const [classPeriodToDelete, setClassPeriodToDelete] = useState(null);
-  
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { modal } = useSelector((state) => state.ui);
@@ -38,6 +40,9 @@ function ClassPeriodListPage() {
       isError: isDeleteError,
       error }
   ] = useDeleteClassPeriodMutation();
+
+  // useCreateClassPeriodMutation : returns a function to create a new subject
+  const [createClassPeriod, { isLoading: isCreating, isSuccess: isCreateSuccess, isError: isCreateError, error: createError }] = useCreateClassPeriodMutation();
 
   useEffect(() => {
     // set the rows state when subject records are fetched successfully
@@ -89,7 +94,28 @@ function ClassPeriodListPage() {
     await deleteClassPeriod(classPeriodToDelete.period_id).unwrap();
   };
 
-  
+  // Handle CREATE action
+  const handleCreate = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateSubmit = async (formData) => {
+    try {
+      await createClassPeriod(formData).unwrap();
+      dispatch(setSnackbar({
+        open: true,
+        message: 'Class period created successfully',
+        severity: 'success'
+      }));
+      setIsCreateModalOpen(false);
+    } catch (err) {
+      dispatch(setSnackbar({
+        open: true,
+        message: err.data?.message || 'Failed to create class period',
+        severity: 'error'
+      }));
+    }
+  };
 
   // Handle DELETE ALL action
   const handleSelectedDelete = () => {
@@ -117,24 +143,38 @@ function ClassPeriodListPage() {
     };
   });
 
+  const createFields = [
+    { name: 'start_time', label: 'Start Time', type: 'time', required: true },
+    { name: 'end_time', label: 'End Time', type: 'time', required: true },
+  ];
+
   return (
     <FormComponent
       title={'Class Period List'}
       subTitle={`There are total ${rows.length} Class Periods`}
     >
-      {/* Button to add a new class period */}
+      {/* Button to open create modal */}
       <Stack direction="row" justifyContent="flex-end">
-        <Link to="/admin/class-periods/create">
-          <Button
-            size="large"
-            variant="contained"
-            color="primary"
-            startIcon={<PlusIcon size={20} />}
-          >
-            ADD PERIOD
-          </Button>
-        </Link>
+        <Button
+          size="large"
+          variant="contained"
+          color="primary"
+          startIcon={<PlusIcon size={20} />}
+          onClick={handleCreate}
+        >
+          ADD PERIOD
+        </Button>
       </Stack>
+
+      <CreateModal
+        open={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        title="Create New Class Period"
+        description="Enter the details for the new class period"
+        fields={createFields}
+        onSubmit={handleCreateSubmit}
+      />
+
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
