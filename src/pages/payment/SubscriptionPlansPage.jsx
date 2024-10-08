@@ -8,6 +8,8 @@ import { useGetUserProfileQuery } from '../../services/userApi';
 const SubscriptionPlansPage = () => {
   const { data: userData } = useGetUserProfileQuery();
 
+  console.log('User Data SUB :', userData?.data?.subscriptions[0].plan_type);
+
   // Get admin_id from user profile's adminProfile
   const adminId = userData?.data?.adminProfile?.admin_id;
   console.log('Admin ID For Stripe Payemnt:', adminId);
