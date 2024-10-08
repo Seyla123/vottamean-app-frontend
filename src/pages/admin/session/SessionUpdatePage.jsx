@@ -77,11 +77,6 @@ console.log('this data session : ', session);
         day_id: session.data.DayOfWeek.day_id,
       };
       reset(dataSession)
-      // setValue('teacher_id', session.data.Teacher.teacher_id);
-      // setValue('period_id', session.data.Period.period_id);
-      // setValue('class_id', session.data.Class.class_id);
-      // setValue('subject_id', session.data.Subject.subject_id);
-      // setValue('day_id', session.data.DayOfWeek.day_id);
       setOriginData(dataSession);
     }
   }, [session, setValue]);
