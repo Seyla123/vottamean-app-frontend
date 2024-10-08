@@ -14,6 +14,7 @@ import {
   CircularProgress,
   Checkbox,
 } from '@mui/material';
+import StyledMuiButton from '../common/StyledMuiButton';
 import { updateFormData } from '../../store/slices/formSlice';
 import { useLoginMutation } from '../../services/authApi';
 import { setSnackbar } from '../../store/slices/uiSlice';
@@ -106,7 +107,7 @@ const LoginForm = () => {
           </Box>
         </Box>
 
-        <Button
+        <StyledMuiButton
           variant="contained"
           type="submit"
           fullWidth
@@ -116,9 +117,9 @@ const LoginForm = () => {
           {isLoading ? (
             <CircularProgress size={24} color="inherit" />
           ) : (
-            'SIGN IN'
+            'sign in'
           )}
-        </Button>
+        </StyledMuiButton>
       </Box>
     </form>
   );
