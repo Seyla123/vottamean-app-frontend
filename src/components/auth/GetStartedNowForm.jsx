@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector } from 'react-redux';
 import {
@@ -30,7 +30,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
   const formData = useSelector((state) => state.form);
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -107,23 +107,27 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
             <Typography variant="body2" fontWeight="bold">
               Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type="email"
-              {...register('email')}
-              error={!!errors.email}
-              helperText={errors.email?.message}
-              placeholder="Enter your email"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Mail size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant="outlined"
+                  fullWidth
+                  type="email"
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  placeholder="Enter your email"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Mail size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Box>
 
@@ -132,39 +136,43 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
             <Typography variant="body2" fontWeight="bold">
               Password <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              {...register('password')}
-              onChange={(e) => {
-                validatePassword(e.target.value);
-                setValue('password', e.target.value);
-              }}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-              placeholder="Create password"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockKeyhole size={20} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      size="icon"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <EyeIcon size={20} />
-                      )}
-                    </IconButton>
-                  ),
-                },
-              }}
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant="outlined"
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  onChange={(e) => {
+                    validatePassword(e.target.value);
+                    field.onChange(e);
+                  }}
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                  placeholder="Create password"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockKeyhole size={20} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        size="icon"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <EyeIcon size={20} />
+                        )}
+                      </IconButton>
+                    ),
+                  }}
+                />
+              )}
             />
           </Box>
 
@@ -174,35 +182,39 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
               Confirm Password{' '}
               <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              {...register('passwordConfirm')}
-              error={!!errors.passwordConfirm}
-              helperText={errors.passwordConfirm?.message}
-              placeholder="Confirm password"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockKeyhole size={20} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      size="icon"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <EyeIcon size={20} />
-                      )}
-                    </IconButton>
-                  ),
-                },
-              }}
+            <Controller
+              name="passwordConfirm"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant="outlined"
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  error={!!errors.passwordConfirm}
+                  helperText={errors.passwordConfirm?.message}
+                  placeholder="Confirm password"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockKeyhole size={20} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        size="icon"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <EyeIcon size={20} />
+                        )}
+                      </IconButton>
+                    ),
+                  }}
+                />
+              )}
             />
           </Box>
 

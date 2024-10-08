@@ -1,9 +1,7 @@
-// React and third-party libraries
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// Material UI components
 import {
   Box,
   Typography,
@@ -14,30 +12,24 @@ import {
   MenuItem,
 } from '@mui/material';
 
-// Redux hooks and actions
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { UserRoundPlus } from 'lucide-react';
 
-// Custom components
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 
-// Date picker components from MUI X
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-// Validator
 import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
 const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
-  // Fetch form data from Redux
   const formData = useSelector((state) => state.form);
 
-  // Initialize useForm with validation schema and default values
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -46,11 +38,9 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
     defaultValues: formData,
   });
 
-  // Manage gender and date of birth state
   const [gender, setGender] = useState(formData.gender || '');
   const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
 
-  // Pre-fill form fields when component mounts
   useEffect(() => {
     if (formData) {
       setValue('first_name', formData.first_name);
@@ -60,18 +50,17 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
     }
   }, [formData, setValue]);
 
-  // Handle form submission
   const onSubmit = (data) => {
     const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
-    // format data before dispatching
     const updatedData = {
       ...data,
       gender,
       dob: formattedDob,
     };
-    handleFormChange(updatedData); // Update the form data in Redux
-    handleNext(); // Navigate to the next step
+    handleFormChange(updatedData);
+    handleNext();
   };
+
   return (
     <Box
       sx={{
@@ -107,7 +96,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               gap: 2,
             }}
           >
-            {/* FIRST NAME INPUT */}
             <Box
               sx={{
                 display: 'flex',
@@ -120,27 +108,29 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
                 First Name{' '}
                 <span style={{ color: 'red', marginLeft: 1 }}>*</span>
               </Typography>
-              <TextField
-                variant="outlined"
-                fullWidth
-                type="text"
-                {...register('first_name')}
-                error={!!errors.first_name}
-                helperText={errors.first_name?.message}
-                placeholder="First Name"
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <UserRoundPlus size={20} />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
+              <Controller
+                name="first_name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.first_name}
+                    helperText={errors.first_name?.message}
+                    placeholder="First Name"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <UserRoundPlus size={20} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Box>
 
-            {/* LAST NAME INPUT */}
             <Box
               sx={{
                 display: 'flex',
@@ -152,29 +142,31 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               <Typography variant="body2" fontWeight="bold">
                 Last Name <span style={{ color: 'red', marginLeft: 1 }}>*</span>
               </Typography>
-              <TextField
-                variant="outlined"
-                fullWidth
-                type="text"
-                {...register('last_name')}
-                error={!!errors.last_name}
-                helperText={errors.last_name?.message}
-                placeholder="Last Name"
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <UserRoundPlus size={20} />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
+              <Controller
+                name="last_name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.last_name}
+                    helperText={errors.last_name?.message}
+                    placeholder="Last Name"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <UserRoundPlus size={20} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Box>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {/* GENDER SELECT */}
             <Box
               sx={{
                 display: 'flex',
@@ -186,32 +178,38 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               <Typography variant="body2" fontWeight="bold">
                 Gender <span style={{ color: 'red', marginLeft: 1 }}>*</span>
               </Typography>
-              <Select
-                fullWidth
-                value={gender}
-                onChange={(e) => {
-                  setGender(e.target.value);
-                  setValue('gender', e.target.value);
-                }}
-                displayEmpty
-                renderValue={(selected) => {
-                  if (!selected) {
-                    return <Box sx={{ color: '#B5B5B5' }}>Gender</Box>;
-                  }
-                  return selected;
-                }}
-                error={!!errors.gender}
-                variant="outlined"
-              >
-                <MenuItem value="" disabled>
-                  Select gender
-                </MenuItem>
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
+              <Controller
+                name="gender"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    fullWidth
+                    value={gender}
+                    onChange={(e) => {
+                      setGender(e.target.value);
+                      field.onChange(e);
+                    }}
+                    displayEmpty
+                    renderValue={(selected) => {
+                      if (!selected) {
+                        return <Box sx={{ color: '#B5B5B5' }}>Gender</Box>;
+                      }
+                      return selected;
+                    }}
+                    error={!!errors.gender}
+                  >
+                    <MenuItem value="" disabled>
+                      Select gender
+                    </MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                    <MenuItem value="Other">Other</MenuItem>
+                  </Select>
+                )}
+              />
             </Box>
-            {/* DOB INPUT */}
+
             <Box
               sx={{
                 display: 'flex',
@@ -223,24 +221,30 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               <Typography variant="body2" fontWeight="bold">
                 Date Of Birth{' '}
                 <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>{' '}
+              </Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={dob}
-                  onChange={(newValue) => {
-                    setDob(newValue);
-                    setValue(
-                      'dob',
-                      newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
-                    );
-                  }}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: !!errors.dob,
-                      placeholder: 'YYYY-MM-DD',
-                    },
-                  }}
+                <Controller
+                  name="dob"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      value={dob}
+                      onChange={(newValue) => {
+                        setDob(newValue);
+                        field.onChange(
+                          newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
+                        );
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.dob,
+                          placeholder: 'YYYY-MM-DD',
+                        },
+                      }}
+                    />
+                  )}
                 />
               </LocalizationProvider>
             </Box>
@@ -256,7 +260,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             >
               Back
             </Button>
-            {/* Submit Button */}
             <Button
               type="submit"
               variant="contained"
@@ -268,7 +271,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             </Button>
           </Box>
 
-          {/* FORM FOOTER */}
           <FormFooter href={'/auth/signin'} />
         </Box>
       </form>

@@ -33,7 +33,6 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
     useSignupMutation();
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors },
@@ -116,21 +115,27 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
             <Typography variant="body2" fontWeight="bold">
               School Name <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type="text"
-              placeholder="Enter your school name"
-              {...register('school_name')}
-              error={!!errors.school_name}
-              helperText={errors.school_name?.message}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <School size={20} />
-                  </InputAdornment>
-                ),
-              }}
+            <Controller
+              name="school_name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  type="text"
+                  placeholder="Enter your school name"
+                  {...field}
+                  error={!!errors.school_name}
+                  helperText={errors.school_name?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <School size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Box>
 
@@ -143,7 +148,6 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
             <Controller
               name="school_phone_number"
               control={control}
-              defaultValue=""
               render={({ field }) => (
                 <MuiTelInput
                   defaultCountry="KH"
