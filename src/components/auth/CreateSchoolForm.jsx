@@ -17,6 +17,7 @@ import {
   InputAdornment,
   CircularProgress,
 } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
@@ -189,7 +190,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-            <Button
+            <StyledButton
               variant="outlined"
               color="primary"
               size="large"
@@ -197,8 +198,9 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
               onClick={handleBack}
             >
               Back
-            </Button>
-            <Button
+            </StyledButton>
+            {/* Submit Button */}
+            <StyledButton
               variant="contained"
               type="submit"
               fullWidth
@@ -210,7 +212,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
               ) : (
                 'Register'
               )}
-            </Button>
+            </StyledButton>
           </Box>
 
           <FormFooter href={'/auth/signin'} />

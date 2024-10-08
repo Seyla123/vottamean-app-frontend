@@ -12,6 +12,7 @@ import {
   InputAdornment,
   MenuItem,
 } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -162,10 +163,10 @@ const CreateModal = ({
         </Stack>
       </DialogContent>
       <DialogActions sx={{ py: 3, px: 3 }}>
-        <Button onClick={onClose} size="large">
+        <StyledButton onClick={onClose} size="large">
           Cancel
-        </Button>
-        <Button
+        </StyledButton>
+        <StyledButton
           onClick={handleSubmit}
           variant="contained"
           color="primary"
@@ -173,7 +174,7 @@ const CreateModal = ({
           sx={{ px: 4 }}
         >
           Create
-        </Button>
+        </StyledButton>
       </DialogActions>
     </Dialog>
   );

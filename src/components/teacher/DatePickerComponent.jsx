@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Typography, Box } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 const SimpleForm = () => {
-  const { handleSubmit, control, formState: { errors } } = useForm();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
   const [dob, setDob] = useState(null);
   const onSubmit = (data) => {
     console.log(data);
@@ -31,7 +36,7 @@ const SimpleForm = () => {
                   return 'Date of birth cannot be in the future';
                 }
                 return true;
-              }
+              },
             }}
             render={({ field, fieldState: { error } }) => (
               <DesktopDatePicker
@@ -54,7 +59,9 @@ const SimpleForm = () => {
           />
         </Box>
         {/* Submit Button */}
-        <Button type="submit" variant="contained">Submit</Button>
+        <StyledButton type="submit" variant="contained">
+          Submit
+        </StyledButton>
       </form>
     </LocalizationProvider>
   );

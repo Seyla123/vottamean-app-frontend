@@ -11,6 +11,7 @@ import {
   Divider,
   Paper,
 } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 
 const ViewModal = ({ open, onClose, title, data }) => {
   return (
@@ -44,9 +45,9 @@ const ViewModal = ({ open, onClose, title, data }) => {
         </Paper>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} variant="contained" color="primary">
+        <StyledButton onClick={onClose} variant="contained" color="primary">
           Close
-        </Button>
+        </StyledButton>
       </DialogActions>
     </Dialog>
   );

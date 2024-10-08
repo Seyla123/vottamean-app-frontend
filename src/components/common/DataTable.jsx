@@ -22,6 +22,7 @@ import {
   CircularProgress,
   Box,
 } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import { useMediaQuery } from '@mui/material';
 import EmptyDataImage from '../../assets/images/empty-image.svg';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
@@ -223,13 +224,13 @@ const DataTable = ({
             {selected.length > 0 ? (
               <TableCell align="right" sx={{ maxWidth: '50px' }}>
                 <Tooltip title="Delete selected">
-                  <Button
+                  <StyledButton
                     onClick={handleSelectedDelete}
                     color="error"
                     startIcon={<Trash2 size={18} />}
                   >
                     Delete
-                  </Button>
+                  </StyledButton>
                 </Tooltip>
               </TableCell>
             ) : (

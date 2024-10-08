@@ -8,7 +8,14 @@ import { MuiTelInput } from 'mui-tel-input';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Material UI components
-import { Box, TextField, Typography, Button } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  InputAdornment,
+} from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
@@ -126,7 +133,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-            <Button
+            <StyledButton
               variant="outlined"
               color="primary"
               size="large"
@@ -134,9 +141,9 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
               onClick={handleBack}
             >
               Back
-            </Button>
+            </StyledButton>
             {/* Submit Button */}
-            <Button
+            <StyledButton
               type="submit"
               variant="contained"
               color="primary"
@@ -144,7 +151,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
               fullWidth
             >
               Continue
-            </Button>
+            </StyledButton>
           </Box>
 
           {/* FORM FOOTER */}

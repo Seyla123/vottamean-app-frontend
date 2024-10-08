@@ -11,6 +11,7 @@ import {
   InputAdornment,
   MenuItem,
 } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 
 import { useSelector } from 'react-redux';
 import { UserRoundPlus } from 'lucide-react';
@@ -251,7 +252,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-            <Button
+            <StyledButton
               variant="outlined"
               color="primary"
               size="large"
@@ -259,8 +260,9 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               onClick={handleBack}
             >
               Back
-            </Button>
-            <Button
+            </StyledButton>
+            {/* Submit Button */}
+            <StyledButton
               type="submit"
               variant="contained"
               color="primary"
@@ -268,7 +270,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               fullWidth
             >
               Continue
-            </Button>
+            </StyledButton>
           </Box>
 
           <FormFooter href={'/auth/signin'} />

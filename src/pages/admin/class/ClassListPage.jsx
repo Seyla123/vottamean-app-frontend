@@ -11,6 +11,7 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
 import ViewModal from '../../../components/common/ViewModal';
+import StyledButton from '../../../components/common/StyledMuiButton';
 // import api and uiSlice
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import {
@@ -207,15 +208,15 @@ const ClassListPage = () => {
       subTitle={`Total Classes: ${rows.length}`}
     >
       <Stack direction="row" justifyContent="flex-end">
-        <Button
+        <StyledButton
           size="large"
           variant="contained"
           color="primary"
           startIcon={<PlusIcon size={20} />}
           onClick={() => setCreateModalOpen(true)}
         >
-          ADD CLASS
-        </Button>
+          Create class
+        </StyledButton>
       </Stack>
       <Box>
         <Stack

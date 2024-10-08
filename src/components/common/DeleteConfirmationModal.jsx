@@ -10,6 +10,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import StyledButton from './StyledMuiButton';
 import DeleteIcon from '../../assets/icon/delete-icon.png';
 
 /**
@@ -28,7 +29,7 @@ import DeleteIcon from '../../assets/icon/delete-icon.png';
  *
  *   return (
  *     <>
- *       <Button onClick={() => setIsOpen(true)}>Delete Item</Button>
+ *       <StyledButton onClick={() => setIsOpen(true)}>Delete Item</StyledButton>
  *       <DeleteConfirmationModal
  *         open={isOpen}
  *         onClose={() => setIsOpen(false)}
@@ -85,10 +86,10 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
             sm={6}
             sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}
           >
-            <Button onClick={onClose} variant="text" size="large" fullWidth>
+            <StyledButton onClick={onClose} variant="text" size="large" fullWidth>
               Cancel
-            </Button>
-            <Button
+            </StyledButton>
+            <StyledButton
               onClick={onConfirm}
               color="error"
               variant="contained"
@@ -97,7 +98,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
               autoFocus
             >
               Delete
-            </Button>
+            </StyledButton>
           </Grid>
         </Grid>
       </DialogActions>
