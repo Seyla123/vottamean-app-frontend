@@ -8,7 +8,7 @@ export const teacherApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: teacher
             }),
-            providesTags: ['Teachers']
+            invalidatesTags: ['Teachers']
         }),
         getAllTeachers: builder.query({
             query: (params) => ({
@@ -16,7 +16,7 @@ export const teacherApi = baseApi.injectEndpoints({
               params: params,
             }),
             providesTags: ['Teachers'],
-          }),
+        }),
         deleteTeacher: builder.mutation({
             query: (id) => ({
                 url: `teachers/${id}`,
@@ -53,7 +53,7 @@ export const teacherApi = baseApi.injectEndpoints({
               credentials: 'include',
             }),
             providesTags: ['Teachers'],
-          })
+        })
     })
 })
 
