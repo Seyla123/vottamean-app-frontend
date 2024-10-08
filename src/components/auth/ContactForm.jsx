@@ -1,26 +1,20 @@
 // React and third-party libraries
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { MuiTelInput } from 'mui-tel-input';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
 
 // Material UI components
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-  InputAdornment,
-} from '@mui/material';
+import { Box, TextField, Typography, Button } from '@mui/material';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
 
 // Validator
 import { ContactInformationValidator } from '../../validators/validationSchemas';
-import { Phone } from 'lucide-react';
 import FormFooter from './FormFooter';
 
 const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
@@ -29,7 +23,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
 
   // Initialize useForm with validation schema and default values
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -41,7 +35,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
   // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
-      setValue('phone', formData.phone_number);
+      setValue('phone_number', formData.phone_number);
       setValue('address', formData.address);
     }
   }, [formData, setValue]);
@@ -84,24 +78,27 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
               Contact Number{' '}
               <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type="text"
-              placeholder="Contact number"
-              {...register('phone_number')}
-              error={!!errors.phone_number}
-              helperText={errors.phone_number?.message}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Phone size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
+            <Controller
+              name="phone_number"
+              control={control}
+              render={({ field }) => (
+                <MuiTelInput
+                  defaultCountry="KH"
+                  value={field.value || ''}
+                  onChange={(phone) => {
+                    console.log('Phone input changed:', phone);
+                    field.onChange(phone);
+                  }}
+                  error={!!errors.phone_number}
+                  fullWidth
+                />
+              )}
             />
+            {errors.phone_number && (
+              <Typography variant="caption" color="error">
+                {errors.phone_number.message}
+              </Typography>
+            )}
           </Box>
 
           {/* ADDRESS INPUT */}
@@ -109,16 +106,22 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
             <Typography variant="body2" fontWeight="bold">
               Street Address{' '}
             </Typography>
-            <TextField
-              multiline
-              minRows={5}
-              variant="outlined"
-              fullWidth
-              type="text"
-              placeholder="Phnom Penh, Street 210, ..."
-              {...register('address')}
-              error={!!errors.address}
-              helperText={errors.address?.message}
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  multiline
+                  minRows={5}
+                  variant="outlined"
+                  fullWidth
+                  type="text"
+                  placeholder="Phnom Penh, Street 210, ..."
+                  {...field} // Spread the field properties
+                  error={!!errors.address}
+                  helperText={errors.address?.message}
+                />
+              )}
             />
           </Box>
 
