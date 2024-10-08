@@ -1,7 +1,8 @@
 // React and third-party libraries
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { MuiTelInput } from 'mui-tel-input';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,26 +20,21 @@ import {
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
-
-// Validator
-import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 import { PhoneOutgoing, School } from 'lucide-react';
 import FormFooter from './FormFooter';
 
 import { useSignupMutation } from '../../services/authApi';
+import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 
-const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
-  // Get the form data from the Redux store
+const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
   const formData = useSelector((state) => state.form);
   const dispatch = useDispatch();
+  const [signup, { isLoading, isError, isSuccess, error }] =
+    useSignupMutation();
 
-  // useSignupMutation : Use the signup mutation to send the form data to the server
-  const [signup, { isLoading, isError, isSuccess, error }] = useSignupMutation();
-
-  // Initialize useForm with validation schema and default values
   const {
-    register,
     handleSubmit,
+    control,
     formState: { errors },
     setValue,
   } = useForm({
@@ -46,7 +42,6 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
     defaultValues: formData,
   });
 
-  // Pre-fill form data when component mounts
   useEffect(() => {
     if (formData) {
       setValue('school_name', formData.school_name);
@@ -55,49 +50,30 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
     }
   }, [formData, setValue]);
 
-  // Handle the error and success messages from the signup api call
   useEffect(() => {
     if (isError) {
-      // If there is an error, show a snackbar with the error message
       dispatch(
         setSnackbar({
           open: true,
           severity: 'error',
           message: error.data.message,
-        })
+        }),
       );
     } else if (isSuccess) {
-      // If the signup is successful, show a snackbar with a success message
       dispatch(
         setSnackbar({
           open: true,
           severity: 'success',
-          message: 'Your account has been successfully created. Please verify your email.',
-        })
+          message:
+            'Your account has been successfully created. Please verify your email.',
+        }),
       );
     }
-  });
-  
-  /**
-   * Handle the form submission.
-   * 1. Create the formatted form data by combining the form data from the Redux store
-   *    with the school data from the current form.
-   * 2. Call the handleFormChange prop to update the form data in the Redux store.
-   * 3. Call the signup mutation with the formatted form data.
-   * 4. Wait for the mutation to complete and unwrap the response.
-   * @param {Object} data The school form data.
-   */
+  }, [isError, isSuccess, dispatch, error]);
+
   const handleFormSubmit = async (data) => {
     const formattedData = {
-      email: formData.email,
-      password: formData.password,
-      passwordConfirm: formData.passwordConfirm,
-      address: formData.address,
-      dob: formData.dob,
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      gender: formData.gender,
-      phone_number: formData.phone_number,
+      ...formData,
       school_name: data.school_name,
       school_phone_number: data.school_phone_number,
       school_address: data.school_address,
@@ -139,67 +115,76 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
             <Typography variant="body2" fontWeight="bold">
               School Name <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type="text"
-              placeholder="Enter your school name"
-              {...register('school_name')}
-              error={!!errors.school_name}
-              helperText={errors.school_name?.message}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <School size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
+            <Controller
+              name="school_name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  type="text"
+                  placeholder="Enter your school name"
+                  {...field}
+                  error={!!errors.school_name}
+                  helperText={errors.school_name?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <School size={20} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Box>
 
-          {/* SCHOOL CONTACT NUMBER INPUT */}
+          {/* SCHOOL CONTACT NUMBER INPUT WITH COUNTRY CODE */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Typography variant="body2" fontWeight="bold">
               School Contact{' '}
               <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              type="text"
-              placeholder="Enter School contact"
-              {...register('school_phone_number')}
-              error={!!errors.school_phone_number}
-              helperText={errors.school_phone_number?.message}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PhoneOutgoing size={20} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
+            <Controller
+              name="school_phone_number"
+              control={control}
+              render={({ field }) => (
+                <MuiTelInput
+                  defaultCountry="KH"
+                  value={field.value}
+                  onChange={(phone) => {
+                    console.log('Phone input changed:', phone);
+                    field.onChange(phone);
+                  }}
+                  helperText={errors.school_phone_number?.message}
+                  error={!!errors.school_phone_number}
+                  fullWidth
+                />
+              )}
             />
           </Box>
 
           {/* SCHOOL ADDRESS INPUT */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Typography variant="body2" fontWeight="bold">
-              Street Address{' '}
+              Street Address
             </Typography>
-            <TextField
-              multiline
-              minRows={5}
-              variant="outlined"
-              fullWidth
-              type="text"
-              placeholder="Phnom Penh, Street 210, ..."
-              {...register('school_address')}
-              error={!!errors.school_address}
-              helperText={errors.school_address?.message}
+            <Controller
+              name="school_address"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  multiline
+                  minRows={5}
+                  variant="outlined"
+                  fullWidth
+                  type="text"
+                  placeholder="Phnom Penh, Street 210, ..."
+                  {...field}
+                  error={!!errors.school_address}
+                  helperText={errors.school_address?.message}
+                />
+              )}
             />
           </Box>
 
@@ -213,7 +198,6 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
             >
               Back
             </Button>
-            {/* Submit Button */}
             <Button
               variant="contained"
               type="submit"
@@ -229,7 +213,6 @@ const CreateSchoolForm = ({ handleBack ,handleFormChange}) => {
             </Button>
           </Box>
 
-          {/* FORM FOOTER */}
           <FormFooter href={'/auth/signin'} />
         </Box>
       </form>

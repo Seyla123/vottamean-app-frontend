@@ -16,8 +16,10 @@ export const formatDate = (dateString) =>
 // Utility: Ensure phone number formatting
 export const formatPhoneNumber = (phoneNumber) => {
   const cleaned = phoneNumber.replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
+  const match = cleaned.match(/^(\d{3})(\d{2})(\d{3})(\d{3,6})$/);
+  return match
+    ? `(+${match[1]}) ${match[2]}-${match[3]}-${match[4]}`
+    : phoneNumber;
 };
 
 // Utility: Get user age
