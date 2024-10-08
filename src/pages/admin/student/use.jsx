@@ -54,6 +54,10 @@ function StudentCreatePage() {
   const [dob, setDob] = useState(null);
   const [rows, setRows] = useState([]);
 
+  const classOptions = rows.length
+    ? rows
+    : [{ value: '', label: 'No classes available' }];
+
   // Redux Class API
   const { data: classData } = useGetClassesDataQuery();
 
@@ -78,14 +82,6 @@ function StudentCreatePage() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(StudentValidator),
-    defaultValues: {
-      first_name: '',
-      last_name: '',
-      phone_number: '',
-      class_name: '',
-      gender: '',
-      dob: null,
-    },
   });
 
   // Submit form data
@@ -93,7 +89,6 @@ function StudentCreatePage() {
     const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
     const studentData = {
       ...data,
-      class_id: className,
       gender,
       dob: formattedDob,
     };
@@ -158,7 +153,6 @@ function StudentCreatePage() {
               <Controller
                 name="first_name"
                 control={control}
-                defaultValue=""
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -177,7 +171,6 @@ function StudentCreatePage() {
                 )}
               />
             </Box>
-
             {/* Student Last Name */}
             <Box sx={{ width: '100%' }}>
               <Typography variant="body2" fontWeight="bold">
@@ -186,7 +179,6 @@ function StudentCreatePage() {
               <Controller
                 name="last_name"
                 control={control}
-                defaultValue="" // Ensure controlled state with an initial value
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -211,35 +203,14 @@ function StudentCreatePage() {
             <Typography variant="body2" fontWeight="bold">
               Class <span style={{ color: 'red' }}>*</span>
             </Typography>
-            <Controller
-              name="class_id"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  value={className || ''}
-                  onChange={(e) => {
-                    const selectedClass = rows.find(
-                      (row) => row.value === e.target.value,
-                    );
-                    setClassName(selectedClass ? selectedClass.value : '');
-                    field.onChange(e);
-                  }}
-                  fullWidth
-                  displayEmpty
-                  error={!!errors.class_id}
-                >
-                  <MenuItem value="" disabled>
-                    Select Class
-                  </MenuItem>
-                  {rows.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label} {/* Display the class name */}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
+            <SelectField
+              name="className"
+              options={classOptions}
+              placeholder="Select Class"
+              error={!!errors.className}
+              helperText={errors.className?.message}
+              value={className || ''}
+              onChange={(e) => setClassName(e.target.value)}
             />
           </Box>
 
@@ -355,109 +326,6 @@ function StudentCreatePage() {
         <CardComponent title="Guardian Information">
           {/* Similar structure for Guardian information as for Student */}
           {/* Add fields for Guardian First Name, Last Name, Relationship, etc. */}
-          <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
-            {/* Student First Name */}
-            <Box sx={{ width: '100%' }}>
-              <Typography variant="body2" fontWeight="bold">
-                Guardian First Name <span style={{ color: 'red' }}>*</span>
-              </Typography>
-              <Controller
-                name="first_name"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    placeholder="Guardian First Name"
-                    error={!!errors.guardian_first_name}
-                    helperText={errors.guardian_first_name?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <UserRoundPlus size={20} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-            </Box>
-
-            {/* Student Last Name */}
-            <Box sx={{ width: '100%' }}>
-              <Typography variant="body2" fontWeight="bold">
-                Guardian Last Name <span style={{ color: 'red' }}>*</span>
-              </Typography>
-              <Controller
-                name="last_name"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    placeholder="Guardian Last Name"
-                    error={!!errors.guardian_last_name}
-                    helperText={errors.guardian_last_name?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <UserRoundPlus size={20} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-            </Box>
-          </Box>
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Relationship <span style={{ color: 'red' }}>*</span>
-            </Typography>
-            <Controller
-              name="relationship"
-              control={control}
-              defaultValue="" // Ensure controlled state with an initial value
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  placeholder="Relationship"
-                  error={!!errors.relationship}
-                  helperText={errors.relationship?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <UserRoundPlus size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Box>
-
-          {/* Contact Number */}
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Guardian Contact Number <span style={{ color: 'red' }}>*</span>
-            </Typography>
-            <Controller
-              name="phone_number"
-              control={control}
-              render={({ field }) => (
-                <MuiTelInput
-                  defaultCountry="KH"
-                  {...field}
-                  error={!!errors.guardian_phone_number}
-                  helperText={errors.guardian_phone_number?.message}
-                  fullWidth
-                />
-              )}
-            />
-          </Box>
         </CardComponent>
       )}
 

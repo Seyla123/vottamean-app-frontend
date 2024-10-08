@@ -228,6 +228,7 @@ export const createFormSchema = (fields) => {
     period_id: createSessionSchema,
     day_id: createSessionSchema,
     subject_name: subjectSchema,
+
     // Add more schemas as needed
   };
 
@@ -334,11 +335,21 @@ export const UpdateTeacherInfo = createFormSchema([
 ]);
 
 // Update Subject Information
-// export const SubjectValidator = createFormSchema(['subject_name', 'description']);
 export const SessionValidator = createFormSchema([
   'teacher_id',
   'class_id',
   'period_id',
   'day_id',
   'subject_id',
+]);
+
+// Student Validations for Creating Student
+export const StudentValidator = createFormSchema([
+  'first_name',
+  'last_name',
+  'dob',
+  'gender',
+  'phone_number',
+  'address',
+  'class_id',
 ]);

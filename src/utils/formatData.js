@@ -280,7 +280,6 @@ export function studentsData(student) {
 // GuardianData Formatted
 export function guardianData(guardian) {
   return {
-
     "Guardian's Name": `${guardian.guardian_first_name || 'N/A'} ${guardian.guardian_last_name || 'N/A'}`,
     Relationship: guardian.guardian_relationship || 'N/A',
     Phone: formatPhoneNumber(guardian.guardian_phone_number),
