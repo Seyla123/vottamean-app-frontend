@@ -30,15 +30,15 @@ import {
 import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Sign up Teacher Api
-import { useCreateStudentMutation} from '../../services/studentApi';
+import { useCreateStudentMutation } from '../../services/studentApi';
 
 // Custom Components
 import StudentForm from './StudentForm';
 import GuardianForm from './GuardianForm';
-import LoadingCircle from '../../components/loading/LoadingCircle';
+import LoadingCircle from '../loading/LoadingCircle';
 import { shadow } from '../../styles/global';
 
-function FormInfo() {
+function FormInfoStudent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -53,7 +53,7 @@ function FormInfo() {
 
   // Sign up Teacher Api
   const [createStudent, { isLoading, isError, error, isSuccess }] =
-  useCreateStudentMutation();
+    useCreateStudentMutation();
 
   useEffect(() => {
     if (isLoading) {
@@ -78,8 +78,7 @@ function FormInfo() {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            'Created Successfully',
+          message: 'Created Successfully',
           severity: 'success',
           autoHideDuration: 6000,
         }),
@@ -106,18 +105,18 @@ function FormInfo() {
 
     // set default values for the form
     const payload = {
-      guardian_first_name:data.guardian_first_name || '',
-      guardian_last_name:data.guardian_last_name || '',
-      guardian_email: data.guardian_email|| '',
-      guardian_relationship: data.guardian_relationship || '',
-      guardian_phone_number:data.guardian_phone_number || '',
       address: data.address || '',
       dob: dob.format('YYYY-MM-DD'), // format the dob
       first_name: data.firstName || '',
       last_name: data.lastName || '',
-      class_id:data.class_id || '',
+      class_id: data.class_id || '',
       gender: data.gender || '',
       phone_number: data.phoneNumber || '',
+      guardian_first_name: data.guardian_first_name || '',
+      guardian_last_name: data.guardian_last_name || '',
+      guardian_email: data.guardian_email || '',
+      guardian_relationship: data.guardian_relationship || '',
+      guardian_phone_number: data.guardian_phone_number || '',
     };
 
     try {
@@ -155,9 +154,7 @@ function FormInfo() {
         gap: { xs: 2, sm: 3 },
       }}
     >
-      <Card
-        sx={cardContainer}
-      >
+      <Card sx={cardContainer}>
         {/* Sidebar tabs */}
         <Box
           sx={{
@@ -214,9 +211,9 @@ function FormInfo() {
   );
 }
 
-export default FormInfo;
+export default FormInfoStudent;
 
-// Styles 
+// Styles
 const cardContainer = {
   display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
@@ -225,7 +222,7 @@ const cardContainer = {
   borderRadius: 1,
   overflow: 'hidden',
   ...shadow,
-}
+};
 const tabStyle = {
   display: 'flex',
   flexDirection: 'row',
@@ -237,4 +234,3 @@ const tabStyle = {
     color: 'text.disabled',
   },
 };
-

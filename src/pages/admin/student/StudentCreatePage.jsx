@@ -1,5 +1,5 @@
 import React from 'react';
-import FormInfo from '../../../components/student/FormInfo';
+import FormInfoStudent from '../../../components/student/FormInfoStudent';
 import FormComponent from '../../../components/common/FormComponent';
 function StudentCreatePage() {
   return (
@@ -10,7 +10,7 @@ function StudentCreatePage() {
         subTitle="Please Add Student Information"
       >
         {/* Form input */}
-        <FormInfo />
+        <FormInfoStudent />
       </FormComponent>
     </>
   );

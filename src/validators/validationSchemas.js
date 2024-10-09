@@ -198,14 +198,11 @@ export const subjectSchema = Yup.string().required('Subject is required');
 export const createSessionSchema = Yup.string().required(
   'This field is required',
 );
+// Class validation
+export const guardianSchema = Yup.string().required('Relationship is required');
 
-export const GuardianValidator = Yup.object().shape({
-  guardian_first_name: Yup.string().required('First name is required'),
-  guardian_last_name: Yup.string().required('Last name is required'),
-  guardian_email: Yup.string().email('Invalid email format').required('Email is required'),
-  guardian_relationship: Yup.string().required('Relationship is required'),
-  guardian_phone_number: Yup.string().required('Phone number is required'),
-});
+
+
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
@@ -236,6 +233,11 @@ export const createFormSchema = (fields) => {
     period_id: createSessionSchema,
     day_id: createSessionSchema,
     subject_name: subjectSchema,
+    guardian_first_name: firstNameSchema,
+    guardian_last_name: lastNameSchema,
+    guardian_email: emailSchema,
+    guardian_relationship: guardianSchema,
+    guardian_phone_number: phoneSchema,
 
 
     // Add more schemas as needed
@@ -363,3 +365,10 @@ export const StudentValidator = createFormSchema([
   'class_id',
 ]);
 
+export const GuardianValidator = createFormSchema([
+  'guardian_first_name',
+  'guardian_last_name',
+  'guardian_email',
+  'guardian_relationship',
+  'guardian_phone_number',
+]);
