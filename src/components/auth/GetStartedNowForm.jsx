@@ -1,7 +1,10 @@
+// - React and third-party libraries
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector } from 'react-redux';
+
+// - Material UI components
 import {
   Box,
   Typography,
@@ -12,12 +15,19 @@ import {
   InputAdornment,
   Link,
 } from '@mui/material';
+
+// - Lucid Icons
+import { Mail } from 'lucide-react';
+
+// - Custom Components
 import StyledButton from '../common/StyledMuiButton';
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 import PasswordIndicator from './PasswordIndicator';
+import PasswordInput from './PasswordInput';
+
+// - Validator
 import { getStartSignupValidator } from '../../validators/validationSchemas';
-import { EyeIcon, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
 const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,10 +45,13 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(getStartSignupValidator),
     defaultValues: formData,
   });
+
+  const password = watch('password');
 
   useEffect(() => {
     if (formData) {
@@ -50,8 +63,8 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
 
   // Validate password whenever it changes
   useEffect(() => {
-    validatePassword(formData.password);
-  }, [formData.password]);
+    validatePassword(password);
+  }, [password]);
 
   const validatePassword = (password) => {
     if (password) {
@@ -133,91 +146,26 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           </Box>
 
           {/* PASSWORD INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Password <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant="outlined"
-                  fullWidth
-                  type={showPassword ? 'text' : 'password'}
-                  onChange={(e) => {
-                    validatePassword(e.target.value);
-                    field.onChange(e);
-                  }}
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                  placeholder="Create password"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockKeyhole size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        size="icon"
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Box>
+          <PasswordInput
+            name="password"
+            label="Password"
+            control={control}
+            showPassword={showPassword}
+            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            error={errors.password}
+            placeholder="Create password"
+          />
 
           {/* CONFIRM PASSWORD INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Confirm Password{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="passwordConfirm"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant="outlined"
-                  fullWidth
-                  type={showPassword ? 'text' : 'password'}
-                  error={!!errors.passwordConfirm}
-                  helperText={errors.passwordConfirm?.message}
-                  placeholder="Confirm password"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockKeyhole size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        size="icon"
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Box>
+          <PasswordInput
+            name="passwordConfirm"
+            label="Confirm Password"
+            control={control}
+            showPassword={showPassword}
+            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            error={errors.passwordConfirm}
+            placeholder="Confirm password"
+          />
 
           {/* PASSWORD VALIDITY INDICATORS */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
@@ -261,7 +209,12 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           </Box>
 
           {/* SUBMIT BUTTON */}
-          <StyledButton variant="contained" type="submit" fullWidth size="large">
+          <StyledButton
+            variant="contained"
+            type="submit"
+            fullWidth
+            size="large"
+          >
             Continue
           </StyledButton>
 
