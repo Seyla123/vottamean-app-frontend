@@ -5,17 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 
 // style
-import {
-  Box,
-  MenuItem,
-  Select,
-  Typography,
-  FormHelperText,
-} from '@mui/material';
+import { Box } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 import { setSnackbar } from '../../../store/slices/uiSlice';
+import RenderSelect from './RenderSelect';
 
 // api
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
@@ -77,11 +72,6 @@ console.log('this data session : ', session);
         day_id: session.data.DayOfWeek.day_id,
       };
       reset(dataSession)
-      // setValue('teacher_id', session.data.Teacher.teacher_id);
-      // setValue('period_id', session.data.Period.period_id);
-      // setValue('class_id', session.data.Class.class_id);
-      // setValue('subject_id', session.data.Subject.subject_id);
-      // setValue('day_id', session.data.DayOfWeek.day_id);
       setOriginData(dataSession);
     }
   }, [session, setValue]);
@@ -198,69 +188,71 @@ console.log('this data session : ', session);
     }
   }, [isLoading, isError, isSuccess, dispatch, error, navigate]);
 
-  const renderSelect = (name, label, options) => (
-    <Controller
-      name={name}
-      control={control}
-      fullWidth
-      render={({ field }) => (
-        <Box sx={box}>
-          <Typography>{label}</Typography>
-          <Select
-            {...field}
-            displayEmpty
-            fullWidth
-            renderValue={(selected) =>
-              !selected ? (
-                <span style={{ color: 'gray' }}>{label}</span>
-              ) : (
-                options.find((option) => option.value === selected)?.label || ''
-              )
-            }
-            sx={{
-              '& .MuiSelect-placeholder': {
-                color: 'gray',
-              },
-            }}
-          >
-            {options.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors[name] && (
-            <FormHelperText error>{errors[name].message}</FormHelperText>
-          )}
-        </Box>
-      )}
-    />
-  );
 
   return (
     <FormComponent
-      title="Update session"
-      subTitle="Please Fill session information"
-    >
-      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Update Session">
-        <Box sx={containerStyle}>
-          <Box sx={selectedStyle}>
-            <Box>{renderSelect('teacher_id', 'Teacher', teachers)}</Box>
-            <Box>{renderSelect('period_id', 'Class Period', periods)}</Box>
+    title="Add session"
+    subTitle="Please Fill session information"
+  >
+    <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
+      <Box sx={containerStyle}>
+        <Box sx={selectedStyle}>
+          <Box>
+            <RenderSelect
+              name="teacher_id"
+              label="Teacher"
+              options={teachers}
+              control={control}
+              errors={errors}
+            />
           </Box>
-          <Box sx={selectedStyle}>
-            <Box>{renderSelect('class_id', 'Class', classes)}</Box>
-            <Box>{renderSelect('subject_id', 'Subject', subjects)}</Box>
+          <Box>
+            <RenderSelect
+              name="period_id"
+              label="Class Period"
+              options={periods}
+              control={control}
+              errors={errors}
+            />
           </Box>
-          <Box>{renderSelect('day_id', 'Day of Week', days)}</Box>
         </Box>
-        <ButtonContainer
-          leftBtnTitle="Cancel"
-          rightBtnTitle="Add Session"
-          rightBtn={handleSubmit(onSubmit)}
-        />
-      </CardComponent>
-    </FormComponent>
+        <Box sx={selectedStyle}>
+          <Box>
+            <RenderSelect
+              name="class_id"
+              label="Class"
+              options={classes}
+              control={control}
+              errors={errors}
+            />
+          </Box>
+          <Box>
+            <RenderSelect
+              name="subject_id"
+              label="Subject"
+              options={subjects}
+              control={control}
+              errors={errors}
+            />
+          </Box>
+        </Box>
+        <Box>
+          <RenderSelect
+            name="day_id"
+            label="Day of Week"
+            options={days}
+            control={control}
+            errors={errors}
+          />
+        </Box>
+      </Box>
+      <ButtonContainer
+        leftBtnTitle="Cancel"
+        rightBtnTitle="Add Session"
+        rightBtn={handleSubmit(onSubmit)}
+      />
+    </CardComponent>
+  </FormComponent>
   );
 };
 
@@ -280,10 +272,4 @@ const selectedStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: { xs: '12px', md: '24px' },
-};
-
-const box = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
 };
