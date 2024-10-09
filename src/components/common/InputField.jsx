@@ -1,4 +1,3 @@
-// InputField.js
 import React from 'react';
 import { TextField, Typography, InputAdornment } from '@mui/material';
 import { Controller } from 'react-hook-form';
@@ -11,8 +10,9 @@ const InputField = ({
   errors,
   icon: Icon,
   type = 'text',
-  multiline = false, // Add a multiline prop
-  minRows, // Add minRows prop for multiline
+  multiline = false,
+  minRows,
+  required = true,
 }) => {
   return (
     <div
@@ -24,7 +24,8 @@ const InputField = ({
       }}
     >
       <Typography variant="body2" fontWeight="bold">
-        {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+        {label}{' '}
+        {required && <span style={{ color: 'red', marginLeft: 1 }}>*</span>}
       </Typography>
       <Controller
         name={name}

@@ -12,7 +12,7 @@ import StyledButton from '../common/StyledMuiButton';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
-import PhoneInputField from './PhoneInputField';
+import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 
 // Validator
@@ -84,13 +84,14 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
 
           {/* ADDRESS INPUT */}
           <InputField
-            name="school_address"
+            name="address"
             control={control}
             label="Street Address"
             placeholder="Phnom Penh, Street 210, ..."
             errors={errors}
             multiline
             minRows={5}
+            required={false}
           />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>

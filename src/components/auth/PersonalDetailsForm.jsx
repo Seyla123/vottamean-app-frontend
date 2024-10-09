@@ -1,19 +1,24 @@
-// PersonalDetailsForm.js
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box } from '@mui/material';
-import StyledButton from '../common/StyledMuiButton';
-import { UserRoundPlus } from 'lucide-react';
 import dayjs from 'dayjs';
 
-// - Custom Component
+// Material UI Components
+import { Box } from '@mui/material';
+
+// Lucid Icons
+import { UserRoundPlus, Calendar } from 'lucide-react';
+
+// Custom Component
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 import InputField from '../common/InputField';
-import GenderSelect from './GenderSelect';
-import DOBPicker from './DOBPicker';
+import GenderSelect from '../common/GenderSelect';
+import DOBPicker from '../common/DOBPicker';
+import StyledButton from '../common/StyledMuiButton';
+
+// Validator
 import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
 const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
@@ -28,7 +33,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
     defaultValues: formData,
   });
 
-  const [gender, setGender] = useState(formData.gender || '');
   const [dob, setDob] = useState(formData.dob ? dayjs(formData.dob) : null);
 
   useEffect(() => {
@@ -44,7 +48,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
     const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
     const updatedData = {
       ...data,
-      gender,
       dob: formattedDob,
     };
     handleFormChange(updatedData);
@@ -112,10 +115,14 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               gap: 2,
             }}
           >
-            {/* Use GenderSelect component */}
-            <GenderSelect control={control} errors={errors} name="gender" />
+            <GenderSelect
+              control={control}
+              errors={errors}
+              name="gender"
+              label="Gender"
+              defaultValue={formData.gender}
+            />
 
-            {/* Use DOBPicker component */}
             <DOBPicker
               control={control}
               errors={errors}
@@ -135,7 +142,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             >
               Back
             </StyledButton>
-            {/* Submit Button */}
             <StyledButton
               type="submit"
               variant="contained"

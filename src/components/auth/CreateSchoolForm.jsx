@@ -15,7 +15,7 @@ import { School } from 'lucide-react';
 import StyledButton from '../common/StyledMuiButton';
 import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
-import PhoneInputField from './PhoneInputField';
+import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 
 import { useSignupMutation } from '../../services/authApi';
@@ -43,6 +43,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
       setValue('school_phone_number', formData.school_phone_number);
       setValue('school_address', formData.school_address);
     }
+    console.log('Form Data to backend :', formData);
   }, [formData, setValue]);
 
   useEffect(() => {
@@ -132,6 +133,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
             errors={errors}
             multiline
             minRows={5}
+            required={false}
           />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
