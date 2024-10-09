@@ -39,7 +39,7 @@ const LoginForm = () => {
     },
   });
 
-  const handleFormSubmit = async (data) => {
+  const onSubmit = async (data) => {
     dispatch(updateFormData(data));
 
     try {
@@ -76,7 +76,7 @@ const LoginForm = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Box sx={styles.formContainer}>
         {/* EMAIL INPUT */}
         <InputField
