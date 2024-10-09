@@ -20,8 +20,6 @@ const MyProfileView = ({
     setOpenModal(null);
   };
 
-  console.log(schoolProfileData);
-
   return (
     <Box
       component={'section'}
