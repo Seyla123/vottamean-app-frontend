@@ -64,6 +64,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const onSubmit = (data) => {
     handleNextClick(true, { ...data, dob: dob ? dob.toISOString() : null }); // pass the date of birth to the next page
   };
+
   // handle back to list page
   const handleCancel = () => {
     navigate('/admin/teachers');
@@ -230,7 +231,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               control={control}
               label="Contact Number"
               errors={errors}
-
             />
           </Box>
           {/* Address */}
@@ -358,17 +358,32 @@ export const validationSchema = yup.object({
     )
     .min(2, 'Name must be at least 2 characters long')
     .max(40, 'Name must be less than 40 characters'),
-  phoneNumber: yup
-    .string()
+  // phoneNumber: yup
+  //   .string()
+  //   .required('Phone number is required')
+  //   .matches(
+  //     /^\d{9,15}$/,
+  //     'Phone number must be between 9 and 15 digits and numeric.',
+  //   )
+  //   .test(
+  //     'length',
+  //     'Phone number must be between 9 and 15 digits',
+  //     (value) => value && value.length >= 9 && value.length <= 15,
+  //   ),
+  phoneNumber: yup.string()
+    .trim()
     .required('Phone number is required')
     .matches(
-      /^\d{9,15}$/,
-      'Phone number must be between 9 and 15 digits and numeric.',
+      /^\+\d{1,3}\s\d{1,3}.*$/,
+      'Phone number must start with a country code and area code (e.g., +855 23 ...)',
     )
     .test(
       'length',
-      'Phone number must be between 9 and 15 digits',
-      (value) => value && value.length >= 9 && value.length <= 15,
+      'Phone number must be between 9 and 15 digits (excluding country code)',
+      (value) => {
+        const numberPart = value && value.replace(/[^0-9]/g, '');
+        return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
+      },
     ),
   gender: yup.string().required('Gender is required'),
   dob: yup
