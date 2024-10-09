@@ -73,15 +73,16 @@ const ChangePasswordForm = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Change Password</DialogTitle>
-      <DialogContent>
-        <Typography variant="body1" sx={{ mb: 2 }}>
+      <DialogTitle>
+        Change Password
+        <Typography variant="body1">
           To ensure the security of your account, we recommend changing your
           password periodically.
         </Typography>
-
+      </DialogTitle>
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {/* CURRENT PASSWORD INPUT */}
-        <Box sx={{ mb: 2 }}>
+        <Box>
           <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
             Current Password
           </Typography>
@@ -116,7 +117,7 @@ const ChangePasswordForm = ({ open, onClose }) => {
         </Box>
 
         {/* NEW PASSWORD INPUT */}
-        <Box sx={{ mb: 2 }}>
+        <Box>
           <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
             New Password
           </Typography>
@@ -149,7 +150,7 @@ const ChangePasswordForm = ({ open, onClose }) => {
         </Box>
 
         {/* CONFIRM PASSWORD INPUT */}
-        <Box sx={{ mb: 2 }}>
+        <Box>
           <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
             Confirm Password
           </Typography>

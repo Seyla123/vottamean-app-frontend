@@ -20,7 +20,7 @@ const MyProfileView = ({
     setOpenModal(null);
   };
 
-  console.log(schoolProfileData)
+  console.log(schoolProfileData);
 
   return (
     <Box
@@ -38,21 +38,30 @@ const MyProfileView = ({
       </Typography>
 
       <Grid container spacing={3}>
-        <ProfileSection profilePhoto={profilePhoto} userData={userData} />
-        <InformationSection
-          title="Personal Information"
-          data={userData}
-          onEdit={() => handleOpenModal('account')}
-          infoType="personal"
-        />
-        {schoolProfileData && (
+        <Grid item xs={12} sm={12} md={6}>
+          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
           <InformationSection
-            title="School Information"
-            data={schoolProfileData}
-            onEdit={() => handleOpenModal('school')}
-            infoType="school"
+            title="Personal Details"
+            data={userData}
+            onEdit={() => handleOpenModal('account')}
+            infoType="personal"
           />
-        )}
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          {schoolProfileData && (
+            <InformationSection
+              title="School Details"
+              data={schoolProfileData}
+              onEdit={() => handleOpenModal('school')}
+              infoType="school"
+            />
+          )}
+        </Grid>
       </Grid>
 
       {/* Modals */}

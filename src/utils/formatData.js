@@ -162,6 +162,7 @@ export const transformUserProfile = (user) => {
   if (!profileInfo) return {};
 
   return {
+    userRole: user.data.role,
     userId: user.data?.id || 'N/A',
     userName: getFullName(profileInfo),
     Age: getAge(profileInfo.dob) || 'Not provided',
@@ -198,6 +199,7 @@ export const getUserProfileData = (user) => {
   const photo = user?.data[profileKey]?.Info?.photo ?? null;
 
   return {
+    
     userProfile,
     schoolProfile,
     photo,

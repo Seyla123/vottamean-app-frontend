@@ -111,7 +111,7 @@ const AccountSettingsPage = () => {
                 variant="scrollable"
                 onChange={handleChange}
                 aria-label="Vertical tabs"
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', pb: 4 }}
               >
                 <Tab
                   label="Profile"

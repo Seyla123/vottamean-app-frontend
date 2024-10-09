@@ -133,16 +133,6 @@ const AccountSettingsPage = () => {
                     justifyContent: 'start',
                   }}
                 />
-                <Tab
-                  label="Account"
-                  value="2"
-                  icon={<Settings size={18} />}
-                  iconPosition="start"
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'start',
-                  }}
-                />
               </TabList>
             </Box>
 
@@ -153,14 +143,6 @@ const AccountSettingsPage = () => {
                 profilePhoto={userData.photo}
                 userData={userData.userProfile}
                 schoolProfileData={schoolProfile}
-              />
-            </TabPanel>
-
-            <TabPanel sx={{ flexGrow: 1 }} value="2">
-              {/* SECURITY VIEW */}
-              <SecurityView
-                title={'Security'}
-                handleDeleteAccount={handleDeleteAccount}
               />
             </TabPanel>
           </TabContext>
