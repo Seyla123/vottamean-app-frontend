@@ -7,7 +7,14 @@ import { Box, Typography, InputAdornment } from '@mui/material';
 import { Calendar } from 'lucide-react';
 import dayjs from 'dayjs';
 
-const DOBPicker = ({ control, errors, name, dob, setDob }) => {
+const DOBPicker = ({ control, errors, name, dob, setDob, defaultValue }) => {
+  // - Convert the defaultValue to a dayjs object if it exists
+  const initialDob = dob
+    ? dayjs(dob)
+    : defaultValue
+      ? dayjs(defaultValue)
+      : null;
+
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}
@@ -20,15 +27,14 @@ const DOBPicker = ({ control, errors, name, dob, setDob }) => {
           <Controller
             name={name}
             control={control}
+            defaultValue={initialDob}
             render={({ field }) => (
               <DatePicker
                 {...field}
-                value={dob}
+                value={initialDob}
                 onChange={(newValue) => {
                   setDob(newValue);
-                  field.onChange(
-                    newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
-                  );
+                  field.onChange(newValue ? newValue.format('YYYY-MM-DD') : '');
                 }}
                 slotProps={{
                   textField: {

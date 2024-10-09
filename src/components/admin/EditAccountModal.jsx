@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import dayjs from 'dayjs';
 
 // MUI Components
 import {
@@ -67,6 +68,8 @@ const EditAccountModal = ({
 
   // - State to store original form values
   const [originalData, setOriginalData] = useState(null);
+
+  const [dob, setDob] = useState(null);
 
   console.log(originalData);
 
@@ -355,91 +358,28 @@ const EditAccountModal = ({
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                {/* DOB INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Date of Birth{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-
-                  <Controller
-                    name="dob"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        type="date"
-                        fullWidth
-                        {...field}
-                        error={!!errors.dob}
-                        helperText={errors.dob?.message}
-                        placeholder="Enter your date of birth"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Calendar size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Box>
+                {/* GENDER INPUT */}
+                <GenderSelect
+                  control={control}
+                  errors={errors}
+                  name="gender"
+                  label="Gender"
+                  defaultValue={originalData?.gender}
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                {/* GENDER INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Gender{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-
-                  <Controller
-                    name="gender"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        select
-                        {...field}
-                        error={!!errors.gender}
-                        helperText={errors.gender?.message}
-                        placeholder="Select your gender"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Users size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
-                      </TextField>
-                    )}
-                  />
-                </Box>
+                {/* DOB INPUT */}
+                <DOBPicker
+                  control={control}
+                  errors={errors}
+                  name="dob"
+                  dob={dob}
+                  setDob={setDob}
+                  defaultValue={
+                    originalData?.dob ? dayjs(originalData.dob) : null
+                  }
+                />
               </Grid>
 
               <Grid item xs={6}></Grid>

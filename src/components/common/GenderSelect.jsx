@@ -12,7 +12,8 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
-const GenderSelect = ({ control, errors, name, label }) => {
+const GenderSelect = ({ control, errors, name, label, defaultValue }) => {
+  // - Get the current selected icon to display
   const getIcon = (selectedGender) => {
     switch (selectedGender) {
       case 'Male':
@@ -28,26 +29,22 @@ const GenderSelect = ({ control, errors, name, label }) => {
 
   return (
     <Box
-      sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
-      }}
+      sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}
     >
       <Typography variant="body2" fontWeight="bold">
         {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
       </Typography>
-
       <Controller
         name={name}
         control={control}
+        defaultValue={defaultValue || ''}
         render={({ field }) => (
           <TextField
             variant="outlined"
             fullWidth
             select
             {...field}
+            value={field.value || defaultValue}
             error={!!errors[name]}
             helperText={errors[name]?.message}
             placeholder="Select your gender"
