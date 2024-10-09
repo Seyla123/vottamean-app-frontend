@@ -300,7 +300,7 @@ function TeacherScheduleClassPage() {
   return (
     <FormComponent
       title="Class Schedule"
-      subTitle={`You have ${classesData.length} classes scheduled`}
+      subTitle={`You have ${classesData.length} upcoming classes scheduled for today`}
     >
       {renderDaySelector()}
       {renderContent()}
