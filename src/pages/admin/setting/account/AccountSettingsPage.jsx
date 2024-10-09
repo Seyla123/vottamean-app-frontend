@@ -53,7 +53,6 @@ const AccountSettingsPage = () => {
   useEffect(() => {
     if (user) {
       console.log(user);
-
       const transformedData = getUserProfileData(user);
       setUserData(transformedData);
       dispatch(updateFormData(transformedData));

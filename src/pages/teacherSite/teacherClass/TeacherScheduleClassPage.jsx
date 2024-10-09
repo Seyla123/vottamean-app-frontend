@@ -85,7 +85,7 @@ const ClassListItem = ({ classData, onClick }) => {
           height: '120px',
           width: '100%',
           transition: 'background-size 0.3s ease-in-out',
-          backgroundSize: '180% auto',
+          backgroundSize: '100% auto',
         }}
       >
         <Box
@@ -121,14 +121,17 @@ const ClassListItem = ({ classData, onClick }) => {
         <IconWrapper sx={{ my: 1 }}>
           <Clock size={16} />
           <Typography variant="body2">
-            {classData.start_time.slice(0, 5)} -{' '}
+            {classData.start_time.slice(0, 5)}
+            {classData.start_time.slice(6, 7) === 'PM' ? 'PM' : 'AM'} -{' '}
             {classData.end_time.slice(0, 5)}
             {classData.start_time.slice(6, 7) === 'PM' ? 'PM' : 'AM'}
           </Typography>
         </IconWrapper>
         <IconWrapper>
           <Users size={16} />
-          <Typography variant="body2">{classData.students} students</Typography>
+          <Typography variant="body2">
+            {classData.students} student {classData.students > 1 ? 's' : ''}
+          </Typography>
         </IconWrapper>
       </Box>
     </StyledPaper>
@@ -152,6 +155,7 @@ function TeacherScheduleClassPage() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
+    console.log(getTeacherClasses)
     if (getTeacherClasses && isSuccess) {
       setClassesData(getTeacherClasses.data || []);
     }

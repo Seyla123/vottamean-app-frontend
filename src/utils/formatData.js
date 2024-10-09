@@ -252,7 +252,7 @@ export const getUserProfileUpdateData = (user) => {
 // Transform School Data for Updates
 export const getSchoolData = (user) => {
   const profileKey = getProfileKey(user.data.role);
-  const profileSchools = user?.data[profileKey]?.School?.[0];
+  const profileSchools = user?.data[profileKey]?.School;
 
   if (!profileSchools) return {};
 

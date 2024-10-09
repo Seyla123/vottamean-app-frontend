@@ -23,7 +23,7 @@ import {
 } from '../../../services/userApi';
 
 // User Profile Data formatting
-import { getUserProfileData } from '../../../utils/formatData';
+import { getUserProfileData, getSchoolData } from '../../../utils/formatData';
 import { shadow } from '../../../styles/global';
 
 const AccountSettingsPage = () => {
@@ -39,10 +39,14 @@ const AccountSettingsPage = () => {
   // Local state for transformed data
   const [userData, setUserData] = useState({
     userProfile: {},
-    schoolProfile: {},
-    photo: '',
   });
 
+  const [schoolProfile, setSchoolProfile] = useState({
+    schoolId: '',
+    schoolName: '',
+    schoolAddress: '',
+    schoolPhoneNumber: '',
+  });
   // Local state for tab
   const [value, setValue] = useState('1');
 
@@ -51,17 +55,21 @@ const AccountSettingsPage = () => {
 
   // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
-    console.log(user);
     if (user) {
       const transformedData = getUserProfileData(user);
-      console.log('this data :', user);
-
+      const schoolData = getSchoolData(user);
       setUserData(transformedData);
+      setSchoolProfile({
+        schoolId: schoolData.school_id,
+        schoolName: schoolData.school_name,
+        schoolAddress: schoolData.school_address,
+        schoolPhoneNumber: schoolData.school_phone_number,
+      });
       dispatch(updateFormData(transformedData));
-      console.log(userData.userProfile);
     }
   }, [user, dispatch]);
 
+  console.log(schoolProfile);
   // Handle tab switch
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -87,7 +95,6 @@ const AccountSettingsPage = () => {
   if (error) {
     return <Typography>Error loading user data</Typography>;
   }
-
   return (
     <FormComponent
       title={'Account Settings'}
@@ -144,6 +151,7 @@ const AccountSettingsPage = () => {
                 title={'Profile'}
                 profilePhoto={userData.photo}
                 userData={userData.userProfile}
+                schoolProfileData={schoolProfile}
               />
             </TabPanel>
 
