@@ -1,3 +1,10 @@
+import { Stack, Box, Typography } from '@mui/material';
+import ImagePreviewCarousel from './ImagePreviewCarousel';
+import LogoWaveTrack from '../../assets/images/Logo.svg';
+import image1 from '../../assets/images/auth-illustrator-img-1.svg';
+import image2 from '../../assets/images/auth-illustrator-img-2.svg';
+import image3 from '../../assets/images/auth-illustrator-img-3.png';
+
 /**
  * AuthContainerCard component
  *
@@ -12,15 +19,6 @@
  *                                      the authentication form.
  * @returns JSX.Element
  */
-
-import { Stack, Box, Typography } from '@mui/material';
-
-import ImagePreviewCarousel from './ImagePreviewCarousel';
-
-import LogoWaveTrack from '../../assets/images/Logo.svg';
-import image1 from '../../assets/images/auth-illustrator-img-1.svg';
-import image2 from '../../assets/images/auth-illustrator-img-2.svg';
-import image3 from '../../assets/images/auth-illustrator-img-3.png';
 
 function AuthContainerCard({ sideCard, children }) {
   // Determine the flex direction based on the sideCard prop

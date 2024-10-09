@@ -165,7 +165,6 @@ export const transformUserProfile = (user) => {
     userRole: user.data.role,
     userId: user.data?.id || 'N/A',
     userName: getFullName(profileInfo),
-    Age: getAge(profileInfo.dob) || 'Not provided',
     userGender: profileInfo.gender || 'Not specified',
     userDOB: formatDate(profileInfo.dob) || 'Not provided',
     userPhoneNumber:
@@ -199,14 +198,13 @@ export const getUserProfileData = (user) => {
   const photo = user?.data[profileKey]?.Info?.photo ?? null;
 
   return {
-    
     userProfile,
     schoolProfile,
     photo,
   };
 };
 
-// Combined User and School Profile Data
+// Formatted user data for the layout component
 export const getUserProfileDataLayout = (user) => {
   if (!user || !user.data) {
     return {
@@ -220,12 +218,8 @@ export const getUserProfileDataLayout = (user) => {
   const profileInfo = user.data[profileKey]?.Info;
   const photo = profileInfo?.photo ?? '';
 
-  const firstName = profileInfo?.first_name || '';
-  const lastName = profileInfo?.last_name || '';
-  const userName = `${firstName} ${lastName}`.trim() || 'Username';
-
   return {
-    username: userName,
+    username: getFullName(profileInfo),
     email: user.data.email || 'Not provided',
     photo,
   };
@@ -269,11 +263,12 @@ export const getSchoolData = (user) => {
 
 // Function for Formatted Student Data
 export function studentsData(student) {
+  const profileInfo = student?.Info;
+
   return {
     id: student.student_id,
-    name: `${student.Info.first_name || 'N/A'} ${student.Info.last_name || 'N/A'}`,
+    name: getFullName(profileInfo),
     class: student.Class.class_name || 'N/A',
-    age: getAge(student.info?.dob) || 'N/A',
     gender: student.Info.gender || 'N/A',
     'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
     phone: student.Info.phone_number || 'N/A',

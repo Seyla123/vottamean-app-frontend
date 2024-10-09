@@ -1,6 +1,5 @@
 // - React and third-party libraries
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,14 +17,24 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import { setSnackbar } from '../../../../store/slices/uiSlice';
-import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
-import { useChangePasswordMutation } from '../../../../services/authApi';
+
+// - Lucid Icons
 import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
+
+// - Custom Components
 import StyledButton from '../../../../components/common/StyledMuiButton';
+import PasswordInput from '../../../../components/auth/PasswordInput';
+
+// - Redux Hooks and APIs
+import { setSnackbar } from '../../../../store/slices/uiSlice';
+import { useChangePasswordMutation } from '../../../../services/authApi';
+
+// - Validator
+import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
 
 const ChangePasswordForm = ({ open, onClose }) => {
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -33,7 +42,7 @@ const ChangePasswordForm = ({ open, onClose }) => {
   };
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -82,107 +91,41 @@ const ChangePasswordForm = ({ open, onClose }) => {
       </DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {/* CURRENT PASSWORD INPUT */}
-        <Box>
-          <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
-            Current Password
-          </Typography>
-          <TextField
-            id="currentPassword"
-            variant="outlined"
-            fullWidth
-            type={isShowPassword ? 'text' : 'password'}
-            placeholder="Enter your current password."
-            {...register('currentPassword')}
-            error={!!errors.currentPassword}
-            helperText={
-              errors.currentPassword ? errors.currentPassword.message : ''
-            }
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <KeyRound size={20} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <IconButton onClick={togglePasswordVisibility} edge="end">
-                  {isShowPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <EyeIcon size={20} />
-                  )}
-                </IconButton>
-              ),
-            }}
-          />
-        </Box>
+        <PasswordInput
+          name="currentPassword"
+          label="Current Password"
+          control={control}
+          showPassword={showPassword}
+          togglePasswordVisibility={() => setShowPassword(!showPassword)}
+          error={errors.currentPassword}
+          placeholder="Enter your current password."
+          icon={KeyRound}
+        />
 
         {/* NEW PASSWORD INPUT */}
-        <Box>
-          <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
-            New Password
-          </Typography>
-          <TextField
-            id="newPassword"
-            variant="outlined"
-            fullWidth
-            type={isShowPassword ? 'text' : 'password'}
-            placeholder="Enter your new password."
-            {...register('newPassword')}
-            error={!!errors.newPassword}
-            helperText={errors.newPassword ? errors.newPassword.message : ''}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <KeyRound size={20} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <IconButton onClick={togglePasswordVisibility} edge="end">
-                  {isShowPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <EyeIcon size={20} />
-                  )}
-                </IconButton>
-              ),
-            }}
-          />
-        </Box>
+        <PasswordInput
+          name="newPassword"
+          label="New Password"
+          control={control}
+          showPassword={showPassword}
+          togglePasswordVisibility={() => setShowPassword(!showPassword)}
+          error={errors.newPassword}
+          placeholder="Enter your new password."
+          icon={KeyRound}
+        />
 
         {/* CONFIRM PASSWORD INPUT */}
-        <Box>
-          <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
-            Confirm Password
-          </Typography>
-          <TextField
-            id="newPasswordConfirm"
-            variant="outlined"
-            fullWidth
-            type={isShowPassword ? 'text' : 'password'}
-            placeholder="Confirm your new password."
-            {...register('newPasswordConfirm')}
-            error={!!errors.newPasswordConfirm}
-            helperText={
-              errors.newPasswordConfirm ? errors.newPasswordConfirm.message : ''
-            }
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <KeyRound size={20} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <IconButton onClick={togglePasswordVisibility} edge="end">
-                  {isShowPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <EyeIcon size={20} />
-                  )}
-                </IconButton>
-              ),
-            }}
-          />
-        </Box>
+
+        <PasswordInput
+          name="newPasswordConfirm"
+          label="New Password"
+          control={control}
+          showPassword={showPassword}
+          togglePasswordVisibility={() => setShowPassword(!showPassword)}
+          error={errors.newPasswordConfirm}
+          placeholder="Confirm your new password."
+          icon={KeyRound}
+        />
 
         {/* REQUIREMENT */}
         <Box>

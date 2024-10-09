@@ -17,6 +17,7 @@ const PasswordInput = ({
   togglePasswordVisibility,
   error,
   placeholder,
+  icon: Icon = LockKeyholeOpen,
   showError = true,
 }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -41,7 +42,7 @@ const PasswordInput = ({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <LockKeyholeOpen size={20} />
+                <Icon size={20} />
               </InputAdornment>
             ),
             endAdornment: (
