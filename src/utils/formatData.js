@@ -204,6 +204,31 @@ export const getUserProfileData = (user) => {
   };
 };
 
+// Combined User and School Profile Data
+export const getUserProfileDataLayout = (user) => {
+  if (!user || !user.data) {
+    return {
+      username: 'Username',
+      email: 'Not provided',
+      photo: '',
+    };
+  }
+
+  const profileKey = getProfileKey(user.data.role);
+  const profileInfo = user.data[profileKey]?.Info;
+  const photo = profileInfo?.photo ?? '';
+
+  const firstName = profileInfo?.first_name || '';
+  const lastName = profileInfo?.last_name || '';
+  const userName = `${firstName} ${lastName}`.trim() || 'Username';
+
+  return {
+    username: userName,
+    email: user.data.email || 'Not provided',
+    photo,
+  };
+};
+
 // Combined User Profile Data for Updates (without formatted DOB)
 export const getUserProfileUpdateData = (user) => {
   const profileKey = getProfileKey(user.data.role);
@@ -328,5 +353,3 @@ export const formatTeacherFormData = (teacherData) => {
   }
   return null;
 };
-
-

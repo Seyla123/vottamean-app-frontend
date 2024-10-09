@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 import { useLogoutMutation } from '../../services/authApi';
+import { useGetUserProfileQuery } from '../../services/userApi';
 import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
@@ -13,67 +14,43 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import SnackbarComponent from '../common/SnackbarComponent';
 
+// User Profile Data formatting
+import { getUserProfileDataLayout } from '../../utils/formatData';
+
 const Layout = ({ teacherSite, adminSite }) => {
   const [userData, setUserData] = useState({
-    email: '',
-    gender: '',
+    username: 'Username',
+    email: 'Useremail001@gmail.com',
     photo: '',
-    firstName: '',
-    lastName: '',
   });
 
-  // 1. Initialize navigation and location hooks for routing
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
-  // 2. Fetch the current user from the Redux store to get user details
   const { user } = useSelector((state) => state.auth);
 
+  const { data: userDataProfile, isSuccess, error } = useGetUserProfileQuery();
+  console.log('User Data in the Layout :', userDataProfile);
+
   useEffect(() => {
-    if (user && user.email) {
-      const userEmail = user.email;
-
-      if (user.role === 'admin' && user.adminProfile && user.adminProfile.Info) {
-        const newUserData = user.adminProfile.Info;
-        setUserData({
-          email: userEmail,
-          gender: newUserData.gender || '',
-          photo: newUserData.photo || '',
-          firstName: newUserData.first_name || '',
-          lastName: newUserData.last_name || '',
-        });
-      } else if (user.role === 'teacher' && user.teacherProfile && user.teacherProfile.Info) {
-        const newUserData = user.teacherProfile.Info;
-        setUserData({
-          email: userEmail,
-          gender: newUserData.gender || '',
-          photo: newUserData.photo || '',
-          firstName: newUserData.first_name || '',
-          lastName: newUserData.last_name || '',
-        });
-      }
+    if (isSuccess && userDataProfile) {
+      const transformedData = getUserProfileDataLayout(userDataProfile);
+      console.log('Transformed Data in the Layout :', transformedData);
+      setUserData(transformedData);
     }
-  }, [user]);
+  }, [isSuccess, userDataProfile]);
 
-  // 3. Initialize the logout mutation using the custom API hook
   const [logout] = useLogoutMutation();
 
-  // 4. Define the function to handle the logout process
   const handleLogout = async () => {
     try {
-      // 4.1. Call the API to log the user out and unwrap the response to handle success or errors
       await logout().unwrap();
-
-      // 4.2. Dispatch a logout action to clear the authentication state in Redux
       dispatch(logoutAction());
     } catch (error) {
-      // Handle potential errors during logout
       console.error('Failed to logout:', error);
     }
   };
-
-  // 5. Set up the Material UI theme for responsive design and custom breakpoints
 
   const theme = createTheme({
     cssVariables: {
@@ -93,7 +70,6 @@ const Layout = ({ teacherSite, adminSite }) => {
         xl: 1536,
       },
     },
-
     components: {
       MuiCssBaseline: {
         styleOverrides: {
@@ -104,11 +80,6 @@ const Layout = ({ teacherSite, adminSite }) => {
       },
     },
   });
-
-  // Combines first and last name from the user object, or falls back to 'Username'
-  const username = useMemo(() => {
-    return `${userData.firstName} ${userData.lastName}`.trim() || 'Username';
-  }, [userData.firstName, userData.lastName]);
 
   const getAvatarUrl = useMemo(() => {
     const getAvatarStyle = (gender) => {
@@ -124,11 +95,10 @@ const Layout = ({ teacherSite, adminSite }) => {
 
     const avatarStyle = getAvatarStyle(userData.gender);
     const randomParam = Math.random().toString(36).substring(7);
-    return `https://api.dicebear.com/6.x/${avatarStyle}/svg?seed=${encodeURIComponent(username)}&r=${randomParam}`;
-  }, [username, userData.gender]);
+    return `https://api.dicebear.com/6.x/${avatarStyle}/svg?seed=${encodeURIComponent(userData.username)}&r=${randomParam}`;
+  }, [userData.username, userData.gender]);
 
-  // 6. Use React's useMemo to memoize the router details, optimizing performance by preventing unnecessary recalculations
-  const router = React.useMemo(() => {
+  const router = useMemo(() => {
     return {
       pathname: location.pathname,
       searchParams: new URLSearchParams(location.search),
@@ -136,7 +106,6 @@ const Layout = ({ teacherSite, adminSite }) => {
     };
   }, [location, navigate]);
 
-  // 7. Render the AppProvider component, which provides context for layout, navigation, authentication, and theming
   return (
     <AppProvider
       branding={{
@@ -153,29 +122,22 @@ const Layout = ({ teacherSite, adminSite }) => {
           />
         ),
       }}
-      // 8. Set navigation based on the site type (teacher/admin) using conditional logic
       navigation={teacherSite ? teacherSiteNavigation : navigation}
-      // 9. Pass router details for navigation functionality
       router={router}
-      // 10. Apply the customized theme
       theme={theme}
-      // 11. Set the session object, which includes current user details like name, email, and image
       session={{
         user: {
-          name: username,
-          email: userData.email || 'Useremail001@gmail.com',
+          name: userData.username,
+          email: userData.email,
           image: userData.photo || getAvatarUrl,
         },
       }}
-      // 12. Provide authentication methods: signIn (placeholder) and signOut (real logout functionality)
       authentication={{
         signIn: () => {},
         signOut: handleLogout,
       }}
     >
       {teacherSite || adminSite ? (
-        // 13. Conditional rendering of the dashboard layout for teacher or admin sites
-
         <Box paddingTop={2}>
           <DashboardLayout>
             <Container maxWidth="xl" sx={{ paddingBottom: 10 }}>
@@ -184,7 +146,6 @@ const Layout = ({ teacherSite, adminSite }) => {
           </DashboardLayout>
         </Box>
       ) : (
-        // 14. Render the Outlet for any other routes or layouts
         <Outlet />
       )}
       <SnackbarComponent />
