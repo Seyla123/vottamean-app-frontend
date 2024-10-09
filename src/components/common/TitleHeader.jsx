@@ -18,7 +18,7 @@
 import { Stack, Typography } from '@mui/material';
 
 const TitleHeader = ({ title, subTitle }) => (
-  <Stack direction="column" gap={1} pt={1}>
+  <Stack direction="column" gap={1} pt={4} pb={2}>
     <Typography
       variant="h4"
       m={0}
@@ -29,7 +29,7 @@ const TitleHeader = ({ title, subTitle }) => (
     >
       {title}
     </Typography>
-    <Typography variant="subtitle1" color="text.secondary">
+    <Typography variant="body1" color="text.secondary">
       {subTitle}
     </Typography>
   </Stack>
