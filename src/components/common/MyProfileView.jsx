@@ -40,7 +40,19 @@ const MyProfileView = ({
           <ProfileSection profilePhoto={profilePhoto} userData={userData} />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+          <Box
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              height: 1,
+              borderRadius: 2,
+              p: 3,
+            }}
+          >
+            Payment Methods
+            ACELEDA
+            ABA
+          </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           <InformationSection

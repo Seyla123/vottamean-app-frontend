@@ -99,8 +99,8 @@ const TeacherDashboardPage = () => {
                 'Expand your reach and push contacts closer to purchase with multichannel campaigns: email, WhatsApp, SMS, Web Push...'
               }
               icon={checkListIcon}
-              href={'/teacher/classes'}
-              buttonText={'View Class'}
+              href={'/teacher/schedule'}
+              buttonText={'View Schedule'}
             />
             <ShortcutCard
               title={

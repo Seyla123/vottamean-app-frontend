@@ -17,7 +17,7 @@ const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
           />
         </Box>
         {/* Title and Description */}
-        <
+        <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -33,7 +33,7 @@ const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
               {buttonText}
             </StyledButton>
           </Link>
-        </>
+        </Box>
       </Box>
     </Paper>
   );
