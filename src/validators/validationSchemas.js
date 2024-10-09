@@ -202,8 +202,6 @@ export const createSessionSchema = Yup.string().required(
 export const guardianSchema = Yup.string().required('Relationship is required');
 
 
-
-
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
   const schemaFields = {

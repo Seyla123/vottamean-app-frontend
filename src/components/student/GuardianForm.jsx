@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Material UI components
-import {
-  Box,
-  Button,
-  Typography,
-  TextField,
-  Stack,
-  IconButton,
-  InputAdornment,
-} from '@mui/material';
-
-// Icons from Lucide
-import { Eye, EyeOff } from 'lucide-react';
+import { Box, Button, Typography, TextField, Stack } from '@mui/material';
 
 // Custom components
 import SubHeader from '../teacher/SubHeader';
+import PhoneInputField from '../common/PhoneInputField';
 import { GuardianValidator } from '../../validators/validationSchemas';
 
-const GuardianForm = ({ handleBack, handleStudentSubmit, studentData }) => {
+// - Redux Slices
+import { updateFormData } from '../../store/slices/studentSlice';
+
+const GuardianForm = ({ handleBack, handleStudentSubmit }) => {
+  // - Dispatch actions
+  const dispatch = useDispatch();
+  const studentData = useSelector((state) => state.studentForm);
+
   // yup validation from account information schema
   const {
     control,
@@ -37,131 +35,80 @@ const GuardianForm = ({ handleBack, handleStudentSubmit, studentData }) => {
     },
   });
 
-  const onSubmit = (data) => {
-    // Combine the account data with the teacher information tab
-    const combinedData = {
-      ...studentData,
-      ...data,
-    };
-    console.log(combinedData);
-    handleStudentSubmit(combinedData);
+  useEffect(() => {
+    if (studentData) {
+      setValue('guardian_first_name', studentData.guardian_first_name || '');
+      setValue('guardian_last_name', studentData.guardian_last_name || '');
+      setValue('guardian_email', studentData.guardian_email || '');
+      setValue(
+        'guardian_relationship',
+        studentData.guardian_relationship || '',
+      );
+      setValue(
+        'guardian_phone_number',
+        studentData.guardian_phone_number || '',
+      );
+    }
+  }, [studentData, setValue]);
 
+  const onSubmit = (data) => {
+    const combinedData = { ...studentData, ...data };
+    // Dispatch the combined data
+    dispatch(updateFormData(combinedData));
+    handleStudentSubmit(combinedData);
   };
-  console.log(studentData);
 
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
           <SubHeader title={'Guardian Information'} />
-          {/* Email */}
+
+          {/* NAME INPUT */}
           <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-            {/* First Name */}
-            <Box sx={{ flex: 1, width: '100%' }}>
-              <Box sx={textFieldGap}>
-                <Typography variant="body2" fontWeight="bold">
-                  First Name {''}
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <Controller
-                  name="guardian_first_name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="text"
-                      placeholder="First Name"
-                      error={!!errors.guardian_first_name}
-                      helperText={errors.guardian_first_name?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Box>
-            </Box>
-            {/* Last Name */}
-            <Box sx={{ flex: 1, width: '100%' }}>
-              <Box sx={textFieldGap}>
-                <Typography variant="body2" fontWeight="bold">
-                  Last Name {''}
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <Controller
-                  name="guardian_last_name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="text"
-                      placeholder="Last Name"
-                      error={!!errors.guardian_last_name}
-                      helperText={errors.guardian_last_name?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Box>
-            </Box>
-          </Box>
-          {/* Relationship */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Relationship{''}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="guardian_relationship"
+            <InputField
+              name="guardian_first_name"
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Relationship"
-                  error={!!errors.guardian_relationship}
-                  helperText={errors.guardian_relationship?.message}
-                />
-              )}
+              label="Gaurdian First Name"
+              placeholder="Gaurdian First Name"
+              errors={errors}
+            />
+
+            <InputField
+              name="guardian_last_name"
+              control={control}
+              label="Gaurdian Last Name"
+              placeholder="Gaurdian Last Name"
+              errors={errors}
             />
           </Box>
 
           {/* Relationship */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Email{''}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="guardian_email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="email"
-                  error={!!errors.guardian_email}
-                  helperText={errors.guardian_email?.message}
-                  fullWidth
-                />
-              )}
-            />
-          </Box>
+          <InputField
+            name="guardian_relationship"
+            control={control}
+            label="Relationship"
+            placeholder="Relationship"
+            errors={errors}
+          />
+
+          {/* EMAIL INPUT */}
+          <InputField
+            name="guardian_email"
+            control={control}
+            label="Email"
+            placeholder="Enter guardian email"
+            errors={errors}
+            icon={Mail}
+          />
+
           {/* Address */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Contact Number{' '}
-            </Typography>
-            <Controller
-              name="guardian_phone_number"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Phone Number..."
-                  type="text"
-                  error={!!errors.guardian_phone_number}
-                  helperText={errors.guardian_phone_number?.message}
-                />
-              )}
-            />
-          </Box>
+          <PhoneInputField
+            name="guardian_phone_number"
+            control={control}
+            label="Contact Number"
+            errors={errors}
+          />
 
           {/* Buttons */}
           <Stack

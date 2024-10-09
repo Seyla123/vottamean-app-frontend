@@ -4,33 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 // Mui Component
-import dayjs from 'dayjs';
-import {
-  Box,
-  Tabs,
-  Tab,
-  Typography,
-  Card,
-  Grid,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Tabs, Tab, Card, useMediaQuery, useTheme } from '@mui/material';
 
 // Icon from lucide
-import {
-  User,
-  KeyRound,
-  CalendarRange,
-  UsersRound,
-  FolderDown,
-  Settings,
-} from 'lucide-react';
+import { User, KeyRound } from 'lucide-react';
 
-// Redux Slice
-import { setSnackbar } from '../../store/slices/uiSlice';
-
-// Sign up Teacher Api
+// Redux Hooks and APIs
 import { useCreateStudentMutation } from '../../services/studentApi';
+import { updateFormData } from '../../store/slices/studentSlice';
 
 // Custom Components
 import StudentForm from './StudentForm';
@@ -38,17 +19,22 @@ import GuardianForm from './GuardianForm';
 import LoadingCircle from '../loading/LoadingCircle';
 import { shadow } from '../../styles/global';
 
+// - UI Snackbar Slice
+import { setSnackbar } from '../../store/slices/uiSlice';
+
 function FormInfoStudent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
 
-  // Responsive in mobile mode
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+  // - Local States
   const [value, setValue] = useState('1');
   const [isStudentInvalid, setIsStudentInvalid] = useState(false);
   const [studentData, setStudentData] = useState({});
+
+  // Responsive in mobile mode
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [formError, setFormError] = useState('');
 
   // Sign up Teacher Api
@@ -89,29 +75,15 @@ function FormInfoStudent() {
 
   // Check dob validation in acc info before submitting
   const handleStudentSubmit = async (data) => {
-    const today = dayjs();
-    const dob = dayjs(data.dob);
-    if (!dob.isValid() || dob.isAfter(today)) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Date of birth cannot be in the future',
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
-      return;
-    }
-
     // set default values for the form
     const payload = {
       address: data.address || '',
-      dob: dob.format('YYYY-MM-DD'), // format the dob
-      first_name: data.firstName || '',
-      last_name: data.lastName || '',
+      dob: data.dob,
+      first_name: data.first_name || '',
+      last_name: data.last_name || '',
       class_id: data.class_id || '',
       gender: data.gender || '',
-      phone_number: data.phoneNumber || '',
+      phone_number: data.phone_number || '',
       guardian_first_name: data.guardian_first_name || '',
       guardian_last_name: data.guardian_last_name || '',
       guardian_email: data.guardian_email || '',
@@ -129,6 +101,7 @@ function FormInfoStudent() {
     }
   };
 
+  // Handle continue to account info after validating correct
   // Handle continue to account info after validating correct
   const handleNextClick = (isValid, data) => {
     if (isValid) {
@@ -192,12 +165,14 @@ function FormInfoStudent() {
             overflowY: 'auto',
           }}
         >
+          {/* Student Tab */}
           {value === '1' && (
             <StudentForm
               handleNextClick={handleNextClick}
               defaultValues={studentData}
             />
           )}
+          {/* Guardian Tab */}
           {value === '2' && (
             <GuardianForm
               handleBack={handleBack}
