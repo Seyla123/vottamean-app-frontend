@@ -25,6 +25,7 @@ import {
 // User Profile Data formatting
 import { getUserProfileData, getSchoolData } from '../../../utils/formatData';
 import { shadow } from '../../../styles/global';
+import LoadingPage from '../../LoadingPage';
 
 const AccountSettingsPage = () => {
   // - Initialize dispatch and navigate hooks
@@ -89,7 +90,7 @@ const AccountSettingsPage = () => {
   };
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return <LoadingPage />;
   }
 
   if (error) {
@@ -104,7 +105,7 @@ const AccountSettingsPage = () => {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: 'column',
             height: '100%',
           }}
         >
@@ -116,11 +117,11 @@ const AccountSettingsPage = () => {
               }}
             >
               <TabList
-                orientation={isMobile ? 'horizontal' : 'vertical'}
+                orientation={'horizontal'}
                 variant="scrollable"
                 onChange={handleChange}
                 aria-label="Vertical tabs"
-                sx={{ width: '160px' }}
+                sx={{ width: '100%' }}
               >
                 <Tab
                   label="Profile"
