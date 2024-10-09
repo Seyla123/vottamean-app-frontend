@@ -140,17 +140,17 @@ const routesConfig = [
           },
         ],
       },
-      {
-        path: 'classes',
-        element: <TeacherScheduleClassPage />,
-      },
+      // {
+      //   path: 'classes',
+      //   element: <TeacherScheduleClassPage />,
+      // },
       {
         path: 'mark-attendance/:id',
         element: <TeacherAttendanceListPage />,
       },
       {
         path: 'schedule',
-        element: <TeacherSchedulePage />,
+        element: <TeacherScheduleClassPage />,
       },
       {
         path: 'settings',
