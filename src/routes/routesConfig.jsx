@@ -63,7 +63,7 @@ import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 import TeacherAttendanceListPage from '../pages/teacherSite/teacherClass/TeacherAttendanceListPage';
 import TeacherScheduleClassPage from '../pages/teacherSite/teacherClass/TeacherScheduleClassPage';
 import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAccountProfilePage';
-import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage';
+import TeacherSchedulePage from '../pages/teacherSite/schedule/TeacherSchedulePage';
 
 // Layout
 import Layout from '../components/layout/Layout';
@@ -140,17 +140,17 @@ const routesConfig = [
           },
         ],
       },
-      {
-        path: 'classes',
-        element: <TeacherScheduleClassPage />,
-      },
+      // {
+      //   path: 'classes',
+      //   element: <TeacherScheduleClassPage />,
+      // },
       {
         path: 'mark-attendance/:id',
         element: <TeacherAttendanceListPage />,
       },
       {
-        path: 'sessions',
-        element: <TeacherSessionPage />,
+        path: 'schedule',
+        element: <TeacherScheduleClassPage />,
       },
       {
         path: 'settings',
@@ -309,10 +309,10 @@ const routesConfig = [
                 path: '',
                 element: <AccountSettingsPage />,
               },
-              {
-                path: 'change-password',
-                element: <ChangePasswordForm />,
-              },
+              // {
+              //   path: 'change-password',
+              //   element: <ChangePasswordForm />,
+              // },
               {
                 path: 'update-me',
                 element: <UserUpdatePage />,

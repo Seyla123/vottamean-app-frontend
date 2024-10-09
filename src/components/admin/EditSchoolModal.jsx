@@ -28,6 +28,10 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  DialogTitle,
+  DialogContent,
+  Dialog,
+  DialogActions,
 } from '@mui/material';
 
 // - Lucid Icons
@@ -148,32 +152,16 @@ const EditSchoolModal = ({ open, onClose }) => {
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          maxWidth: '800px',
-          width: '100%',
-          transform: 'translate(-50%, -50%)',
-          maxHeight: { xs: '100%', sm: '100%' },
-          overflowY: 'auto',
-          bgcolor: 'background.paper',
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
-        {/* HEADER */}
-        <Typography
-          variant="h5"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
-          mb={4}
-        >
-          Edit School
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        Edit School Details
+        <Typography variant="body1">
+          Please update the necessary fields to modify the school’s details.
+          Ensure all required information is filled correctly before saving.
         </Typography>
+      </DialogTitle>
+
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2 }}>
             <Grid item xs={12} sm={6}>
@@ -211,32 +199,20 @@ const EditSchoolModal = ({ open, onClose }) => {
                 required={false}
               />
             </Grid>
-
-            <Grid item xs={6}></Grid>
-            <Grid item xs={6}>
-              {/* BUTTONS */}
-              <Box
-                component={'div'}
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  gap: 2,
-                }}
-              >
-                {/* CANCEL BUTTON */}
-                <StyledButton variant="outlined" fullWidth onClick={onClose}>
-                  Cancel
-                </StyledButton>
-                {/* SAVE CHANGES BUTTON */}
-                <StyledButton type="submit" variant="contained" fullWidth>
-                  {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                </StyledButton>
-              </Box>
-            </Grid>
           </Grid>
         </form>
-      </Box>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        {/* CANCEL BUTTON */}
+        <StyledButton variant="outlined" onClick={onClose}>
+          Cancel
+        </StyledButton>
+        {/* SAVE CHANGES BUTTON */}
+        <StyledButton type="submit" variant="contained">
+          {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+        </StyledButton>
+      </DialogActions>
+    </Dialog>
   );
 };
 

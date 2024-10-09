@@ -58,14 +58,14 @@ function TeacherSessionPage() {
     return (
       <EmptyList
         image={emptyImage}
-        title="No sessions found"
-        description="It looks like your sessions list is empty. Add some session to get started!"
+        title="No Schedule found"
+        description="It looks like your schedule list is empty. Add some session to get started!"
       />
     );
   }
   return (
     <FormComponent
-      title="Teacher Session"
+      title="Teacher schedule"
       subTitle={`These are ${rows.length} classes`}
     >
       <StaticTable
