@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import dayjs from 'dayjs';
 
 // Material UI components
 import { MenuItem, Box, Avatar, Typography, Select } from '@mui/material';
-import dayjs from 'dayjs';
 import { UserRoundPlus } from 'lucide-react';
 
 // Custom Components
@@ -25,16 +25,11 @@ import { updateFormData } from '../../store/slices/studentSlice';
 import { StudentValidator } from '../../validators/validationSchemas';
 
 const StudentForm = ({ handleNextClick, handleBack }) => {
-  // Dispatch actions
   const dispatch = useDispatch();
-  const studentData = useSelector((state) => state.studentForm || {});
+  const studentData = useSelector((state) => state.studentForm) || {};
+  const { data: classData } = useGetClassesDataQuery();
 
-  const [dob, setDob] = useState(
-    studentData.dob ? dayjs(studentData.dob) : null,
-  );
-  const [rows, setRows] = useState([]);
-
-  // Define form methods and validation
+  // Use react-hook-form to manage all form state, including DOB
   const {
     control,
     handleSubmit,
@@ -49,42 +44,45 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
       gender: studentData.gender || '',
       phone_number: studentData.phone_number || '',
       address: studentData.address || '',
-      dob: studentData.dob || null,
+      dob: studentData.dob ? dayjs(studentData.dob) : null,
     },
   });
 
+  const [dob, setDob] = useState(
+    studentData.dob ? dayjs(studentData.dob) : null,
+  );
+
+  // Load class data for the class dropdown
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    if (classData && Array.isArray(classData.data)) {
+      setRows(
+        classData.data.map((classItem) => ({
+          value: classItem.class_id,
+          label: classItem.class_name,
+        })),
+      );
+    }
+  }, [classData]);
+
   useEffect(() => {
     if (studentData) {
-      setValue('first_name', studentData.first_name || '');
-      setValue('last_name', studentData.last_name || '');
-      setValue('class_id', studentData.class_id || '');
-      setValue('gender', studentData.gender || '');
-      setValue('phone_number', studentData.phone_number || '');
-      setValue('address', studentData.address || '');
+      setValue('first_name', studentData.first_name);
+      setValue('last_name', studentData.last_name);
+      setValue('gender', studentData.gender);
       setDob(studentData.dob ? dayjs(studentData.dob) : null);
     }
   }, [studentData, setValue]);
 
-  // Redux Class API
-  const { data: classData } = useGetClassesDataQuery();
-
-  useEffect(() => {
-    if (classData && Array.isArray(classData.data)) {
-      const classes = classData.data.map((classItem) => ({
-        value: classItem.class_id,
-        label: classItem.class_name,
-      }));
-      setRows(classes);
-    }
-  }, [classData]);
-
   // Handle form submission
   const onSubmit = (data) => {
-    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
-    const updatedData = { ...data, dob: formattedDob };
-
-    dispatch(updateFormData(updatedData));
-    handleNextClick(true, updatedData);
+    const formattedData = {
+      ...data,
+      dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : '',
+    };
+    dispatch(updateFormData(formattedData));
+    handleNextClick(true, formattedData);
   };
 
   return (
@@ -94,6 +92,8 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
           <Avatar sx={imgStyle} alt="profile picture" src="r" />
         </Box>
         <SubHeader title={'Student Information'} />
+
+        {/* Input Fields */}
         <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
           <InputField
             name="first_name"
@@ -103,7 +103,6 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
             errors={errors}
             icon={UserRoundPlus}
           />
-
           <InputField
             name="last_name"
             control={control}
@@ -114,8 +113,9 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
           />
         </Box>
 
-        {/* Gender */}
+        {/* Gender and Date of Birth */}
         <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+          {/* Gender */}
           <GenderSelect
             control={control}
             errors={errors}
@@ -123,7 +123,7 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
             label="Gender"
             defaultValue={studentData.gender || ''}
           />
-          {/* Date of Birth */}
+          {/* DOBPicker */}
           <DOBPicker
             control={control}
             errors={errors}
@@ -133,7 +133,7 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
           />
         </Box>
 
-        {/* Class */}
+        {/* Class Select */}
         <Box sx={{ ...textFieldGap, width: '100%' }}>
           <Typography variant="body2" fontWeight="bold">
             Class <span style={{ color: 'red' }}>*</span>
@@ -141,16 +141,8 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
           <Controller
             name="class_id"
             control={control}
-            defaultValue={studentData.class_id || ''}
             render={({ field }) => (
-              <Select
-                {...field}
-                value={field.value || ''}
-                onChange={(e) => {
-                  field.onChange(e);
-                }}
-                error={!!errors.class_id}
-              >
+              <Select {...field} value={field.value || ''}>
                 {rows.length > 0 ? (
                   rows.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
@@ -167,7 +159,7 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
           />
         </Box>
 
-        {/* Phone Number */}
+        {/* Phone Number and Address */}
         <Box sx={{ ...textFieldGap, width: '100%' }}>
           <PhoneInputField
             name="phone_number"
@@ -175,21 +167,18 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
             label="Contact Number"
             errors={errors}
           />
+          <InputField
+            name="address"
+            control={control}
+            label="Street Address"
+            placeholder="Phnom Penh, Street 210, ..."
+            errors={errors}
+            multiline
+            minRows={5}
+          />
         </Box>
 
-        {/* ADDRESS INPUT */}
-        <InputField
-          name="address"
-          control={control}
-          label="Street Address"
-          placeholder="Phnom Penh, Street 210, ..."
-          errors={errors}
-          multiline
-          minRows={5}
-          required={false}
-        />
-
-        {/* Buttons */}
+        {/* Action Buttons */}
         <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
           <StyledButton
             variant="outlined"
