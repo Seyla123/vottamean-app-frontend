@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useResetPasswordMutation } from '../../services/authApi';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Material UI components
 import {
@@ -17,15 +17,8 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import HeaderTitle from '../../components/auth/HeaderTitle';
 
-// Icons
-import BackgroundImage from '../../assets/images/reset-password-illustration.svg';
-import Logo from '../../assets/images/Logo.svg';
-
-// Validator
-import { ResetPasswordValidator } from '../../validators/validationSchemas';
-import zIndex from '@mui/material/styles/zIndex';
+// - Lucid Icons
 import {
   ChevronLeft,
   EyeIcon,
@@ -35,10 +28,32 @@ import {
   Phone,
 } from 'lucide-react';
 
+// - Redux hooks and actions
+import { useResetPasswordMutation } from '../../services/authApi';
+import { setSnackbar } from '../../store/slices/uiSlice';
+
+// Custom Components
+import HeaderTitle from '../../components/auth/HeaderTitle';
+import PasswordIndicator from '../../components/auth/PasswordIndicator';
+
+// Icons
+import BackgroundImage from '../../assets/images/reset-password-illustration.svg';
+import Logo from '../../assets/images/Logo.svg';
+
+// Validator
+import { ResetPasswordValidator } from '../../validators/validationSchemas';
+
 const ResetNewPasswordPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { token } = useParams();
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    number: false,
+    letter: false,
+    special: false,
+  });
 
   // Hook form setup with Yup validation
   const {
@@ -49,8 +64,10 @@ const ResetNewPasswordPage = () => {
     resolver: yupResolver(ResetPasswordValidator),
   });
 
-  const [resetPassword, { isLoading, isSuccess, error }] =
+  // - Redux Reset Password API
+  const [resetPassword, { isLoading, isSuccess, isError, error }] =
     useResetPasswordMutation();
+
   const handlePasswordReset = async (formData) => {
     try {
       await resetPassword({
@@ -66,21 +83,56 @@ const ResetNewPasswordPage = () => {
     }
   };
 
-  // Automatically navigate to login page after 3 seconds on success
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        navigate('/auth/signin');
-      }, 3000); // 3 seconds
+  // // Validate password whenever it changes
+  // useEffect(() => {
+  //   validatePassword(formData.password);
+  // }, [formData.password]);
 
-      // Clean up the timer when the component unmounts or when isSuccess changes
-      return () => clearTimeout(timer);
-    }
-  }, [isSuccess, navigate]);
+  // const validatePassword = (password) => {
+  //   if (password) {
+  //     setPasswordValidation({
+  //       length: password.length >= 8,
+  //       number: /[0-9]/.test(password),
+  //       letter: /[a-zA-Z]/.test(password),
+  //       special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  //     });
+  //   } else {
+  //     // Reset validation state if password is empty
+  //     setPasswordValidation({
+  //       length: false,
+  //       number: false,
+  //       letter: false,
+  //       special: false,
+  //     });
+  //   }
+  // };
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
+
+  useEffect(() => {
+    if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: error.data.message,
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message:
+            'Your Password has been successfully changed. Please try to login.',
+        }),
+      );
+      // navigate to login once success
+      navigate('/auth/signin');
+    }
+  }, [isError, isSuccess, dispatch, error]);
 
   return (
     <Box component="section" sx={styles.pageContainer}>
@@ -186,6 +238,33 @@ const ResetNewPasswordPage = () => {
                   }}
                 />
               </Box>
+
+              {/* PASSWORD VALIDITY INDICATORS */}
+              <Box
+                sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}
+              >
+                <Typography variant="body2" fontWeight="bold">
+                  Register Requirement{' '}
+                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <PasswordIndicator
+                  isValid={passwordValidation.length}
+                  message="At least 8 characters."
+                />
+                <PasswordIndicator
+                  isValid={passwordValidation.letter}
+                  message="Contain at least one letter."
+                />
+                <PasswordIndicator
+                  isValid={passwordValidation.number}
+                  message="Contain at least one number."
+                />
+                <PasswordIndicator
+                  isValid={passwordValidation.special}
+                  message="Contain at least one special character."
+                />
+              </Box>
+
               <Button
                 variant="contained"
                 onClick={handleSubmit(handlePasswordReset)}
