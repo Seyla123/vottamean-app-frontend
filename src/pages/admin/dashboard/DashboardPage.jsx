@@ -1,15 +1,22 @@
-import React from 'react';
+// - React and third-party libraries
+import React, { useEffect, useState } from 'react';
+
+// - Material UI Components
 import { Typography, Box, CardContent, Chip, Grid } from '@mui/material';
-import FormComponent from '../../../components/common/FormComponent';
 import { GraduationCap, UsersIcon } from 'lucide-react';
+
+// - Custom Components
+import FormComponent from '../../../components/common/FormComponent';
 import WelcomeHandImage from '../../../assets/images/welcome.svg';
 import ShortListTable from '../../../components/common/ShortListTable';
 import { shadow } from '../../../styles/global';
 import StaticTable from '../../../components/common/StaticTable';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+// - Redux APIs
+import { useGetUserProfileQuery } from '../../../services/userApi';
+
+// - User Data Formatted
+import { getUserProfileDataLayout } from '../../../utils/formatData';
 
 const teacherArr = [
   {
@@ -82,8 +89,122 @@ const statusCard = [
 ];
 
 function Dashboard() {
-  const { user } = useSelector((state) => state.auth);
-  console.log(user);
+  const [userData, setUserData] = useState({
+    username: 'Username',
+  });
+
+  const { data: userDataProfile, isSuccess } = useGetUserProfileQuery();
+
+  // - Fetch user data
+  useEffect(() => {
+    if (isSuccess && userDataProfile) {
+      const transformedData = getUserProfileDataLayout(userDataProfile);
+      setUserData(transformedData);
+    }
+  }, [isSuccess, userDataProfile]);
+
+  const GreetingCard = () => {
+    return (
+      <Box
+        sx={{
+          position: 'relative',
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          alignItems: 'center',
+          background: '#8E8FFA',
+          color: 'white',
+          height: { xs: '180px', sm: '240px' },
+          overflow: 'hidden',
+          p: { xs: 2, sm: 4 },
+          ...shadow,
+        }}
+      >
+        <Box sx={{ position: 'relative', zIndex: 2 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: 'bold',
+              fontSize: { xs: '24px', sm: '32px', md: '48px' },
+            }}
+          >
+            Hi, {userData?.username} 👋
+          </Typography>
+          <Typography variant="body1" color="#F5F5F5">
+            Welcome to your admin dashboard
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: {
+              xs: '160px',
+              sm: '200px',
+              lg: '260px',
+              position: 'absolute',
+              bottom: 0,
+              right: 4,
+            },
+          }}
+        >
+          <img
+            src={WelcomeHandImage}
+            alt={'Welcome Image'}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+            }}
+          />
+        </Box>
+      </Box>
+    );
+  };
+
+  const StatusCard = () => {
+    return (
+      <Box
+        sx={{
+          p: { xs: 2, sm: 4 },
+          ...shadow,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          height: 1,
+          background: '#FFFFFF',
+        }}
+      >
+        {statusCard?.map((item) => (
+          <Grid container key={item.id}>
+            <Grid item>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{ ...shadow }}
+                  width={40}
+                  height={40}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  {item.icon}
+                </Box>
+                <Box>
+                  <Typography variant="body2">{item.title}</Typography>
+                  <Typography variant="body1">{item.amount}</Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        ))}
+      </Box>
+    );
+  };
+
   return (
     <FormComponent
       title="Dashboard Overview"
@@ -112,114 +233,5 @@ function Dashboard() {
     </FormComponent>
   );
 }
-
-const GreetingCard = () => {
-  const { user } = useSelector((state) => state.auth);
-
-  const userName =
-    user?.adminProfile?.Info?.first_name +
-    ' ' +
-    user?.adminProfile?.Info?.last_name;
-
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        alignItems: 'center',
-        background: '#8E8FFA',
-        color: 'white',
-        height: { xs: '180px', sm: '240px' },
-        overflow: 'hidden',
-        p: { xs: 2, sm: 4 },
-        ...shadow,
-      }}
-    >
-      <Box sx={{ position: 'relative', zIndex: 2 }}>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 'bold',
-            fontSize: { xs: '24px', sm: '32px', md: '48px' },
-          }}
-        >
-          Hi, {userName}👋
-        </Typography>
-        <Typography variant="body1" color="#F5F5F5">
-          Welcome to your admin dashboard
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          width: {
-            xs: '160px',
-            sm: '200px',
-            lg: '260px',
-            position: 'absolute',
-            bottom: 0,
-            right: 4,
-          },
-        }}
-      >
-        <img
-          src={WelcomeHandImage}
-          alt={'Welcome Image'}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-          }}
-        />
-      </Box>
-    </Box>
-  );
-};
-
-const StatusCard = () => {
-  return (
-    <Box
-      sx={{
-        p: { xs: 2, sm: 4 },
-        ...shadow,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        height: 1,
-        background: '#FFFFFF',
-      }}
-    >
-      {statusCard?.map((item) => (
-        <Grid container key={item.id}>
-          <Grid item>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-              }}
-            >
-              <Box
-                sx={{ ...shadow }}
-                width={40}
-                height={40}
-                display={'flex'}
-                justifyContent={'center'}
-                alignItems={'center'}
-              >
-                {item.icon}
-              </Box>
-              <Box>
-                <Typography variant="body2">{item.title}</Typography>
-                <Typography variant="body1">{item.amount}</Typography>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      ))}
-    </Box>
-  );
-};
 
 export default Dashboard;
