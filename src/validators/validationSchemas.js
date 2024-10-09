@@ -275,7 +275,7 @@ export const RegisterSchoolValidator = createFormSchema([
 ]);
 
 // Login Validator :
-export const LoginValidator = createFormSchema(['email', 'password']);
+export const LoginValidator = createFormSchema(['email']);
 
 // Forgot Password Validator :
 export const ForgotPasswordValidator = createFormSchema(['email']);

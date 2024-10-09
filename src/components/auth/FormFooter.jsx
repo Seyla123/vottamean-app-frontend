@@ -1,12 +1,18 @@
 import { Box, Typography } from '@mui/material';
-import { Link, Route, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
 const FormFooter = ({ href }) => {
+  // Determine the text based on the href prop
+  const isSignInPage = href === '/auth/signup';
+  const message = isSignInPage
+    ? 'Don’t have an account?'
+    : 'Already have an account?';
+  const linkText = isSignInPage ? 'Sign Up' : 'Sign In';
+
   return (
     <Box
-      component={'div'}
+      component="div"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -14,18 +20,13 @@ const FormFooter = ({ href }) => {
       }}
     >
       <Box
-        component={'span'}
+        component="span"
         sx={{ display: 'flex', gap: 1, alignItems: 'center' }}
       >
-        <Typography variant="body2">
-          {href === '/auth/signin'
-            ? 'Already have an account?'
-            : 'Don’t have an account?'}
-        </Typography>
-        <Link to={href}>
+        <Typography variant="body2">{message}</Typography>
+        <Link to={href} aria-label={linkText}>
           <Typography variant="body2" color="primary">
-            {' '}
-            {href === '/auth/signin' ? 'Sign In' : 'Sign Up'}
+            {linkText}
           </Typography>
         </Link>
       </Box>

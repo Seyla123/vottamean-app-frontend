@@ -1,24 +1,19 @@
 // React and third-party libraries
 import React, { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MuiTelInput } from 'mui-tel-input';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
 
 // Material UI components
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-  InputAdornment,
-} from '@mui/material';
+import { Box } from '@mui/material';
 import StyledButton from '../common/StyledMuiButton';
 
 // Custom components
 import HeaderTitle from './HeaderTitle';
+import PhoneInputField from './PhoneInputField';
+import InputField from '../common/InputField';
 
 // Validator
 import { ContactInformationValidator } from '../../validators/validationSchemas';
@@ -79,58 +74,24 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
             gap: { xs: 2, md: 3 },
           }}
         >
-          {/* CONTACT NUMBER INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Contact Number{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="phone_number"
-              control={control}
-              render={({ field }) => (
-                <MuiTelInput
-                  defaultCountry="KH"
-                  value={field.value || ''}
-                  onChange={(phone) => {
-                    console.log('Phone input changed:', phone);
-                    field.onChange(phone);
-                  }}
-                  error={!!errors.phone_number}
-                  fullWidth
-                />
-              )}
-            />
-            {errors.phone_number && (
-              <Typography variant="caption" color="error">
-                {errors.phone_number.message}
-              </Typography>
-            )}
-          </Box>
+          {/* CONTACT NUMBER INPUT WITH COUNTRY CODE */}
+          <PhoneInputField
+            name="phone_number"
+            control={control}
+            label="Contact Number"
+            errors={errors}
+          />
 
           {/* ADDRESS INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Street Address{' '}
-            </Typography>
-            <Controller
-              name="address"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  multiline
-                  minRows={5}
-                  variant="outlined"
-                  fullWidth
-                  type="text"
-                  placeholder="Phnom Penh, Street 210, ..."
-                  {...field} // Spread the field properties
-                  error={!!errors.address}
-                  helperText={errors.address?.message}
-                />
-              )}
-            />
-          </Box>
+          <InputField
+            name="school_address"
+            control={control}
+            label="Street Address"
+            placeholder="Phnom Penh, Street 210, ..."
+            errors={errors}
+            multiline
+            minRows={5}
+          />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
             <StyledButton

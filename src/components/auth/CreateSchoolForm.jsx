@@ -1,28 +1,22 @@
 // React and third-party libraries
 import { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MuiTelInput } from 'mui-tel-input';
 
 // Redux hooks and actions
 import { useDispatch, useSelector } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Material UI components
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-  InputAdornment,
-  CircularProgress,
-} from '@mui/material';
-import StyledButton from '../common/StyledMuiButton';
+import { Box, CircularProgress } from '@mui/material';
+import { School } from 'lucide-react';
 
 // Custom components
+import StyledButton from '../common/StyledMuiButton';
 import HeaderTitle from './HeaderTitle';
-import { PhoneOutgoing, School } from 'lucide-react';
 import FormFooter from './FormFooter';
+import PhoneInputField from './PhoneInputField';
+import InputField from '../common/InputField';
 
 import { useSignupMutation } from '../../services/authApi';
 import { RegisterSchoolValidator } from '../../validators/validationSchemas';
@@ -112,82 +106,33 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
           }}
         >
           {/* SCHOOL NAME INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              School Name <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="school_name"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  type="text"
-                  placeholder="Enter your school name"
-                  {...field}
-                  error={!!errors.school_name}
-                  helperText={errors.school_name?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <School size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Box>
+          <InputField
+            name="school_name"
+            control={control}
+            label="School Name"
+            placeholder="Enter your school name"
+            errors={errors}
+            icon={School}
+          />
 
           {/* SCHOOL CONTACT NUMBER INPUT WITH COUNTRY CODE */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              School Contact{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="school_phone_number"
-              control={control}
-              render={({ field }) => (
-                <MuiTelInput
-                  defaultCountry="KH"
-                  value={field.value}
-                  onChange={(phone) => {
-                    console.log('Phone input changed:', phone);
-                    field.onChange(phone);
-                  }}
-                  helperText={errors.school_phone_number?.message}
-                  error={!!errors.school_phone_number}
-                  fullWidth
-                />
-              )}
-            />
-          </Box>
+          <PhoneInputField
+            name="school_phone_number"
+            control={control}
+            label="School Contact"
+            errors={errors}
+          />
 
           {/* SCHOOL ADDRESS INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Street Address
-            </Typography>
-            <Controller
-              name="school_address"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  multiline
-                  minRows={5}
-                  variant="outlined"
-                  fullWidth
-                  type="text"
-                  placeholder="Phnom Penh, Street 210, ..."
-                  {...field}
-                  error={!!errors.school_address}
-                  helperText={errors.school_address?.message}
-                />
-              )}
-            />
-          </Box>
+          <InputField
+            name="school_address"
+            control={control}
+            label="Street Address"
+            placeholder="Phnom Penh, Street 210, ..."
+            errors={errors}
+            multiline
+            minRows={5}
+          />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
             <StyledButton

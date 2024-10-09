@@ -1,4 +1,3 @@
-// PasswordInput.js
 import React from 'react';
 import {
   TextField,
@@ -18,6 +17,7 @@ const PasswordInput = ({
   togglePasswordVisibility,
   error,
   placeholder,
+  showError = true,
 }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
     <Typography variant="body2" fontWeight="bold">
@@ -36,7 +36,7 @@ const PasswordInput = ({
           fullWidth
           type={showPassword ? 'text' : 'password'}
           error={!!error}
-          helperText={error ? error.message : ''}
+          helperText={showError && error ? error.message : ''}
           placeholder={placeholder}
           InputProps={{
             startAdornment: (

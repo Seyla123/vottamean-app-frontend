@@ -5,13 +5,7 @@ import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
 import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
 import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
-import {
-  Box,
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-} from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Typography } from '@mui/material';
 import { User, Users, Contact, School } from 'lucide-react';
 // IMAGES & ICONS
 import Logo from '../../assets/images/Logo.svg';

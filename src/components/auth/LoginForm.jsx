@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-  CircularProgress,
-  Checkbox,
-} from '@mui/material';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Mail } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+
+// - MUI Components
+import { Box, Typography, CircularProgress, Checkbox } from '@mui/material';
+
+// - Custom Components
 import StyledMuiButton from '../common/StyledMuiButton';
+import PasswordInput from './PasswordInput';
+import InputField from '../common/InputField';
+
+// - Redux Hooks and APIs
 import { updateFormData } from '../../store/slices/formSlice';
 import { useLoginMutation } from '../../services/authApi';
 import { setSnackbar } from '../../store/slices/uiSlice';
+
+// - Login Validator
 import { LoginValidator } from '../../validators/validationSchemas';
 
 const LoginForm = () => {
@@ -27,12 +28,15 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm({
     resolver: yupResolver(LoginValidator),
+    defaultValues: {
+      email: '',
+    },
   });
 
   const handleFormSubmit = async (data) => {
@@ -74,25 +78,24 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Box sx={styles.formContainer}>
-        <FormField
-          label="Email"
-          type="email"
-          register={register('email')}
-          error={errors.email}
-          icon={<Mail size={20} />}
+        {/* EMAIL INPUT */}
+        <InputField
+          name="email"
+          control={control}
+          label="Email Name"
+          placeholder="Enter your email"
+          errors={errors}
+          icon={Mail}
         />
 
-        <FormField
+        {/* PASSWORD INPUT */}
+        <PasswordInput
+          name="password"
           label="Password"
-          type={showPassword ? 'text' : 'password'}
-          register={register('password')}
-          error={errors.password}
-          icon={<LockKeyhole size={20} />}
-          endAdornment={
-            <IconButton onClick={togglePasswordVisibility} size="small">
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </IconButton>
-          }
+          control={control}
+          showPassword={showPassword}
+          togglePasswordVisibility={togglePasswordVisibility}
+          placeholder="Password"
         />
 
         <Box sx={styles.rememberMeContainer}>
@@ -125,30 +128,7 @@ const LoginForm = () => {
   );
 };
 
-const FormField = ({ label, type, register, error, icon, endAdornment }) => (
-  <Box sx={styles.fieldContainer}>
-    <Typography variant="body2" fontWeight="bold">
-      {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-    </Typography>
-    <TextField
-      variant="outlined"
-      fullWidth
-      type={type}
-      {...register}
-      error={!!error}
-      helperText={error?.message}
-      placeholder={`Enter your ${label.toLowerCase()}`}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">{icon}</InputAdornment>
-        ),
-        endAdornment: endAdornment && (
-          <InputAdornment position="end">{endAdornment}</InputAdornment>
-        ),
-      }}
-    />
-  </Box>
-);
+export default LoginForm;
 
 const styles = {
   formContainer: {
@@ -174,5 +154,3 @@ const styles = {
     width: '100%',
   },
 };
-
-export default LoginForm;

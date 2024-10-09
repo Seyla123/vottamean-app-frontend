@@ -5,16 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector } from 'react-redux';
 
 // - Material UI components
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Checkbox,
-  IconButton,
-  InputAdornment,
-  Link,
-} from '@mui/material';
+import { Box, Typography, Checkbox, Link } from '@mui/material';
 
 // - Lucid Icons
 import { Mail } from 'lucide-react';
@@ -25,6 +16,7 @@ import HeaderTitle from './HeaderTitle';
 import FormFooter from './FormFooter';
 import PasswordIndicator from './PasswordIndicator';
 import PasswordInput from './PasswordInput';
+import InputField from '../common/InputField';
 
 // - Validator
 import { getStartSignupValidator } from '../../validators/validationSchemas';
@@ -117,33 +109,14 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           }}
         >
           {/* EMAIL INPUT */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2" fontWeight="bold">
-              Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant="outlined"
-                  fullWidth
-                  type="email"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                  placeholder="Enter your email"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Mail size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Box>
+          <InputField
+            name="email"
+            control={control}
+            label="Email Name"
+            placeholder="Enter your email"
+            errors={errors}
+            icon={Mail}
+          />
 
           {/* PASSWORD INPUT */}
           <PasswordInput
@@ -219,7 +192,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           </StyledButton>
 
           {/* FORM FOOTER */}
-          <FormFooter href={'/auth/login'} />
+          <FormFooter href={'/auth/signin'} />
         </Box>
       </form>
     </Box>

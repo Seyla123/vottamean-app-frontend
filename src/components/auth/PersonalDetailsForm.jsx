@@ -1,34 +1,23 @@
+// PersonalDetailsForm.js
 import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Select,
-  InputAdornment,
-  MenuItem,
-} from '@mui/material';
-import StyledButton from '../common/StyledMuiButton';
-
 import { useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
 import { UserRoundPlus } from 'lucide-react';
-
-import HeaderTitle from './HeaderTitle';
-import FormFooter from './FormFooter';
-
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
+// - Custom Component
+import HeaderTitle from './HeaderTitle';
+import FormFooter from './FormFooter';
+import InputField from '../common/InputField';
+import GenderSelect from './GenderSelect';
+import DOBPicker from './DOBPicker';
 import { PersonalInformationValidator } from '../../validators/validationSchemas';
 
 const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
   const formData = useSelector((state) => state.form);
-
   const {
     control,
     handleSubmit,
@@ -97,158 +86,43 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               gap: 2,
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-              }}
-            >
-              <Typography variant="body2" fontWeight="bold">
-                First Name{' '}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <Controller
-                name="first_name"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="outlined"
-                    fullWidth
-                    error={!!errors.first_name}
-                    helperText={errors.first_name?.message}
-                    placeholder="First Name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <UserRoundPlus size={20} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-            </Box>
+            <InputField
+              name="first_name"
+              control={control}
+              label="First Name"
+              placeholder="First Name"
+              errors={errors}
+              icon={UserRoundPlus}
+            />
 
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-              }}
-            >
-              <Typography variant="body2" fontWeight="bold">
-                Last Name <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <Controller
-                name="last_name"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant="outlined"
-                    fullWidth
-                    error={!!errors.last_name}
-                    helperText={errors.last_name?.message}
-                    placeholder="Last Name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <UserRoundPlus size={20} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-            </Box>
+            <InputField
+              name="last_name"
+              control={control}
+              label="Last Name"
+              placeholder="Last Name"
+              errors={errors}
+              icon={UserRoundPlus}
+            />
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-              }}
-            >
-              <Typography variant="body2" fontWeight="bold">
-                Gender <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <Controller
-                name="gender"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    fullWidth
-                    value={gender}
-                    onChange={(e) => {
-                      setGender(e.target.value);
-                      field.onChange(e);
-                    }}
-                    displayEmpty
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return <Box sx={{ color: '#B5B5B5' }}>Gender</Box>;
-                      }
-                      return selected;
-                    }}
-                    error={!!errors.gender}
-                  >
-                    <MenuItem value="" disabled>
-                      Select gender
-                    </MenuItem>
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                    <MenuItem value="Other">Other</MenuItem>
-                  </Select>
-                )}
-              />
-            </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'start',
+              gap: 2,
+            }}
+          >
+            {/* Use GenderSelect component */}
+            <GenderSelect control={control} errors={errors} name="gender" />
 
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-              }}
-            >
-              <Typography variant="body2" fontWeight="bold">
-                Date Of Birth{' '}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Controller
-                  name="dob"
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      value={dob}
-                      onChange={(newValue) => {
-                        setDob(newValue);
-                        field.onChange(
-                          newValue ? dayjs(newValue).format('YYYY-MM-DD') : '',
-                        );
-                      }}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!errors.dob,
-                          placeholder: 'YYYY-MM-DD',
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
+            {/* Use DOBPicker component */}
+            <DOBPicker
+              control={control}
+              errors={errors}
+              name="dob"
+              dob={dob}
+              setDob={setDob}
+            />
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
@@ -272,7 +146,6 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               Continue
             </StyledButton>
           </Box>
-
           <FormFooter href={'/auth/signin'} />
         </Box>
       </form>
