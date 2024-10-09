@@ -13,8 +13,7 @@
  * @returns JSX.Element
  */
 
-import { Container, Stack, Box, Typography, colors } from '@mui/material';
-import TestimonialCard from './TestimonialCard';
+import { Stack, Box, Typography } from '@mui/material';
 
 import ImagePreviewCarousel from './ImagePreviewCarousel';
 

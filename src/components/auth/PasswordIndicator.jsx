@@ -9,7 +9,7 @@ const PasswordIndicator = ({ isValid, message }) => {
       {isValid ? (
         <CheckCircle size={16} color="green" />
       ) : (
-        <XCircle size={16} color="red" />
+        <XCircle size={16} color="grey" />
       )}
       <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
         {message}

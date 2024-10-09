@@ -49,7 +49,6 @@ function SchoolUpdatePage() {
   // - State to store user data for the school
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [originData, setOriginaData] = useState()
 
   // - Fetch user profile data
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
@@ -110,8 +109,6 @@ function SchoolUpdatePage() {
       );
       return;
     }
-
-    console.log('Submitted data:', data);
 
     try {
       await updateUserProfile(data).unwrap();

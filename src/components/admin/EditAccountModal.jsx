@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import StyledButton from '../common/StyledMuiButton';
+import dayjs from 'dayjs';
 
 // MUI Components
 import {
   Modal,
   Box,
   TextField,
-  Button,
   Avatar,
   Typography,
-  IconButton,
-  Fade,
-  Backdrop,
   InputAdornment,
   Grid,
   MenuItem,
   Divider,
 } from '@mui/material';
-import shadows from '@mui/material/styles/shadows';
+
+// - Custom Components
+import StyledButton from '../common/StyledMuiButton';
+import InputField from '../common/InputField';
+import PhoneInputField from '../common/PhoneInputField';
+import GenderSelect from '../common/GenderSelect';
+import DOBPicker from '../common/DOBPicker';
 
 // Redux Hooks and APIs
 import {
@@ -43,7 +44,6 @@ import {
   MapPin,
   Phone,
   Trash2,
-  User,
   UserRoundPen,
   Users,
 } from 'lucide-react';
@@ -60,21 +60,16 @@ const EditAccountModal = ({
   const dispatch = useDispatch();
 
   // - Redux hooks update user api
-  const [
-    updateUserProfile,
-    {
-      isLoading: isUpdateLoading,
-      isError: isUpdateError,
-      isSuccess: isUpdateSuccess,
-      error: updateError,
-    },
-  ] = useUpdateUserProfileMutation();
+  const [updateUserProfile, { isLoading: isUpdateLoading, isError, error }] =
+    useUpdateUserProfileMutation();
 
   // - Redux hooks get user api
   const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
 
   // - State to store original form values
   const [originalData, setOriginalData] = useState(null);
+
+  const [dob, setDob] = useState(null);
 
   console.log(originalData);
 
@@ -317,253 +312,74 @@ const EditAccountModal = ({
             <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2 }}>
               <Grid item xs={12} sm={6}>
                 {/* FIRST NAME INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    First Name{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-
-                  <Controller
-                    name="first_name"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        {...field}
-                        error={!!errors.first_name}
-                        helperText={errors.first_name?.message}
-                        placeholder="Enter your first name"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <UserRoundPen size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Box>
+                <InputField
+                  name="first_name"
+                  control={control}
+                  label="First Name"
+                  placeholder="First Name"
+                  errors={errors}
+                  icon={UserRoundPen}
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
                 {/* LAST NAME INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Last Name{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-
-                  <Controller
-                    name="last_name"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        {...field}
-                        error={!!errors.last_name}
-                        helperText={errors.last_name?.message}
-                        placeholder="Enter your last name"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <UserRoundPen size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Box>
+                <InputField
+                  name="last_name"
+                  control={control}
+                  label="Last Name"
+                  placeholder="Last Name"
+                  errors={errors}
+                  icon={UserRoundPen}
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                {/* CONTACT NUMBER INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Contact Number{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-
-                  <Controller
-                    name="phone_number"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        {...field}
-                        error={!!errors.phone_number}
-                        helperText={errors.phone_number?.message}
-                        placeholder="Enter your contact number"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Phone size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Box>
+                {/* CONTACT NUMBER INPUT WITH COUNTRY CODE */}
+                <PhoneInputField
+                  name="phone_number"
+                  control={control}
+                  label="Contact Number"
+                  errors={errors}
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
                 {/* STREET ADDRESS INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Street Address{' '}
-                  </Typography>
-
-                  <Controller
-                    name="address"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        {...field}
-                        error={!!errors.address}
-                        helperText={errors.address?.message}
-                        placeholder="Enter your street address"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <MapPin size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                {/* DOB INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Date of Birth{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-
-                  <Controller
-                    name="dob"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        type="date"
-                        fullWidth
-                        {...field}
-                        error={!!errors.dob}
-                        helperText={errors.dob?.message}
-                        placeholder="Enter your date of birth"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Calendar size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Box>
+                <InputField
+                  name="address"
+                  control={control}
+                  label="Street Address"
+                  placeholder="Phnom Penh, Street 210, ..."
+                  errors={errors}
+                  icon={MapPin}
+                  required={false}
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
                 {/* GENDER INPUT */}
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" fontWeight="bold">
-                    Gender{' '}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
+                <GenderSelect
+                  control={control}
+                  errors={errors}
+                  name="gender"
+                  label="Gender"
+                  defaultValue={originalData?.gender}
+                />
+              </Grid>
 
-                  <Controller
-                    name="gender"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        select
-                        {...field}
-                        error={!!errors.gender}
-                        helperText={errors.gender?.message}
-                        placeholder="Select your gender"
-                        slotProps={{
-                          input: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Users size={20} />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
-                      </TextField>
-                    )}
-                  />
-                </Box>
+              <Grid item xs={12} sm={6}>
+                {/* DOB INPUT */}
+                <DOBPicker
+                  control={control}
+                  errors={errors}
+                  name="dob"
+                  dob={dob}
+                  setDob={setDob}
+                  defaultValue={
+                    originalData?.dob ? dayjs(originalData.dob) : null
+                  }
+                />
               </Grid>
 
               <Grid item xs={6}></Grid>

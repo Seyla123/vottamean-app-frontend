@@ -1,9 +1,9 @@
 // React and third-party libraries
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useResetPasswordMutation } from '../../services/authApi';
+import { useDispatch } from 'react-redux';
 
 // Material UI components
 import {
@@ -11,13 +11,27 @@ import {
   Typography,
   TextField,
   Button,
-  Card,
-  Snackbar,
-  Alert,
-  InputAdornment,
   IconButton,
+  InputAdornment,
 } from '@mui/material';
+
+// Lucid Icons
+import {
+  ChevronLeft,
+  EyeIcon,
+  EyeOff,
+  RectangleEllipsis,
+  LockKeyholeOpen,
+} from 'lucide-react';
+
+// Redux hooks and actions
+import { useResetPasswordMutation } from '../../services/authApi';
+import { setSnackbar } from '../../store/slices/uiSlice';
+
+// Custom Components
 import HeaderTitle from '../../components/auth/HeaderTitle';
+import PasswordIndicator from '../../components/auth/PasswordIndicator';
+import PasswordInput from '../../components/auth/PasswordInput';
 
 // Icons
 import BackgroundImage from '../../assets/images/reset-password-illustration.svg';
@@ -25,81 +39,110 @@ import Logo from '../../assets/images/Logo.svg';
 
 // Validator
 import { ResetPasswordValidator } from '../../validators/validationSchemas';
-import zIndex from '@mui/material/styles/zIndex';
-import {
-  ChevronLeft,
-  EyeIcon,
-  EyeOff,
-  RectangleEllipsis,
-  LockKeyholeOpen,
-  Phone,
-} from 'lucide-react';
 
 const ResetNewPasswordPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { token } = useParams();
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    number: false,
+    letter: false,
+    special: false,
+  });
 
   // Hook form setup with Yup validation
   const {
-    register,
+    control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(ResetPasswordValidator),
   });
 
-  const [resetPassword, { isLoading, isSuccess, error }] =
+  const passwordValue = watch('password', '');
+
+  // Redux Reset Password API
+  const [resetPassword, { isLoading, isSuccess, isError, error }] =
     useResetPasswordMutation();
-  const handlePasswordReset = async (formData) => {
+
+  const onSubmit = async (data) => {
     try {
       await resetPassword({
         token,
-        newPassword: formData.password,
+        newPassword: data.password,
       }).unwrap();
-      // Navigate after successful reset
-      setTimeout(() => {
-        navigate('/auth/signin');
-      }, 3000); // Navigate after 3 seconds
     } catch (err) {
       console.error('Password reset error:', err);
     }
   };
 
-  // Automatically navigate to login page after 3 seconds on success
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        navigate('/auth/signin');
-      }, 3000); // 3 seconds
-
-      // Clean up the timer when the component unmounts or when isSuccess changes
-      return () => clearTimeout(timer);
-    }
-  }, [isSuccess, navigate]);
-
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
+
+  // Validate password whenever it changes
+  useEffect(() => {
+    validatePassword(passwordValue);
+  }, [passwordValue]);
+
+  const validatePassword = (password) => {
+    if (password) {
+      setPasswordValidation({
+        length: password.length >= 8,
+        number: /[0-9]/.test(password),
+        letter: /[a-zA-Z]/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      });
+    } else {
+      setPasswordValidation({
+        length: false,
+        number: false,
+        letter: false,
+        special: false,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: error?.data?.message || 'An error occurred.',
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message:
+            'Your Password has been successfully changed. Please try to login.',
+        }),
+      );
+      navigate('/auth/signin');
+    }
+  }, [isError, isSuccess, dispatch, error, navigate]);
 
   return (
     <Box component="section" sx={styles.pageContainer}>
       {/* LEFT CONTAINER */}
       <Box component="div" sx={styles.leftContainer}>
-        {/* LOGO */}
         <img src={Logo} alt="wavetrack logo" style={styles.logo} />
 
-        {/* FORM MAIN */}
         <Box sx={styles.formContainer}>
           <Box component={'div'} sx={styles.iconContainer}>
             <RectangleEllipsis size={100} />
           </Box>
-          {/* FORM HEADER */}
           <HeaderTitle
             title={'Reset New Password'}
             subTitle={'Enter your new password to reset your password.'}
           />
-          <form onSubmit={handleSubmit(handlePasswordReset)} noValidate>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Box
               sx={{
                 display: 'flex',
@@ -108,87 +151,53 @@ const ResetNewPasswordPage = () => {
               }}
             >
               {/* NEW PASSWORD INPUT */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <PasswordInput
+                name="password"
+                label="New Password"
+                control={control}
+                showPassword={showPassword}
+                togglePasswordVisibility={togglePasswordVisibility}
+                error={errors.password}
+                placeholder="Enter new password"
+              />
+              {/* NEW CONFIRM PASSWORD INPUT */}
+              <PasswordInput
+                name="passwordConfirm"
+                label="Confirm Password"
+                control={control}
+                showPassword={showPassword}
+                togglePasswordVisibility={togglePasswordVisibility}
+                error={errors.passwordConfirm}
+                placeholder="Confirm new password"
+              />
+              {/* PASSWORD VALIDITY INDICATORS */}
+              <Box
+                sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}
+              >
                 <Typography variant="body2" fontWeight="bold">
-                  New Password{' '}
+                  Register Requirement{' '}
                   <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                 </Typography>
-                <TextField
-                  id="password"
-                  variant="outlined"
-                  fullWidth
-                  type={showPassword ? 'text' : 'password'}
-                  {...register('password')}
-                  error={!!errors.password}
-                  helperText={errors.password ? errors.password.message : ''}
-                  placeholder="Enter new password"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockKeyholeOpen size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={togglePasswordVisibility}
-                          size="icon"
-                        >
-                          {showPassword ? (
-                            <EyeOff size={20} />
-                          ) : (
-                            <EyeIcon size={20} />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                <PasswordIndicator
+                  isValid={passwordValidation.length}
+                  message="At least 8 characters."
                 />
-              </Box>
-
-              {/* CONFIRM PASSWORD INPUT */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Typography variant="body2" fontWeight="bold">
-                  Confirm Password{' '}
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <TextField
-                  id="confirmPassword"
-                  variant="outlined"
-                  fullWidth
-                  type={showPassword ? 'text' : 'password'}
-                  {...register('passwordConfirm')}
-                  error={!!errors.passwordConfirm}
-                  helperText={
-                    errors.passwordConfirm ? errors.passwordConfirm.message : ''
-                  }
-                  placeholder="Confirm new password"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockKeyholeOpen size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={togglePasswordVisibility}
-                          size="icon"
-                        >
-                          {showPassword ? (
-                            <EyeOff size={20} />
-                          ) : (
-                            <EyeIcon size={20} />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                <PasswordIndicator
+                  isValid={passwordValidation.letter}
+                  message="Contain at least one letter."
+                />
+                <PasswordIndicator
+                  isValid={passwordValidation.number}
+                  message="Contain at least one number."
+                />
+                <PasswordIndicator
+                  isValid={passwordValidation.special}
+                  message="Contain at least one special character."
                 />
               </Box>
               <Button
                 variant="contained"
-                onClick={handleSubmit(handlePasswordReset)}
+                type="submit"
                 disabled={isLoading}
                 size="large"
               >
@@ -196,7 +205,6 @@ const ResetNewPasswordPage = () => {
               </Button>
             </Box>
           </form>
-          {/* FOOTER */}
           <Link to={'/auth/signin'} style={styles.footer}>
             <ChevronLeft size={20} />
             <Typography variant="body2">Back to sign in</Typography>
@@ -206,10 +214,8 @@ const ResetNewPasswordPage = () => {
 
       {/* RIGHT CONTAINER */}
       <Box component="div" sx={styles.rightContainer}>
-        {/* IMAGE OVERLAY */}
         <Box component="div" sx={styles.imageOverlay} />
 
-        {/* CONTENT */}
         <Box sx={styles.content}>
           <Typography variant="h3" color="white">
             Password Security Tips:
@@ -220,17 +226,21 @@ const ResetNewPasswordPage = () => {
             password.
           </Typography>
           <Typography variant="body1" color="white">
-            Reach out to our support team if you're facing any issues.{' '}
+            Reach out to our support team if you encounter any issues during the
+            reset process.
           </Typography>
-          <Link to={'/'} style={styles.contactSupport}>
-            <Phone size={14} />
-            <span style={{ marginLeft: 6 }}> HexCode+ Support</span>
-          </Link>
         </Box>
+        <img
+          src={BackgroundImage}
+          alt="Reset Password"
+          style={styles.backgroundImage}
+        />
       </Box>
     </Box>
   );
 };
+
+export default ResetNewPasswordPage;
 
 const styles = {
   pageContainer: {
@@ -347,5 +357,3 @@ const styles = {
     padding: '2px 8px',
   },
 };
-
-export default ResetNewPasswordPage;

@@ -77,10 +77,6 @@ const routesConfig = [
     element: <Layout />,
     children: [
       {
-        path: 'login',
-        element: <LoginPage />,
-      },
-      {
         path: 'signin',
         element: <SigninPage />,
       },
