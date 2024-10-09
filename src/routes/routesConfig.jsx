@@ -63,7 +63,7 @@ import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 import TeacherAttendanceListPage from '../pages/teacherSite/teacherClass/TeacherAttendanceListPage';
 import TeacherScheduleClassPage from '../pages/teacherSite/teacherClass/TeacherScheduleClassPage';
 import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAccountProfilePage';
-import TeacherSessionPage from '../pages/teacherSite/session/TeacherSessionPage';
+import TeacherSchedulePage from '../pages/teacherSite/schedule/TeacherSchedulePage';
 
 // Layout
 import Layout from '../components/layout/Layout';
@@ -149,8 +149,8 @@ const routesConfig = [
         element: <TeacherAttendanceListPage />,
       },
       {
-        path: 'sessions',
-        element: <TeacherSessionPage />,
+        path: 'schedule',
+        element: <TeacherSchedulePage />,
       },
       {
         path: 'settings',
