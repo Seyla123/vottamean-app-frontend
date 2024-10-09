@@ -28,15 +28,11 @@ const Layout = ({ teacherSite, adminSite }) => {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth);
-
-  const { data: userDataProfile, isSuccess, error } = useGetUserProfileQuery();
-  console.log('User Data in the Layout :', userDataProfile);
+  const { data: userDataProfile, isSuccess } = useGetUserProfileQuery();
 
   useEffect(() => {
     if (isSuccess && userDataProfile) {
       const transformedData = getUserProfileDataLayout(userDataProfile);
-      console.log('Transformed Data in the Layout :', transformedData);
       setUserData(transformedData);
     }
   }, [isSuccess, userDataProfile]);

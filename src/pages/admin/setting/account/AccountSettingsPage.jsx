@@ -57,7 +57,6 @@ const AccountSettingsPage = () => {
       const transformedData = getUserProfileData(user);
       setUserData(transformedData);
       dispatch(updateFormData(transformedData));
-      console.log(userData.userProfile);
     }
   }, [user, dispatch]);
 

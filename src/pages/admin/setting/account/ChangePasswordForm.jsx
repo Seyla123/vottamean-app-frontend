@@ -1,4 +1,11 @@
+// - React and third-party libraries
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+// - Material UI Components
 import {
   Card,
   Typography,
@@ -8,16 +15,17 @@ import {
   TextField,
   IconButton,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { setSnackbar } from '../../../../store/slices/uiSlice';
-import { shadow } from '../../../../styles/global';
-import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useChangePasswordMutation } from '../../../../services/authApi';
 import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
+
+// - Custom Componenets
 import FormComponent from '../../../../components/common/FormComponent';
-import { useNavigate } from 'react-router-dom';
+import PasswordInput from '../../../../components/auth/PasswordInput';
+import { shadow } from '../../../../styles/global';
+
+// - Redux Hooks and APIs
+import { setSnackbar } from '../../../../store/slices/uiSlice';
+import { useChangePasswordMutation } from '../../../../services/authApi';
+import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
 
 const ChangePasswordForm = () => {
   const dispatch = useDispatch();
@@ -39,7 +47,8 @@ const ChangePasswordForm = () => {
     resolver: yupResolver(ChangePasswordValidator),
   });
 
-  const [changePassword, { isLoading, error, isSuccess,isError }] = useChangePasswordMutation();
+  const [changePassword, { isLoading, error, isSuccess, isError }] =
+    useChangePasswordMutation();
   useEffect(() => {
     if (isSuccess) {
       dispatch(
@@ -50,8 +59,7 @@ const ChangePasswordForm = () => {
         }),
       );
       navigate('/admin/settings/account');
-    }
-    else if (isError) {
+    } else if (isError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -60,13 +68,12 @@ const ChangePasswordForm = () => {
         }),
       );
     }
-  }, [error, dispatch, isError, isSuccess, navigate,isLoading]);
+  }, [error, dispatch, isError, isSuccess, navigate, isLoading]);
   const handlePasswordChange = async (formData) => {
-    console.log('Form Data:', formData);
     await changePassword({
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      }).unwrap();
+      currentPassword: formData.currentPassword,
+      newPassword: formData.newPassword,
+    }).unwrap();
   };
   return (
     <FormComponent
@@ -120,7 +127,7 @@ const ChangePasswordForm = () => {
                 Current Password{' '}
               </Typography>
               <TextField
-                id="currentPassword"
+                name="currentPassword"
                 variant="outlined"
                 fullWidth
                 type={isShowPassword ? 'text' : 'password'}
@@ -168,7 +175,7 @@ const ChangePasswordForm = () => {
                 New Password{' '}
               </Typography>
               <TextField
-                id="newPassword"
+                name="newPassword"
                 variant="outlined"
                 fullWidth
                 type={isShowPassword ? 'text' : 'password'}
@@ -216,7 +223,7 @@ const ChangePasswordForm = () => {
                 Confirm Password{' '}
               </Typography>
               <TextField
-                id="newPasswordConfirm"
+                name="newPasswordConfirm"
                 variant="outlined"
                 fullWidth
                 type={isShowPassword ? 'text' : 'password'}

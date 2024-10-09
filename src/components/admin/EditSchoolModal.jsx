@@ -29,8 +29,14 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import StyledButton from '../common/StyledMuiButton';
+
+// - Lucid Icons
 import { NotebookPen, Phone } from 'lucide-react';
+
+// - Custom Components
+import StyledButton from '../common/StyledMuiButton';
+import InputField from '../common/InputField';
+import PhoneInputField from '../common/PhoneInputField';
 
 const EditSchoolModal = ({ open, onClose }) => {
   // - State to store user data for the school
@@ -172,118 +178,40 @@ const EditSchoolModal = ({ open, onClose }) => {
           <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2 }}>
             <Grid item xs={12} sm={6}>
               {/* SCHOOL NAME INPUT */}
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 1,
-                }}
-              >
-                <Typography variant="body2" fontWeight="bold">
-                  School Name
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-
-                <Controller
-                  name="school_name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      variant="outlined"
-                      fullWidth
-                      {...field}
-                      error={!!errors.school_name}
-                      helperText={errors.school_name?.message}
-                      placeholder="Enter your school name"
-                      slotProps={{
-                        input: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <NotebookPen size={20} />
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </Box>
+              <InputField
+                name="school_name"
+                control={control}
+                label="School Name"
+                placeholder="Enter your school name"
+                errors={errors}
+                icon={NotebookPen}
+              />
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              {/* SCHOOL CONTACT INPUT */}
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 1,
-                }}
-              >
-                <Typography variant="body2" fontWeight="bold">
-                  School Contact
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-
-                <Controller
-                  name="school_phone_number"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      variant="outlined"
-                      fullWidth
-                      {...field}
-                      error={!!errors.school_phone_number}
-                      helperText={errors.school_phone_number?.message}
-                      placeholder="Enter your school contact"
-                      slotProps={{
-                        input: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Phone size={20} />
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </Box>
+              {/* SCHOOL CONTACT NUMBER INPUT WITH COUNTRY CODE */}
+              <PhoneInputField
+                name="school_phone_number"
+                control={control}
+                label="School Contact"
+                errors={errors}
+              />
             </Grid>
 
             <Grid item xs={12}>
               {/* SCHOOL ADDRESS INPUT */}
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 1,
-                }}
-              >
-                <Typography variant="body2" fontWeight="bold">
-                  School Street & Address
-                </Typography>
-
-                <Controller
-                  name="school_address"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      multiline
-                      minRows={5}
-                      variant="outlined"
-                      fullWidth
-                      {...field}
-                      error={!!errors.school_address}
-                      helperText={errors.school_address?.message}
-                      placeholder="Phnom Penh, Street 210, ..."
-                    />
-                  )}
-                />
-              </Box>
+              <InputField
+                name="school_address"
+                control={control}
+                label="Street Address"
+                placeholder="Phnom Penh, Street 210, ..."
+                errors={errors}
+                multiline
+                minRows={5}
+                required={false}
+              />
             </Grid>
+
             <Grid item xs={6}></Grid>
             <Grid item xs={6}>
               {/* BUTTONS */}
