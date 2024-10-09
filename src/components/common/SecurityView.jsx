@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Typography, Box, Button, Card } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import ChangePasswordForm from '../../pages/admin/setting/account/ChangePasswordForm';
 
 // Image and Icon
 import { Lock, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const SecurityView = ({ title, handleDeleteAccount }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
 
   const handleDeleteModal = () => {
     handleDeleteAccount();
-    setIsOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
   return (
@@ -50,11 +52,13 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
             For security reasons, we recommend changing your password regularly.
           </Typography>
         </Box>
-        <Link to={'change-password'}>
-          <StyledButton variant="outlined" startIcon={<Lock size={20} />}>
-            Change password
-          </StyledButton>
-        </Link>
+        <StyledButton
+          variant="outlined"
+          startIcon={<Lock size={20} />}
+          onClick={() => setIsChangePasswordModalOpen(true)}
+        >
+          Change password
+        </StyledButton>
       </Box>
 
       {/* DELETE ACCOUNT SECTION */}
@@ -81,7 +85,7 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
           variant="outlined"
           startIcon={<Trash2 size={20} />}
           color="error"
-          onClick={() => setIsOpen(true)}
+          onClick={() => setIsDeleteModalOpen(true)}
         >
           Delete account
         </StyledButton>
@@ -89,10 +93,16 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
 
       {/* DELETE CONFIRMATION MODAL */}
       <DeleteConfirmationModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteModal}
         itemName="Your account"
+      />
+
+      {/* CHANGE PASSWORD MODAL */}
+      <ChangePasswordForm
+        open={isChangePasswordModalOpen}
+        onClose={() => setIsChangePasswordModalOpen(false)}
       />
     </Box>
   );

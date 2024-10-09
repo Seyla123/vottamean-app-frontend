@@ -7,37 +7,31 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // - Material UI Components
 import {
-  Card,
   Typography,
   Box,
   Button,
   InputAdornment,
   TextField,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
-import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
-
-// - Custom Componenets
-import FormComponent from '../../../../components/common/FormComponent';
-import PasswordInput from '../../../../components/auth/PasswordInput';
-import { shadow } from '../../../../styles/global';
-
-// - Redux Hooks and APIs
 import { setSnackbar } from '../../../../store/slices/uiSlice';
-import { useChangePasswordMutation } from '../../../../services/authApi';
 import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
+import { useChangePasswordMutation } from '../../../../services/authApi';
+import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
+import StyledButton from '../../../../components/common/StyledMuiButton';
 
-const ChangePasswordForm = () => {
+const ChangePasswordForm = ({ open, onClose }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  // Hook form setup with Yup validation
   const {
     register,
     handleSubmit,
@@ -58,7 +52,7 @@ const ChangePasswordForm = () => {
           severity: 'success',
         }),
       );
-      navigate('/admin/settings/account');
+      onClose();
     } else if (isError) {
       dispatch(
         setSnackbar({
@@ -68,230 +62,152 @@ const ChangePasswordForm = () => {
         }),
       );
     }
-  }, [error, dispatch, isError, isSuccess, navigate, isLoading]);
+  }, [error, dispatch, isError, isSuccess, onClose]);
+
   const handlePasswordChange = async (formData) => {
     await changePassword({
       currentPassword: formData.currentPassword,
       newPassword: formData.newPassword,
     }).unwrap();
   };
+
   return (
-    <FormComponent
-      title={'Password Management'}
-      subTitle={
-        'To ensure the security of your account, we recommend changing your password periodically.'
-      }
-    >
-      <Card sx={shadow}>
-        <Box
-          component={'section'}
-          sx={{
-            margin: 'auto',
-            p: 5,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {/* FORM CONTAINTER */}
-          <Box
-            component={'div'}
-            sx={{
-              border: '1px solid #e0e0e0',
-              borderRadius: 2,
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              alignItems: 'start',
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Change Password</DialogTitle>
+      <DialogContent>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          To ensure the security of your account, we recommend changing your
+          password periodically.
+        </Typography>
+
+        {/* CURRENT PASSWORD INPUT */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
+            Current Password
+          </Typography>
+          <TextField
+            id="currentPassword"
+            variant="outlined"
+            fullWidth
+            type={isShowPassword ? 'text' : 'password'}
+            placeholder="Enter your current password."
+            {...register('currentPassword')}
+            error={!!errors.currentPassword}
+            helperText={
+              errors.currentPassword ? errors.currentPassword.message : ''
+            }
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <KeyRound size={20} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <IconButton onClick={togglePasswordVisibility} edge="end">
+                  {isShowPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <EyeIcon size={20} />
+                  )}
+                </IconButton>
+              ),
             }}
-          >
-            <Box component={'div'}>
-              <Typography variant="h6">Modify your new password</Typography>
-              <Typography variant="body1">
-                For security reasons, we recommend changing your password
-                regularly.
-              </Typography>
-            </Box>
-
-            {/* CURRENT PASSWORD INPUT */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-                maxWidth: '400px',
-              }}
-            >
-              <Typography variant="body1" fontWeight="bold">
-                Current Password{' '}
-              </Typography>
-              <TextField
-                name="currentPassword"
-                variant="outlined"
-                fullWidth
-                type={isShowPassword ? 'text' : 'password'}
-                placeholder="Enter your current password."
-                {...register('currentPassword')}
-                error={!!errors.currentPassword}
-                helperText={
-                  errors.currentPassword ? errors.currentPassword.message : ''
-                }
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <KeyRound size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <IconButton
-                        onClick={togglePasswordVisibility}
-                        size="icon"
-                      >
-                        {isShowPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
-                    ),
-                  },
-                }}
-              />
-            </Box>
-
-            {/* NEW PASSWORD INPUT */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-                maxWidth: '400px',
-              }}
-            >
-              <Typography variant="body1" fontWeight="bold">
-                New Password{' '}
-              </Typography>
-              <TextField
-                name="newPassword"
-                variant="outlined"
-                fullWidth
-                type={isShowPassword ? 'text' : 'password'}
-                placeholder="Enter your new password."
-                {...register('newPassword')}
-                error={!!errors.newPassword}
-                helperText={
-                  errors.newPassword ? errors.newPassword.message : ''
-                }
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <KeyRound size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <IconButton
-                        onClick={togglePasswordVisibility}
-                        size="icon"
-                      >
-                        {isShowPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
-                    ),
-                  },
-                }}
-              />
-            </Box>
-
-            {/* CONFIRM PASSWORD INPUT */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                width: '100%',
-                maxWidth: '400px',
-              }}
-            >
-              <Typography variant="body1" fontWeight="bold">
-                Confirm Password{' '}
-              </Typography>
-              <TextField
-                name="newPasswordConfirm"
-                variant="outlined"
-                fullWidth
-                type={isShowPassword ? 'text' : 'password'}
-                placeholder="Enter your new password."
-                {...register('newPasswordConfirm')}
-                error={!!errors.newPasswordConfirm}
-                helperText={
-                  errors.newPasswordConfirm
-                    ? errors.newPasswordConfirm.message
-                    : ''
-                }
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <KeyRound size={20} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <IconButton
-                        onClick={togglePasswordVisibility}
-                        size="icon"
-                      >
-                        {isShowPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <EyeIcon size={20} />
-                        )}
-                      </IconButton>
-                    ),
-                  },
-                }}
-              />
-            </Box>
-
-            {/* REQUIREMENT */}
-            <Box>
-              <Typography variant="body1" fontWeight="bold">
-                Password Requirements{' '}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <Typography variant="body1">
-                <Box component={'ul'} sx={{ mt: 1 }}>
-                  <Box component={'li'}>At least 8 characters.</Box>
-                  <Box component={'li'}>Contain at least one number.</Box>
-                  <Box component={'li'}>
-                    Contain at least one uppercase letter.
-                  </Box>
-                  <Box component={'li'}>
-                    Contain at least one special character.
-                  </Box>
-                </Box>
-              </Typography>
-            </Box>
-
-            {/* SUBMIT BUTTON */}
-            <Button
-              variant="contained"
-              onClick={handleSubmit(handlePasswordChange)}
-              disabled={isLoading}
-              size="large"
-            >
-              {isLoading ? 'Saving...' : 'Save changes'}
-            </Button>
-          </Box>
+          />
         </Box>
-      </Card>
-    </FormComponent>
+
+        {/* NEW PASSWORD INPUT */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
+            New Password
+          </Typography>
+          <TextField
+            id="newPassword"
+            variant="outlined"
+            fullWidth
+            type={isShowPassword ? 'text' : 'password'}
+            placeholder="Enter your new password."
+            {...register('newPassword')}
+            error={!!errors.newPassword}
+            helperText={errors.newPassword ? errors.newPassword.message : ''}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <KeyRound size={20} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <IconButton onClick={togglePasswordVisibility} edge="end">
+                  {isShowPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <EyeIcon size={20} />
+                  )}
+                </IconButton>
+              ),
+            }}
+          />
+        </Box>
+
+        {/* CONFIRM PASSWORD INPUT */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
+            Confirm Password
+          </Typography>
+          <TextField
+            id="newPasswordConfirm"
+            variant="outlined"
+            fullWidth
+            type={isShowPassword ? 'text' : 'password'}
+            placeholder="Confirm your new password."
+            {...register('newPasswordConfirm')}
+            error={!!errors.newPasswordConfirm}
+            helperText={
+              errors.newPasswordConfirm ? errors.newPasswordConfirm.message : ''
+            }
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <KeyRound size={20} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <IconButton onClick={togglePasswordVisibility} edge="end">
+                  {isShowPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <EyeIcon size={20} />
+                  )}
+                </IconButton>
+              ),
+            }}
+          />
+        </Box>
+
+        {/* REQUIREMENT */}
+        <Box>
+          <Typography variant="body1" fontWeight="bold">
+            Password Requirements{' '}
+            <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+          </Typography>
+          <Typography variant="body2" component="ul" sx={{ pl: 2 }}>
+            <li>At least 8 characters.</li>
+            <li>Contain at least one number.</li>
+            <li>Contain at least one uppercase letter.</li>
+            <li>Contain at least one special character.</li>
+          </Typography>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <StyledButton onClick={onClose}>Cancel</StyledButton>
+        <StyledButton
+          variant="contained"
+          onClick={handleSubmit(handlePasswordChange)}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Saving...' : 'Save changes'}
+        </StyledButton>
+      </DialogActions>
+    </Dialog>
   );
 };
 

@@ -309,10 +309,10 @@ const routesConfig = [
                 path: '',
                 element: <AccountSettingsPage />,
               },
-              {
-                path: 'change-password',
-                element: <ChangePasswordForm />,
-              },
+              // {
+              //   path: 'change-password',
+              //   element: <ChangePasswordForm />,
+              // },
               {
                 path: 'update-me',
                 element: <UserUpdatePage />,
