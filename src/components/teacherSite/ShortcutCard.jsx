@@ -4,12 +4,12 @@ import { shadow } from '../../styles/global';
 import StyledButton from '../common/StyledMuiButton';
 import { Link } from 'react-router-dom';
 
-const ShortcutCard = ({ title, description, icon, href }) => {
+const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
   return (
     <Paper sx={shadow}>
-      <Box p={1} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+      <Box p={3} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         {/* Image */}
-        <Box sx={{ width: '250px' }}>
+        <Box sx={{ width: '250px', display: { xs: 'none', md: 'block' } }}>
           <img
             src={icon}
             alt="icon"
@@ -30,7 +30,7 @@ const ShortcutCard = ({ title, description, icon, href }) => {
           <Typography variant="body2">{description}</Typography>
           <Link to={href}>
             <StyledButton variant={'contained'} sx={{ mt: 3 }}>
-              View Class
+              {buttonText}
             </StyledButton>
           </Link>
         </>

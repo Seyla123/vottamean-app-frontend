@@ -90,16 +90,30 @@ const TeacherDashboardPage = () => {
         </Grid>
 
         <Grid item xs={12} md={8}>
-          <ShortcutCard
-            title={
-              'Meet your customers on their preferred communication channel'
-            }
-            description={
-              'Expand your reach and push contacts closer to purchase with multichannel campaigns: email, WhatsApp, SMS, Web Push...'
-            }
-            icon={checkListIcon}
-            href={'/teacher/classes'}
-          />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <ShortcutCard
+              title={
+                'Meet your customers on their preferred communication channel'
+              }
+              description={
+                'Expand your reach and push contacts closer to purchase with multichannel campaigns: email, WhatsApp, SMS, Web Push...'
+              }
+              icon={checkListIcon}
+              href={'/teacher/classes'}
+              buttonText={'View Class'}
+            />
+            <ShortcutCard
+              title={
+                'Meet your customers on their preferred communication channel'
+              }
+              description={
+                'Expand your reach and push contacts closer to purchase with multichannel campaigns: email, WhatsApp, SMS, Web Push...'
+              }
+              icon={teacherIcon}
+              href={'/teacher/settings/account'}
+              buttonText={'View Teacher'}
+            />
+          </Box>
         </Grid>
         <Grid item xs={12} md={4}>
           <DateCalendarCard />
