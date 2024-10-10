@@ -25,6 +25,8 @@ const StudentDetailPage = () => {
 
   // Redux API call to get student details
   const { data: student, isLoading } = useGetStudentsByIdQuery(id);
+  console.log('student : ', student?.data?.Info);
+
   const [
     deleteStudent,
     {
@@ -39,15 +41,16 @@ const StudentDetailPage = () => {
   const [studentData, setStudentData] = useState({
     studentProfile: {},
     guardianProfile: {},
-    img: '',
+    photo: '',
   });
 
   useEffect(() => {
     if (student) {
       console.log(student);
       const transformedData = StudentProfile(student.data);
-      setStudentData(transformedData); // Store transformed data locally
-      dispatch(updateFormData(transformedData)); // Dispatch to form state
+      setStudentData(transformedData);
+      console.log('Transformed Data:', transformedData);
+      dispatch(updateFormData(transformedData));
       console.log(transformedData);
     }
   }, [student, dispatch]);
@@ -125,7 +128,7 @@ const StudentDetailPage = () => {
             <Stack direction={'column'} gap={2}>
               <CardComponent
                 title={'Student Information'}
-                imgUrl={studentData.img || '/path-to-default-image.png'}
+                imgUrl={studentData.photo || '/path-to-default-image.png'}
                 handleEdit={handleUpdateStudent}
                 handleDelete={clickDeleteStudent}
               >

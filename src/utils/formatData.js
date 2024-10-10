@@ -289,14 +289,14 @@ export function guardianData(guardian) {
 
 // Combined User and School Profile Data
 export const StudentProfile = (student) => {
-  // const info = student.Info;
+  const info = student.Info;
   const studentProfile = studentsData(student);
   const guardianProfile = guardianData(student);
 
   return {
     studentProfile,
     guardianProfile,
-    // img: info.photo,
+    photo: info.photo,
   };
 };
 

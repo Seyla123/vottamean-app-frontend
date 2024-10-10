@@ -5,6 +5,7 @@ import DataTable from '../../components/common/DataTable';
 import { Box } from '@mui/material';
 import {
   useDeleteStudentMutation,
+  useDeleteManyStudentsMutation,
   useGetAllStudentsQuery,
 } from '../../services/studentApi';
 import DeleteConfirmationModal from '../../components/common/DeleteConfirmationModal';
@@ -25,8 +26,8 @@ const StudentListTable = () => {
   const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
   const [rows, setRows] = useState([]);
-
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedStudents, setSelectedStudents] = useState([]); // Track selected students
 
   // Fetch students using the API hook
   const { data, isLoading, isError, isSuccess } = useGetAllStudentsQuery({});
@@ -41,6 +42,15 @@ const StudentListTable = () => {
     },
   ] = useDeleteStudentMutation();
 
+  const [
+    deleteManyStudents,
+    {
+      isLoading: isDeletingMany,
+      isSuccess: isDeleteManySuccess,
+      isError: isDeleteManyError,
+    },
+  ] = useDeleteManyStudentsMutation(); // Add mutation for deleting many students
+
   useEffect(() => {
     if (isSuccess && data) {
       const formattedStudents = formatStudentsList(data.data);
@@ -48,7 +58,7 @@ const StudentListTable = () => {
     }
   }, [isSuccess, data, dispatch]);
 
-  //If loading is error, show error message
+  // If loading is error, show error message
   if (isError) {
     console.log('error message :', error.data.message);
   }
@@ -58,9 +68,7 @@ const StudentListTable = () => {
     navigate(`/admin/students/update/${row.id}`);
   };
 
-  // When the delete is in progress, show a snackbar with a message "Deleting..."
-  // When the delete is failed, show a snackbar with an error message
-  // When the delete is successful, show a snackbar with a success message and navigate to the class list page
+  // Snackbar handling for delete operations
   useEffect(() => {
     if (isDeleting) {
       dispatch(
@@ -83,23 +91,82 @@ const StudentListTable = () => {
         }),
       );
       navigate('/admin/students');
+    } else if (isDeletingMany) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleting selected students...',
+          severity: 'info',
+        }),
+      );
+    } else if (isDeleteManyError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Error deleting selected students.',
+          severity: 'error',
+        }),
+      );
+    } else if (isDeleteManySuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Selected students deleted successfully.',
+          severity: 'success',
+        }),
+      );
+      navigate('/admin/students');
     }
-  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
+  }, [
+    dispatch,
+    isDeleteError,
+    isDeleteSuccess,
+    isDeleting,
+    isDeletingMany,
+    isDeleteManyError,
+    isDeleteManySuccess,
+  ]);
 
   // Handle delete clicked
   const handleDelete = (row) => {
     setSelectedStudent(row.id);
     dispatch(setModal({ open: true }));
+    console.log('Preparing to delete student:', row);
   };
-  // handle confirm deletion
+
+  // Handle confirm deletion of a single student
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
     await deleteStudent(selectedStudent).unwrap();
   };
+
   // Handle for delete All
   const handleSelectedDelete = () => {
-    console.log('Delete all');
+    if (selectedStudents.length > 0) {
+      dispatch(setModal({ open: true }));
+    } else {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No students selected for deletion.',
+          severity: 'warning',
+        }),
+      );
+    }
   };
+
+  // Handle confirm deletion of selected students
+  const handleDeleteManyConfirmed = async () => {
+    dispatch(setModal({ open: false }));
+    console.log('Deleting students with IDs:', selectedStudents);
+    try {
+      await deleteManyStudents(selectedStudents).unwrap();
+      setSelectedStudents([]);
+    } catch (error) {
+      console.error('Error deleting students:', error);
+    }
+  };
+
   const handleView = (row) => {
     navigate(`/admin/students/${row.id}`);
   };
@@ -118,6 +185,7 @@ const StudentListTable = () => {
         onDelete={handleDelete}
         onView={handleView}
         onSelectedDelete={handleSelectedDelete}
+        setSelectedStudents={setSelectedStudents}
         emptyTitle={'No Student'}
         emptySubTitle={'No Student Available'}
       />
@@ -125,8 +193,12 @@ const StudentListTable = () => {
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
-        onConfirm={handleDeleteConfirmed}
-        itemName="Student"
+        onConfirm={
+          selectedStudents.length > 0
+            ? handleDeleteManyConfirmed
+            : handleDeleteConfirmed
+        } // Check if many students are selected
+        itemName={selectedStudents.length > 0 ? 'Students' : 'Student'}
       />
     </Box>
   );

@@ -1,19 +1,19 @@
-// React and third-party libraries
+// - React and third-party libraries
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-// Mui Component
+// - Mui Component
 import { Box, Stepper, Step, StepLabel, Card, Typography } from '@mui/material';
 import { useTheme, useMediaQuery } from '@mui/material';
 
-// Icon from lucide
+// - Icon from lucide
 import { User, KeyRound } from 'lucide-react';
 
-// Redux Hooks and APIs
+// - Redux Hooks and APIs
 import { updateFormData } from '../../store/slices/studentSlice';
 
-// Custom Components
+// - Custom Components
 import StudentForm from './StudentForm';
 import GuardianForm from './GuardianForm';
 import { shadow } from '../../styles/global';
@@ -141,6 +141,7 @@ function FormInfoStudent() {
             overflowY: 'auto',
           }}
         >
+          {/* Render the form component based on the active step */}
           {stepFormComponents[activeStep]}
         </Box>
       </Card>

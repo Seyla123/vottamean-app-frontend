@@ -1,27 +1,29 @@
+// - React and third-party libraries
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 
-// Material UI components
+// - Material UI components
 import { Box, Button, Stack } from '@mui/material';
 
 // - Material UI and Lucid Icons
 import { Mail, UserRoundPen } from 'lucide-react';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 
-// Custom components
+// - Custom components
 import SubHeader from '../teacher/SubHeader';
 import InputField from '../common/InputField';
 import PhoneInputField from '../common/PhoneInputField';
 import LoadingCircle from '../../components/loading/LoadingCircle';
 import { GuardianValidator } from '../../validators/validationSchemas';
 
-// Redux Slices
+// - Redux Slices
 import { setSnackbar } from '../../store/slices/uiSlice';
+import { resetFormData } from '../../store/slices/studentSlice';
 
-// API Hooks
+// - Student API
 import { useCreateStudentMutation } from '../../services/studentApi';
 
 const GuardianForm = ({ handleBack, handleFormChange }) => {
@@ -30,15 +32,16 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
   const navigate = useNavigate();
   const studentData = useSelector((state) => state.student);
 
-  // Create Student API
+  // - Create Student API
   const [createStudent, { isLoading, isError, error, isSuccess }] =
     useCreateStudentMutation();
 
-  // Form control using react-hook-form and yup validation
+  // - Form control using react-hook-form and yup validation
   const {
     control,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(GuardianValidator),
@@ -51,7 +54,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
     },
   });
 
-  // Load existing student data if available
+  // - Load existing student data if available
   useEffect(() => {
     if (studentData) {
       setValue('guardian_first_name', studentData.guardian_first_name || '');
@@ -68,19 +71,23 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
     }
   }, [studentData, setValue]);
 
-  // Form submission handler
+  // - Form submission handler
   const onSubmit = async (data) => {
     const combinedData = { ...studentData, ...data };
     handleFormChange(combinedData);
 
     try {
       await createStudent(combinedData).unwrap();
+
+      // - Reset the form and Redux form data after successful submission
+      reset();
+      dispatch(resetFormData());
     } catch (err) {
       console.error('Failed to create student:', err);
     }
   };
 
-  // Snackbar notifications based on API status
+  // - Snackbar notifications based on API status
   useEffect(() => {
     if (isLoading) {
       dispatch(
@@ -113,7 +120,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
     }
   }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
 
-  // Display loading state
+  // - Display loading state
   if (isLoading) return <LoadingCircle />;
 
   return (
@@ -143,6 +150,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
             />
           </Box>
 
+          {/* GUARDIAN CONTACT INFORMATION */}
           <Box display="flex" flexDirection="row" sx={boxContainer}>
             {/* Guardian Phone Number */}
             <PhoneInputField
@@ -170,6 +178,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
             placeholder="Relationship"
             errors={errors}
             icon={Diversity1Icon}
+            required={false}
           />
 
           {/* Action Buttons */}
