@@ -7,12 +7,7 @@ import EditSchoolModal from '../admin/EditSchoolModal';
 import { grey } from '@mui/material/colors';
 import AlertCard from './AlertCard';
 
-const MyProfileView = ({
-  title,
-  profilePhoto,
-  userData,
-  schoolProfileData,
-}) => {
+const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
   const [openModal, setOpenModal] = useState(null);
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
@@ -35,13 +30,18 @@ const MyProfileView = ({
         height: '100%',
       }}
     >
-      <Typography variant="h5" component="h5" fontWeight="bold">
-        {title}
-      </Typography>
-
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={6}>
-          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+          {/* <ProfileSection profilePhoto={profilePhoto} userData={userData} /> */}
+          <InformationSection
+            title="Personal Details"
+            data={userData}
+            onEdit={() => handleOpenModal('account')}
+            infoType="personal"
+            disableEdit={true}
+            profilePhoto={profilePhoto}
+            userData={userData}
+          />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           {checkUserRole === 'admin' ? (
@@ -55,15 +55,6 @@ const MyProfileView = ({
               description="As a teacher, you can access course management tools, track student progress, and customize learning materials. This feature enables you to create engaging and effective learning environments tailored to your student's needs."
             />
           )}
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}>
-          <InformationSection
-            title="Personal Details"
-            data={userData}
-            onEdit={() => handleOpenModal('account')}
-            infoType="personal"
-            disableEdit={true}
-          />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           {schoolProfileData && (

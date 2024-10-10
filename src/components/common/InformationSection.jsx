@@ -12,14 +12,13 @@ import {
 import StyledButton from './StyledMuiButton';
 import {
   PencilLine as EditIcon,
-  Mail as EmailIcon,
   Phone as PhoneIcon,
   MapPin as Location,
   User2 as PersonIcon,
   Cake as CakeIcon,
   School as SchoolIcon,
-  IdCard as IdCardIcon,
 } from 'lucide-react';
+import ProfileSection from './ProfileSection';
 
 const InfoItem = ({ icon, label, value }) => (
   <Grid item xs={12}>
@@ -42,11 +41,16 @@ const InfoItem = ({ icon, label, value }) => (
           sx={{ display: 'flex', alignItems: 'center' }}
         >
           <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                color: 'text.secondary',
+              }}
+            >
               {icon}
-              <Typography variant="body1" color="text.secondary">
-                {label}
-              </Typography>
+              <Typography variant="body1">{label}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -64,6 +68,8 @@ const InformationSection = ({
   onEdit,
   infoType,
   disableEdit = true,
+  profilePhoto = null,
+  userData = null,
 }) => {
   const getInfoItems = () => {
     if (infoType === 'personal') {
@@ -124,8 +130,7 @@ const InformationSection = ({
           height: '100%',
         }}
       >
-        <Box>
-          <Divider sx={{ mb: 2 }} />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Box
             sx={{
               display: 'flex',
@@ -133,7 +138,6 @@ const InformationSection = ({
               justifyContent: 'space-between',
               alignItems: 'center',
               gap: 2,
-              height: '50px',
             }}
           >
             <Typography variant="h6" sx={{ height: '100%' }}>
@@ -151,6 +155,9 @@ const InformationSection = ({
               </StyledButton>
             )}
           </Box>
+          {profilePhoto && (
+            <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+          )}
         </Box>
 
         <Grid container spacing={1} mt={1}>

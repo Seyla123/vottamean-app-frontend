@@ -4,13 +4,7 @@ import { BadgeCheck } from 'lucide-react';
 
 const AlertCard = ({ title, description }) => {
   return (
-    <Alert
-      icon={<BadgeCheck size={20} />}
-      sx={{
-        height: '100%',
-      }}
-      severity="success"
-    >
+    <Alert icon={<BadgeCheck size={20} />} severity="success">
       <AlertTitle>{title}</AlertTitle>
       {description}
     </Alert>

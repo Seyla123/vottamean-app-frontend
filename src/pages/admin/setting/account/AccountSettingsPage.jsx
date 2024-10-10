@@ -136,7 +136,6 @@ const AccountSettingsPage = () => {
             <TabPanel sx={{ flexGrow: 1 }} value="1">
               {/* MY PROFILE VIEW */}
               <MyProfileView
-                title={'Profile'}
                 profilePhoto={userData.photo}
                 userData={userData.userProfile}
                 schoolProfileData={userData.schoolProfile}
