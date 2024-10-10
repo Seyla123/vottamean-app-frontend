@@ -55,6 +55,7 @@ import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsP
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
 import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
+import AttendanceListPage from '../pages/admin/report/attendance/AttendanceListPage';
 
 import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
@@ -332,12 +333,16 @@ const routesConfig = [
             children: [
               {
                 path: '',
-                element: <AttendanceReportPage />,
+                element: <AttendanceListPage />,
               },
               {
                 path: ':id',
                 element: <AttendanceViewPage />,
               },
+              {
+                path:'reports',
+                element: <AttendanceReportPage />
+              }
             ],
           },
         ],
