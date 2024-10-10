@@ -146,7 +146,7 @@ const AccountSettingsPage = () => {
             <TabPanel sx={{ flexGrow: 1 }} value="2">
               {/* SECURITY VIEW */}
               <SecurityView
-                title={'Security'}
+                title={'Account'}
                 handleDeleteAccount={handleDeleteAccount}
               />
             </TabPanel>

@@ -27,6 +27,8 @@ const TeacherDashboardPage = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading user data</div>;
 
+  console.log(user);
+
   const { first_name, last_name, gender, photo } =
     user.data.teacherProfile.Info;
   const { school_name } = user.data.teacherProfile.School;

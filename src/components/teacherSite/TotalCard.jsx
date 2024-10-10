@@ -2,6 +2,9 @@ import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import { Box, Grid, Typography } from '@mui/material';
+import StyledButton from '../common/StyledMuiButton';
+import { ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const TotalCard = ({ amount }) => {
   return (
@@ -27,6 +30,11 @@ const TotalCard = ({ amount }) => {
           <Typography variant="body1" gutterBottom>
             {amount}
           </Typography>
+          <Link to={''}>
+            <StyledButton endIcon={<ArrowUpRight size={16} />} size="small">
+              See all
+            </StyledButton>
+          </Link>
         </Grid>
 
         {/* People avatars */}
