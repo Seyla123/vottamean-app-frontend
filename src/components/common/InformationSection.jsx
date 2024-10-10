@@ -133,12 +133,16 @@ const InformationSection = ({
               justifyContent: 'space-between',
               alignItems: 'center',
               gap: 2,
+              height: '50px',
             }}
           >
-            <Typography variant="h6">{title}</Typography>
+            <Typography variant="h6" sx={{ height: '100%' }}>
+              {title}
+            </Typography>
             {disableEdit && (
               <StyledButton
                 variant="outlined"
+                size="small"
                 startIcon={<EditIcon size={18} />}
                 onClick={onEdit}
                 sx={{ width: { xs: '100%', sm: 'auto' } }}

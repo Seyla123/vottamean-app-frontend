@@ -4,6 +4,7 @@ import ProfileSection from './ProfileSection';
 import InformationSection from './InformationSection';
 import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
+import { grey } from '@mui/material/colors';
 
 const MyProfileView = ({
   title,
@@ -44,11 +45,10 @@ const MyProfileView = ({
         <Grid item xs={12} sm={12} md={6}>
           <Box
             sx={{
-              border: '1px solid',
-              borderColor: 'divider',
               height: 1,
               borderRadius: 2,
               p: 3,
+              backgroundColor: grey[200],
             }}
           >
             Payment Methods ACELEDA ABA
