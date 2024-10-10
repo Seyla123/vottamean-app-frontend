@@ -1,15 +1,11 @@
-// React and third-party libraries
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
-
-// Material UI components
 import { MenuItem, Box, Typography, Select } from '@mui/material';
 import { UserRoundPen } from 'lucide-react';
 
-// Custom Components
 import DOBPicker from '../common/DOBPicker';
 import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
@@ -17,36 +13,38 @@ import GenderSelect from '../common/GenderSelect';
 import StyledButton from '../common/StyledMuiButton';
 import SubHeader from '../teacher/SubHeader';
 
-// Redux Hooks and APIs
 import { useGetClassesDataQuery } from '../../services/classApi';
 import { updateFormData } from '../../store/slices/studentSlice';
 
-// Validator
 import { StudentValidator } from '../../validators/validationSchemas';
 
 const StudentForm = ({ handleNext, handleFormChange }) => {
   const studentData = useSelector((state) => state.student);
   const dispatch = useDispatch();
-  const { data: classData } = useGetClassesDataQuery();
+  const {
+    data: classData,
+    isLoading: isClassDataLoading,
+    error: classDataError,
+  } = useGetClassesDataQuery();
 
   const [dob, setDob] = useState(
     studentData.dob ? dayjs(studentData.dob) : null,
   );
-
-  // Load class data for the class dropdown
   const [rows, setRows] = useState([]);
+  const [isRowsLoading, setIsRowsLoading] = useState(true);
+
   useEffect(() => {
     if (classData && Array.isArray(classData.data)) {
       setRows(
         classData.data.map((classItem) => ({
-          value: classItem.class_id,
+          value: String(classItem.class_id),
           label: classItem.class_name,
         })),
       );
+      setIsRowsLoading(false);
     }
   }, [classData]);
 
-  // Use react-hook-form to manage all form state, including DOB
   const {
     control,
     handleSubmit,
@@ -54,41 +52,61 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
     setValue,
   } = useForm({
     resolver: yupResolver(StudentValidator),
-    defaultValues: studentData,
+    defaultValues: {
+      first_name: studentData.first_name || '',
+      last_name: studentData.last_name || '',
+      gender: studentData.gender || '',
+      class_id: studentData.class_id ? String(studentData.class_id) : '',
+      phone_number: studentData.phone_number || '',
+      address: studentData.address || '',
+      dob: studentData.dob || '',
+    },
   });
 
-  // Update form values when studentData changes
   useEffect(() => {
     if (studentData) {
-      setValue('first_name', studentData.first_name);
-      setValue('last_name', studentData.last_name);
-      setValue('gender', studentData.gender);
-      setValue('class_id', studentData.class_id);
-      setValue('phone_number', studentData.phone_number);
-      setValue('address', studentData.address);
+      setValue('first_name', studentData.first_name || '');
+      setValue('last_name', studentData.last_name || '');
+      setValue('gender', studentData.gender || '');
+      const classId = String(studentData.class_id);
+      const isClassIdValid = rows.some((row) => row.value === classId);
+      setValue('class_id', isClassIdValid ? classId : '');
+      setValue('phone_number', studentData.phone_number || '');
+      setValue('address', studentData.address || '');
       setDob(studentData.dob ? dayjs(studentData.dob) : null);
     }
-  }, [studentData, setValue]);
+  }, [studentData, setValue, rows]);
 
   // Handle form submission
   const onSubmit = (data) => {
-    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
+    // Ensure DOB is formatted correctly before submitting
+    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : null;
+
+    // Add the formatted DOB to the form data
     const updatedData = {
       ...data,
-      dob: formattedDob,
+      dob: formattedDob, // Ensure dob is always in YYYY-MM-DD format
     };
 
+    // Dispatch and move to the next step
     dispatch(updateFormData(updatedData));
     handleFormChange(updatedData);
     handleNext();
   };
+
+  if (isClassDataLoading || isRowsLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (classDataError) {
+    return <Typography color="error">Failed to load classes.</Typography>;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box sx={profileBox}>
         <SubHeader title="Student Information" />
 
-        {/* Input Fields */}
         <Box display="flex" flexDirection="row" sx={boxContainer}>
           <InputField
             name="first_name"
@@ -108,7 +126,6 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
           />
         </Box>
 
-        {/* Gender and Date of Birth */}
         <Box display="flex" flexDirection="row" sx={boxContainer}>
           <GenderSelect
             control={control}
@@ -126,7 +143,6 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
           />
         </Box>
 
-        {/* Class Select */}
         <Box sx={{ ...textFieldGap, width: '100%' }}>
           <Typography variant="body2" fontWeight="bold">
             Class <span style={{ color: 'red' }}>*</span>
@@ -136,7 +152,15 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <Select {...field} value={field.value || ''}>
+              <Select
+                {...field}
+                value={field.value || ''}
+                onChange={(e) => setValue('class_id', e.target.value)}
+                displayEmpty
+              >
+                <MenuItem value="" disabled>
+                  Select Class
+                </MenuItem>
                 {rows.length > 0 ? (
                   rows.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
@@ -145,15 +169,19 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
                   ))
                 ) : (
                   <MenuItem value="" disabled>
-                    No Class
+                    No Class Available
                   </MenuItem>
                 )}
               </Select>
             )}
           />
+          {errors.class_id && (
+            <Typography color="error" variant="caption">
+              {errors.class_id.message}
+            </Typography>
+          )}
         </Box>
 
-        {/* Phone Number and Address */}
         <Box sx={{ ...textFieldGap, width: '100%' }}>
           <PhoneInputField
             name="phone_number"
@@ -173,7 +201,6 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
           />
         </Box>
 
-        {/* Action Buttons */}
         <Box
           sx={{
             display: 'flex',
@@ -198,6 +225,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
 
 export default StudentForm;
 
+// Styles
 const profileBox = {
   width: '100%',
   bgcolor: '#ffffff',
