@@ -13,7 +13,7 @@ const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
           <img
             src={icon}
             alt="icon"
-            style={{ width: '100%', objectFit: 'contain' }}
+            style={{ width: '200px', objectFit: 'cover' }}
           />
         </Box>
         {/* Title and Description */}
@@ -27,7 +27,9 @@ const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Typography variant="body2">{description}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {description}
+          </Typography>
           <Link to={href}>
             <StyledButton variant={'contained'} sx={{ mt: 3 }}>
               {buttonText}
