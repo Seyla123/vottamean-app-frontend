@@ -3,7 +3,13 @@ import { Box, Typography } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { MuiTelInput } from 'mui-tel-input';
 
-const PhoneInputField = ({ name, control, label, errors }) => {
+const PhoneInputField = ({
+  name,
+  control,
+  label,
+  errors,
+  disabled = false,
+}) => {
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}
@@ -24,6 +30,7 @@ const PhoneInputField = ({ name, control, label, errors }) => {
             helperText={errors[name]?.message}
             error={!!errors[name]}
             fullWidth
+            disabled={disabled}
           />
         )}
       />

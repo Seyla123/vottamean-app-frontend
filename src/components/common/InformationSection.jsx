@@ -58,7 +58,13 @@ const InfoItem = ({ icon, label, value }) => (
   </Grid>
 );
 
-const InformationSection = ({ title, data, onEdit, infoType }) => {
+const InformationSection = ({
+  title,
+  data,
+  onEdit,
+  infoType,
+  disableEdit = true,
+}) => {
   const getInfoItems = () => {
     if (infoType === 'personal') {
       return [
@@ -130,14 +136,16 @@ const InformationSection = ({ title, data, onEdit, infoType }) => {
             }}
           >
             <Typography variant="h6">{title}</Typography>
-            <StyledButton
-              variant="outlined"
-              startIcon={<EditIcon size={18} />}
-              onClick={onEdit}
-              sx={{ width: { xs: '100%', sm: 'auto' } }}
-            >
-              Edit
-            </StyledButton>
+            {disableEdit && (
+              <StyledButton
+                variant="outlined"
+                startIcon={<EditIcon size={18} />}
+                onClick={onEdit}
+                sx={{ width: { xs: '100%', sm: 'auto' } }}
+              >
+                Edit
+              </StyledButton>
+            )}
           </Box>
         </Box>
 

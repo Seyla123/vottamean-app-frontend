@@ -20,6 +20,8 @@ const MyProfileView = ({
     setOpenModal(null);
   };
 
+  const checkUserRole = userData?.userRole;
+
   return (
     <Box
       component={'section'}
@@ -49,9 +51,7 @@ const MyProfileView = ({
               p: 3,
             }}
           >
-            Payment Methods
-            ACELEDA
-            ABA
+            Payment Methods ACELEDA ABA
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
@@ -60,6 +60,7 @@ const MyProfileView = ({
             data={userData}
             onEdit={() => handleOpenModal('account')}
             infoType="personal"
+            disableEdit={true}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
@@ -69,12 +70,13 @@ const MyProfileView = ({
               data={schoolProfileData}
               onEdit={() => handleOpenModal('school')}
               infoType="school"
+              disableEdit={false}
             />
           )}
         </Grid>
       </Grid>
 
-      {/* Modals */}
+      {/* MODAL */}
       {openModal === 'account' && (
         <EditAccountModal
           open={true}
@@ -82,6 +84,7 @@ const MyProfileView = ({
           profilePhoto={profilePhoto}
           userName={userData.userName}
           userGender={userData.userGender}
+          checkUserRole={checkUserRole}
         />
       )}
       {openModal === 'school' && schoolProfileData && (

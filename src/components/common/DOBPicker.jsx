@@ -7,7 +7,15 @@ import { Box, Typography, InputAdornment } from '@mui/material';
 import { Calendar } from 'lucide-react';
 import dayjs from 'dayjs';
 
-const DOBPicker = ({ control, errors, name, dob, setDob, defaultValue }) => {
+const DOBPicker = ({
+  control,
+  errors,
+  name,
+  dob,
+  setDob,
+  defaultValue,
+  disabled = false,
+}) => {
   // - Convert the defaultValue to a dayjs object if it exists
   const initialDob = dob
     ? dayjs(dob)
@@ -30,6 +38,7 @@ const DOBPicker = ({ control, errors, name, dob, setDob, defaultValue }) => {
             defaultValue={initialDob}
             render={({ field }) => (
               <DatePicker
+                disabled={disabled}
                 {...field}
                 value={initialDob}
                 onChange={(newValue) => {

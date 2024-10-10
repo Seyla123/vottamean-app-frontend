@@ -55,6 +55,7 @@ const EditAccountModal = ({
   profilePhoto,
   userName,
   userGender,
+  checkUserRole,
 }) => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
@@ -112,11 +113,6 @@ const EditAccountModal = ({
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
-
-  // Function to generate DiceBear URL
-  const generateAvatarUrl = (username, gender) => {
-    return `https://api.dicebear.com/6.x/big-smile/svg?seed=${encodeURIComponent(username)}&gender=${encodeURIComponent(gender)}`;
-  };
 
   // - Handle image file selection and preview
   const handleFileChange = (e) => {
@@ -319,6 +315,7 @@ const EditAccountModal = ({
                   placeholder="First Name"
                   errors={errors}
                   icon={UserRoundPen}
+                  disabled={true}
                 />
               </Grid>
 
@@ -331,6 +328,7 @@ const EditAccountModal = ({
                   placeholder="Last Name"
                   errors={errors}
                   icon={UserRoundPen}
+                  disabled={true}
                 />
               </Grid>
 
@@ -341,6 +339,7 @@ const EditAccountModal = ({
                   control={control}
                   label="Contact Number"
                   errors={errors}
+                  disabled={true}
                 />
               </Grid>
 
@@ -354,6 +353,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={MapPin}
                   required={false}
+                  disabled={true}
                 />
               </Grid>
 
@@ -365,6 +365,7 @@ const EditAccountModal = ({
                   name="gender"
                   label="Gender"
                   defaultValue={originalData?.gender}
+                  disabled={true}
                 />
               </Grid>
 
@@ -375,6 +376,7 @@ const EditAccountModal = ({
                   errors={errors}
                   name="dob"
                   dob={dob}
+                  disabled={true}
                   setDob={setDob}
                   defaultValue={
                     originalData?.dob ? dayjs(originalData.dob) : null
