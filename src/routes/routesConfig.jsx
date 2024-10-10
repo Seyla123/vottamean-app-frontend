@@ -9,7 +9,6 @@ import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 // Payment
-import PaymentPage from '../pages/payment/PaymentPage';
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
 import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
 import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
