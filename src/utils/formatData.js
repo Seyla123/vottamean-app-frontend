@@ -280,7 +280,7 @@ export function studentsData(student) {
 // GuardianData Formatted
 export function guardianData(guardian) {
   return {
-    "Guardian's Name": guardian.guardian_name || 'N/A',
+    "Guardian's Name": `${guardian.guardian_first_name || 'N/A'} ${guardian.guardian_last_name || 'N/A'}`,
     Relationship: guardian.guardian_relationship || 'N/A',
     Phone: formatPhoneNumber(guardian.guardian_phone_number),
     Email: guardian.guardian_email,
@@ -289,14 +289,14 @@ export function guardianData(guardian) {
 
 // Combined User and School Profile Data
 export const StudentProfile = (student) => {
-  // const info = student.Info;
+  const info = student.Info;
   const studentProfile = studentsData(student);
   const guardianProfile = guardianData(student);
 
   return {
     studentProfile,
     guardianProfile,
-    // img: info.photo,
+    photo: info.photo,
   };
 };
 

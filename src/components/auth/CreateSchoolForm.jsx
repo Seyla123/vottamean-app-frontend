@@ -43,7 +43,6 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
       setValue('school_phone_number', formData.school_phone_number);
       setValue('school_address', formData.school_address);
     }
-    console.log('Form Data to backend :', formData);
   }, [formData, setValue]);
 
   useEffect(() => {

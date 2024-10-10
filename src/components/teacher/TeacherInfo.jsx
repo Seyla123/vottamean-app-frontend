@@ -26,7 +26,6 @@ import { useNavigate } from 'react-router-dom';
 // Custom components
 import SubHeader from './SubHeader';
 
-
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);

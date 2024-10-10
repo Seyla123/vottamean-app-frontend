@@ -2,8 +2,8 @@ import { baseApi } from './baseApi';
 
 export const studentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Fetch classes data
-    getStudentsData: builder.query({
+    // Fetch all students' data
+    getAllStudents: builder.query({
       query: () => ({
         url: 'students',
         method: 'GET',
@@ -11,7 +11,8 @@ export const studentApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Students'],
     }),
-    //GEt class by id
+
+    // Fetch student data by ID
     getStudentsById: builder.query({
       query: (id) => ({
         url: `students/${id}`,
@@ -20,41 +21,58 @@ export const studentApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Students'],
     }),
-    //Post Class
-    postStudentsData: builder.mutation({
+
+    // Create a new student
+    createStudent: builder.mutation({
       query: (data) => ({
-        url: `students`,
+        url: 'students',
         method: 'POST',
         body: data,
         credentials: 'include',
       }),
       invalidatesTags: ['Students'],
     }),
-    //Update Class
-    updateStudentsData: builder.mutation({
-      query: ({id, studentData}) => ({
+
+    // Update an existing student's information
+    updateStudent: builder.mutation({
+      query: ({ id, updates }) => ({
         url: `students/${id}`,
-        method: 'PUT',
-        body: studentData,
+        method: 'PATCH',
+        body: updates,
         credentials: 'include',
       }),
       invalidatesTags: ['Students'],
     }),
-      //Delete Class
-  deleteStudentsData: builder.mutation({
-    query: (id) => ({
-      url: `students/${id}`,
-      method: 'DELETE',
-      credentials: 'include',
-    }), 
-    invalidatesTags: ['Students'],
+
+    // Delete a student by ID
+    deleteStudent: builder.mutation({
+      query: (id) => ({
+        url: `students/${id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Students'],
+    }),
+
+    // Delete multiple students by marking them as inactive
+    deleteManyStudents: builder.mutation({
+      query: (ids) => ({
+        url: 'students/delete-many',
+        method: 'DELETE',
+        body: { ids },
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Students'],
+    }),
   }),
-})
 });
+
+// Export hooks for usage in functional components
 export const {
-  useGetStudentsDataQuery,
+  useGetAllStudentsQuery,
   useGetStudentsByIdQuery,
-  usePostStudentsDataMutation,
-  useUpdateStudentsDataMutation,
-  useDeleteStudentsDataMutation,
+  useCreateStudentMutation,
+  useUpdateStudentMutation,
+  useDeleteStudentMutation,
+  useDeleteManyStudentsMutation,
 } = studentApi;

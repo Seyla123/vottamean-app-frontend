@@ -4,6 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 
 // Redux Slice Reducers
 import formReducer from './slices/formSlice';
+import studentReducer from './slices/studentSlice';
 import authReducer from './slices/authSlice';
 import attendanceReducer from './slices/attendanceSlice';
 import teacherReducer from './slices/teacherSlice';
@@ -23,6 +24,7 @@ const store = configureStore({
     // Redux Slice Reducers
     ui: uiReducer,
     form: formReducer,
+    student: studentReducer,
     auth: authReducer,
     teachers: teacherReducer,
     attendance: attendanceReducer,

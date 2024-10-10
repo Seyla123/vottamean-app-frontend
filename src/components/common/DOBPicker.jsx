@@ -40,6 +40,7 @@ const DOBPicker = ({ control, errors, name, dob, setDob, defaultValue }) => {
                   textField: {
                     fullWidth: true,
                     error: !!errors[name],
+                    helperText: errors[name] ? errors[name].message : '',
                     placeholder: 'YYYY-MM-DD',
                   },
                 }}

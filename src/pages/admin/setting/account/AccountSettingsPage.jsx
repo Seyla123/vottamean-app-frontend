@@ -33,7 +33,7 @@ const AccountSettingsPage = () => {
   const navigate = useNavigate();
 
   // Redux API calls to get user profile
-  const { data: user, isLoading, error, isSuccess } = useGetUserProfileQuery();
+  const { data: user, isLoading, error } = useGetUserProfileQuery();
   // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
