@@ -7,6 +7,9 @@ import { DownloadIcon } from "lucide-react";
 import FilterComponent from "../common/FilterComponent";
 import { useEffect, useState } from "react";
 import { transformedFilterSubjects, transformedFilterClasses } from "../../utils/formatData";
+import { setSnackbar } from "../../store/slices/uiSlice";
+import { tableShadow } from "../../styles/global";
+import { Filter, BookIcon, LibraryIcon } from 'lucide-react';
 
 const filterOptions = [
     { value: "all", label: "All" },
@@ -16,18 +19,18 @@ const filterOptions = [
     { value: "lastYear", label: "Yearly" },
 ]
 
-function AttendanceFilter() {
+function AttendanceFilter({pdfData}) {
     // Get the dispatch function and the current filter state from the store
     const dispatch = useDispatch();
     const filter = useSelector((state) => state.attendance.filter);
 
     // Get the data from the subject and class api
-    const { data: subjectData, isSuccess: isSubjectSuccess, isLoading: isSubjectLoading, isError: isSubjectError } = useGetSubjectsQuery();
-    const { data: dataClass, isSuccess: isClassSuccess, isLoading: isClassLoading, isError: isClassError } = useGetClassesDataQuery();
+    const { data: subjectData, isSuccess: isSubjectSuccess} = useGetSubjectsQuery();
+    const { data: dataClass, isSuccess: isClassSuccess} = useGetClassesDataQuery();
 
     // Set the initial state for the subjects and classes
     const allSelector = [{
-        value: '',
+        value: 'all',
         label: 'All'
     }]
     const [subjects, setSubjects] = useState(allSelector);
@@ -49,18 +52,30 @@ function AttendanceFilter() {
 
     // handle subject change
     const handleSubjectChange = (event) => {
+        if(event.target.value === 'all'){
+            dispatch(setFilter({ ...filter, subject: '' }));
+        }else{
         dispatch(setFilter({ ...filter, subject: event.target.value }));
+        }
     };
 
     // handle class change
     const handleClassChange = (event) => {
-        dispatch(setFilter({ ...filter, class: event.target.value }));
+        if(event.target.value === 'all'){
+            dispatch(setFilter({ ...filter, class: '' }));
+        }else{
+            dispatch(setFilter({ ...filter, class: event.target.value }));
+        }
     };
 
     //handle filter change
     const handleFilterChange = (event) => {
+        if(event.target.value === 'all'){
+            dispatch(setFilter({ ...filter, filter: '' }));
+        }else{
         const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
         dispatch(setFilter({ ...filter, filter: event.target.value, filterLabel: selectedLabel }));
+        }
     };
 
     // handle export CSV file
@@ -80,10 +95,15 @@ function AttendanceFilter() {
         document.body.removeChild(link);
       } catch (error) {
         console.error('Failed to download CSV:', error);
+        dispatch(setSnackbar({ open: true, message: 'Failed to download CSV', severity: 'error' }));
       }
       finally{
         setIsExporting(false);  // Reset exporting status after exporting is done.
       }
+    }
+    const handleDownloadPDF = () => {
+        console.log('click download pdf.');
+        
     }
     return (
         <Box sx={filterBoxStyle}>
@@ -92,30 +112,45 @@ function AttendanceFilter() {
                     value={filter.subject}
                     data={subjects}
                     onChange={handleSubjectChange}
-                    placeholder={"By Subject"}
+                    placeholder={"Subject"}
+                    customStyles={ {height: '40px'}}
+                    icon={<BookIcon size={18} color='#B5B5B5'/>}
                 />
                 <FilterComponent
                     value={filter.class}
                     data={classes}
                     onChange={handleClassChange}
-                    placeholder={"By Class"}
+                    placeholder={"Class"}
+                    customStyles={ {height: '40px'}}
+                    icon={<LibraryIcon size={18} color='#B5B5B5'/>}
                 />
                 <FilterComponent
                     value={filter.filter}
                     data={filterOptions}
                     onChange={handleFilterChange}
-                    placeholder={"Filter"}
+                    placeholder={"Date range"}
+                    customStyles={ {height: '40px'}}
+                    icon={<Filter  size={18} color='#B5B5B5'/>}
                 />
             </Box>
             <Box alignSelf={"end"}>
-                <Button
+                {pdfData? <Button
                     variant="contained"
                     endIcon={isExporting ? <CircularProgress size={16} color="inherit" /> : <DownloadIcon size={16} />}
+                    disabled={isExporting}
+                    onClick={handleDownloadPDF}
+                    sx={{ alignSelf: "flex-end" }}
+                >
+                    Download PDF
+                </Button> : <Button
+                    variant="contained"
+                    endIcon={isExporting ? <CircularProgress size={16} color="inherit" /> : <DownloadIcon size={16} />}
+                    disabled={isExporting}
                     onClick={handleExportsCsv}
                     sx={{ alignSelf: "flex-end" }}
                 >
-                    Export
-                </Button>
+                    Export CSV
+                </Button>}
             </Box>
         </Box>
     )
@@ -128,7 +163,12 @@ const filterBoxStyle = {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 4,
     width: "100%",
     gap: 2,
+    flexWrap: "wrap",
+    backgroundColor: "white",
+    height: "100%",
+    px: 2,
+    py:3,
+    
 };
