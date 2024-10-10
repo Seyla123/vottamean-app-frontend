@@ -82,13 +82,7 @@ const ChangePasswordForm = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        Change Password
-        <Typography variant="body1">
-          To ensure the security of your account, we recommend changing your
-          password periodically.
-        </Typography>
-      </DialogTitle>
+      <DialogTitle>Change Password</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {/* CURRENT PASSWORD INPUT */}
         <PasswordInput
