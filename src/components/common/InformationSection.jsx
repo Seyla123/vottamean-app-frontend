@@ -130,49 +130,42 @@ const InformationSection = ({
         borderRadius: 2,
       }}
     >
-      <Box
-        sx={{
-          borderRadius: 2,
-          height: '100%',
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' },
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: 2,
-              mt: 6,
-            }}
-          >
-            <Typography variant="h6" sx={{ height: '100%' }}>
-              {title}
-            </Typography>
-            {disableEdit && (
-              <StyledButton
-                variant="outlined"
-                size="small"
-                startIcon={<EditIcon size={18} />}
-                onClick={onEdit}
-                sx={{ width: { xs: '100%', sm: 'auto' } }}
-              >
-                Edit
-              </StyledButton>
-            )}
-          </Box>
-          {profilePhoto && (
-            <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 2,
+            mt: 6,
+          }}
+        >
+          <Typography variant="h6" sx={{ height: '100%' }}>
+            {title}
+          </Typography>
+          {disableEdit && (
+            <StyledButton
+              variant="outlined"
+              size="small"
+              startIcon={<EditIcon size={18} />}
+              onClick={onEdit}
+              sx={{ width: { xs: '100%', sm: 'auto' } }}
+            >
+              Edit
+            </StyledButton>
           )}
         </Box>
-
-        <Grid container spacing={1} mt={1}>
-          {getInfoItems().map((item, index) => (
-            <InfoItem key={index} {...item} />
-          ))}
-        </Grid>
+        {profilePhoto && (
+          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+        )}
       </Box>
+
+      <Grid container spacing={1} mt={1}>
+        {getInfoItems().map((item, index) => (
+          <InfoItem key={index} {...item} />
+        ))}
+      </Grid>
     </Box>
   );
 };
