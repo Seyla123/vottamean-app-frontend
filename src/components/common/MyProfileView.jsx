@@ -6,8 +6,14 @@ import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
 import { grey } from '@mui/material/colors';
 import AlertCard from './AlertCard';
+import { BadgeCheck } from 'lucide-react';
 
-const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
+const MyProfileView = ({
+  title,
+  profilePhoto,
+  userData,
+  schoolProfileData,
+}) => {
   const [openModal, setOpenModal] = useState(null);
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
@@ -30,6 +36,9 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
         height: '100%',
       }}
     >
+      <Typography variant="h5" component="h5" fontWeight="bold" gutterBottom>
+        {title}
+      </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={6}>
           {/* <ProfileSection profilePhoto={profilePhoto} userData={userData} /> */}
@@ -48,11 +57,15 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
             <AlertCard
               title="Administrator Dashboard"
               description="As an administrator, you have comprehensive access to manage user accounts, modify system settings, and oversee content distribution. This feature allows you to maintain and improve the platform, ensuring smooth operation and an optimal user experience."
+              severity="success"
+              icon={<BadgeCheck size={18} />}
             />
           ) : (
             <AlertCard
               title="Educator Control Panel"
               description="As a teacher, you can access course management tools, track student progress, and customize learning materials. This feature enables you to create engaging and effective learning environments tailored to your student's needs."
+              severity="success"
+              icon={<BadgeCheck size={18} />}
             />
           )}
         </Grid>

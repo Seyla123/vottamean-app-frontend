@@ -49,7 +49,7 @@ const InfoItem = ({ icon, label, value }) => (
                 color: 'text.secondary',
               }}
             >
-              {icon}
+              <Box sx={{ color: 'primary.main' }}>{icon}</Box>
               <Typography variant="body1">{label}</Typography>
             </Box>
           </Grid>

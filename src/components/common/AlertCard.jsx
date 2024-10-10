@@ -1,10 +1,9 @@
 import { Alert, AlertTitle } from '@mui/material';
 import React from 'react';
-import { BadgeCheck } from 'lucide-react';
 
-const AlertCard = ({ title, description }) => {
+const AlertCard = ({ title, description, severity, icon }) => {
   return (
-    <Alert icon={<BadgeCheck size={20} />} severity="success">
+    <Alert icon={icon} severity={severity} sx={{ width: 'fit-content' }}>
       <AlertTitle>{title}</AlertTitle>
       {description}
     </Alert>
