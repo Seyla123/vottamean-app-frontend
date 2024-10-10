@@ -18,6 +18,8 @@ import {
   Cake as CakeIcon,
   School as SchoolIcon,
 } from 'lucide-react';
+import FemaleIcon from '@mui/icons-material/Female';
+import MaleIcon from '@mui/icons-material/Male';
 import ProfileSection from './ProfileSection';
 
 const InfoItem = ({ icon, label, value }) => (
@@ -90,7 +92,12 @@ const InformationSection = ({
           value: data.userAddress,
         },
         {
-          icon: <PersonIcon size={18} />,
+          icon:
+            data.userGender === 'Male' ? (
+              <MaleIcon fontSize="small" />
+            ) : (
+              <FemaleIcon fontSize="small" />
+            ),
           label: 'Gender',
           value: data.userGender,
         },
