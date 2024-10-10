@@ -5,7 +5,9 @@ import { MuiTelInput } from 'mui-tel-input';
 
 const PhoneInputField = ({ name, control, label, errors }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Box
+      sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}
+    >
       <Typography variant="body2" fontWeight="bold">
         {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
       </Typography>

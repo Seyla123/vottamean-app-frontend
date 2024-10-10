@@ -1,28 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
 
 // Material UI components
-import { Box, Button, Typography, TextField, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
+
+// - Material UI and Lucid Icons
+import { Mail, UserRoundPen } from 'lucide-react';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
 
 // Custom components
 import SubHeader from '../teacher/SubHeader';
+import InputField from '../common/InputField';
 import PhoneInputField from '../common/PhoneInputField';
+import LoadingCircle from '../../components/loading/LoadingCircle';
 import { GuardianValidator } from '../../validators/validationSchemas';
 
-// - Redux Slices
-import { updateFormData } from '../../store/slices/studentSlice';
+// Redux Slices
+import { setSnackbar } from '../../store/slices/uiSlice';
 
-const GuardianForm = ({ handleBack, handleStudentSubmit }) => {
+// API Hooks
+import { useCreateStudentMutation } from '../../services/studentApi';
+
+const GuardianForm = ({ handleBack, handleFormChange }) => {
   // - Dispatch actions
   const dispatch = useDispatch();
-  const studentData = useSelector((state) => state.studentForm);
+  const navigate = useNavigate();
+  const studentData = useSelector((state) => state.student);
 
-  // yup validation from account information schema
+  // Create Student API
+  const [createStudent, { isLoading, isError, error, isSuccess }] =
+    useCreateStudentMutation();
+
+  // Form control using react-hook-form and yup validation
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(GuardianValidator),
@@ -35,6 +51,7 @@ const GuardianForm = ({ handleBack, handleStudentSubmit }) => {
     },
   });
 
+  // Load existing student data if available
   useEffect(() => {
     if (studentData) {
       setValue('guardian_first_name', studentData.guardian_first_name || '');
@@ -51,70 +68,114 @@ const GuardianForm = ({ handleBack, handleStudentSubmit }) => {
     }
   }, [studentData, setValue]);
 
-  const onSubmit = (data) => {
+  // Form submission handler
+  const onSubmit = async (data) => {
     const combinedData = { ...studentData, ...data };
-    // Dispatch the combined data
-    dispatch(updateFormData(combinedData));
-    handleStudentSubmit(combinedData);
+    handleFormChange(combinedData);
+
+    try {
+      await createStudent(combinedData).unwrap();
+    } catch (err) {
+      console.error('Failed to create student:', err);
+    }
   };
+
+  // Snackbar notifications based on API status
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Creating new student....',
+          severity: 'info',
+          autoHideDuration: 6000,
+        }),
+      );
+    } else if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'An error occurred during signup',
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Created Successfully',
+          severity: 'success',
+          autoHideDuration: 6000,
+        }),
+      );
+      navigate('/admin/students');
+    }
+  }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
+
+  // Display loading state
+  if (isLoading) return <LoadingCircle />;
 
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
-          <SubHeader title={'Guardian Information'} />
+          <SubHeader title="Guardian Information" />
 
-          {/* NAME INPUT */}
-          <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+          {/* Guardian Name Inputs */}
+          <Box display="flex" flexDirection="row" sx={boxContainer}>
             <InputField
               name="guardian_first_name"
               control={control}
-              label="Gaurdian First Name"
-              placeholder="Gaurdian First Name"
+              label="Guardian First Name"
+              placeholder="Guardian First Name"
               errors={errors}
+              icon={UserRoundPen}
             />
 
             <InputField
               name="guardian_last_name"
               control={control}
-              label="Gaurdian Last Name"
-              placeholder="Gaurdian Last Name"
+              label="Guardian Last Name"
+              placeholder="Guardian Last Name"
               errors={errors}
+              icon={UserRoundPen}
             />
           </Box>
 
-          {/* Relationship */}
+          <Box display="flex" flexDirection="row" sx={boxContainer}>
+            {/* Guardian Phone Number */}
+            <PhoneInputField
+              name="guardian_phone_number"
+              control={control}
+              label="Contact Number"
+              errors={errors}
+            />
+            {/* Guardian Email */}
+            <InputField
+              name="guardian_email"
+              control={control}
+              label="Email"
+              placeholder="Enter guardian email"
+              errors={errors}
+              icon={Mail}
+            />
+          </Box>
+
+          {/* Guardian Relationship */}
           <InputField
             name="guardian_relationship"
             control={control}
             label="Relationship"
             placeholder="Relationship"
             errors={errors}
+            icon={Diversity1Icon}
           />
 
-          {/* EMAIL INPUT */}
-          <InputField
-            name="guardian_email"
-            control={control}
-            label="Email"
-            placeholder="Enter guardian email"
-            errors={errors}
-            icon={Mail}
-          />
-
-          {/* Address */}
-          <PhoneInputField
-            name="guardian_phone_number"
-            control={control}
-            label="Contact Number"
-            errors={errors}
-          />
-
-          {/* Buttons */}
+          {/* Action Buttons */}
           <Stack
-            direction={'row'}
-            alignSelf={'flex-end'}
-            justifyContent={'flex-end'}
+            direction="row"
+            justifyContent="flex-end"
             width={{ xs: '100%', sm: '340px' }}
             gap={{ xs: 1, sm: 2 }}
             marginTop={{ xs: 2, sm: 0 }}
@@ -143,32 +204,17 @@ export default GuardianForm;
 const profileBox = {
   width: '100%',
   bgcolor: '#ffffff',
-  padding: {
-    xs: 2,
-    sm: 3,
-  },
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
+  padding: { xs: 2, sm: 3 },
+  gap: { xs: '12px', sm: 3 },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'column',
   position: 'relative',
 };
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
-  flexDirection: 'column',
-};
-// Styles
+
 const boxContainer = {
   width: '100%',
   marginTop: '16px',
-  padding: '0px',
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
+  gap: { xs: '12px', sm: 3 },
 };

@@ -1,123 +1,88 @@
 // React and third-party libraries
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // Mui Component
-import { Box, Tabs, Tab, Card, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Card, Typography } from '@mui/material';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 // Icon from lucide
 import { User, KeyRound } from 'lucide-react';
 
 // Redux Hooks and APIs
-import { useCreateStudentMutation } from '../../services/studentApi';
 import { updateFormData } from '../../store/slices/studentSlice';
 
 // Custom Components
 import StudentForm from './StudentForm';
 import GuardianForm from './GuardianForm';
-import LoadingCircle from '../loading/LoadingCircle';
 import { shadow } from '../../styles/global';
 
-// - UI Snackbar Slice
-import { setSnackbar } from '../../store/slices/uiSlice';
-
 function FormInfoStudent() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const theme = useTheme();
-
-  // - Local States
-  const [value, setValue] = useState('1');
-  const [isStudentInvalid, setIsStudentInvalid] = useState(false);
-  const [studentData, setStudentData] = useState({});
-
-  // Responsive in mobile mode
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [formError, setFormError] = useState('');
+  // Dispatch the action to update the form data
+  const dispatch = useDispatch();
 
-  // Sign up Teacher Api
-  const [createStudent, { isLoading, isError, error, isSuccess }] =
-    useCreateStudentMutation();
+  // State variable to keep track of the current step
+  const [activeStep, setActiveStep] = useState(0);
 
-  useEffect(() => {
-    if (isLoading) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Creating new student....',
-          severity: 'info',
-          autoHideDuration: 6000,
-        }),
-      );
-    } else if (isError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error?.data?.message || 'An error occurred during signup',
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
-    } else if (isSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Created Successfully',
-          severity: 'success',
-          autoHideDuration: 6000,
-        }),
-      );
-      navigate('/admin/students');
-    }
-  }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
-
-  // Check dob validation in acc info before submitting
-  const handleStudentSubmit = async (data) => {
-    // set default values for the form
-    const payload = {
-      address: data.address || '',
-      dob: data.dob,
-      first_name: data.first_name || '',
-      last_name: data.last_name || '',
-      class_id: data.class_id || '',
-      gender: data.gender || '',
-      phone_number: data.phone_number || '',
-      guardian_first_name: data.guardian_first_name || '',
-      guardian_last_name: data.guardian_last_name || '',
-      guardian_email: data.guardian_email || '',
-      guardian_relationship: data.guardian_relationship || '',
-      guardian_phone_number: data.guardian_phone_number || '',
-    };
-
-    try {
-      // Send the formatted data to the API
-      await createStudent(payload).unwrap();
-      setFormError('');
-    } catch (err) {
-      console.error('Create failed:', err);
-      setFormError('Create failed. Please try again.');
-    }
+  // Function to handle the form data change
+  const handleFormChange = (stepData) => {
+    dispatch(updateFormData(stepData));
   };
 
-  // Handle continue to account info after validating correct
-  // Handle continue to account info after validating correct
-  const handleNextClick = (isValid, data) => {
-    if (isValid) {
-      setStudentData(data);
-      setValue('2');
-      setIsStudentInvalid(true);
-    }
-  };
-
-  // Handle back
+  // Function to go to the previous step
   const handleBack = () => {
-    setValue('1');
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // loading state
-  if (isLoading) return <LoadingCircle />;
+  // Function to go to the next step
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  // Array of steps to display in the stepper
+  const steps = [
+    {
+      label: 'Student',
+      description: 'Enter student details',
+      icon: <User size={24} />,
+    },
+    {
+      label: 'Guardian',
+      description: 'Enter guardian details',
+      icon: <KeyRound size={24} />,
+    },
+  ];
+
+  // Array of components to render in each step
+  const stepFormComponents = [
+    <StudentForm handleFormChange={handleFormChange} handleNext={handleNext} />,
+    <GuardianForm
+      handleFormChange={handleFormChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
+    />,
+  ];
+
+  const CustomIconBox = ({ icon }) => (
+    <Box
+      sx={{
+        width: 40,
+        height: 40,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 2,
+        backgroundColor: '#fff',
+        padding: '8px',
+      }}
+    >
+      {icon}
+    </Box>
+  );
 
   return (
     <Box
@@ -125,38 +90,49 @@ function FormInfoStudent() {
         display: 'flex',
         flexDirection: { xs: 'column', sm: 'row' },
         gap: { xs: 2, sm: 3 },
+        height: '100%',
       }}
     >
       <Card sx={cardContainer}>
-        {/* Sidebar tabs */}
+        {/* Sidebar with stepper */}
         <Box
           sx={{
-            width: { xs: '100%', sm: '200px' },
+            width: { xs: '100%', sm: '250px' },
             borderRight: { sm: '1px solid #e0e0e0' },
+            p: 2,
           }}
         >
-          <Tabs
+          <Stepper
+            activeStep={activeStep}
             orientation={isMobile ? 'horizontal' : 'vertical'}
-            value={value}
-            variant={isMobile ? 'fullWidth' : 'scrollable'}
-            onChange={(event, newValue) => setValue(newValue)}
+            sx={{ mt: 2 }}
           >
-            <Tab
-              label="Student"
-              icon={<User size={18} />}
-              value="1"
-              sx={tabStyle}
-            />
-            <Tab
-              label="Guardian"
-              icon={<KeyRound size={18} />}
-              value="2"
-              sx={tabStyle}
-              disabled={!isStudentInvalid}
-            />
-          </Tabs>
+            {steps.map((step, index) => (
+              <Step
+                key={index}
+                sx={{
+                  opacity: activeStep === index ? 1 : 0.5,
+                  transition: 'opacity 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
+                }}
+              >
+                <StepLabel
+                  icon={<CustomIconBox icon={step.icon} />}
+                  optional={
+                    <Typography variant="body2" color="grey.300">
+                      {step.description}
+                    </Typography>
+                  }
+                >
+                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                    {step.label}
+                  </Typography>
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
         </Box>
-        {/* Contents */}
+
+        {/* Form components */}
         <Box
           sx={{
             flex: 1,
@@ -165,21 +141,7 @@ function FormInfoStudent() {
             overflowY: 'auto',
           }}
         >
-          {/* Student Tab */}
-          {value === '1' && (
-            <StudentForm
-              handleNextClick={handleNextClick}
-              defaultValues={studentData}
-            />
-          )}
-          {/* Guardian Tab */}
-          {value === '2' && (
-            <GuardianForm
-              handleBack={handleBack}
-              handleStudentSubmit={handleStudentSubmit}
-              studentData={studentData}
-            />
-          )}
+          {stepFormComponents[activeStep]}
         </Box>
       </Card>
     </Box>
@@ -198,6 +160,7 @@ const cardContainer = {
   overflow: 'hidden',
   ...shadow,
 };
+
 const tabStyle = {
   display: 'flex',
   flexDirection: 'row',

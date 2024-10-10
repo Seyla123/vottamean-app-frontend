@@ -6,8 +6,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
 
 // Material UI components
-import { MenuItem, Box, Avatar, Typography, Select } from '@mui/material';
-import { UserRoundPlus } from 'lucide-react';
+import { MenuItem, Box, Typography, Select } from '@mui/material';
+import { UserRoundPen } from 'lucide-react';
 
 // Custom Components
 import DOBPicker from '../common/DOBPicker';
@@ -24,29 +24,10 @@ import { updateFormData } from '../../store/slices/studentSlice';
 // Validator
 import { StudentValidator } from '../../validators/validationSchemas';
 
-const StudentForm = ({ handleNextClick, handleBack }) => {
+const StudentForm = ({ handleNext, handleFormChange }) => {
+  const studentData = useSelector((state) => state.student);
   const dispatch = useDispatch();
-  const studentData = useSelector((state) => state.studentForm) || {};
   const { data: classData } = useGetClassesDataQuery();
-
-  // Use react-hook-form to manage all form state, including DOB
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    resolver: yupResolver(StudentValidator),
-    defaultValues: {
-      first_name: studentData.first_name || '',
-      last_name: studentData.last_name || '',
-      class_id: studentData.class_id || '',
-      gender: studentData.gender || '',
-      phone_number: studentData.phone_number || '',
-      address: studentData.address || '',
-      dob: studentData.dob ? dayjs(studentData.dob) : null,
-    },
-  });
 
   const [dob, setDob] = useState(
     studentData.dob ? dayjs(studentData.dob) : null,
@@ -54,7 +35,6 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
 
   // Load class data for the class dropdown
   const [rows, setRows] = useState([]);
-
   useEffect(() => {
     if (classData && Array.isArray(classData.data)) {
       setRows(
@@ -66,42 +46,57 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
     }
   }, [classData]);
 
+  // Use react-hook-form to manage all form state, including DOB
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(StudentValidator),
+    defaultValues: studentData,
+  });
+
+  // Update form values when studentData changes
   useEffect(() => {
     if (studentData) {
       setValue('first_name', studentData.first_name);
       setValue('last_name', studentData.last_name);
       setValue('gender', studentData.gender);
+      setValue('class_id', studentData.class_id);
+      setValue('phone_number', studentData.phone_number);
+      setValue('address', studentData.address);
       setDob(studentData.dob ? dayjs(studentData.dob) : null);
     }
   }, [studentData, setValue]);
 
   // Handle form submission
   const onSubmit = (data) => {
-    const formattedData = {
+    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : '';
+    const updatedData = {
       ...data,
-      dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : '',
+      dob: formattedDob,
     };
-    dispatch(updateFormData(formattedData));
-    handleNextClick(true, formattedData);
+
+    dispatch(updateFormData(updatedData));
+    handleFormChange(updatedData);
+    handleNext();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box sx={profileBox}>
-        <Box sx={profilePic}>
-          <Avatar sx={imgStyle} alt="profile picture" src="r" />
-        </Box>
-        <SubHeader title={'Student Information'} />
+        <SubHeader title="Student Information" />
 
         {/* Input Fields */}
-        <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+        <Box display="flex" flexDirection="row" sx={boxContainer}>
           <InputField
             name="first_name"
             control={control}
             label="First Name"
             placeholder="First Name"
             errors={errors}
-            icon={UserRoundPlus}
+            icon={UserRoundPen}
           />
           <InputField
             name="last_name"
@@ -109,13 +104,12 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
             label="Last Name"
             placeholder="Last Name"
             errors={errors}
-            icon={UserRoundPlus}
+            icon={UserRoundPen}
           />
         </Box>
 
         {/* Gender and Date of Birth */}
-        <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-          {/* Gender */}
+        <Box display="flex" flexDirection="row" sx={boxContainer}>
           <GenderSelect
             control={control}
             errors={errors}
@@ -123,7 +117,6 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
             label="Gender"
             defaultValue={studentData.gender || ''}
           />
-          {/* DOBPicker */}
           <DOBPicker
             control={control}
             errors={errors}
@@ -141,6 +134,7 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
           <Controller
             name="class_id"
             control={control}
+            defaultValue=""
             render={({ field }) => (
               <Select {...field} value={field.value || ''}>
                 {rows.length > 0 ? (
@@ -151,7 +145,7 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
                   ))
                 ) : (
                   <MenuItem value="" disabled>
-                    Loading...
+                    No Class
                   </MenuItem>
                 )}
               </Select>
@@ -173,28 +167,26 @@ const StudentForm = ({ handleNextClick, handleBack }) => {
             label="Street Address"
             placeholder="Phnom Penh, Street 210, ..."
             errors={errors}
+            required={false}
             multiline
             minRows={5}
           />
         </Box>
 
         {/* Action Buttons */}
-        <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-          <StyledButton
-            variant="outlined"
-            color="primary"
-            size="large"
-            fullWidth
-            onClick={handleBack}
-          >
-            Back
-          </StyledButton>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            width: '100%',
+            justifyContent: 'flex-end',
+          }}
+        >
           <StyledButton
             type="submit"
             variant="contained"
             color="primary"
             size="large"
-            fullWidth
           >
             Continue
           </StyledButton>
@@ -223,34 +215,11 @@ const profileBox = {
   flexDirection: 'column',
   position: 'relative',
 };
-const profilePic = {
-  width: 100,
-  height: 100,
-  borderRadius: '50%',
-  overflow: 'hidden',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  mb: 2,
-  position: 'relative',
-};
 const textFieldGap = {
   display: 'flex',
   gap: 0.5,
   flexDirection: 'column',
 };
-const imgStyle = {
-  width: {
-    xs: 120,
-    sm: 160,
-  },
-  height: {
-    xs: 120,
-    sm: 160,
-  },
-};
-
-// Styles
 const boxContainer = {
   width: '100%',
   marginTop: '14px',
