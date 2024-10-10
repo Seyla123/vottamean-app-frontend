@@ -29,7 +29,7 @@ const TeacherDashboardPage = () => {
 
   console.log(user);
 
-  const { first_name, last_name, gender, photo } =
+  const { first_name } =
     user.data.teacherProfile.Info;
   const { school_name } = user.data.teacherProfile.School;
 

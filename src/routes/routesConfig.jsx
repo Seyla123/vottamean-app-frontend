@@ -61,7 +61,7 @@ import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
 // Teacher site
 import TeacherAttendanceListPage from '../pages/teacherSite/teacherClass/TeacherAttendanceListPage';
-import TeacherScheduleClassPage from '../pages/teacherSite/teacherClass/TeacherScheduleClassPage';
+import TeacherScheduleClassPage from '../pages/teacherSite/schedule/TeacherScheduleClassPage';
 import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAccountProfilePage';
 import TeacherSchedulePage from '../pages/teacherSite/schedule/TeacherSchedulePage';
 
