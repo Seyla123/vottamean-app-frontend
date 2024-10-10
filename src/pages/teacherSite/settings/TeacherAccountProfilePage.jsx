@@ -70,23 +70,9 @@ const AccountSettingsPage = () => {
     }
   }, [user, dispatch]);
 
-  console.log(schoolProfile);
   // Handle tab switch
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-
-  // Handle delete button click
-  const handleDeleteAccount = async () => {
-    try {
-      console.log('Deleting current user');
-      await deleteUserAccount().unwrap();
-      console.log('Account deleted successfully');
-
-      navigate('/auth/signin');
-    } catch (error) {
-      console.error('Failed to delete account:', error);
-    }
   };
 
   if (isLoading) {
@@ -121,7 +107,7 @@ const AccountSettingsPage = () => {
                 variant="scrollable"
                 onChange={handleChange}
                 aria-label="Vertical tabs"
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', pb: 4 }}
               >
                 <Tab
                   label="Profile"
@@ -139,7 +125,7 @@ const AccountSettingsPage = () => {
             <TabPanel sx={{ flexGrow: 1 }} value="1">
               {/* MY PROFILE VIEW */}
               <MyProfileView
-                title={'Profile'}
+                title={'My Profile'}
                 profilePhoto={userData.photo}
                 userData={userData.userProfile}
                 schoolProfileData={schoolProfile}

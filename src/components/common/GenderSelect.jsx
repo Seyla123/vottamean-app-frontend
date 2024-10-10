@@ -12,7 +12,7 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
-const GenderSelect = ({ control, errors, name, label, defaultValue }) => {
+const GenderSelect = ({ control, errors, name, label, defaultValue, disabled = false }) => {
   // - Get the current selected icon to display
   const getIcon = (selectedGender) => {
     switch (selectedGender) {
@@ -48,6 +48,7 @@ const GenderSelect = ({ control, errors, name, label, defaultValue }) => {
             error={!!errors[name]}
             helperText={errors[name]?.message}
             placeholder="Select your gender"
+            disabled={disabled}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

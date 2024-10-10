@@ -55,6 +55,7 @@ const EditAccountModal = ({
   profilePhoto,
   userName,
   userGender,
+  checkUserRole,
 }) => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
@@ -71,8 +72,6 @@ const EditAccountModal = ({
 
   const [dob, setDob] = useState(null);
 
-  console.log(originalData);
-
   // - State to store selected image file
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -81,6 +80,8 @@ const EditAccountModal = ({
 
   // Add a new state to track if the profile photo should be removed
   const [removePhoto, setRemovePhoto] = useState(false);
+
+  const disableInputIfTeacher = checkUserRole === 'teacher';
 
   // - Form state management
   const {
@@ -112,11 +113,6 @@ const EditAccountModal = ({
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
-
-  // Function to generate DiceBear URL
-  const generateAvatarUrl = (username, gender) => {
-    return `https://api.dicebear.com/6.x/big-smile/svg?seed=${encodeURIComponent(username)}&gender=${encodeURIComponent(gender)}`;
-  };
 
   // - Handle image file selection and preview
   const handleFileChange = (e) => {
@@ -319,6 +315,7 @@ const EditAccountModal = ({
                   placeholder="First Name"
                   errors={errors}
                   icon={UserRoundPen}
+                  disabled={false}
                 />
               </Grid>
 
@@ -331,6 +328,7 @@ const EditAccountModal = ({
                   placeholder="Last Name"
                   errors={errors}
                   icon={UserRoundPen}
+                  disabled={false}
                 />
               </Grid>
 
@@ -341,6 +339,7 @@ const EditAccountModal = ({
                   control={control}
                   label="Contact Number"
                   errors={errors}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -354,6 +353,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={MapPin}
                   required={false}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -365,6 +365,7 @@ const EditAccountModal = ({
                   name="gender"
                   label="Gender"
                   defaultValue={originalData?.gender}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -375,6 +376,7 @@ const EditAccountModal = ({
                   errors={errors}
                   name="dob"
                   dob={dob}
+                  disabled={disableInputIfTeacher}
                   setDob={setDob}
                   defaultValue={
                     originalData?.dob ? dayjs(originalData.dob) : null

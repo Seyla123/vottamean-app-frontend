@@ -13,6 +13,7 @@ const InputField = ({
   multiline = false,
   minRows,
   required = true,
+  disabled = false,
 }) => {
   return (
     <div
@@ -46,6 +47,7 @@ const InputField = ({
                 </InputAdornment>
               ) : null,
             }}
+            disabled={disabled}
             multiline={multiline}
             minRows={minRows}
           />

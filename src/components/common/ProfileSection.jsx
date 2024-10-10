@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Avatar, Chip, Grid } from '@mui/material';
 import RandomAvatar from './RandomAvatar';
-import { CircleUser, BadgeCheck } from 'lucide-react';
+import { CircleUser, BadgeCheck, Mail } from 'lucide-react';
 import verifyBadge from '../../assets/icon/verify_badge.svg';
 
 const ProfileSection = ({ profilePhoto, userData }) => {
@@ -68,7 +68,12 @@ const ProfileSection = ({ profilePhoto, userData }) => {
               />
             )}
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}
+          >
+            <Mail size={16} />
             {userEmail}
           </Typography>
         </Box>

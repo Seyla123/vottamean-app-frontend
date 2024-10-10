@@ -137,7 +137,7 @@ function AccountProfilePage() {
               <CardComponent
                 title={'User Information'}
                 imgUrl={userData.photo || profile}
-              handleEdit={clickEditUser}
+                handleEdit={clickEditUser}
               >
                 {/* Display user profile data */}
                 <CardInformation data={userData.userProfile} />

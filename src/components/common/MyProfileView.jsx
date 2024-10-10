@@ -4,6 +4,12 @@ import ProfileSection from './ProfileSection';
 import InformationSection from './InformationSection';
 import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
+import { grey } from '@mui/material/colors';
+import AlertCard from './AlertCard';
+import { Info } from 'lucide-react';
+import personalImage from '../../assets/images/personal-data-88.svg';
+import accountImage from '../../assets/images/security-tab-image.svg';
+import AccountSettingInfoCard from './AccountSettingInfoCard';
 
 const MyProfileView = ({
   title,
@@ -20,61 +26,44 @@ const MyProfileView = ({
     setOpenModal(null);
   };
 
+  const checkUserRole = userData?.userRole;
+
   return (
     <Box
       component={'section'}
       sx={{
         margin: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
         height: '100%',
       }}
     >
       <Typography variant="h5" component="h5" fontWeight="bold">
         {title}
       </Typography>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} md={6}>
-          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}>
-          <Box
-            sx={{
-              border: '1px solid',
-              borderColor: 'divider',
-              height: 1,
-              borderRadius: 2,
-              p: 3,
-            }}
-          >
-            Payment Methods
-            ACELEDA
-            ABA
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}>
+      {/* CONTAINER */}
+      <Grid container>
+        <Grid item xs={12}>
           <InformationSection
             title="Personal Details"
             data={userData}
             onEdit={() => handleOpenModal('account')}
             infoType="personal"
+            disableEdit={true}
+            profilePhoto={profilePhoto}
+            userData={userData}
           />
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}>
           {schoolProfileData && (
             <InformationSection
               title="School Details"
               data={schoolProfileData}
               onEdit={() => handleOpenModal('school')}
               infoType="school"
+              disableEdit={checkUserRole !== 'teacher'}
             />
           )}
         </Grid>
       </Grid>
 
-      {/* Modals */}
+      {/* MODAL */}
       {openModal === 'account' && (
         <EditAccountModal
           open={true}
@@ -82,6 +71,7 @@ const MyProfileView = ({
           profilePhoto={profilePhoto}
           userName={userData.userName}
           userGender={userData.userGender}
+          checkUserRole={checkUserRole}
         />
       )}
       {openModal === 'school' && schoolProfileData && (
