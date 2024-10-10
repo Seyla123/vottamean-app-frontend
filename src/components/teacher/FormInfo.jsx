@@ -148,7 +148,7 @@ function FormInfo() {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
+        flexDirection: {xs: "column",  sm: 'column', md:"column", lg: 'row' },
         gap: { xs: 2, sm: 3 },
       }}
     >
@@ -156,7 +156,7 @@ function FormInfo() {
         {/* Sidebar tabs */}
         <Box
           sx={{
-            width: { xs: '100%', sm: '200px' },
+            width: { xs: '100%', sm: '140px', md: '160px' },
             borderRight: { sm: '1px solid #e0e0e0' },
           }}
         >
@@ -226,7 +226,7 @@ function FormInfo() {
             />
           </Grid>
         </Box>
-        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Box sx={{ display: { xs: 'none', sm: 'block'} }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Settings color={theme.palette.primary.main} />
             <Typography variant="body2" fontWeight="medium">
@@ -277,11 +277,20 @@ const tabStyle = {
   },
 };
 const infoBox = {
-  display: { xs: 'flex', sm: 'none', md: 'flex' },
+  display: 'flex',
+  maxWidth: {
+    xs: '100%',
+    sm: '100%',
+    md: '220px',
+  },
+  width: '100%',
   flexDirection: 'column',
   justifyContent: 'space-between',
   alignItems: 'center',
-  gap: 2,
+  gap: {
+    xs: 2,
+    sm: 3,
+  },
   bgcolor: '#ffffff',
   p: 2,
   borderRadius: 1,
@@ -289,6 +298,7 @@ const infoBox = {
 };
 const gridBox = {
   display: 'flex',
+  width: '100%',
   alignItems: 'center',
   gap: 2,
   p: 1,

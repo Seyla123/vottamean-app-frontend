@@ -19,12 +19,14 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import StyledButton from '../common/StyledMuiButton';
 
 // Redux hooks and actions
 import { useNavigate } from 'react-router-dom';
 
 // Custom components
 import SubHeader from './SubHeader';
+import PhoneInputField from '../common/PhoneInputField';
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const navigate = useNavigate();
@@ -203,7 +205,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             />
           </Box>
           {/* Phone Number */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+          {/* <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography variant="body2" fontWeight="bold">
               Contact Number {''}
               <span style={{ color: 'red', marginLeft: 1 }}>*</span>
@@ -220,6 +222,15 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                   fullWidth
                 />
               )}
+            />
+          </Box> */}
+          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            <PhoneInputField
+              name="phoneNumber"
+              control={control}
+              label="Contact Number"
+              errors={errors}
+
             />
           </Box>
           {/* Address */}
@@ -253,17 +264,17 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
             gap={{ xs: 0.5, sm: 1 }}
             marginTop={{ xs: 2, sm: 0 }}
           >
-            <Button
+            <StyledButton
               fullWidth
               variant="outlined"
               color="inherit"
               onClick={handleCancel}
             >
               Cancel
-            </Button>
-            <Button fullWidth type="submit" variant="contained" color="primary">
+            </StyledButton>
+            <StyledButton fullWidth variant="contained" type="submit">
               Submit
-            </Button>
+            </StyledButton>
           </Stack>
         </Box>
       </form>
