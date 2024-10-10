@@ -121,7 +121,6 @@ const InformationSection = ({
     <Box
       sx={{
         borderRadius: 2,
-        height: '100%',
       }}
     >
       <Box
@@ -138,6 +137,7 @@ const InformationSection = ({
               justifyContent: 'space-between',
               alignItems: 'center',
               gap: 2,
+              mt: 6,
             }}
           >
             <Typography variant="h6" sx={{ height: '100%' }}>

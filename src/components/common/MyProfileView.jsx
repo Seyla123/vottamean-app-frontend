@@ -7,6 +7,7 @@ import EditSchoolModal from '../admin/EditSchoolModal';
 import { grey } from '@mui/material/colors';
 import AlertCard from './AlertCard';
 import { BadgeCheck } from 'lucide-react';
+import TotalCard from '../teacherSite/TotalCard';
 
 const MyProfileView = ({
   title,
@@ -30,9 +31,6 @@ const MyProfileView = ({
       component={'section'}
       sx={{
         margin: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
         height: '100%',
       }}
     >
@@ -40,7 +38,7 @@ const MyProfileView = ({
         {title}
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} md={6}>
+        <Grid item xs={12} md={6}>
           {/* <ProfileSection profilePhoto={profilePhoto} userData={userData} /> */}
           <InformationSection
             title="Personal Details"
@@ -51,25 +49,6 @@ const MyProfileView = ({
             profilePhoto={profilePhoto}
             userData={userData}
           />
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}>
-          {checkUserRole === 'admin' ? (
-            <AlertCard
-              title="Administrator Dashboard"
-              description="As an administrator, you have comprehensive access to manage user accounts, modify system settings, and oversee content distribution. This feature allows you to maintain and improve the platform, ensuring smooth operation and an optimal user experience."
-              severity="success"
-              icon={<BadgeCheck size={18} />}
-            />
-          ) : (
-            <AlertCard
-              title="Educator Control Panel"
-              description="As a teacher, you can access course management tools, track student progress, and customize learning materials. This feature enables you to create engaging and effective learning environments tailored to your student's needs."
-              severity="success"
-              icon={<BadgeCheck size={18} />}
-            />
-          )}
-        </Grid>
-        <Grid item xs={12} sm={12} md={6}>
           {schoolProfileData && (
             <InformationSection
               title="School Details"
@@ -79,6 +58,32 @@ const MyProfileView = ({
               disableEdit={checkUserRole !== 'teacher'}
             />
           )}
+        </Grid>
+        <Grid item xs={12} md={6}></Grid>
+
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              {checkUserRole === 'admin' ? (
+                <AlertCard
+                  title="Administrator Dashboard"
+                  description="As an administrator, you have comprehensive access to manage user accounts, modify system settings, and oversee content distribution. This feature allows you to maintain and improve the platform, ensuring smooth operation and an optimal user experience."
+                  severity="success"
+                  icon={<BadgeCheck size={18} />}
+                />
+              ) : (
+                <AlertCard
+                  title="Educator Control Panel"
+                  description="As a teacher, you can access course management tools, track student progress, and customize learning materials. This feature enables you to create engaging and effective learning environments tailored to your student's needs."
+                  severity="success"
+                  icon={<BadgeCheck size={18} />}
+                />
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <TotalCard amount={5} />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 
