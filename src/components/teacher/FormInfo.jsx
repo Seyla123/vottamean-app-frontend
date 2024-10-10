@@ -282,7 +282,8 @@ const infoBox = {
   maxWidth: {
     xs: '100%',
     sm: '100%',
-    md: '220px',
+    md: '240px',
+    lg: '300px',
   },
   width: '100%',
   flexDirection: 'column',

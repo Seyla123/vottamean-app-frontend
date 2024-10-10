@@ -15,17 +15,19 @@ import {
 import StyledButton from '../common/StyledMuiButton';
 
 // Icons from Lucide
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 
 // Custom components
 import SubHeader from './SubHeader';
 import { AccountInformationValidator } from '../../validators/validationSchemas';
-
+import InputField from '../common/InputField';
+import PasswordInput from '../auth/PasswordInput';
 const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
   const [showPassword, setShowPassword] = useState(false);
   // yup validation from account information schema
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -53,22 +55,27 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
           <SubHeader title={'Account Information'} />
           {/* Email */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
-              placeholder="Enter your email"
-              variant="outlined"
-              type="email"
-              fullWidth
-              {...register('email')}
-              error={!!errors.email}
-              helperText={errors.email?.message}
+            <InputField
+              name="email"
+              control={control}
+              label="Email Address"
+              placeholder="Email"
+              errors={errors}
+              icon={Mail}
             />
           </Box>
           {/* Password */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
+          <PasswordInput
+              name="password"
+              label="Password"
+              control={control}
+              showPassword={showPassword}
+              togglePasswordVisibility={() => setShowPassword(!showPassword)}
+              placeholder="Create password"
+              error={errors.password}
+            />
+            {/* <Typography variant="body2" fontWeight="bold">
               Password <span style={{ color: 'red', marginLeft: 1 }}>*</span>
             </Typography>
             <TextField
@@ -88,31 +95,18 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
                   </InputAdornment>
                 ),
               }}
-            />
+            /> */}
           </Box>
           {/* Confirm Password */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Confirm Password{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
+          <PasswordInput
+              name="passwordConfirm"
+              label="Confirm Password"
+              control={control}
+              showPassword={showPassword}
+              togglePasswordVisibility={() => setShowPassword(!showPassword)}
               placeholder="Confirm password"
-              variant="outlined"
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              {...register('passwordConfirm')}
-              error={!!errors.passwordConfirm}
-              helperText={errors.passwordConfirm?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+              error={errors.passwordConfirm} 
             />
           </Box>
           {/* Buttons */}
@@ -120,8 +114,8 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
             direction={'row'}
             alignSelf={'flex-end'}
             justifyContent={'flex-end'}
-            width={{ xs: '100%', sm: '340px' }}
-            gap={{ xs: 1, sm: 2 }}
+            width={{ xs: '100%', sm: '300px', md: '280px' }}
+            gap={2}
             marginTop={{ xs: 2, sm: 0 }}
           >
             <StyledButton
@@ -133,7 +127,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               Back
             </StyledButton>
             <StyledButton fullWidth variant="contained" type="submit">
-              Add Teacher
+              Add 
             </StyledButton>
           </Stack>
         </Box>
