@@ -5,6 +5,7 @@ import InformationSection from './InformationSection';
 import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
 import { grey } from '@mui/material/colors';
+import AlertCard from './AlertCard';
 
 const MyProfileView = ({
   title,
@@ -43,16 +44,17 @@ const MyProfileView = ({
           <ProfileSection profilePhoto={profilePhoto} userData={userData} />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <Box
-            sx={{
-              height: 1,
-              borderRadius: 2,
-              p: 3,
-              backgroundColor: grey[200],
-            }}
-          >
-            Payment Methods ACELEDA ABA
-          </Box>
+          {checkUserRole === 'admin' ? (
+            <AlertCard
+              title="Administrator Dashboard"
+              description="As an administrator, you have comprehensive access to manage user accounts, modify system settings, and oversee content distribution. This feature allows you to maintain and improve the platform, ensuring smooth operation and an optimal user experience."
+            />
+          ) : (
+            <AlertCard
+              title="Educator Control Panel"
+              description="As a teacher, you can access course management tools, track student progress, and customize learning materials. This feature enables you to create engaging and effective learning environments tailored to your student's needs."
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           <InformationSection
@@ -70,7 +72,7 @@ const MyProfileView = ({
               data={schoolProfileData}
               onEdit={() => handleOpenModal('school')}
               infoType="school"
-              disableEdit={false}
+              disableEdit={checkUserRole !== 'teacher'}
             />
           )}
         </Grid>

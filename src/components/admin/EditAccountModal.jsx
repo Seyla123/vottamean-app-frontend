@@ -72,8 +72,6 @@ const EditAccountModal = ({
 
   const [dob, setDob] = useState(null);
 
-  console.log(originalData);
-
   // - State to store selected image file
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -82,6 +80,8 @@ const EditAccountModal = ({
 
   // Add a new state to track if the profile photo should be removed
   const [removePhoto, setRemovePhoto] = useState(false);
+
+  const disableInputIfTeacher = checkUserRole === 'teacher';
 
   // - Form state management
   const {
@@ -315,7 +315,7 @@ const EditAccountModal = ({
                   placeholder="First Name"
                   errors={errors}
                   icon={UserRoundPen}
-                  disabled={true}
+                  disabled={false}
                 />
               </Grid>
 
@@ -328,7 +328,7 @@ const EditAccountModal = ({
                   placeholder="Last Name"
                   errors={errors}
                   icon={UserRoundPen}
-                  disabled={true}
+                  disabled={false}
                 />
               </Grid>
 
@@ -339,7 +339,7 @@ const EditAccountModal = ({
                   control={control}
                   label="Contact Number"
                   errors={errors}
-                  disabled={true}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -353,7 +353,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={MapPin}
                   required={false}
-                  disabled={true}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -365,7 +365,7 @@ const EditAccountModal = ({
                   name="gender"
                   label="Gender"
                   defaultValue={originalData?.gender}
-                  disabled={true}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -376,7 +376,7 @@ const EditAccountModal = ({
                   errors={errors}
                   name="dob"
                   dob={dob}
-                  disabled={true}
+                  disabled={disableInputIfTeacher}
                   setDob={setDob}
                   defaultValue={
                     originalData?.dob ? dayjs(originalData.dob) : null
