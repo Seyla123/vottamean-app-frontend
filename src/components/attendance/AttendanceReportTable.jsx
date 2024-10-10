@@ -25,12 +25,6 @@ const StyledTableCell = styled(TableCell)(({ theme, fontSize }) => ({
   height: '5px', // Reduced row height
 }));
 
-const CustomTableCell = styled(TableCell)(({ theme, fontSize }) => ({
-  border: '1px solid black',
-  padding: '4px', // Reduced padding
-  fontSize: fontSize || '10px', // Smaller font size
-  height: '5px', // Reduced row height
-}));
 
 const studentsData2 = [
   {
@@ -1230,27 +1224,27 @@ const AttendanceReportTable = () => {
               <TableBody>
                 {studentsData.map((student, index) => (
                   <TableRow key={index} style={{ height: '5px' }}>
-                    <CustomTableCell align="center" style={{ fontSize }}>
+                    <StyledTableCell align="center" style={{ fontSize }}>
                       {index + 1}
-                    </CustomTableCell>
-                    <CustomTableCell align="center" style={{ fontSize }}>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" style={{ fontSize }}>
                       {student.Student.student_id}
-                    </CustomTableCell>
-                    <CustomTableCell align="center" style={{ fontSize }}>
+                    </StyledTableCell>
+                    <StyledTableCell align="center" style={{ fontSize }}>
                       {student.Student.student_name}
-                    </CustomTableCell>
+                    </StyledTableCell>
                     {uniqueDates.map((date) => {
                       const sessionsForDate = student.Attendance.Session.map(
                         (session) => session.status,
                       );
                       return sessionsForDate.map((status, sessionIndex) => (
-                        <CustomTableCell
+                        <StyledTableCell
                           align="center"
                           key={sessionIndex}
                           style={{ fontSize }}
                         >
                           {convertStatus(status)}
-                        </CustomTableCell>
+                        </StyledTableCell>
                       ));
                     })}
                   </TableRow>
