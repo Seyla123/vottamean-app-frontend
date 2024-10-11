@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
-  Tab,
-  Stack,
-  Tabs,
-  Avatar,
-  Button,
-  CircularProgress,
   Typography,
   Card,
   Stepper,
@@ -16,115 +10,34 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { shadow } from '../../../styles/global';
-import { useGetClassesDataQuery } from '../../../services/classApi';
 import {
   useGetStudentsByIdQuery,
   useUpdateStudentMutation,
 } from '../../../services/studentApi';
-import { setSnackbar } from '../../../store/slices/uiSlice';
+
 import StudentUpdateForm from '../../../components/student/StudentUpdateForm';
 import GuardianUpdateForm from '../../../components/student/GuardianUpdateForm';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { UpdateStudentValidator } from '../../../validators/validationSchemas'; // Adjust the path as necessary
-import dayjs from 'dayjs';
-import { useNavigate, useParams } from 'react-router-dom';
+
 import { KeyRound, User } from 'lucide-react';
 import { useTheme } from '@emotion/react';
 
+import { updateFormData } from '../../../store/slices/studentSlice';
 
 
 const StudentUpdatePage = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [activeStep, setActiveStep] = useState(0);
-  const [profileImg, setProfileImg] = useState('');
-  const [rows, setRows] = useState([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Setup react-hook-form
-  const {
-    control,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(UpdateStudentValidator),
-    defaultValues: {
-      photo: '',
-      first_name: '',
-      last_name: '',
-      dob: '',
-      gender: '',
-      phone_number: '',
-      address: '',
-      class_id: '',
-      guardian_first_name: '',
-      guardian_last_name: '',
-      guardian_email: '',
-      guardian_relationship: '',
-      guardian_phone_number: '',
-    },
-  });
+ // Dispatch the action to update the form data
+ const dispatch = useDispatch();
 
-  const {
-    data: studentData,
-    isLoading,
-    fetchError,
-  } = useGetStudentsByIdQuery(id);
-  const [
-    updateStudent,
-    {
-      isLoading: isUpdateLoading,
-      isError: isUpdateError,
-      isSuccess: isUpdateSuccess,
-      error,
-    },
-  ] = useUpdateStudentMutation();
-  const { data: classData } = useGetClassesDataQuery();
+   // State variable to keep track of the current step
+   const [activeStep, setActiveStep] = useState(0);
 
-  useEffect(() => {
-    if (classData && Array.isArray(classData.data)) {
-      const classes = classData.data.map((classItem) => ({
-        value: classItem.class_name,
-        label: classItem.class_name,
-      }));
-      setRows(classes);
-    }
-  }, [classData]);
-
-  useEffect(() => {
-    if (studentData) {
-      const {
-        Info,
-        guardian_first_name,
-        guardian_last_name,
-        guardian_email,
-        guardian_relationship,
-        guardian_phone_number,
-        class_id,
-      } = studentData.data;
-      reset({
-        first_name: Info.first_name || '',
-        last_name: Info.last_name || '',
-        phone_number: Info.phone_number || '',
-        class_id: class_id || '',
-        gender: Info.gender || '',
-        dob: Info.dob ? dayjs(Info.dob).format('YYYY-MM-DD') : '',
-        address: Info.address || '',
-        guardian_first_name: guardian_first_name || '',
-        guardian_last_name: guardian_last_name || '',
-        guardian_relationship: guardian_relationship || '',
-        guardian_email: guardian_email || '',
-        guardian_phone_number: guardian_phone_number || '',
-      });
-      setProfileImg(Info.photo);
-    }
-  }, [studentData, reset]);
-
+     // Function to handle the form data change
+  const handleFormChange = (stepData) => {
+    dispatch(updateFormData(stepData));
+  };
     // Function to go to the next step
     const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -133,78 +46,10 @@ const StudentUpdatePage = () => {
   // Function to go to the previous step
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+   
   };
 
-  const onSubmit = async (data) => {
-    const formData = new FormData();
 
-    if (data.photo) {
-      formData.append('photo', data.photo);
-    }
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key]);
-    });
-
-    try {
-      await updateStudent({ id, updates: formData }).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Updated successfully',
-          severity: 'success',
-        }),
-      );
-      handleNext();
-
-    // You can navigate to another page after all steps are done
-    if (activeStep === steps.length - 1) {
-      navigate('/admin/students');
-    }
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Update failed',
-          severity: 'error',
-        }),
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (isUpdateLoading) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
-      );
-    } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error?.data?.message || 'Update failed',
-          severity: 'error',
-        }),
-      );
-    } else if (isUpdateSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Updated successfully',
-          severity: 'success',
-        }),
-      );
-      navigate('/admin/students');
-    }
-  }, [
-    isUpdateLoading,
-    isUpdateError,
-    isUpdateSuccess,
-    error,
-    dispatch,
-    navigate,
-  ]);
-
-  if (isLoading) return <CircularProgress />;
-  if (fetchError) return navigate('/admin/students');
   // Array of steps to display in the stepper
   const steps = [
     {
@@ -237,18 +82,12 @@ const StudentUpdatePage = () => {
   );
   // Array of components to render in each step
   const stepFormComponents = [
-    <StudentUpdateForm
-      handleNext={handleNext}
-      handleFormChange={onSubmit}
-      control={control}
-      errors={errors}
-      rows={rows}
+    <StudentUpdateForm handleFormChange={handleFormChange} handleNext={handleNext} 
     />,
     <GuardianUpdateForm
-      control={control}
-      errors={errors}
-      handleBack={handleBack}
-      handleFormChange={onSubmit}
+    handleFormChange={handleFormChange}
+    handleNext={handleNext}
+    handleBack={handleBack}
     />,
   ];
 
