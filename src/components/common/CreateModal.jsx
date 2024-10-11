@@ -23,11 +23,14 @@ import dayjs from 'dayjs';
 import { X } from 'lucide-react';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogTitle-root': {
+    padding: theme.spacing(2),
+  },
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
   },
   '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   },
 }));
 
@@ -154,7 +157,7 @@ const CreateModal = ({
     <BootstrapDialog
       open={open}
       onClose={handleClose}
-      maxWidth="sm"
+      maxWidth="xs"
       fullWidth
       aria-labelledby="create-dialog-title"
     >
