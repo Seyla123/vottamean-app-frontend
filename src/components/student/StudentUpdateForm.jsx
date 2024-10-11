@@ -1,29 +1,37 @@
 // StudentUpdateForm.js
 import React, { useEffect, useState } from 'react';
-import { Box, Button, MenuItem, Stack, TextField, Typography, Modal } from '@mui/material';
+import {  useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import { Box, MenuItem, Stack, TextField, Typography, Modal } from '@mui/material';
+import { UserRoundPen } from 'lucide-react';
+import dayjs from 'dayjs';
+
+
+import StyledButton from '../common/StyledMuiButton';
+import { setSnackbar } from '../../store/slices/uiSlice';
 import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
-import { UserRoundPen } from 'lucide-react';
-import StyledButton from '../common/StyledMuiButton';
-import SubHeader from '../teacher/SubHeader';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setSnackbar } from '../../store/slices/uiSlice';
+
+
 import { useGetClassesDataQuery } from '../../services/classApi';
 import {
   useGetStudentsByIdQuery,
   useUpdateStudentMutation,
 } from '../../services/studentApi';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { StudentValidator } from '../../validators/validationSchemas';
-import dayjs from 'dayjs';
 
-const StudentUpdateForm = ({ isOpen, onClose ,handleNext}) => {
+import { StudentValidator } from '../../validators/validationSchemas';
+import SubHeader from '../teacher/SubHeader';
+import {formatStudentFormData} from'../../utils/formatData'
+import { DatePicker } from '@mui/x-date-pickers';
+
+const StudentUpdateForm = ({  onClose ,handleNext}) => {
   const {id} =useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Fetch student data when the modal is open an is available
@@ -32,7 +40,8 @@ const StudentUpdateForm = ({ isOpen, onClose ,handleNext}) => {
     isLoading,
     isError,
   } = useGetStudentsByIdQuery(id);
-console.log(studentData);
+
+
   // Fetch classes data
   const { data: classData } = useGetClassesDataQuery();
 
@@ -78,25 +87,20 @@ console.log(studentData);
 
   // Populate form with fetched student data
   useEffect(() => {
-  if (studentData && studentData.data) {
-    const { Info, class_id } = studentData.data;
-    const formattedData = {
-      first_name: Info.first_name || '',
-      last_name: Info.last_name || '',
-      phone_number: Info.phone_number || '',
-      gender: Info.gender || '',
-      // Ensure `dob` is passed as a `dayjs` object
-      dob: Info.dob ? dayjs(Info.dob) : null,
-      address: Info.address || '',
-      class_id: class_id ? String(class_id) : '',
-    };
-    reset(formattedData);
-    setDob(formattedData.dob);  // Make sure DOBPicker gets the `dayjs` value
-    setOriginalData(formattedData);
-  }
-}, [studentData, reset]);
-
-
+    if (studentData && studentData.data) {
+      const formattedData = formatStudentFormData(studentData);
+      if (formattedData) {
+        const studentInfo = {
+          ...formattedData,
+          dob: formattedData.dob ? dayjs(formattedData.dob) : null,  
+        };
+        reset(studentInfo);
+        setDob(studentInfo.dob);
+        setOriginalData(studentInfo);
+      }
+    }
+  }, [studentData, reset]);
+  
   // Handle form submission
   const onSubmit = async (data) => {
     const submittedData = {
@@ -166,6 +170,7 @@ console.log(studentData);
   if (isError)
     return <Typography color="error">Error loading student data</Typography>;
 
+
   return (
     <
     >
@@ -230,8 +235,10 @@ console.log(studentData);
                 control={control}
                 errors={errors}
                 name="gender"
+                defaultValue={studentData.gender || ''}
                 label="Gender"
               />
+              {/* Date of Birth */}
               <DOBPicker
                 control={control}
                 errors={errors}
