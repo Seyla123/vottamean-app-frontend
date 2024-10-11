@@ -32,7 +32,7 @@ const SubscriptionButton = ({
         return;
       }
 
-      // Create checkout session for paid plans
+      // Create checkout session for both new subscriptions and renewals
       const formattedPlanType = planType.toLowerCase();
       const { url } = await createCheckoutSession({
         plan_type: formattedPlanType,
@@ -42,7 +42,11 @@ const SubscriptionButton = ({
       }).unwrap();
 
       // Redirect to Stripe Checkout
-      window.location.href = url;
+      if (url) {
+        window.location.href = url;
+      } else {
+        console.error('Received undefined URL from createCheckoutSession.');
+      }
     } catch (error) {
       console.error('Failed to create checkout session:', error);
       alert(

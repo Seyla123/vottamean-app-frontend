@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardActions,
-  Button,
   Tabs,
   Tab,
 } from '@mui/material';
@@ -40,15 +39,15 @@ const SubscriptionPlansPage = () => {
     },
     {
       type: 'Standard',
-      monthlyPrice: '$19.99/month',
-      yearlyPrice: '$199.99/year',
+      monthlyPrice: '$3.99/month',
+      yearlyPrice: '$39.99/year',
       description: 'Standard features with more capacity and priority support.',
       isFree: false,
     },
     {
       type: 'Premium',
-      monthlyPrice: '$29.99/month',
-      yearlyPrice: '$299.99/year',
+      monthlyPrice: '$9.99/month',
+      yearlyPrice: '$99.99/year',
       description: 'All features and top-tier support for large institutions.',
       isFree: false,
     },
@@ -122,17 +121,20 @@ const SubscriptionPlansPage = () => {
                 )}
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', mb: 2 }}>
-              <SubscriptionButton
-                planType={plan.type}
-                adminId={adminId}
-                currentPlan={currentSubscription}
-                billingCycle={billingCycle}
-                isFree={plan.isFree}
-                isSubscribed={
-                  currentSubscription === plan.type.toLowerCase() &&
-                  isSubscriptionActive
-                }
-              />
+              {/* Only show the SubscriptionButton if it's not a Free or Basic plan */}
+              {!plan.isFree && (
+                <SubscriptionButton
+                  planType={plan.type}
+                  adminId={adminId}
+                  currentPlan={currentSubscription}
+                  billingCycle={billingCycle}
+                  isFree={plan.isFree}
+                  isSubscribed={
+                    currentSubscription === plan.type.toLowerCase() &&
+                    isSubscriptionActive
+                  }
+                />
+              )}
             </CardActions>
           </Card>
         ))}
