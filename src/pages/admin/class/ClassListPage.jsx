@@ -278,16 +278,17 @@ const ClassListPage = () => {
         id={selectedClass?.class_id}
         getDataQuery={useGetClassesByIdQuery}
         useUpdateDataMutation={useUpdateClassesDataMutation}
-       
       />
 
       <ViewModal
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
-        title="View Class"
-        description="Class details"
+        title="Class Details"
+        description={`These are Subject's information`}
         data={selectedClass}
+        icons={''}
       />
+
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}

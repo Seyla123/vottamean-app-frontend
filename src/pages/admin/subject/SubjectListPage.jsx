@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Stack, Button } from '@mui/material';
-import { PlusIcon } from 'lucide-react';
+import { FolderPen, IdCard, LetterText, PlusIcon, Timer } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import CircularIndeterminate from '../../../components/loading/LoadingCircle';
@@ -19,6 +19,11 @@ import {
 } from '../../../services/subjectApi';
 import { SubjectValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import {
+  formatDate,
+  formatTimeTo12Hour,
+  formatTimeToHHMM,
+} from '../../../utils/formatHelper';
 
 const columns = [
   { id: 'subject_id', label: 'Subject ID' },
@@ -28,7 +33,7 @@ const columns = [
 
 function SubjectListPage() {
   const [rows, setRows] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState('');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -112,32 +117,6 @@ function SubjectListPage() {
     }
   };
 
-  // EDIT FUNCTIONS
-  const handleEdit = async (formData) => {
-    try {
-      const result = await updateSubject({
-        id: selectedSubject.subject_id,
-        formData,
-      }).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Subject updated successfully',
-          severity: 'success',
-        }),
-      );
-      setEditModalOpen(false);
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to update subject',
-          severity: 'error',
-        }),
-      );
-    }
-  };
-
   // DELETE FUNCTIONS
   const handleDelete = (row) => {
     setSelectedSubject(row);
@@ -198,6 +177,23 @@ function SubjectListPage() {
       );
     }
   };
+
+  const { subject_id, subject_name, description, updatedAt } = selectedSubject;
+  const subjectDataDetails = [
+    {
+      'Subject ID': subject_id,
+      icon: <IdCard size={18} />,
+    },
+    {
+      'Subject Name': subject_name,
+      icon: <FolderPen size={18} />,
+    },
+    {
+      Description: description,
+      icon: <LetterText size={18} />,
+    },
+    { 'Updated At': formatDate(updatedAt), icon: <Timer size={18} /> },
+  ];
 
   return (
     <FormComponent
@@ -299,7 +295,8 @@ function SubjectListPage() {
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Subject Details"
-        data={selectedSubject}
+        description={`These are Subject's information`}
+        data={subjectDataDetails}
       />
 
       <DeleteConfirmationModal
