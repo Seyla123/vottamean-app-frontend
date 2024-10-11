@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Grid } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import ChangePasswordForm from '../../pages/admin/setting/account/ChangePasswordForm';
@@ -8,8 +8,9 @@ import { Info } from 'lucide-react';
 // Image and Icon
 import { Lock, Trash2 } from 'lucide-react';
 import AlertCard from './AlertCard';
+import SectionTitle from './SectionTitle';
 
-const SecurityView = ({ title, handleDeleteAccount }) => {
+const SecurityView = ({ handleDeleteAccount }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
     useState(false);
@@ -30,17 +31,22 @@ const SecurityView = ({ title, handleDeleteAccount }) => {
         height: '100%',
       }}
     >
-      <Typography variant="h5" component="h5" fontWeight="bold" gutterBottom>
-        {title}
-      </Typography>
-      <AlertCard
-        title={'Password Change Required'}
-        description={
-          'For your security, you need to change your password. Please ensure your new password is strong and not used on any other site.'
-        }
-        severity="info"
-        icon={<Info size={18} />}
+      <SectionTitle
+        title={'Account'}
+        subtitle={'Manage your account settings'}
       />
+      <Grid container>
+        <Grid item xs={12} sm={12} md={6}>
+          <AlertCard
+            title={'Password Change Required'}
+            description={
+              'For your security, you need to change your password. Please ensure your new password is strong and not used on any other site.'
+            }
+            severity="info"
+            icon={<Info size={18} />}
+          />
+        </Grid>
+      </Grid>
       {/* CHANGE ACCOUNT SECTION */}
       <Box
         component={'div'}

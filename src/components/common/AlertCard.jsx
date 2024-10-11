@@ -3,7 +3,7 @@ import React from 'react';
 
 const AlertCard = ({ title, description, severity = 'none', icon }) => {
   return (
-    <Alert icon={icon} severity={severity} sx={{ width: 'fit-content' }}>
+    <Alert icon={icon} severity={severity}>
       <AlertTitle>{title}</AlertTitle>
       {description}
     </Alert>

@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Typography, Grid } from '@mui/material';
+import { Box,  Grid } from '@mui/material';
 import ProfileSection from './ProfileSection';
 import InformationSection from './InformationSection';
 import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
-import { grey } from '@mui/material/colors';
-import AlertCard from './AlertCard';
-import { Info } from 'lucide-react';
-import personalImage from '../../assets/images/personal-data-88.svg';
-import accountImage from '../../assets/images/security-tab-image.svg';
-import AccountSettingInfoCard from './AccountSettingInfoCard';
+import SectionTitle from './SectionTitle';
 
 const MyProfileView = ({
-  title,
+
   profilePhoto,
   userData,
   schoolProfileData,
@@ -36,11 +31,15 @@ const MyProfileView = ({
         height: '100%',
       }}
     >
-      <Typography variant="h5" component="h5" fontWeight="bold">
-        {title}
-      </Typography>
+      <SectionTitle
+        title={'My Profile'}
+        subtitle={'Manage your profile settings'}
+      />
       {/* CONTAINER */}
       <Grid container>
+        <Grid item xs={12}>
+          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
+        </Grid>
         <Grid item xs={12}>
           <InformationSection
             title="Personal Details"
