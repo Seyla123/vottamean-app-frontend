@@ -10,7 +10,7 @@ import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
-import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
+import PaymentCancelPage from '../pages/payment/PaymentCancelPage';
 import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
 import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
 
@@ -117,8 +117,8 @@ const routesConfig = [
         element: <PaymentSuccessPage />,
       },
       {
-        path: 'failure',
-        element: <PaymentFailurePage />,
+        path: 'cancel',
+        element: <PaymentCancelPage />,
       },
       {
         path: 'payment-required',
