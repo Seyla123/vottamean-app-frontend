@@ -12,15 +12,6 @@ export const paymentApi = baseApi.injectEndpoints({
       providesTags: ['Payments'],
     }),
 
-    // Define the Stripe endpoint to create a payment intent
-    createPaymentIntent: builder.mutation({
-      query: (paymentData) => ({
-        url: 'payments/create-payment-intent',
-        method: 'POST',
-        body: paymentData,
-      }),
-    }),
-
     // Define the Stripe endpoint to create a checkout session
     createCheckoutSession: builder.mutation({
       query: (sessionData) => ({
