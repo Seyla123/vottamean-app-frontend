@@ -9,8 +9,11 @@ import { useSelector } from 'react-redux';
 import DOBPicker from '../common/DOBPicker';
 import { UserRoundPen } from 'lucide-react';
 import StyledButton from '../common/StyledMuiButton';
+import SubHeader from '../teacher/SubHeader';
+import { updateFormData } from '../../store/slices/studentSlice';
 
-const StudentUpdateForm = ({ control, errors, rows, handleImageChange }) => {
+const StudentUpdateForm = ({ handleNext,handleFormChange,control, errors, rows, handleImageChange }) => {
+  
   const studentData = useSelector((state) => state.student);
   // - Local State
   const [dob, setDob] = useState(
@@ -19,6 +22,7 @@ const StudentUpdateForm = ({ control, errors, rows, handleImageChange }) => {
   return (
     <Stack spacing={3}>
       {/* Profile picture upload */}
+      <SubHeader  title={ "Student information"}/>
       <Box
           sx={{
             display: 'flex',
