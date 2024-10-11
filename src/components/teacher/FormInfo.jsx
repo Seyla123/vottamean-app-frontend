@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 // Mui Component
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 import dayjs from 'dayjs';
 import {
   Box,
@@ -37,6 +38,7 @@ import TeacherInfo from './TeacherInfo';
 import AccountInfo from './AccountInfo';
 import LoadingCircle from '../../components/loading/LoadingCircle';
 import { shadow } from '../../styles/global';
+import { Photo } from '@mui/icons-material';
 
 function FormInfo() {
   const dispatch = useDispatch();
@@ -50,6 +52,7 @@ function FormInfo() {
   const [isTeacherInfoValid, setIsTeacherInfoValid] = useState(false);
   const [teacherData, setTeacherData] = useState({});
   const [formError, setFormError] = useState('');
+  const [photoFile, setPhotoFile] = useState(null); // State to store the uploaded photo
 
   // Sign up Teacher Api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
@@ -88,50 +91,43 @@ function FormInfo() {
     }
   }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
 
-  // Check dob validation in acc info before submitting
-  const handleAccountSubmit = async (data) => {
-    const today = dayjs();
-    const dob = dayjs(data.dob);
-    if (!dob.isValid() || dob.isAfter(today)) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Date of birth cannot be in the future',
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
-      return;
-    }
-    
-
-    // set default values for the form
-    const payload = {
-      email: data.email,
-      password: data.password,
-      passwordConfirm: data.passwordConfirm,
-      address: data.address || '',
-      dob: dob.format('YYYY-MM-DD'), // format the dob
-      first_name: data.firstName || '',
-      last_name: data.lastName || '',
-      gender: data.gender || '',
-      phone_number: data.phoneNumber || '',
-    };
-
+  // handle submit
+  const handleAccountSubmit = async (formData) => {
     try {
-      // Send the formatted data to the API
-      await signUpTeacher(payload).unwrap();
-      setFormError('');
-    } catch (err) {
-      console.error('Signup failed:', err);
-      setFormError('Signup failed. Please try again.');
+      const response = await signUpTeacher(formData);
+      if (response.error) {
+        throw new Error(
+          response.error.data.message || 'An error occurred during signup',
+        );
+      }
+    } catch (error) {
+      console.error('Error signing up teacher:', error.message);
+      throw error;
     }
   };
 
-  // Handle continue to account info after validating correct
+  // Function to handle photo upload
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0]; 
+    // Get the first file selected
+    if (file) {
+      setPhotoFile(file);
+    } else {
+      console.log('No photo selected');
+    }
+  }
+
+  // Handle continue to account info after check validation correct
   const handleNextClick = (isValid, data) => {
     if (isValid) {
-      setTeacherData(data);
+      setTeacherData((prevData) => {
+        const newData = {
+          ...prevData,
+          ...data,
+          photo: data.photo,
+        };
+        return newData;
+      });
       setValue('2');
       setIsTeacherInfoValid(true);
     }
@@ -149,62 +145,65 @@ function FormInfo() {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: {xs: "column",  sm: 'column', md:"column", lg: 'row' },
+        flexDirection: { xs: 'column', sm: 'column', md: 'column', lg: 'row' },
         gap: { xs: 2, sm: 3 },
       }}
     >
       <Card sx={cardContainer}>
-        {/* Sidebar tabs */}
-        <Box
-          sx={{
-            width: { xs: '100%', sm: '140px', md: '160px' },
-            borderRight: { sm: '1px solid #e0e0e0' },
-          }}
-        >
-          <Tabs
-            orientation={isMobile ? 'horizontal' : 'vertical'}
-            value={value}
-            variant={isMobile ? 'fullWidth' : 'scrollable'}
-            onChange={(event, newValue) => setValue(newValue)}
+        <TabContext value={value}>
+          <Box
+            sx={{
+              borderRight: isMobile ? 'none' : 1,
+              borderColor: 'divider',
+            }}
           >
-            <Tab
-              label="Personal"
-              icon={<User size={18} />}
-              value="1"
-              sx={tabStyle}
-            />
-            <Tab
-              label="Account"
-              icon={<KeyRound size={18} />}
-              value="2"
-              sx={tabStyle}
-              disabled={!isTeacherInfoValid}
-            />
-          </Tabs>
-        </Box>
-        {/* Contents */}
-        <Box
-          sx={{
-            flex: 1,
-            p: 3,
-            backgroundColor: '#ffffff',
-            overflowY: 'auto',
-          }}
-        >
-          {value === '1' && (
+            <TabList
+              orientation={isMobile ? 'horizontal' : 'vertical'}
+              variant="scrollable"
+              onChange={(event, newValue) => setValue(newValue)}
+              aria-label="Vertical tabs"
+              sx={{
+                width: '100%',
+                pb: {
+                  xs: 0,
+                  sm: 4,
+                },
+              }}
+            >
+              {/* Tabs Title */}
+              <Tab
+                label="Personal"
+                icon={<User size={18} />}
+                value="1"
+                sx={tabStyle}
+              />
+              <Tab
+                label="Account"
+                disabled={!isTeacherInfoValid}
+                icon={<Settings size={18} />}
+                value="2"
+                sx={tabStyle}
+              />
+            </TabList>
+          </Box>
+          {/* Tab Contents */}
+          <TabPanel sx={{ flexGrow: 1 }} value="1">
             <TeacherInfo
               handleNextClick={handleNextClick}
               defaultValues={teacherData}
+              handlePhotoChange={handlePhotoChange}
+              handleAccountSubmit={handleAccountSubmit}
             />
-          )}
-          {value === '2' && (
+          </TabPanel>
+          <TabPanel sx={{ flexGrow: 1 }} value="2">
             <AccountInfo
+              teacherData={teacherData}
               handleBack={handleBack}
               handleAccountSubmit={handleAccountSubmit}
-              teacherData={teacherData}
+              disabled={!isTeacherInfoValid}
             />
-          )}
-        </Box>
+          </TabPanel>
+        </TabContext>
       </Card>
       {/* Info Box */}
       <Box sx={infoBox}>
@@ -227,7 +226,7 @@ function FormInfo() {
             />
           </Grid>
         </Box>
-        <Box sx={{ display: { xs: 'none', sm: 'block'} }}>
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Settings color={theme.palette.primary.main} />
             <Typography variant="body2" fontWeight="medium">

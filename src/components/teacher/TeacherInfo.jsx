@@ -17,6 +17,9 @@ import {
   Stack,
   FormControl,
   Select,
+  InputLabel,
+  FormHelperText,
+  capitalize,
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -31,7 +34,7 @@ import SubHeader from './SubHeader';
 import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
-import { ImagePlus, Trash2 } from 'lucide-react';
+import { ImagePlus, Trash2, User, UserRoundPen } from 'lucide-react';
 
 const TeacherInfo = ({ handleNextClick, defaultValues }) => {
   const navigate = useNavigate();
@@ -49,47 +52,81 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
+    // set properties to default values
     defaultValues: {
-      photo: '',
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      gender: '',
-      dob: null,
-      address: '',
+      first_name: defaultValues.first_name || '',
+      last_name: defaultValues.last_name || '',
+      phone_number: defaultValues.phone_number || '',
+      gender: defaultValues.gender || '',
+      dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
+      address: defaultValues.address || '',
+      email: defaultValues.email || '',
+      password: defaultValues.password || '',
+      passwordConfirm: defaultValues.passwordConfirm || '',
+      photo: defaultValues.photo || '',
     },
   });
 
-  // set the default values for the properties
   useEffect(() => {
     if (defaultValues) {
-      reset(defaultValues);
-      // set the photo preview if it exists in default values
+      reset({
+        ...defaultValues,
+        dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
+        // format daate can not in the future
+      });
+      setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
+      // Check if a photo URL or file is present
       if (defaultValues.photo) {
         setPhotoPreview(defaultValues.photo);
       }
     }
   }, [defaultValues, reset]);
 
+  // useEffect(() => {
+  //   console.log('Default Values:', defaultValues);
+  //   console.log('Photo Preview:', photoPreview);
+  //   console.log('DOB:', getValues('dob'));
+  // }, [defaultValues, photoPreview]);
+
   // Handle form submission
   const onSubmit = (data) => {
-    const updatedData = {
+    handleNextClick(true, {
       ...data,
-      photo: photoPreview,
-    };
-    handleNextClick(true, updatedData);
+      gender: data.gender || '',
+      dob: data.dob ? dob.toISOString() : null,
+      photo: photoFile || photoPreview || null,
+    });
   };
 
+  //  Handle photo upload
   const handlePhotoUpload = (event) => {
+    console.log('handle photo upload:', handlePhotoUpload);
     const file = event.target.files[0];
-    if (file) {
+    if (
+      file &&
+      file.type.startsWith('image/') &&
+      file.size <= 5 * 1024 * 1024
+    ) {
       setPhotoFile(file);
       const newPreviewUrl = URL.createObjectURL(file);
       setPhotoPreview(newPreviewUrl);
       setValue('photo', newPreviewUrl);
+      handlePhotoChange(newPreviewUrl);
+      // Update the preview URL in form state
+    } else {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            'Invalid file type or size. Please upload a JPEG, PNG, or GIF under 5MB.',
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
     }
   };
 
+  // handle remove photo
   const handleRemovePhoto = () => {
     if (photoPreview) {
       URL.revokeObjectURL(photoPreview);
@@ -102,6 +139,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
     }
   };
 
+  // handle cancel
   const handleCancel = () => {
     navigate('/admin/teachers');
   };
@@ -113,12 +151,22 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
           {/* Profile Photo */}
           <Box
             sx={{
-              textAlign: 'start',
+              width: '100%',
               display: 'flex',
+              justifyContent: 'flex-start',
               alignItems: 'center',
               gap: 2,
+              pb: {
+                xs: 2,
+                sm: 4,
+              },
+              pt: {
+                xs: 0,
+                sm: 4,
+              },
             }}
           >
+            {/* profile */}
             {photoPreview ? (
               <Avatar
                 src={photoPreview}
@@ -133,42 +181,52 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               />
             )}
             <input
-              accept="image/*"
               id="photo-upload"
               type="file"
-              hidden
+              accept="image/*"
               ref={inputFileRef}
+              hidden
               onChange={handlePhotoUpload}
             />
-            <label htmlFor="photo-upload">
-              <StyledButton
-                variant="contained"
-                size="small"
-                component="span"
-                startIcon={<ImagePlus size={20} />}
-              >
-                Upload
-              </StyledButton>
-            </label>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              color="error"
-              startIcon={<Trash2 size={20} />}
-              onClick={handleRemovePhoto}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'start',
+                gap: 2,
+              }}
             >
-              Remove
-            </StyledButton>
+              <label htmlFor="photo-upload">
+                <StyledButton
+                  variant="contained"
+                  size="small"
+                  component="span"
+                  startIcon={<ImagePlus size={18} />}
+                >
+                  Upload
+                </StyledButton>
+              </label>
+              <StyledButton
+                variant="outlined"
+                size="small"
+                color="error"
+                startIcon={<Trash2 size={18} />}
+                onClick={handleRemovePhoto}
+              >
+                Remove
+              </StyledButton>
+            </Box>
           </Box>
-
+          {/* Sub Header */}
           <SubHeader title={'Teacher Information'} />
-
+          {/* Name */}
           <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
             <Box sx={{ flex: 1, width: '100%' }}>
               <InputField
                 name="firstName"
                 control={control}
                 label="First Name"
+                icon={UserRoundPen}
                 placeholder="First Name"
                 errors={errors}
               />
@@ -179,21 +237,30 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
                 control={control}
                 label="Last Name"
                 placeholder="Last Name"
+                icon={UserRoundPen}
                 errors={errors}
               />
             </Box>
           </Box>
-
+          {/* Gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <GenderSelect
+            <Controller
               name="gender"
               control={control}
-              errors={errors}
-              label="Gender"
-              defaultValue={defaultValues?.gender}
+              defaultValue="" // Make sure to set an appropriate default value
+              rules={{ required: 'Gender is required' }} // Validation rule
+              render={({ field }) => (
+                <GenderSelect
+                  control={control}
+                  errors={errors}
+                  name={field.name}
+                  label="Gender"
+                  defaultValue={field.value} // Use the field value
+                  disabled={false}
+                />
+              )}
             />
           </Box>
-
           {/* Date of Birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Typography variant="body2" fontWeight="bold">
@@ -235,7 +302,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               )}
             />
           </Box>
-
+          {/* Contact Number */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <PhoneInputField
               name="phoneNumber"
@@ -244,7 +311,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               errors={errors}
             />
           </Box>
-
+          {/* Address */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <InputField
               name="address"
@@ -257,7 +324,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
               minRows={5}
             />
           </Box>
-
           <Stack
             direction={'row'}
             alignSelf={'flex-end'}
@@ -293,11 +359,11 @@ const boxContainer = {
   padding: '0px',
   gap: { xs: '12px', sm: 3 },
 };
-
 const profileBox = {
   width: '100%',
+  margin: 'auto',
   bgcolor: '#ffffff',
-  padding: { xs: 2, sm: 3 },
+  // padding: { xs: 2, sm: 3 },
   gap: { xs: '12px', sm: 3 },
   display: 'flex',
   alignItems: 'center',
@@ -310,7 +376,6 @@ const textFieldGap = {
   gap: 0.5,
   flexDirection: 'column',
 };
-
 // Define validation schema
 export const validationSchema = yup.object({
   firstName: yup
@@ -347,10 +412,16 @@ export const validationSchema = yup.object({
       /^\+\d{1,3}\s\d{1,3}.*$/,
       'Phone number must start with a country code and area code (e.g., +855 23 ...)',
     ),
+  photo: yup.mixed().nullable(),
   gender: yup
     .string()
-    .required('Gender is required')
-    .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender'),
+    .transform((value) => capitalize(value))
+    // Transform the value before validation
+    .oneOf(
+      ['Male', 'Female', 'Other'],
+      'Gender must be either Male, Female, or Other',
+    )
+    .required('Gender is required'),
   dob: yup
     .string()
     .required('Date of birth is required')

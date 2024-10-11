@@ -69,9 +69,9 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
+      first_name: '',
+      last_name: '',
+      phone_number: '',
       gender: '',
       dob: null,
       address: '',
