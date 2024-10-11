@@ -6,7 +6,7 @@ import StyledButton from '../common/StyledMuiButton';
 import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 
-const GuardianUpdateForm = ({ control, errors }) => {
+const GuardianUpdateForm = ({ control, errors,handleBack, handleFormChange }) => {
   return (
     <Stack spacing={3}>
       {/* Guardian First Name */}
