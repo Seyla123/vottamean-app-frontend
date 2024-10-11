@@ -27,6 +27,7 @@ const StyledTableCell = styled(TableCell)(({ theme, fontSize }) => ({
     fontSize: fontSize || '12px', // Ensure readability in PDF
     color: 'black', // Set text color to black for visibility
     height: 'auto', // Allow for automatic height based on content
+    textTransform: "capitalize"
 }));
 
 const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAttendanceKey }) => {
@@ -114,7 +115,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
         // Step 1: Capture the HTML content with a higher scale
         html2canvas(pdfRef.current, {
           useCORS: true,
-          scale: 4,  // Higher scale for better resolution
+          scale: 2,  // Higher scale for better resolution
         }).then((canvas) => {
           const imgData = canvas.toDataURL('image/jpeg', 2.0); // Use high-quality JPEG image
           const pdf = new jsPDF('l', 'mm', 'a4'); // A4 Landscape format
@@ -148,8 +149,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
       
     return (
         <>
-            <AttendanceFilter pdfData={exportToPDF}/>
-            {/* <Button onClick={exportToPDF}></Button> */}
+        <AttendanceFilter pdfData={exportToPDF}/>
         <Paper 
         ref={pdfRef}
         sx={{ backgroundColor: 'white',
@@ -196,7 +196,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
                             <TableRow key={student.id}>
                                 <StyledTableCell align="center">{index + 1}</StyledTableCell>
                                 <StyledTableCell align="center">{student.id}</StyledTableCell>
-                                <StyledTableCell align="center">{student.fullName}</StyledTableCell>
+                                <StyledTableCell align="center" >{student.fullName}</StyledTableCell>
                                 <StyledTableCell align="center">{convertGender(student.gender)}</StyledTableCell>
                                 {renderedStatusAttendance(student.attendance)}
                             </TableRow>
