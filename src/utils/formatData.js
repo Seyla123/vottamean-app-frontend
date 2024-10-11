@@ -245,6 +245,8 @@ export const getUserProfileUpdateData = (user) => {
   };
 };
 
+
+
 // Transform School Data for Updates
 export const getSchoolData = (user) => {
   const profileKey = getProfileKey(user.data.role);
@@ -286,6 +288,28 @@ export function guardianData(guardian) {
     Email: guardian.guardian_email,
   };
 }
+
+//UpdateStudent Data
+export const updateStudentData = (student) => {
+  const info = student.Info || {}; // Default to an empty object if undefined
+  return {
+    student_id: student.student_id,
+    photo: info.photo || null, // Default to null if photo is undefined
+    first_name: info.first_name || '',
+    last_name: info.last_name || '',
+    gender: info.gender || '',
+    dob: info.dob || null,
+    phone_number: info.phone_number || '',
+    address: info.address || '',
+    class_id: student.class_id || '',
+    guardian_first_name: student.guardian_first_name || '',
+    guardian_last_name: student.guardian_last_name || '',
+    guardian_relationship: student.guardian_relationship || '',
+    guardian_phone_number: student.guardian_phone_number || '',
+    guardian_email: student.guardian_email || '',
+  };
+};
+
 
 // Combined User and School Profile Data
 export const StudentProfile = (student) => {
