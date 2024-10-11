@@ -99,6 +99,7 @@ const ClassListPage = () => {
     console.log('error message:', isError.data.message);
   }
 
+  // CREATE FUNCTION
   const handleCreate = async (formData) => {
     try {
       await postClassesData(formData).unwrap();
@@ -181,6 +182,10 @@ const ClassListPage = () => {
       );
     }
   };
+
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
 
   return (
     <FormComponent
