@@ -198,7 +198,7 @@ const CreateModal = ({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <StyledButton onClick={handleClose} variant="outlined" size="small">
+        <StyledButton onClick={handleClose} size="small">
           Cancel
         </StyledButton>
         <StyledButton
