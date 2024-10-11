@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Avatar, Box } from '@mui/material';
+import blankProfile from '../../assets/images/blank-profile-picture.png';
 
 const RandomAvatar = ({ username, gender, size = 40 }) => {
   const getAvatarStyle = (gender) => {
@@ -20,12 +21,13 @@ const RandomAvatar = ({ username, gender, size = 40 }) => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Avatar
-        src={avatarUrl}
+        src={blankProfile}
         alt={`Avatar for ${username}`}
         sx={{
           width: size,
           height: size,
           bgcolor: '#eee',
+          objectFit: 'cover',
         }}
       />
     </Box>

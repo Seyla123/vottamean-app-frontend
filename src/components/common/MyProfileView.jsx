@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { Box,  Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import ProfileSection from './ProfileSection';
 import InformationSection from './InformationSection';
 import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
 import SectionTitle from './SectionTitle';
 
-const MyProfileView = ({
-
-  profilePhoto,
-  userData,
-  schoolProfileData,
-}) => {
+const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
   const [openModal, setOpenModal] = useState(null);
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
@@ -23,6 +18,7 @@ const MyProfileView = ({
 
   const checkUserRole = userData?.userRole;
 
+  console.log(userData);
   return (
     <Box
       component={'section'}
@@ -37,9 +33,9 @@ const MyProfileView = ({
       />
       {/* CONTAINER */}
       <Grid container>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <ProfileSection profilePhoto={profilePhoto} userData={userData} />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <InformationSection
             title="Personal Details"

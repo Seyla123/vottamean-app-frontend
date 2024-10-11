@@ -70,8 +70,7 @@ const InformationSection = ({
   onEdit,
   infoType,
   disableEdit = true,
-  profilePhoto = null,
-  userData = null,
+  profilePhoto,
 }) => {
   const getInfoItems = () => {
     if (infoType === 'personal') {
@@ -156,12 +155,14 @@ const InformationSection = ({
             </StyledButton>
           )}
         </Box>
-        {profilePhoto && (
-          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
-        )}
       </Box>
 
       <Grid container spacing={1} mt={1}>
+        <Grid item xs={12}>
+          {infoType === 'personal' && (
+            <ProfileSection profilePhoto={profilePhoto} userData={data} />
+          )}
+        </Grid>
         {getInfoItems().map((item, index) => (
           <InfoItem key={index} {...item} />
         ))}

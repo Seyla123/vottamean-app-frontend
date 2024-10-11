@@ -83,6 +83,8 @@ const AccountSettingsPage = () => {
     return <Typography>Error loading user data</Typography>;
   }
 
+  console.log(userData);
+
   return (
     <FormComponent
       title={'Account Settings'}
@@ -136,17 +138,15 @@ const AccountSettingsPage = () => {
             <TabPanel sx={{ flexGrow: 1 }} value="1">
               {/* MY PROFILE VIEW */}
               <MyProfileView
-                profilePhoto={userData.photo}
-                userData={userData.userProfile}
+                profilePhoto={userData?.photo}
+                userData={userData?.userProfile}
                 schoolProfileData={userData.schoolProfile}
               />
             </TabPanel>
 
             <TabPanel sx={{ flexGrow: 1 }} value="2">
               {/* SECURITY VIEW */}
-              <SecurityView
-                handleDeleteAccount={handleDeleteAccount}
-              />
+              <SecurityView handleDeleteAccount={handleDeleteAccount} />
             </TabPanel>
           </TabContext>
         </Box>

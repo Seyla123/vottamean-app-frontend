@@ -8,7 +8,7 @@ const ProfileSection = ({ profilePhoto, userData }) => {
   const { userName, userEmail, userGender, userId, userRole } = userData;
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', width: '100%' }}>
       <Box
         sx={{
           border: '1px solid',
