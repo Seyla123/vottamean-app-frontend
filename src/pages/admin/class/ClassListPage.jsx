@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Button, Box } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { PlusIcon } from 'lucide-react';
 // import components
@@ -11,7 +11,6 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
 import ViewModal from '../../../components/common/ViewModal';
-import StyledButton from '../../../components/common/StyledMuiButton';
 // import api and uiSlice
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import {
@@ -19,9 +18,10 @@ import {
   useGetClassesDataQuery,
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
+  useGetClassesByIdQuery,
 } from '../../../services/classApi';
-import { ScrollText } from 'lucide-react';
 import { ClassValidator } from '../../../validators/validationSchemas';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 // Define table columns title
 const columns = [
@@ -54,7 +54,6 @@ const ClassListPage = () => {
   ] = useDeleteClassesDataMutation();
 
   const [postClassesData] = usePostClassesDataMutation();
-  const [updateClassesData] = useUpdateClassesDataMutation();
 
   useEffect(() => {
     if (data && isSuccess) {
@@ -122,32 +121,6 @@ const ClassListPage = () => {
     }
   };
 
-  // EDIT FUNCTIONS
-  const handleEdit = async (formData) => {
-    try {
-      await updateClassesData({
-        id: selectedClass.class_id,
-        formData,
-      }).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Class updated successfully',
-          severity: 'success',
-        }),
-      );
-      setEditModalOpen(false);
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to update class',
-          severity: 'error',
-        }),
-      );
-    }
-  };
-
   // DELETE FUNCTIONS
   const handleDelete = (row) => {
     setSelectedClass(row);
@@ -157,7 +130,7 @@ const ClassListPage = () => {
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
     try {
-      await deleteClasses(selectedClass.class_id).unwrap();
+      await deleteClasses(selectedClass?.class_id).unwrap();
       dispatch(
         setSnackbar({
           open: true,
@@ -241,7 +214,6 @@ const ClassListPage = () => {
           />
         </Stack>
       </Box>
-
       <DataTable
         rows={rows}
         columns={columns}
@@ -256,7 +228,6 @@ const ClassListPage = () => {
         showNO={false}
         idField="class_id"
       />
-
       {/* CREATE CLASS MODAL */}
       <CreateModal
         open={createModalOpen}
@@ -280,20 +251,34 @@ const ClassListPage = () => {
         ]}
         onSubmit={handleCreate}
         validationSchema={ClassValidator}
-      submitText={'Create Class'}
+        submitText={'Create Class'}
       />
 
       <EditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        title="Edit Class"
+        title="Update Class"
         description="Update the class details"
         fields={[
-          { name: 'class_name', label: 'Class Name' },
-          { name: 'description', label: 'Description' },
+          {
+            name: 'class_name',
+            label: 'Class Name',
+            required: true,
+            icon: '',
+          },
+          {
+            name: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+            icon: '',
+          },
         ]}
-        initialData={selectedClass}
-        onSubmit={handleEdit}
+        validationSchema={ClassValidator}
+        id={selectedClass?.class_id}
+        getDataQuery={useGetClassesByIdQuery}
+        useUpdateDataMutation={useUpdateClassesDataMutation}
+       
       />
 
       <ViewModal
@@ -303,7 +288,6 @@ const ClassListPage = () => {
         description="Class details"
         data={selectedClass}
       />
-
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}

@@ -15,6 +15,7 @@ import {
   useDeleteSubjectMutation,
   useCreateSubjectMutation,
   useUpdateSubjectMutation,
+  useGetSubjectByIdQuery,
 } from '../../../services/subjectApi';
 import { SubjectValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
@@ -256,17 +257,42 @@ function SubjectListPage() {
         submitText={'Create Subject'}
       />
 
+      {/* EDIT SUBJECT MODAL */}
       <EditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        title="Edit Subject"
-        description="Update the details for this subject"
+        title="Update Subject"
+        description="Update the subject details"
         fields={[
-          { name: 'class_name', label: 'Class Name' },
-          { name: 'description', label: 'Description' },
+          {
+            name: 'subject_name',
+            label: 'Subject Name',
+            required: true,
+            icon: '',
+          },
+          {
+            name: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+            icon: '',
+          },
         ]}
-        initialData={selectedSubject}
-        onSubmit={handleEdit}
+        validationSchema={SubjectValidator}
+        id={selectedSubject?.subject_id}
+        getDataQuery={useGetSubjectByIdQuery}
+        useUpdateDataMutation={useUpdateSubjectMutation}
+        onSuccessfulUpdate={(updatedData) => {
+          dispatch(
+            setSnackbar({
+              open: true,
+              message: 'Class updated successfully',
+              severity: 'success',
+            }),
+          );
+          console.log(updatedData);
+          setEditModalOpen(false);
+        }}
       />
 
       <ViewModal

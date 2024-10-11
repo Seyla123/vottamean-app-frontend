@@ -223,15 +223,13 @@ const DataTable = ({
             )}
             {selected.length > 0 ? (
               <TableCell align="right" sx={{ maxWidth: '50px' }}>
-                <Tooltip title="Delete selected">
-                  <StyledButton
-                    onClick={handleSelectedDelete}
-                    color="error"
-                    startIcon={<Trash2 size={18} />}
-                  >
-                    Delete
-                  </StyledButton>
-                </Tooltip>
+                <StyledButton
+                  onClick={handleSelectedDelete}
+                  color="error"
+                  startIcon={<Trash2 size={18} />}
+                >
+                  Delete
+                </StyledButton>
               </TableCell>
             ) : (
               <TableCell align="right"></TableCell>
