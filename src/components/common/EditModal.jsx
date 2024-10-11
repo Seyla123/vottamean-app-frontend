@@ -22,6 +22,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
 import CircularIndeterminate from '../loading/LoadingCircle';
+import { useDispatch } from 'react-redux';
+import { setSnackbar } from '../../store/slices/uiSlice';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogTitle-root': {
@@ -47,6 +49,10 @@ const EditModal = ({
   useUpdateDataMutation,
 }) => {
   const { data, isLoading } = getDataQuery(id, { skip: !id });
+  const [initialData, setInitialData] = useState(null);
+
+  const dispatch = useDispatch();
+
   const [
     updateData,
     {
@@ -74,9 +80,13 @@ const EditModal = ({
 
   useEffect(() => {
     if (data) {
+      const initialFormData = {};
       fields.forEach((field) => {
-        setValue(field.name, data.data[field.name] || '');
+        const value = data.data[field.name] || '';
+        initialFormData[field.name] = value;
+        setValue(field.name, value);
       });
+      setInitialData(initialFormData);
     }
   }, [data, setValue, fields]);
 
@@ -165,7 +175,30 @@ const EditModal = ({
 
   const onSubmit = async () => {
     const formData = getValues();
+    const hasChanges = Object.keys(formData).some(
+      (key) => formData[key] !== initialData[key],
+    );
+
+    if (!hasChanges) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes made.',
+          severity: 'info',
+        }),
+      );
+      return;
+    }
+
     await updateData({ id, formData }).unwrap();
+
+    dispatch(
+      setSnackbar({
+        open: true,
+        message: 'Updated successfully',
+        severity: 'success',
+      }),
+    );
     onClose();
   };
 
