@@ -354,6 +354,7 @@ export const SessionValidator = createFormSchema([
 
 // Student Validations for Creating Student
 export const StudentValidator = createFormSchema([
+  'photo',
   'first_name',
   'last_name',
   'dob',
