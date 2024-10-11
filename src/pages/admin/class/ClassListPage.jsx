@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Button, Box } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { PlusIcon } from 'lucide-react';
 // import components
@@ -11,7 +11,6 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
 import ViewModal from '../../../components/common/ViewModal';
-import StyledButton from '../../../components/common/StyledMuiButton';
 // import api and uiSlice
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import {
@@ -19,7 +18,10 @@ import {
   useGetClassesDataQuery,
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
+  useGetClassesByIdQuery,
 } from '../../../services/classApi';
+import { ClassValidator } from '../../../validators/validationSchemas';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 // Define table columns title
 const columns = [
@@ -50,8 +52,8 @@ const ClassListPage = () => {
       error: deleteError,
     },
   ] = useDeleteClassesDataMutation();
+
   const [postClassesData] = usePostClassesDataMutation();
-  const [updateClassesData] = useUpdateClassesDataMutation();
 
   useEffect(() => {
     if (data && isSuccess) {
@@ -97,6 +99,7 @@ const ClassListPage = () => {
     console.log('error message:', isError.data.message);
   }
 
+  // CREATE FUNCTION
   const handleCreate = async (formData) => {
     try {
       await postClassesData(formData).unwrap();
@@ -119,31 +122,7 @@ const ClassListPage = () => {
     }
   };
 
-  const handleEdit = async (formData) => {
-    try {
-      await updateClassesData({
-        id: selectedClass.class_id,
-        formData,
-      }).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Class updated successfully',
-          severity: 'success',
-        }),
-      );
-      setEditModalOpen(false);
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to update class',
-          severity: 'error',
-        }),
-      );
-    }
-  };
-
+  // DELETE FUNCTIONS
   const handleDelete = (row) => {
     setSelectedClass(row);
     dispatch(setModal({ open: true }));
@@ -152,7 +131,7 @@ const ClassListPage = () => {
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
     try {
-      await deleteClasses(selectedClass.class_id).unwrap();
+      await deleteClasses(selectedClass?.class_id).unwrap();
       dispatch(
         setSnackbar({
           open: true,
@@ -171,6 +150,7 @@ const ClassListPage = () => {
     }
   };
 
+  // VIEW FUNCTIONS
   const handleView = (row) => {
     setSelectedClass(row);
     setViewModalOpen(true);
@@ -181,6 +161,7 @@ const ClassListPage = () => {
     setEditModalOpen(true);
   };
 
+  // DELETE MULTIPLE FUNCTIONS
   const handleSelectedDelete = async (selectedIds) => {
     try {
       await Promise.all(selectedIds.map((id) => deleteClasses(id).unwrap()));
@@ -202,6 +183,10 @@ const ClassListPage = () => {
     }
   };
 
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+
   return (
     <FormComponent
       title="Class List"
@@ -212,7 +197,7 @@ const ClassListPage = () => {
           size="large"
           variant="contained"
           color="primary"
-          startIcon={<PlusIcon size={20} />}
+          startIcon={<PlusIcon size={18} />}
           onClick={() => setCreateModalOpen(true)}
         >
           Create class
@@ -234,7 +219,6 @@ const ClassListPage = () => {
           />
         </Stack>
       </Box>
-
       <DataTable
         rows={rows}
         columns={columns}
@@ -249,38 +233,65 @@ const ClassListPage = () => {
         showNO={false}
         idField="class_id"
       />
-
+      {/* CREATE CLASS MODAL */}
       <CreateModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         title="Create New Class"
         description="Enter the details for the new class"
         fields={[
-          { name: 'class_name', label: 'Class Name' },
-          { name: 'description', label: 'Description' },
+          {
+            name: 'class_name',
+            label: 'Class Name',
+            required: true,
+            icon: '',
+          },
+          {
+            name: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+            icon: '',
+          },
         ]}
         onSubmit={handleCreate}
+        validationSchema={ClassValidator}
+        submitText={'Create Class'}
       />
 
       <EditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        title="Edit Class"
+        title="Update Class"
         description="Update the class details"
         fields={[
-          { name: 'class_name', label: 'Class Name' },
-          { name: 'description', label: 'Description' },
+          {
+            name: 'class_name',
+            label: 'Class Name',
+            required: true,
+            icon: '',
+          },
+          {
+            name: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+            icon: '',
+          },
         ]}
-        initialData={selectedClass}
-        onSubmit={handleEdit}
+        validationSchema={ClassValidator}
+        id={selectedClass?.class_id}
+        getDataQuery={useGetClassesByIdQuery}
+        useUpdateDataMutation={useUpdateClassesDataMutation}
       />
 
       <ViewModal
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
-        title="View Class"
-        description="Class details"
+        title="Class Details"
+        description={`These are Subject's information`}
         data={selectedClass}
+        icons={''}
       />
 
       <DeleteConfirmationModal

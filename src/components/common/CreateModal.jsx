@@ -1,22 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Stack,
   Typography,
   Box,
   InputAdornment,
   MenuItem,
+  IconButton,
 } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { styled } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { X } from 'lucide-react';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogTitle-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(2),
+  },
+}));
 
 const CreateModal = ({
   open,
@@ -25,127 +41,146 @@ const CreateModal = ({
   description,
   fields,
   onSubmit,
+  validationSchema,
+  submitText,
 }) => {
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: null });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    fields.forEach((field) => {
-      if (field.required && !formData[field.name]) {
-        newErrors[field.name] = 'This field is required';
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit(formData);
-      setFormData({}); // Reset form after submission
-      onClose();
-    }
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: fields.reduce(
+      (acc, field) => ({ ...acc, [field.name]: '' }),
+      {},
+    ),
+    mode: 'onChange', // This enables real-time validation
+  });
 
   const renderField = (field) => {
     switch (field.type) {
       case 'select':
         return (
-          <TextField
-            select
-            fullWidth
+          <Controller
             name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            error={!!errors[field.name]}
-            helperText={errors[field.name]}
-            variant="outlined"
-          >
-            {field.options.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextField
+                select
+                fullWidth
+                value={value}
+                onChange={onChange}
+                error={!!errors[field.name]}
+                helperText={errors[field.name]?.message}
+                variant="outlined"
+              >
+                {field.options.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
         );
       case 'time':
         return (
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <TimePicker
-              fullWidth
-              value={
-                formData[field.name]
-                  ? dayjs(formData[field.name], 'HH:mm')
-                  : null
-              }
-              onChange={(newValue) => {
-                handleChange({
-                  target: {
-                    name: field.name,
-                    value: newValue ? newValue.format('HH:mm') : '',
-                  },
-                });
-              }}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  variant: 'outlined',
-                  error: !!errors[field.name],
-                  helperText: errors[field.name],
-                },
-              }}
-            />
-          </LocalizationProvider>
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  fullWidth
+                  value={value ? dayjs(value, 'HH:mm') : null}
+                  onChange={(newValue) =>
+                    onChange(newValue ? newValue.format('HH:mm') : '')
+                  }
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: 'outlined',
+                      error: !!errors[field.name],
+                      helperText: errors[field.name]?.message,
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            )}
+          />
         );
       default:
         return (
-          <TextField
-            variant="outlined"
-            fullWidth
-            type={field.type || 'text'}
-            placeholder={field.placeholder || field.label}
+          <Controller
             name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            error={!!errors[field.name]}
-            helperText={errors[field.name]}
-            multiline={field.multiline}
-            rows={field.multiline ? 4 : 1}
-            slotProps={{
-              input: {
-                startAdornment: field.icon && (
-                  <InputAdornment position="start">{field.icon}</InputAdornment>
-                ),
-              },
-            }}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                type={field.type || 'text'}
+                placeholder={field.placeholder || field.label}
+                value={value}
+                onChange={onChange}
+                error={!!errors[field.name]}
+                helperText={errors[field.name]?.message}
+                multiline={field.multiline}
+                rows={field.multiline ? 4 : 1}
+                InputProps={{
+                  startAdornment: field.icon && (
+                    <InputAdornment position="start">
+                      {field.icon}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
         );
     }
   };
 
+  const onSubmitForm = async (data) => {
+    await onSubmit(data);
+    if (isValid) {
+      reset(); // Reset form fields only after successful submission
+    }
+  };
+
+  const handleClose = () => {
+    onClose();
+    reset();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <Box sx={{ p: 4 }}>
-        <Typography variant="h4" fontWeight={'bold'} pb={2}>
-          {title}
+    <BootstrapDialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="xs"
+      fullWidth
+      aria-labelledby="create-dialog-title"
+    >
+      <DialogTitle sx={{ m: 0, p: 2 }} id="create-dialog-title">
+        {title}
+        <Typography variant="body1" color="text.secondary">
+          {description}
         </Typography>
-        {description && (
-          <Typography variant="body1" gutterBottom>
-            {description}
-          </Typography>
-        )}
-      </Box>
-      <DialogContent>
-        <Stack spacing={2} mt={2}>
+      </DialogTitle>
+      <IconButton
+        onClick={handleClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
+
+      <DialogContent dividers>
+        <Stack spacing={2}>
           {fields.map((field) => (
             <Box
               key={field.name}
@@ -162,21 +197,20 @@ const CreateModal = ({
           ))}
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ py: 3, px: 3 }}>
-        <StyledButton onClick={onClose} size="large">
+      <DialogActions>
+        <StyledButton onClick={handleClose} size="small">
           Cancel
         </StyledButton>
         <StyledButton
-          onClick={handleSubmit}
+          onClick={handleSubmit(onSubmitForm)}
           variant="contained"
           color="primary"
-          size="large"
-          sx={{ px: 4 }}
+          size="small"
         >
-          Create
+          {submitText}
         </StyledButton>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 
