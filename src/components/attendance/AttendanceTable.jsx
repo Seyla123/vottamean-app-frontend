@@ -111,29 +111,39 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
       };
     
       const exportToPDF = () => {
-        html2canvas(pdfRef.current, { useCORS: true, scale: 2 }).then((canvas) => {
-          const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG for better quality
-          const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape A4
-          const imgWidth = 297; // A4 width in mm for landscape
+        // Step 1: Capture the HTML content with a higher scale
+        html2canvas(pdfRef.current, {
+          useCORS: true,
+          scale: 4,  // Higher scale for better resolution
+        }).then((canvas) => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use high-quality JPEG image
+          const pdf = new jsPDF('l', 'mm', 'a4'); // A4 Landscape format
+      
+          const imgWidth = 297 - 20; // A4 page width minus margins (10mm each side)
+          const pageHeight = 210 - 20; // A4 page height minus margins (10mm each side)
           const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-          const pageHeight = 210; // A4 height in mm
-          let heightLeft = imgHeight; // Remaining height to print
-          let position = 0; // Position for image placement
+          let heightLeft = imgHeight;
+          let position = 10; // Initial position with a 10mm margin
       
-          pdf.addImage(imgData, 'JPEG', 10, position, imgWidth - 20, imgHeight); // 10 mm margin
-          heightLeft -= pageHeight; // Decrease height left by one page height
+          // Add the first page image
+          pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
       
-          // Add additional pages if necessary
-          while (heightLeft >= 0) {
-            position = heightLeft - imgHeight; // Set the position for the next page
-            pdf.addPage(); // Add a new page
-            pdf.addImage(imgData, 'JPEG', 10, position, imgWidth - 20, imgHeight); // 10 mm margin
-            heightLeft -= pageHeight; // Decrease height left by one page height
+          // Loop for adding more pages if content overflows
+          while (heightLeft > 0) {
+            position = heightLeft - imgHeight;  // Adjust for new page
+            pdf.addPage();  // Create a new page
+            pdf.addImage(imgData, 'JPEG', 10, position + 10, imgWidth, imgHeight); // Add image with margin
+            heightLeft -= pageHeight;
           }
       
-          pdf.save('attendance_report.pdf'); // Save the PDF
+          // Step 2: Save the PDF
+          pdf.save('attendance_report.pdf');  // Save PDF with the correct filename
         });
       };
+      
+      
+      
       
       
     return (

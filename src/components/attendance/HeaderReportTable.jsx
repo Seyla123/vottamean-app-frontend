@@ -22,8 +22,8 @@ function HeaderReportTable({ schoolInfo, classInfo }) {
             <Grid >
                 <Typography variant="body2">School name : {schoolInfo?.school_name}</Typography>
                 <Typography variant="body2">Class name : {classInfo?.class_name}</Typography>
-                <Typography variant="body2">Total students : {studentCount?.total_students}</Typography>
-                <Typography variant="body2">Female: {studentCount?.total_female} / Male : {studentCount?.total_male}</Typography>
+                <Typography variant="body2">Total students : {studentCount?.total_students || 0}</Typography>
+                <Typography variant="body2">Female: {studentCount?.total_female || 0} / Male : {studentCount?.total_male || 0}</Typography>
             </Grid>
         </Grid>
     </>

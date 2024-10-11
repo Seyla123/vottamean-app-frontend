@@ -40,10 +40,14 @@ export const attendanceApi = baseApi.injectEndpoints({
       invalidatesTags: ['Attendance'],
     }),
     getReportAttendanceByClass : builder.query({
-      query: (class_id) => ({
+      query: (data) => ({
         url: `attendance/reports`,
         method: 'GET',
-        params: { class_id: 6 },
+        params: {
+          class_id: data.class,
+          subject_id: data.subject,
+          filter: data.filter,
+        },
         credentials: 'include',
       }),
       providesTags: ['Attendance'],
