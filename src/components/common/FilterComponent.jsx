@@ -13,7 +13,7 @@ const FilterComponent = ({ data, placeholder, value, onChange, customStyles, ico
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   
   // set the truncate length depending on the screen size
-  const trucateLong = isMobile ? 7 : 15;
+  const trucateLong = isMobile ? 7 : 10;
   
   // render the component
   return (
