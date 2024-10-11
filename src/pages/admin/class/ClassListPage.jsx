@@ -20,8 +20,7 @@ import {
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
 } from '../../../services/classApi';
-import * as yup from 'yup';
-import { BookText, ScrollText } from 'lucide-react';
+import { ScrollText } from 'lucide-react';
 import { ClassValidator } from '../../../validators/validationSchemas';
 
 // Define table columns title
@@ -53,6 +52,7 @@ const ClassListPage = () => {
       error: deleteError,
     },
   ] = useDeleteClassesDataMutation();
+
   const [postClassesData] = usePostClassesDataMutation();
   const [updateClassesData] = useUpdateClassesDataMutation();
 
@@ -119,10 +119,10 @@ const ClassListPage = () => {
           severity: 'error',
         }),
       );
-      // The modal will stay open on error, allowing the user to correct the input
     }
   };
 
+  // EDIT FUNCTIONS
   const handleEdit = async (formData) => {
     try {
       await updateClassesData({
@@ -148,6 +148,7 @@ const ClassListPage = () => {
     }
   };
 
+  // DELETE FUNCTIONS
   const handleDelete = (row) => {
     setSelectedClass(row);
     dispatch(setModal({ open: true }));
@@ -175,6 +176,7 @@ const ClassListPage = () => {
     }
   };
 
+  // VIEW FUNCTIONS
   const handleView = (row) => {
     setSelectedClass(row);
     setViewModalOpen(true);
@@ -185,6 +187,7 @@ const ClassListPage = () => {
     setEditModalOpen(true);
   };
 
+  // DELETE MULTIPLE FUNCTIONS
   const handleSelectedDelete = async (selectedIds) => {
     try {
       await Promise.all(selectedIds.map((id) => deleteClasses(id).unwrap()));
@@ -216,7 +219,7 @@ const ClassListPage = () => {
           size="large"
           variant="contained"
           color="primary"
-          startIcon={<PlusIcon size={20} />}
+          startIcon={<PlusIcon size={18} />}
           onClick={() => setCreateModalOpen(true)}
         >
           Create class
@@ -254,6 +257,7 @@ const ClassListPage = () => {
         idField="class_id"
       />
 
+      {/* CREATE CLASS MODAL */}
       <CreateModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
@@ -264,18 +268,19 @@ const ClassListPage = () => {
             name: 'class_name',
             label: 'Class Name',
             required: true,
-            icon: <BookText size={20} />,
+            icon: '',
           },
           {
             name: 'description',
             label: 'Description',
             required: true,
             multiline: true,
-            icon: <ScrollText size={20} />,
+            icon: '',
           },
         ]}
         onSubmit={handleCreate}
         validationSchema={ClassValidator}
+      submitText={'Create Class'}
       />
 
       <EditModal

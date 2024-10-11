@@ -16,8 +16,10 @@ import {
   useCreateSubjectMutation,
   useUpdateSubjectMutation,
 } from '../../../services/subjectApi';
+import { SubjectValidator } from '../../../validators/validationSchemas';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
-const tableTitles = [
+const columns = [
   { id: 'subject_id', label: 'Subject ID' },
   { id: 'subject_name', label: 'Subject Name' },
   { id: 'description', label: 'Subject Description' },
@@ -33,6 +35,7 @@ function SubjectListPage() {
   const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
 
+  // API hooks
   const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
   const [
     deleteSubject,
@@ -43,6 +46,7 @@ function SubjectListPage() {
       error: deleteError,
     },
   ] = useDeleteSubjectMutation();
+
   const [createSubject] = useCreateSubjectMutation();
   const [updateSubject] = useUpdateSubjectMutation();
 
@@ -107,15 +111,13 @@ function SubjectListPage() {
     }
   };
 
+  // EDIT FUNCTIONS
   const handleEdit = async (formData) => {
     try {
       const result = await updateSubject({
         id: selectedSubject.subject_id,
         formData,
       }).unwrap();
-      if (result.error) {
-        throw new Error(result.error);
-      }
       dispatch(
         setSnackbar({
           open: true,
@@ -128,15 +130,14 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            error.message ||
-            'Failed to update subject. The subject may no longer exist.',
+          message: error.data?.message || 'Failed to update subject',
           severity: 'error',
         }),
       );
     }
   };
 
+  // DELETE FUNCTIONS
   const handleDelete = (row) => {
     setSelectedSubject(row);
     dispatch(setModal({ open: true }));
@@ -145,10 +146,7 @@ function SubjectListPage() {
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
     try {
-      const result = await deleteSubject(selectedSubject.subject_id).unwrap();
-      if (result.error) {
-        throw new Error(result.error);
-      }
+      await deleteSubject(selectedSubject.subject_id).unwrap();
       dispatch(
         setSnackbar({
           open: true,
@@ -160,15 +158,14 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            error.message ||
-            'Failed to delete subject. The subject may no longer exist.',
+          message: error.data?.message || 'Failed to delete subject',
           severity: 'error',
         }),
       );
     }
   };
 
+  // VIEW FUNCTIONS
   const handleView = (row) => {
     setSelectedSubject(row);
     setViewModalOpen(true);
@@ -179,21 +176,14 @@ function SubjectListPage() {
     setEditModalOpen(true);
   };
 
+  // DELETE MULTIPLE FUNCTIONS
   const handleSelectedDelete = async (selectedIds) => {
     try {
-      const results = await Promise.all(
-        selectedIds.map((id) => deleteSubject(id).unwrap()),
-      );
-      const failedDeletions = results.filter((result) => result.error);
-      if (failedDeletions.length > 0) {
-        throw new Error(
-          `Failed to delete ${failedDeletions.length} subjects. They may no longer exist.`,
-        );
-      }
+      await Promise.all(selectedIds.map((id) => deleteSubject(id).unwrap()));
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Selected subjects deleted successfully',
+          message: 'Selected subject deleted successfully',
           severity: 'success',
         }),
       );
@@ -201,18 +191,12 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            error.message || 'Failed to delete some or all selected subjects',
+          message: error.data?.message || 'Failed to delete selected subject',
           severity: 'error',
         }),
       );
     }
   };
-
-  const fields = [
-    { name: 'subject_name', label: 'Subject Name', required: true },
-    { name: 'description', label: 'Description', multiline: true },
-  ];
 
   return (
     <FormComponent
@@ -220,23 +204,23 @@ function SubjectListPage() {
       subTitle={`Total Subjects: ${rows.length}`}
     >
       <Stack direction="row" justifyContent="flex-end">
-        <Button
+        <StyledButton
           size="large"
           variant="contained"
           color="primary"
-          startIcon={<PlusIcon size={20} />}
+          startIcon={<PlusIcon size={18} />}
           onClick={() => setCreateModalOpen(true)}
         >
-          ADD SUBJECT
-        </Button>
+          Create subject
+        </StyledButton>
       </Stack>
 
       <DataTable
         rows={rows}
-        columns={tableTitles}
-        onView={handleView}
+        columns={columns}
         onEdit={handleEditOpen}
         onDelete={handleDelete}
+        onView={handleView}
         onSelectedDelete={handleSelectedDelete}
         hideColumns={['description']}
         emptyTitle="No Subjects"
@@ -246,13 +230,30 @@ function SubjectListPage() {
         idField="subject_id"
       />
 
+      {/* CREATE SUBJECT MODAL */}
       <CreateModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         title="Create New Subject"
         description="Enter the details for the new subject"
-        fields={fields}
+        fields={[
+          {
+            name: 'subject_name',
+            label: 'Subject Name',
+            required: true,
+            icon: '',
+          },
+          {
+            name: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+            icon: '',
+          },
+        ]}
         onSubmit={handleCreate}
+        validationSchema={SubjectValidator}
+        submitText={'Create Subject'}
       />
 
       <EditModal
@@ -260,7 +261,10 @@ function SubjectListPage() {
         onClose={() => setEditModalOpen(false)}
         title="Edit Subject"
         description="Update the details for this subject"
-        fields={fields}
+        fields={[
+          { name: 'class_name', label: 'Class Name' },
+          { name: 'description', label: 'Description' },
+        ]}
         initialData={selectedSubject}
         onSubmit={handleEdit}
       />

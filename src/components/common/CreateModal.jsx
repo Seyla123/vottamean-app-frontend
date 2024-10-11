@@ -12,12 +12,24 @@ import {
   Box,
   InputAdornment,
   MenuItem,
+  IconButton,
 } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { styled } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { X } from 'lucide-react';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
 
 const CreateModal = ({
   open,
@@ -27,6 +39,7 @@ const CreateModal = ({
   fields,
   onSubmit,
   validationSchema,
+  submitText,
 }) => {
   const {
     control,
@@ -127,29 +140,44 @@ const CreateModal = ({
 
   const onSubmitForm = async (data) => {
     await onSubmit(data);
-    if (!isValid) {
+    if (isValid) {
       reset(); // Reset form fields only after successful submission
     }
   };
 
   const handleClose = () => {
     onClose();
+    reset();
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <Box sx={{ p: 4 }}>
-        <Typography variant="h4" fontWeight={'bold'} pb={2}>
-          {title}
+    <BootstrapDialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      aria-labelledby="create-dialog-title"
+    >
+      <DialogTitle sx={{ m: 0, p: 2 }} id="create-dialog-title">
+        {title}
+        <Typography variant="body1" color="text.secondary">
+          {description}
         </Typography>
-        {description && (
-          <Typography variant="body1" gutterBottom>
-            {description}
-          </Typography>
-        )}
-      </Box>
-      <DialogContent>
-        <Stack spacing={2} mt={2}>
+      </DialogTitle>
+      <IconButton
+        onClick={handleClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
+
+      <DialogContent dividers>
+        <Stack spacing={2}>
           {fields.map((field) => (
             <Box
               key={field.name}
@@ -166,21 +194,20 @@ const CreateModal = ({
           ))}
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ py: 3, px: 3 }}>
-        <StyledButton onClick={handleClose} size="large">
+      <DialogActions>
+        <StyledButton onClick={handleClose} variant="outlined" size="small">
           Cancel
         </StyledButton>
         <StyledButton
           onClick={handleSubmit(onSubmitForm)}
           variant="contained"
           color="primary"
-          size="large"
-          sx={{ px: 4 }}
+          size="small"
         >
-          Create
+          {submitText}
         </StyledButton>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 
