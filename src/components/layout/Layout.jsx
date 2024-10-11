@@ -13,6 +13,7 @@ import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import SnackbarComponent from '../common/SnackbarComponent';
+import blankProfile from '../../assets/images/blank-profile-image.webp';
 
 // User Profile Data formatting
 import { getUserProfileDataLayout } from '../../utils/formatData';
@@ -125,7 +126,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         user: {
           name: userData.username,
           email: userData.email,
-          image: userData.photo || getAvatarUrl,
+          image: userData.photo || blankProfile,
         },
       }}
       authentication={{

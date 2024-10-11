@@ -18,7 +18,6 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
 
   const checkUserRole = userData?.userRole;
 
-  console.log(userData);
   return (
     <Box
       component={'section'}

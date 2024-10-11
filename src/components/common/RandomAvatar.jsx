@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Avatar, Box } from '@mui/material';
-import blankProfile from '../../assets/images/blank-profile-picture.png';
+import blankProfile from '../../assets/images/blank-profile-image.webp';
 
 const RandomAvatar = ({ username, gender, size = 40 }) => {
   const getAvatarStyle = (gender) => {

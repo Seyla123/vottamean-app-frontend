@@ -280,7 +280,7 @@ const EditAccountModal = ({
                     component="span"
                     size="small"
                     fullWidth
-                    startIcon={<ImagePlus size={20} />}
+                    startIcon={<ImagePlus size={18} />}
                   >
                     Change
                   </StyledButton>
@@ -290,7 +290,7 @@ const EditAccountModal = ({
                   fullWidth
                   size="small"
                   color="error"
-                  startIcon={<Trash2 size={20} />}
+                  startIcon={<Trash2 size={18} />}
                   onClick={() => {
                     setSelectedFile(null);
                     setPreviewUrl(null);
