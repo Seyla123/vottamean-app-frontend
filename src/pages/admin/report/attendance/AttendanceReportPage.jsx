@@ -25,7 +25,6 @@ const AttendanceReportPage = () => {
 
   return (
     <FormComponent title={"Attendance Report"}>
-      {/* <AttendanceReportTable /> */}
       <AttendanceTable 
         subjects={subjects} 
         dates={dates} 

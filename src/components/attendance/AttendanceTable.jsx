@@ -116,7 +116,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
           useCORS: true,
           scale: 4,  // Higher scale for better resolution
         }).then((canvas) => {
-          const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use high-quality JPEG image
+          const imgData = canvas.toDataURL('image/jpeg', 2.0); // Use high-quality JPEG image
           const pdf = new jsPDF('l', 'mm', 'a4'); // A4 Landscape format
       
           const imgWidth = 297 - 20; // A4 page width minus margins (10mm each side)
