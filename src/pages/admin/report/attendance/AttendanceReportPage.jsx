@@ -1,22 +1,41 @@
+import { useState, useEffect } from "react";
 import FormComponent from "../../../../components/common/FormComponent";
 import LoadingCircle from "../../../../components/loading/LoadingCircle";
-import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
-import AttendanceReportTable from "../../../../components/attendance/AttendanceReportTable";
+import { useGetReportAttendanceByClassQuery } from "../../../../services/attendanceApi";
 import AttendanceTable from "../../../../components/attendance/AttendanceTable";
 const AttendanceReportPage = () => {
+  const [reportData, setReportData] = useState({});  
+  const [toggleAttendanceKey, setToggleAttendanceKey] = useState(true);
 
-  // if (isLoading) {
-  //   return <LoadingCircle />;
-  // }
+  const { data, isLoading, isError, isSuccess } = useGetReportAttendanceByClassQuery();
 
+  useEffect(() => {
+    if (isSuccess) {
+      setReportData(data.data);
+    }
+  }, [data]);
+  console.log('this is main data : ', reportData);
+  const { subjects, dates, result, class: classData, school } = reportData;
+  
+  
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
 
   return (
     <FormComponent title={"Attendance Report"}>
-      {/* <AttendanceFilter pdfData/> */}
       {/* <AttendanceReportTable /> */}
-      <AttendanceTable/>
+      <AttendanceTable 
+        subjects={subjects} 
+        dates={dates} 
+        result={result} 
+        classData={classData} 
+        school={school}
+        toggleAttendanceKey={toggleAttendanceKey}
+      />
     </FormComponent>
   );
 };
 
 export default AttendanceReportPage;
+

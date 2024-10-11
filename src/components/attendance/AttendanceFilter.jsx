@@ -101,19 +101,15 @@ function AttendanceFilter({pdfData}) {
         setIsExporting(false);  // Reset exporting status after exporting is done.
       }
     }
-    const handleDownloadPDF = () => {
-        console.log('click download pdf.');
-        
-    }
     return (
         <Box sx={filterBoxStyle}>
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start" }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start" , flexWrap: "wrap"}}>
                 <FilterComponent
                     value={filter.subject}
                     data={subjects}
                     onChange={handleSubjectChange}
                     placeholder={"Subject"}
-                    customStyles={ {height: '40px'}}
+                    customStyles={ {maxHeight: '50px', width:'150px'}}
                     icon={<BookIcon size={18} color='#B5B5B5'/>}
                 />
                 <FilterComponent
@@ -121,7 +117,7 @@ function AttendanceFilter({pdfData}) {
                     data={classes}
                     onChange={handleClassChange}
                     placeholder={"Class"}
-                    customStyles={ {height: '40px'}}
+                    customStyles={ {maxHeight: '50px', width:'150px'}}
                     icon={<LibraryIcon size={18} color='#B5B5B5'/>}
                 />
                 <FilterComponent
@@ -129,21 +125,24 @@ function AttendanceFilter({pdfData}) {
                     data={filterOptions}
                     onChange={handleFilterChange}
                     placeholder={"Date range"}
-                    customStyles={ {height: '40px'}}
+                    customStyles={ {maxHeight: '50px', width:'150px'}}
                     icon={<Filter  size={18} color='#B5B5B5'/>}
                 />
             </Box>
-            <Box alignSelf={"end"}>
+            <Box alignSelf={"end"} >
                 {pdfData? <Button
                     variant="contained"
+                    size="large"
+                    color="primary"
                     endIcon={isExporting ? <CircularProgress size={16} color="inherit" /> : <DownloadIcon size={16} />}
                     disabled={isExporting}
-                    onClick={handleDownloadPDF}
+                    onClick={pdfData}
                     sx={{ alignSelf: "flex-end" }}
                 >
                     Download PDF
                 </Button> : <Button
                     variant="contained"
+                    size="large"
                     endIcon={isExporting ? <CircularProgress size={16} color="inherit" /> : <DownloadIcon size={16} />}
                     disabled={isExporting}
                     onClick={handleExportsCsv}
