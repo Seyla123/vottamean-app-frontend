@@ -1,210 +1,205 @@
-import React, { useEffect, useState } from 'react';
-import { TableContainer, Table, TableHead, TableRow, TableCell, Paper, TableBody } from '@mui/material';
+import React, { useRef, useState} from 'react';
+import {
+    Grid2 as Grid,
+    Stack,
+    Typography,
+    TableContainer,
+    Table,
+    TableRow,
+    TableCell,
+    TableHead,
+    TableBody,
+    Paper,
+} from '@mui/material';
 import { styled } from '@mui/system';
-import { useGetReportAttendanceByClassQuery } from '../../services/attendanceApi';
-const attendanceData = [
-    {
-        id: '07',
-        student_name: 'Seyla',
-        gender: 'Male',
-        attendance: {
-            '2024-09-16': { 'Maths': 'P1', 'Web Dev': 'A1', 'Khmer': 'P1' },
-            '2024-09-17': { 'Maths': 'P2', 'Web Dev': 'P2', 'Khmer': 'P2' },
-            '2024-09-18': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-19': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-20': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-21': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-        }
-    },
-    {
-        id: '08',
-        student_name: 'Seyla2',
-        gender: 'Male',
-        attendance: {
-            '2024-09-16': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-17': { 'Maths': 'P', 'Web Dev': 'P', 'Khmer': 'P' },
-            '2024-09-18': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-19': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-20': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-21': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-        }
-    },
-    {
-        id: '09',
-        student_name: 'Seyla2',
-        gender: 'Male',
-        attendance: {
-            '2024-09-16': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-17': { 'Maths': 'P', 'Web Dev': 'P', 'Khmer': 'P' },
-            '2024-09-18': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-19': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-20': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-21': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-        }
-    },
-    {
-        id: '10',
-        student_name: 'Seyla2',
-        gender: 'Male',
-        attendance: {
-            '2024-09-16': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-17': { 'Maths': 'P', 'Web Dev': 'P', 'Khmer': 'P' },
-            '2024-09-18': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-19': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-20': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-            '2024-09-21': { 'Maths': 'P', 'Web Dev': 'A', 'Khmer': 'P' },
-        }
-    }
-];
+import { truncate } from '../../utils/truncate';
+import HeaderReportTable from './HeaderReportTable';
+import AttendanceKey from './AttendanceKey';
+import { tableShadow } from '../../styles/global';
+import AttendanceFilter from './AttendanceFilter';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 // Styled components for Table cells
 const StyledTableCell = styled(TableCell)(({ theme, fontSize }) => ({
     border: '1px solid black',
-    padding: '4px', // Reduced padding
+    padding: '8px', // Increased padding for better readability
     fontWeight: 'bold',
-    fontSize: fontSize || '10px', // Smaller font size
-    height: '5px', // Reduced row height
+    fontSize: fontSize || '12px', // Ensure readability in PDF
+    color: 'black', // Set text color to black for visibility
+    height: 'auto', // Allow for automatic height based on content
 }));
-const dataAPi = {
-    "subjects": [
-        "web programming",
-        "Node js"
-    ],
-    "dates": [
-        {
-            "date": "2024-10-10",
-            "day": "THURSDAY"
-        },
-        {
-            "date": "2024-10-09",
-            "day": "WEDNESDAY"
+
+const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAttendanceKey }) => {
+
+    const convertDayToShorthand = (day) => {
+        const dayMap = {
+            monday: 'MON',
+            tuesday: 'TUE',
+            wednesday: 'WED',
+            thursday: 'THU',
+            friday: 'FRI',
+            saturday: 'SAT',
+            sunday: 'SUN',
+        };
+        return dayMap[day.toLowerCase()] || day.toUpperCase();
+    }
+    const attendanceStatusColor = (status) => {
+        switch (status) {
+            case 'absent':
+                return '#dc3545';
+            case 'present':
+                return '#28a745';
+            case 'permission':
+                return '#007bff';
+            case 'late':
+                return '#fd7e14';
+            default:
+                return 'black';
         }
-    ],
-    "result": [
-        {
-            "id": 5,
-            "fullName": "seyla sonn cddddd",
-            "gender": "Male",
-            "attendance": {
-                "2024-10-10": {
-                    "Node js": "permission",
-                    "web programming": "absent"
-                },
-                "2024-10-09": {
-                    "Node js": "absent",
-                    "web programming": "absent"
-                }
-            }
-        },
-        {
-            "id": 6,
-            "fullName": "seyla sonn",
-            "gender": "Male",
-            "attendance": {
-                "2024-10-10": {
-                    "Node js": "present",
-                    "web programming": "late"
-                },
-                "2024-10-09": {
-                    "Node js": "absent",
-                    "web programming": "absent"
-                }
-            }
+    }
+    const convertAttendanceStatus = (status) => {
+        switch (status) {
+            case 'absent':
+                return 'A';
+            case 'present':
+                return '✓';
+            case 'permission':
+                return 'P';
+            case 'late':
+                return 'L';
+            default:
+                return '-';
         }
-    ]
-}
-const AttendanceTable = () => {
-    const [reportData, setReportData] = useState([]);
-    const { data, isLoading, isError, isSuccess } = useGetReportAttendanceByClassQuery();
-    useEffect(() => {
-        if (data && isSuccess) {
-            setReportData(data.data);
+    }
+    const convertSubjectName = (subjectName) => {
+        const words = subjectName.split(' ');
+        const firstWord = words[0];
+        if (words.length > 1) {
+            return firstWord;
         }
-    }, [data, isSuccess])
-
-    console.log('this report data :', reportData);
-    const datess = [
-        { date: '2024-09-16', day: 'MONDAY' },
-        { date: '2024-09-17', day: 'TUESDAY' },
-        { date: '2024-09-18', day: 'WEDNESDAY' },
-        { date: '2024-09-19', day: 'THURSDAY' },
-        { date: '2024-09-20', day: 'SATURDAY' },
-        { date: '2024-09-21', day: 'SUNDAY' }]
-    console.log('this report data outside :', reportData);// You can dynamically extract these from the data
-    const subject = ['Maths', 'Web Dev', 'Khmer'];
-    const { subjects, result, dates } = dataAPi;
-    const dataDate = reportData.dates;
-    console.log('this subjct and resitl adatae : ', subjects, result, dataDate);
-    console.log('this subject arr :', typeof subjects);
-
-    console.log("\nDates:");
-;
-
-    //dataDate.map(entry => console.log(`Date: ${entry.date}, Day: ${entry.day}`))
-
+        return truncate(firstWord, 10);
+    }
+    const convertGender = (gender) => {
+        switch (gender.toLowerCase()) {
+            case 'male':
+                return 'M';
+            case 'female':
+                return 'F';
+            default:
+                return '-';
+        }
+    }
     const renderedStatusAttendance = (attendance) => {
         console.log(attendance);
-        return datess.map(date => (
-            subject.map(subject => (
-                <StyledTableCell align="center">{attendance[date.date] ? attendance[date.date][subject] : '-'}</StyledTableCell>
+        return dates.map((date, index) => (
+            subjects?.map((subject, i) => (
+                <StyledTableCell align="center" key={index + subject + i} sx={{ color: attendanceStatusColor(attendance[date.date] ? attendance[date.date][subject] : '-') }}>{convertAttendanceStatus(attendance[date.date] ? attendance[date.date][subject] : '-')}</StyledTableCell>
+
             ))
         ))
-
     }
+
+    const [previewOpen, setPreviewOpen] = useState(true);
+    const pdfRef = useRef();
+
+    const openPreview = () => {
+        setPreviewOpen(true);
+      };
+    
+      const closePreview = () => {
+        setPreviewOpen(false);
+      };
+    
+      const exportToPDF = () => {
+        html2canvas(pdfRef.current, { useCORS: true, scale: 2 }).then((canvas) => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG for better quality
+          const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+          const imgWidth = 297; // A4 width in mm for landscape
+          const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+          const pageHeight = 210; // A4 height in mm
+          let heightLeft = imgHeight; // Remaining height to print
+          let position = 0; // Position for image placement
+      
+          pdf.addImage(imgData, 'JPEG', 10, position, imgWidth - 20, imgHeight); // 10 mm margin
+          heightLeft -= pageHeight; // Decrease height left by one page height
+      
+          // Add additional pages if necessary
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight; // Set the position for the next page
+            pdf.addPage(); // Add a new page
+            pdf.addImage(imgData, 'JPEG', 10, position, imgWidth - 20, imgHeight); // 10 mm margin
+            heightLeft -= pageHeight; // Decrease height left by one page height
+          }
+      
+          pdf.save('attendance_report.pdf'); // Save the PDF
+        });
+      };
+      
+      
     return (
-        <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableHead >
-                    <TableRow >
-                        <StyledTableCell rowSpan={3} align="center">No</StyledTableCell>
-                        <StyledTableCell rowSpan={3} align="center">ID</StyledTableCell>
-                        <StyledTableCell rowSpan={3} align="center">Full Name</StyledTableCell>
-                        <StyledTableCell align="center" >DATE</StyledTableCell>
-                        {datess.map((item, index) => (
-                            <StyledTableCell key={index} colSpan="3" align="center">{item.date}</StyledTableCell>
-                        ))}
+        <>
+            <AttendanceFilter pdfData={exportToPDF}/>
+            {/* <Button onClick={exportToPDF}></Button> */}
+        <Paper 
+        ref={pdfRef}
+        sx={{ backgroundColor: 'white',
+            boxShadow: 'none', width: '100%', padding: 2, display: 'flex', flexDirection: 'column', gap: 2, borderRadius: '1px',
+        }}>
+            <HeaderReportTable schoolInfo={school} classInfo={classData} />
+            <TableContainer >
+                <Table aria-label="simple table">
+                    <TableHead >
+                        <TableRow >
+                            <StyledTableCell rowSpan={3} align="center">No</StyledTableCell>
+                            <StyledTableCell rowSpan={3} align="center">ID</StyledTableCell>
+                            <StyledTableCell rowSpan={3} align="center">Full Name</StyledTableCell>
+                            <StyledTableCell align="center" >DATE</StyledTableCell>
+                            {dates?.map((item, index) => (
+                                <StyledTableCell key={index} colSpan={subjects.length} align="center">{item.date}</StyledTableCell>
+                            ))}
 
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledTableCell StyledTableCell align="center" >DAY</StyledTableCell>
-                        {datess.map((item, index) => (
-                            <StyledTableCell colSpan={3} key={index} align="center" >
-                                {item.day}
-                            </StyledTableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledTableCell StyledTableCell align="center" >Subject</StyledTableCell>
-                        {datess.map((_, index) => (
-                            subject.map((subject) => (
-                                <StyledTableCell key={index} align="center" >
-                                    {subject}
-                                </StyledTableCell>
-                            ))
-                        ))}
-
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {attendanceData.map((student, index) => (
-                        <TableRow key={student.id}>
-                            <StyledTableCell align="center">{index + 1}</StyledTableCell>
-                            <StyledTableCell align="center">{student.id}</StyledTableCell>
-                            <StyledTableCell align="center">{student.student_name}</StyledTableCell>
-                            <StyledTableCell align="center">{student.gender}</StyledTableCell>
-                            {renderedStatusAttendance(student.attendance)}
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+
+                        <TableRow>
+                            <StyledTableCell align="center" >DAY</StyledTableCell>
+                            {dates?.map((item, index) => (
+                                <StyledTableCell colSpan={subjects.length} key={index} align="center">
+                                    {convertDayToShorthand(item.day)}
+                                </StyledTableCell>
+                            ))}
+                        </TableRow>
+
+                        <TableRow>
+                            <StyledTableCell align="center" >Subject</StyledTableCell>
+                            {dates?.map((_, index) => (
+                                subjects?.map((subject, subjectIndex) => (
+                                    <StyledTableCell key={`${index}-${subjectIndex}`} align="center" sx={{ textTransform: "capitalize" }} >
+                                        {convertSubjectName(subject)}
+                                    </StyledTableCell>
+                                ))
+                            ))}
+
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {result?.map((student, index) => (
+                            <TableRow key={student.id}>
+                                <StyledTableCell align="center">{index + 1}</StyledTableCell>
+                                <StyledTableCell align="center">{student.id}</StyledTableCell>
+                                <StyledTableCell align="center">{student.fullName}</StyledTableCell>
+                                <StyledTableCell align="center">{convertGender(student.gender)}</StyledTableCell>
+                                {renderedStatusAttendance(student.attendance)}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            {toggleAttendanceKey&&<AttendanceKey />}
+            
+
+        </Paper>
+        </>
     );
 };
-const renderAttendanceStatus = (student, datess, subject) => (
-    datess.map(date => (
-        <StyledTableCell align="center">{student.attendance[date.date] ? student.attendance[date.date][subject[0]] : '-'}</StyledTableCell>
-    ))
-);
 export default AttendanceTable;
 
