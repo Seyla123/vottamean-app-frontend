@@ -1,39 +1,33 @@
 import React from 'react';
 import { Box, Stack, TextField } from '@mui/material';
+import { UserRoundPen } from 'lucide-react';
 import { Controller } from 'react-hook-form';
+import StyledButton from '../common/StyledMuiButton';
+import PhoneInputField from '../common/PhoneInputField';
+import InputField from '../common/InputField';
 
 const GuardianUpdateForm = ({ control, errors }) => {
   return (
     <Stack spacing={3}>
       {/* Guardian First Name */}
-      <Controller
-        name="guardian_first_name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Guardian First Name"
-            {...field}
-            error={!!errors.guardian_first_name}
-            helperText={errors.guardian_first_name?.message}
-            fullWidth
+      <Box display="flex" flexDirection="row" sx={boxContainer}>
+          <InputField
+            name="guardian_first_name"
+            control={control}
+            label="First Name"
+            placeholder="First Name"
+            errors={errors}
+            icon={UserRoundPen}
           />
-        )}
-      />
-
-      {/* Guardian Last Name */}
-      <Controller
-        name="guardian_last_name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Guardian Last Name"
-            {...field}
-            error={!!errors.guardian_last_name}
-            helperText={errors.guardian_last_name?.message}
-            fullWidth
+          <InputField
+            name="guardian_last_name"
+            control={control}
+            label="Last Name"
+            placeholder="Last Name"
+            errors={errors}
+            icon={UserRoundPen}
           />
-        )}
-      />
+        </Box>
 
       {/* Guardian Email */}
       <Controller
@@ -51,36 +45,53 @@ const GuardianUpdateForm = ({ control, errors }) => {
       />
 
       {/* Guardian Phone Number */}
-      <Controller
-        name="guardian_phone_number"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Guardian Phone Number"
-            {...field}
-            error={!!errors.guardian_phone_number}
-            helperText={errors.guardian_phone_number?.message}
-            fullWidth
+      <PhoneInputField
+            name="phone_number"
+            control={control}
+            label="Contact Number"
+            errors={errors}
           />
-        )}
-      />
-
-      {/* Guardian Relationship */}
-      <Controller
-        name="guardian_relationship"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Guardian Relationship"
-            {...field}
-            error={!!errors.guardian_relationship}
-            helperText={errors.guardian_relationship?.message}
-            fullWidth
+          <InputField
+            name="address"
+            control={control}
+            label="Street Address"
+            placeholder="Phnom Penh, Street 210, ..."
+            errors={errors}
+            required={false}
+            multiline
+            minRows={5}
           />
-        )}
-      />
+      <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            width: '100%',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <StyledButton variant="outlined" color="inherit" size="large">
+            Cancel
+          </StyledButton>
+          <StyledButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+          >
+            Add
+          </StyledButton>
+        </Box>
     </Stack>
   );
 };
 
 export default GuardianUpdateForm;
+const boxContainer = {
+  width: '100%',
+  marginTop: '14px',
+  padding: '0px',
+  gap: {
+    xs: '12px',
+    sm: 3,
+  },
+};
