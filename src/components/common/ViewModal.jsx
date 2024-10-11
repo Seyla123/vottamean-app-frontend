@@ -42,9 +42,11 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
             <Grid item xs={12} sm={4}>
               <Chip
                 icon={item.icon}
-                variant="outlined"
                 label={key}
-                sx={{ px: 1, bgcolor: 'background.paper' }}
+                sx={{
+                  bgcolor: 'background.paper',
+                  px: 1,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -74,12 +76,7 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={8}>
-            <Typography
-              variant="body1"
-              sx={{
-                fontSize: key === 'description' ? '1.25rem' : '1rem',
-              }}
-            >
+            <Typography variant="body1">
               {value !== null && value !== undefined ? value.toString() : 'N/A'}
             </Typography>
           </Grid>
