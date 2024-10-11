@@ -43,8 +43,9 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
               <Chip
                 icon={item.icon}
                 label={key}
+                variant="outlined"
+                color="primary"
                 sx={{
-                  bgcolor: 'background.paper',
                   px: 1,
                 }}
               />
