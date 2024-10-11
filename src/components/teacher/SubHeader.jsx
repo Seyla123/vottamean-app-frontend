@@ -7,7 +7,7 @@ const SubHeader = ({ title }) => {
       <Typography variant='formTitle' fontWeight={'bold'} gutterBottom>
         {title}
       </Typography>
-      <Divider sx={{ borderWidth: 1, borderColor: "text.secondary" }} />
+      <Divider sx={{ borderWidth: 0.3, borderColor: "#d1d1d1" }} />
     </Box>
   );
 };
