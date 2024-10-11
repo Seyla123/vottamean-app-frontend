@@ -114,25 +114,7 @@ const StudentUpdatePage = () => {
     }
   }, [studentData, reset]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (
-      file &&
-      file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
-    ) {
-      setValue('photo', file);
-      setProfileImg(URL.createObjectURL(file));
-    } else {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Invalid image file',
-          severity: 'error',
-        }),
-      );
-    }
-  };
+
   // onSubmitStudent : function forsubmit Student Form
   const onSubmitStudent = (e) => {
     e.preventDefault();
@@ -143,15 +125,19 @@ const StudentUpdatePage = () => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
+   
     if (data.photo) {
       formData.append('photo', data.photo);
     }
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
+ 
 
     try {
       await updateStudent({ id, updates: formData }).unwrap();
+      console.log(formData);
+      console.log('Update Response:', response);
       dispatch(
         setSnackbar({
           open: true,
@@ -208,11 +194,6 @@ const StudentUpdatePage = () => {
 
   return (
     <Box>
-      <Avatar
-        sx={imgStyle}
-        alt="user profile"
-        src={profileImg || userProfile}
-      />
       <Tabs
         value={activeTab}
         onChange={(event, newValue) => setActiveTab(newValue)}
@@ -230,25 +211,11 @@ const StudentUpdatePage = () => {
             errors={errors}
             rows={rows}
             onChange={onSubmitStudent}
-            handleImageChange={handleImageChange}
           />
         )}
         {activeTab === 1 && (
           <GuardianUpdateForm control={control} errors={errors} />
         )}
-
-        <Button type="submit" variant="contained" fullWidth>
-          {activeTab === 0 ? 'Next' : 'Update'}
-        </Button>
-
-        <Button
-          type="button"
-          variant="outlined"
-          fullWidth
-          onClick={() => navigate('/admin/students')}
-        >
-          Cancel
-        </Button>
       </form>
     </Box>
   );
@@ -260,3 +227,4 @@ const imgStyle = {
   width: { xs: 120, sm: 160 },
   height: { xs: 120, sm: 160 },
 };
+

@@ -1,12 +1,33 @@
 // StudentUpdateForm.js
-import React from 'react';
-import { Button, MenuItem,Stack, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, MenuItem, Stack, TextField } from '@mui/material';
 import { Controller } from 'react-hook-form';
+import PhoneInputField from '../common/PhoneInputField';
+import InputField from '../common/InputField';
+import GenderSelect from '../common/GenderSelect';
+import { useSelector } from 'react-redux';
+import DOBPicker from '../common/DOBPicker';
+import { UserRoundPen } from 'lucide-react';
+import StyledButton from '../common/StyledMuiButton';
 
 const StudentUpdateForm = ({ control, errors, rows, handleImageChange }) => {
+  const studentData = useSelector((state) => state.student);
+  // - Local State
+  const [dob, setDob] = useState(
+    studentData.dob ? dayjs(studentData.dob) : null,
+  );
   return (
     <Stack spacing={3}>
       {/* Profile picture upload */}
+      <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            mb: 2,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
       <input
         accept="image/*"
         type="file"
@@ -19,103 +40,43 @@ const StudentUpdateForm = ({ control, errors, rows, handleImageChange }) => {
           Upload Photo
         </Button>
       </label>
-
-      {/* First Name */}
-      <Controller
-        name="first_name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="First Name"
-            {...field}
-            error={!!errors.first_name}
-            helperText={errors.first_name?.message}
-            fullWidth
-          />
-        )}
-      />
-
-      {/* Last Name */}
-      <Controller
-        name="last_name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Last Name"
-            {...field}
-            error={!!errors.last_name}
-            helperText={errors.last_name?.message}
-            fullWidth
-          />
-        )}
-      />
-
-      {/* Phone Number */}
-      <Controller
-        name="phone_number"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Phone Number"
-            {...field}
-            error={!!errors.phone_number}
-            helperText={errors.phone_number?.message}
-            fullWidth
-          />
-        )}
-      />
-
-      {/* Address */}
-      <Controller
-        name="address"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Address"
-            {...field}
-            error={!!errors.address}
-            helperText={errors.address?.message}
-            fullWidth
-          />
-        )}
-      />
-
-      {/* Date of Birth */}
-      <Controller
-        name="dob"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Date of Birth"
-            type="date"
-            {...field}
-            InputLabelProps={{ shrink: true }}
-            error={!!errors.dob}
-            helperText={errors.dob?.message}
-            fullWidth
-          />
-        )}
-      />
-
-      {/* Gender */}
-      <Controller
-        name="gender"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            select
-            label="Gender"
-            {...field}
-            fullWidth
-            error={!!errors.gender}
-            helperText={errors.gender?.message}
-          >
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </TextField>
-        )}
-      />
+      </Box>
+      {/* STUDENT NAME */}
+      <Box display="flex" flexDirection="row" sx={boxContainer}>
+        <InputField
+          name="first_name"
+          control={control}
+          label="First Name"
+          placeholder="First Name"
+          errors={errors}
+          icon={UserRoundPen}
+        />
+        <InputField
+          name="last_name"
+          control={control}
+          label="Last Name"
+          placeholder="Last Name"
+          errors={errors}
+          icon={UserRoundPen}
+        />
+      </Box>
+      {/* STUDENT GENDER AND DATE OF BIRTH */}
+      <Box display="flex" flexDirection="row" sx={boxContainer}>
+        <GenderSelect
+          control={control}
+          errors={errors}
+          name="gender"
+          label="Gender"
+          defaultValue={studentData.gender || ''}
+        />
+        <DOBPicker
+          control={control}
+          errors={errors}
+          name="dob"
+          dob={dob}
+          setDob={setDob}
+        />
+      </Box>
 
       {/* Class Selection */}
       <Controller
@@ -138,8 +99,58 @@ const StudentUpdateForm = ({ control, errors, rows, handleImageChange }) => {
           </TextField>
         )}
       />
+
+      {/* Phone Number */}
+      <PhoneInputField
+        name="phone_number"
+        control={control}
+        label="Contact Number"
+        errors={errors}
+      />
+
+      {/* Address */}
+      <InputField
+        name="address"
+        control={control}
+        label="Street Address"
+        placeholder="Phnom Penh, Street 210, ..."
+        errors={errors}
+        required={false}
+        multiline
+        minRows={5}
+      />
+      <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            width: '100%',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <StyledButton variant="outlined" color="inherit" size="large">
+            Cancel
+          </StyledButton>
+          <StyledButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+          >
+            Add
+          </StyledButton>
+        </Box>
     </Stack>
   );
 };
 
 export default StudentUpdateForm;
+const boxContainer = {
+  width: '100%',
+  marginTop: '14px',
+  padding: '0px',
+  gap: {
+    xs: '12px',
+    sm: 3,
+  },
+};
+
