@@ -20,6 +20,9 @@ import {
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
 } from '../../../services/classApi';
+import * as yup from 'yup';
+import { BookText, ScrollText } from 'lucide-react';
+import { ClassValidator } from '../../../validators/validationSchemas';
 
 // Define table columns title
 const columns = [
@@ -116,6 +119,7 @@ const ClassListPage = () => {
           severity: 'error',
         }),
       );
+      // The modal will stay open on error, allowing the user to correct the input
     }
   };
 
@@ -256,10 +260,22 @@ const ClassListPage = () => {
         title="Create New Class"
         description="Enter the details for the new class"
         fields={[
-          { name: 'class_name', label: 'Class Name' },
-          { name: 'description', label: 'Description' },
+          {
+            name: 'class_name',
+            label: 'Class Name',
+            required: true,
+            icon: <BookText size={20} />,
+          },
+          {
+            name: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+            icon: <ScrollText size={20} />,
+          },
         ]}
         onSubmit={handleCreate}
+        validationSchema={ClassValidator}
       />
 
       <EditModal

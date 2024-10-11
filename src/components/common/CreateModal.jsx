@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Stack,
   Typography,
@@ -25,115 +26,118 @@ const CreateModal = ({
   description,
   fields,
   onSubmit,
+  validationSchema,
 }) => {
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: null });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    fields.forEach((field) => {
-      if (field.required && !formData[field.name]) {
-        newErrors[field.name] = 'This field is required';
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit(formData);
-      setFormData({}); // Reset form after submission
-      onClose();
-    }
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: fields.reduce(
+      (acc, field) => ({ ...acc, [field.name]: '' }),
+      {},
+    ),
+    mode: 'onChange', // This enables real-time validation
+  });
 
   const renderField = (field) => {
     switch (field.type) {
       case 'select':
         return (
-          <TextField
-            select
-            fullWidth
+          <Controller
             name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            error={!!errors[field.name]}
-            helperText={errors[field.name]}
-            variant="outlined"
-          >
-            {field.options.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextField
+                select
+                fullWidth
+                value={value}
+                onChange={onChange}
+                error={!!errors[field.name]}
+                helperText={errors[field.name]?.message}
+                variant="outlined"
+              >
+                {field.options.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
         );
       case 'time':
         return (
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <TimePicker
-              fullWidth
-              value={
-                formData[field.name]
-                  ? dayjs(formData[field.name], 'HH:mm')
-                  : null
-              }
-              onChange={(newValue) => {
-                handleChange({
-                  target: {
-                    name: field.name,
-                    value: newValue ? newValue.format('HH:mm') : '',
-                  },
-                });
-              }}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  variant: 'outlined',
-                  error: !!errors[field.name],
-                  helperText: errors[field.name],
-                },
-              }}
-            />
-          </LocalizationProvider>
+          <Controller
+            name={field.name}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  fullWidth
+                  value={value ? dayjs(value, 'HH:mm') : null}
+                  onChange={(newValue) =>
+                    onChange(newValue ? newValue.format('HH:mm') : '')
+                  }
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: 'outlined',
+                      error: !!errors[field.name],
+                      helperText: errors[field.name]?.message,
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            )}
+          />
         );
       default:
         return (
-          <TextField
-            variant="outlined"
-            fullWidth
-            type={field.type || 'text'}
-            placeholder={field.placeholder || field.label}
+          <Controller
             name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            error={!!errors[field.name]}
-            helperText={errors[field.name]}
-            multiline={field.multiline}
-            rows={field.multiline ? 4 : 1}
-            slotProps={{
-              input: {
-                startAdornment: field.icon && (
-                  <InputAdornment position="start">{field.icon}</InputAdornment>
-                ),
-              },
-            }}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                type={field.type || 'text'}
+                placeholder={field.placeholder || field.label}
+                value={value}
+                onChange={onChange}
+                error={!!errors[field.name]}
+                helperText={errors[field.name]?.message}
+                multiline={field.multiline}
+                rows={field.multiline ? 4 : 1}
+                InputProps={{
+                  startAdornment: field.icon && (
+                    <InputAdornment position="start">
+                      {field.icon}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
         );
     }
   };
 
+  const onSubmitForm = async (data) => {
+    await onSubmit(data);
+    if (!isValid) {
+      reset(); // Reset form fields only after successful submission
+    }
+  };
+
+  const handleClose = () => {
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <Box sx={{ p: 4 }}>
         <Typography variant="h4" fontWeight={'bold'} pb={2}>
           {title}
@@ -163,11 +167,11 @@ const CreateModal = ({
         </Stack>
       </DialogContent>
       <DialogActions sx={{ py: 3, px: 3 }}>
-        <StyledButton onClick={onClose} size="large">
+        <StyledButton onClick={handleClose} size="large">
           Cancel
         </StyledButton>
         <StyledButton
-          onClick={handleSubmit}
+          onClick={handleSubmit(onSubmitForm)}
           variant="contained"
           color="primary"
           size="large"
