@@ -1,3 +1,4 @@
+import dayjs, { Dayjs } from 'dayjs';
 import {
   getProfileKey,
   capitalize,
@@ -349,4 +350,26 @@ export const formatTeacherFormData = (teacherData) => {
     };
   }
   return null;
+};
+export const formatStudentFormData = (studentData) => {
+  if (!studentData || !studentData.data) return null;
+
+  const { Info, class_id, guardian_first_name, guardian_last_name,guardian_email,guardian_phone_number,guardian_relationship } =
+    studentData.data;
+    console.log(Info.dob ? dayjs(Info.dob) : null);
+
+  return {
+    first_name: Info.first_name || '',
+    last_name: Info.last_name || '',
+    phone_number: Info.phone_number || '',
+    gender: Info.gender || '',
+    dob: Info.dob || null, // Format DOB with dayjs
+    address: Info.address || '',
+    class_id: class_id ? String(class_id) : '',
+    guardian_first_name: guardian_first_name || '',
+    guardian_last_name: guardian_last_name || '',
+    guardian_email: guardian_email || '',
+    guardian_phone_number: guardian_phone_number || '',
+    guardian_relationship: guardian_relationship || '',
+  };
 };
