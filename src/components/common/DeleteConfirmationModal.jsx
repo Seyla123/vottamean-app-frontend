@@ -8,10 +8,13 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  IconButton,
+  styled,
   Typography,
 } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import DeleteIcon from '../../assets/icon/delete-icon.png';
+import { X } from 'lucide-react';
 
 /**
  * DeleteConfirmationModal - A reusable Material-UI based modal for confirming delete actions.
@@ -47,35 +50,56 @@ import DeleteIcon from '../../assets/icon/delete-icon.png';
  * @param {string} itemName - Name of the item to be deleted
  */
 
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogTitle-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(2),
+  },
+}));
+
 const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
   return (
-    <Dialog
+    <BootstrapDialog
       open={open}
       onClose={onClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      fullWidth={false}
-      PaperProps={{
-        style: {
-          maxWidth: '500px',
-          width: '100%',
-          borderRadius: 8,
-          padding: 8,
-        },
-      }}
+      fullWidth
+      maxWidth="xs"
+      aria-labelledby="delete-dialog-title"
     >
-      <DialogTitle id="alert-dialog-title">
-        <img src={DeleteIcon} alt="delete icon" style={{ width: '60px' }} />
-        <Typography variant="h5" fontWeight={'bold'} mt={2}>
-          {'Delete Permenantly?'}
-        </Typography>
+      <DialogTitle sx={{ m: 0, p: 2 }} id="delete-dialog-title">
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: 1,
+            flexDirection: { xs: 'column', sm: 'row' },
+          }}
+        >
+          <img src={DeleteIcon} alt="delete icon" style={{ width: '60px' }} />
+          Delete Permenantly?
+        </Box>
       </DialogTitle>
+      <IconButton
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          Do you really want to delete this <b>{itemName}</b>?
-          <br />
+        <Typography variant="body1" color="text.secondary">
+          Do you really want to delete this <b>{itemName}</b>? <br />
           This action cannot be undone.
-        </DialogContentText>
+        </Typography>
       </DialogContent>
       <DialogActions>
         <Grid container spacing={2}>
@@ -86,7 +110,12 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
             sm={6}
             sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}
           >
-            <StyledButton onClick={onClose} variant="text" size="large" fullWidth>
+            <StyledButton
+              onClick={onClose}
+              variant="text"
+              size="large"
+              fullWidth
+            >
               Cancel
             </StyledButton>
             <StyledButton
@@ -102,7 +131,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
           </Grid>
         </Grid>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 
