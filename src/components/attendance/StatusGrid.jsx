@@ -7,7 +7,7 @@ import { statusDetails } from '../../data/status';
 const StatusGrid = ({ statusCounts }) => {
 
   return (
-    <Box sx={{ width: '100%', ...shadow }}>
+    <Box sx={{ width: '100%' }}>
       <Grid container sx={gridContainerStyles}>
         {statusDetails.map(({ icon: Icon, label, color }, index) => (
           <Grid key={index} item xs={6} sm={3} sx={gridIconStyles}>

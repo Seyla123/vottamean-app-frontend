@@ -38,8 +38,21 @@ export const attendanceApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['Attendance'],
+    }),
+    getReportAttendanceByClass : builder.query({
+      query: (data) => ({
+        url: `attendance/reports`,
+        method: 'GET',
+        params: {
+          class_id: data.class,
+          subject_id: data.subject,
+          filter: data.filter,
+        },
+        credentials: 'include',
+      }),
+      providesTags: ['Attendance'],
     })
   }),
 });
 
-export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery, useMarkAttendanceMutation } = attendanceApi;
+export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery, useMarkAttendanceMutation , useGetReportAttendanceByClassQuery} = attendanceApi;

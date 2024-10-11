@@ -20,11 +20,10 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NotFoundImage from '../../assets/images/not-found.jpg';
-import { tableShadow } from '../../styles/global';
 import StatusChip from '../common/StatusChip';
 import { truncate } from '../../utils/truncate';
 
-const AttendanceReportTable = ({
+const AttendanceListTable = ({
   rows,
   columns,
   hideColumns = [],
@@ -69,10 +68,10 @@ const AttendanceReportTable = ({
   };
 
   return (
-    <Paper sx={{ ...tableShadow }}>
+    <Paper sx={{ boxShadow:'none' }}>
       <TableContainer>
-        <Table>
-          <TableHead>
+        <Table aria-label="sticky table">
+          <TableHead sx={{bgcolor: '#f8f8f8', height: '60px'}}>
             <TableRow>
               {visibleColumns.map((column) => (
                 <TableCell key={column.id} sx={{ width: column.id === 'id' ? '' : 'auto' }}>
@@ -148,4 +147,4 @@ const AttendanceReportTable = ({
   );
 };
 
-export default AttendanceReportTable;
+export default AttendanceListTable;
