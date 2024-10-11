@@ -15,8 +15,14 @@ import {
   useDeleteClassPeriodMutation,
   useCreateClassPeriodMutation,
   useUpdateClassPeriodMutation,
+  useGetClassPeriodByIdQuery,
 } from '../../../services/classPeriodApi';
-import { calculatePeriod, formatTimeTo12Hour, formatTimeToHHMM } from '../../../utils/formatHelper';
+import {
+  calculatePeriod,
+  formatTimeTo12Hour,
+  formatTimeToHHMM,
+} from '../../../utils/formatHelper';
+import { SessionValidator } from '../../../validators/validationSchemas';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
@@ -24,7 +30,6 @@ const tableTitles = [
   { id: 'end_time', label: 'End Time' },
   { id: 'period', label: 'Period' },
 ];
-
 
 function ClassPeriodListPage() {
   const [rows, setRows] = useState([]);
@@ -37,9 +42,18 @@ function ClassPeriodListPage() {
   const { modal } = useSelector((state) => state.ui);
 
   const { data, isLoading, isSuccess, isError } = useGetClassPeriodQuery();
-  const [deleteClassPeriod, { isLoading: isDeleting, isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError }] = useDeleteClassPeriodMutation();
+  const [
+    deleteClassPeriod,
+    {
+      isLoading: isDeleting,
+      isSuccess: isDeleteSuccess,
+      isError: isDeleteError,
+      error: deleteError,
+    },
+  ] = useDeleteClassPeriodMutation();
   const [createClassPeriod] = useCreateClassPeriodMutation();
   const [updateClassPeriod] = useUpdateClassPeriodMutation();
+  const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
     if (data && isSuccess) {
@@ -53,34 +67,57 @@ function ClassPeriodListPage() {
     }
 
     if (isDeleting) {
-      dispatch(setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }));
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
     } else if (isDeleteError) {
-      dispatch(setSnackbar({ open: true, message: deleteError.data?.message || 'Failed to delete class period', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: deleteError.data?.message || 'Failed to delete class',
+          severity: 'error',
+        }),
+      );
     } else if (isDeleteSuccess) {
-      dispatch(setSnackbar({ open: true, message: 'Deleted successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
     }
-  }, [data, isSuccess, isDeleting, isDeleteError, isDeleteSuccess, dispatch, deleteError]);
-
+  }, [
+    data,
+    isSuccess,
+    isDeleting,
+    isDeleteError,
+    isDeleteSuccess,
+    dispatch,
+    deleteError,
+  ]);
   if (isLoading) return <CircularIndeterminate />;
   if (isError) console.log('error message:', isError.data.message);
 
   const handleCreate = async (formData) => {
     try {
       await createClassPeriod(formData).unwrap();
-      dispatch(setSnackbar({ open: true, message: 'Class period created successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class period created successfully',
+          severity: 'success',
+        }),
+      );
       setCreateModalOpen(false);
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to create class period', severity: 'error' }));
-    }
-  };
-
-  const handleEdit = async (formData) => {
-    try {
-      await updateClassPeriod({ id: selectedClassPeriod.period_id, ...formData }).unwrap();
-      dispatch(setSnackbar({ open: true, message: 'Class period updated successfully', severity: 'success' }));
-      setEditModalOpen(false);
-    } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to update class period', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to create class period',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -93,38 +130,72 @@ function ClassPeriodListPage() {
     dispatch(setModal({ open: false }));
     try {
       await deleteClassPeriod(selectedClassPeriod.period_id).unwrap();
-      dispatch(setSnackbar({ open: true, message: 'Class period deleted successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class period deleted successfully',
+          severity: 'success',
+        }),
+      );
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to delete class period', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data?.message || 'Failed to delete class period',
+          severity: 'error',
+        }),
+      );
     }
   };
 
   const handleView = (row) => {
-    setSelectedClassPeriod(row);
+    setSelectedClass(row);
     setViewModalOpen(true);
   };
 
   const handleEditOpen = (row) => {
-    setSelectedClassPeriod({ ...row, start_time: formatTimeToHHMM(row.start_time), end_time: formatTimeToHHMM(row.end_time) });
+    setSelectedClass(row);
     setEditModalOpen(true);
   };
 
+  // DELETE MULTIPLE FUNCTIONS
   const handleSelectedDelete = async (selectedIds) => {
     try {
-      await Promise.all(selectedIds.map((id) => deleteClassPeriod(id).unwrap()));
-      dispatch(setSnackbar({ open: true, message: 'Selected class periods deleted successfully', severity: 'success' }));
+      await Promise.all(
+        selectedIds.map((id) => deleteClassPeriod(id).unwrap()),
+      );
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Selected classes period deleted successfully',
+          severity: 'success',
+        }),
+      );
     } catch (error) {
-      dispatch(setSnackbar({ open: true, message: error.data?.message || 'Failed to delete selected class periods', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            error.data?.message || 'Failed to delete selected classes period',
+          severity: 'error',
+        }),
+      );
     }
   };
-
   const fields = [
     { name: 'start_time', label: 'Start Time', type: 'time', required: true },
     { name: 'end_time', label: 'End Time', type: 'time', required: true },
   ];
 
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+
   return (
-    <FormComponent title="Class Period List" subTitle={`Total Class Periods: ${rows.length}`}>
+    <FormComponent
+      title="Class Period List"
+      subTitle={`Total Class Periods: ${rows.length}`}
+    >
       <Stack direction="row" justifyContent="flex-end">
         <Button
           size="large"
@@ -168,7 +239,10 @@ function ClassPeriodListPage() {
         description="Update the details for this class period"
         fields={fields}
         initialData={selectedClassPeriod}
-        onSubmit={handleEdit}
+        validationSchema={ClassPeriodListPage}
+        id={selectedClass?.classperiod_id}
+        getDataQuery={useGetClassPeriodByIdQuery}
+        useUpdateDataMutation={useUpdateClassPeriodMutation}
       />
 
       <ViewModal
@@ -182,7 +256,11 @@ function ClassPeriodListPage() {
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={handleDeleteConfirmed}
-        itemName={selectedClassPeriod ? `Period ${selectedClassPeriod.period}` : 'this period'}
+        itemName={
+          selectedClassPeriod
+            ? `Period ${selectedClassPeriod.period}`
+            : 'this period'
+        }
       />
     </FormComponent>
   );
