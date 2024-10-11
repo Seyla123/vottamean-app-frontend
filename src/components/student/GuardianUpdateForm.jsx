@@ -89,7 +89,8 @@ const GuardianUpdateForm = ({ onClose, handleNext }) => {
           autoHideDuration: 6000,
         }),
       );
-      handleNext();
+      // handleNext();
+      navigate('/admin/students');
       return;
     }
     try {

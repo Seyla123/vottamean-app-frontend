@@ -22,9 +22,11 @@ import { KeyRound, User } from 'lucide-react';
 import { useTheme } from '@emotion/react';
 
 import { updateFormData } from '../../../store/slices/studentSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const StudentUpdatePage = () => {
+  const navigate =useNavigate()
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -45,9 +47,13 @@ const StudentUpdatePage = () => {
  
   // Function to go to the previous step
   const handleBack = () => {
+    console.log('Hello');
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
    
   };
+  const handleCancel = () => {
+     navigate('/admin/students')
+  }
 
 
   // Array of steps to display in the stepper
@@ -82,12 +88,12 @@ const StudentUpdatePage = () => {
   );
   // Array of components to render in each step
   const stepFormComponents = [
-    <StudentUpdateForm handleFormChange={handleFormChange} handleNext={handleNext} 
+    <StudentUpdateForm handleFormChange={handleFormChange} handleNext={handleNext}  onClose={handleCancel}
     />,
     <GuardianUpdateForm
     handleFormChange={handleFormChange}
     handleNext={handleNext}
-    handleBack={handleBack}
+    onClose={handleBack}
     />,
   ];
 

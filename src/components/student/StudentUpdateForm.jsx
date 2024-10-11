@@ -30,7 +30,7 @@ import SubHeader from '../teacher/SubHeader';
 import {formatStudentFormData} from'../../utils/formatData'
 import { DatePicker } from '@mui/x-date-pickers';
 
-const StudentUpdateForm = ({  onClose ,handleNext}) => {
+const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
   const {id} =useParams();
   const dispatch = useDispatch();
 
@@ -92,7 +92,7 @@ const StudentUpdateForm = ({  onClose ,handleNext}) => {
       if (formattedData) {
         const studentInfo = {
           ...formattedData,
-          dob: formattedData.dob ? dayjs(formattedData.dob) : null,  
+          dob: formattedData.dob ? dayjs(formattedData.dob).format('YYYY-MM-DD') : null,  
         };
         reset(studentInfo);
         setDob(studentInfo.dob);
@@ -108,7 +108,9 @@ const StudentUpdateForm = ({  onClose ,handleNext}) => {
       last_name: data.last_name,
       phone_number: data.phone_number,
       gender: data.gender,
-      dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : null,
+       dob: data.dob && dayjs(data.dob).isValid() 
+        ? dayjs(data.dob).format('YYYY-MM-DD') 
+        : null,
       address: data.address,
       class_id: data.class_id,
     };
@@ -164,6 +166,9 @@ const StudentUpdateForm = ({  onClose ,handleNext}) => {
       );
     }
   };
+  const handleCancel = () => {
+    navigate('/admin/studnets')
+  }
 
   // Loading and error handling
   if (isLoading) return <Typography>Loading...</Typography>;
@@ -303,6 +308,7 @@ const StudentUpdateForm = ({  onClose ,handleNext}) => {
                 color="inherit"
                 size="large"
                 onClick={onClose}
+                handleBack={() => {'admin/student'}}
               >
                 Cancel
               </StyledButton>

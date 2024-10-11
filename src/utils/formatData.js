@@ -356,13 +356,14 @@ export const formatStudentFormData = (studentData) => {
 
   const { Info, class_id, guardian_first_name, guardian_last_name,guardian_email,guardian_phone_number,guardian_relationship } =
     studentData.data;
+    console.log(Info.dob ? dayjs(Info.dob) : null);
 
   return {
     first_name: Info.first_name || '',
     last_name: Info.last_name || '',
     phone_number: Info.phone_number || '',
     gender: Info.gender || '',
-    dob: Info.dob ? dayjs(Info.dob) : null, // Format DOB with dayjs
+    dob: Info.dob || null, // Format DOB with dayjs
     address: Info.address || '',
     class_id: class_id ? String(class_id) : '',
     guardian_first_name: guardian_first_name || '',
