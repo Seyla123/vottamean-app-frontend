@@ -9,6 +9,7 @@ import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 // Teacher Invitation and registration
 import TeacherRegistrationPage from '../pages/admin/teacher/TeacherRegistrationPage';
+import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage';
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
@@ -282,6 +283,10 @@ const routesConfig = [
             path: 'update/:id',
             element: <TeacherUpdatePage />,
           },
+          {
+            path: 'invitation',
+            element: <TeacherInvitationPage />,
+          },
         ],
       },
       {
@@ -347,8 +352,8 @@ const routesConfig = [
               },
               {
                 path: 'reports',
-                element: <AttendanceReportPage />
-              }
+                element: <AttendanceReportPage />,
+              },
             ],
           },
         ],
