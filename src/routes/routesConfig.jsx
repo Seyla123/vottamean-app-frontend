@@ -9,7 +9,10 @@ import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
 // Teacher Invitation and registration
 import TeacherRegistrationPage from '../pages/admin/teacher/TeacherRegistrationPage';
+<<<<<<< HEAD
 import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage';
+=======
+>>>>>>> dcf2e4a (feature : teacher inivitation.)
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
@@ -356,8 +359,13 @@ const routesConfig = [
               },
               {
                 path: 'reports',
+<<<<<<< HEAD
                 element: <AttendanceReportPage />,
               },
+=======
+                element: <AttendanceReportPage />
+              }
+>>>>>>> dcf2e4a (feature : teacher inivitation.)
             ],
           },
         ],
