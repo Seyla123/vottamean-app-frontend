@@ -21,6 +21,9 @@ import { CompletedRegistrationValidator } from '../../../validators/validationSc
 
 function TeacherRegistration() {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fbe3cbc (feature implement teacher invitation routes)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -63,16 +66,20 @@ function TeacherRegistration() {
       });
     } else {
       setPasswordValidation({
+<<<<<<< HEAD
 =======
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [passwordValidation, setPasswordValidation] = useState({
 >>>>>>> dcf2e4a (feature : teacher inivitation.)
+=======
+>>>>>>> fbe3cbc (feature implement teacher invitation routes)
         length: false,
         number: false,
         letter: false,
         special: false,
+<<<<<<< HEAD
 <<<<<<< HEAD
       });
     }
@@ -193,46 +200,112 @@ function TeacherRegistration() {
   );
 =======
     });
+=======
+      });
+    }
+  };
+>>>>>>> fbe3cbc (feature implement teacher invitation routes)
 
-    const [completeRegistration, { isLoading, isSuccess, isError, error }] = useCompleteRegistrationMutation();
+  const onSubmit = async (data) => {
+    try {
+      const response = await completeRegistration(data).unwrap();
+      if (response) {
+        console.log('Teacher registered successfully', response);
+      }
+    } catch (err) {
+      console.error('Registration failed:', err);
+    }
+  };
 
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-        watch,
-    } = useForm({
-        resolver: yupResolver(CompletedRegistrationValidator),
-        defaultValues: {
-            password: '',
-            passwordConfirm: '',
-        },
-    });
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Registration in progress',
+          severity: 'info',
+          autoHideDuration: 6000,
+        }),
+      );
+    } else if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message:
+            error?.data?.message || 'An error occurred during registration',
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
+    } else if (isSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Registration completed successfully!',
+          severity: 'success',
+          autoHideDuration: 6000,
+        }),
+      );
+      navigate('/auth/signin');
+    }
+  }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
 
-    const password = watch('password');
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: { xs: 2, md: 3 },
+        }}
+      >
+        {/* PASSWORD INPUT */}
+        <PasswordInput
+          name="password"
+          label="Password"
+          control={control}
+          showPassword={showPassword}
+          togglePasswordVisibility={() => setShowPassword(!showPassword)}
+          error={errors.password}
+          placeholder="Create password"
+        />
 
-    useEffect(() => {
-        validatePassword(password);
-    }, [password]);
+        {/* CONFIRM PASSWORD INPUT */}
+        <PasswordInput
+          name="passwordConfirm"
+          label="Confirm Password"
+          control={control}
+          showPassword={showPassword}
+          togglePasswordVisibility={() => setShowPassword(!showPassword)}
+          error={errors.passwordConfirm}
+          placeholder="Confirm password"
+        />
 
-    const validatePassword = (password) => {
-        if (password) {
-            setPasswordValidation({
-                length: password.length >= 8,
-                number: /[0-9]/.test(password),
-                letter: /[a-zA-Z]/.test(password),
-                special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-            });
-        } else {
-            setPasswordValidation({
-                length: false,
-                number: false,
-                letter: false,
-                special: false,
-            });
-        }
-    };
+        {/* PASSWORD VALIDITY INDICATORS */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
+          <Typography variant="body2" fontWeight="bold">
+            Register Requirement{' '}
+            <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+          </Typography>
+          <PasswordIndicator
+            isValid={passwordValidation.length}
+            message="At least 8 characters."
+          />
+          <PasswordIndicator
+            isValid={passwordValidation.letter}
+            message="Contain at least one letter."
+          />
+          <PasswordIndicator
+            isValid={passwordValidation.number}
+            message="Contain at least one number."
+          />
+          <PasswordIndicator
+            isValid={passwordValidation.special}
+            message="Contain at least one special character."
+          />
+        </Box>
 
+<<<<<<< HEAD
     const onSubmit = async (data) => {
         try {
             const response = await completeRegistration(data).unwrap();
@@ -334,6 +407,22 @@ function TeacherRegistration() {
         </form>
     );
 >>>>>>> dcf2e4a (feature : teacher inivitation.)
+=======
+        {/* SUBMIT BUTTON */}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={isLoading}
+          sx={{ mt: 2 }}
+        >
+          {isLoading ? <CircularProgress size={24} /> : 'Complete Registration'}
+        </Button>
+      </Box>
+    </form>
+  );
+>>>>>>> fbe3cbc (feature implement teacher invitation routes)
 }
 
 export default TeacherRegistration;

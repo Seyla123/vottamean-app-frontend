@@ -10,9 +10,13 @@ import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 // Teacher Invitation and registration
 import TeacherRegistrationPage from '../pages/admin/teacher/TeacherRegistrationPage';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage';
 =======
 >>>>>>> dcf2e4a (feature : teacher inivitation.)
+=======
+import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage';
+>>>>>>> fbe3cbc (feature implement teacher invitation routes)
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
@@ -360,12 +364,17 @@ const routesConfig = [
               {
                 path: 'reports',
 <<<<<<< HEAD
+<<<<<<< HEAD
                 element: <AttendanceReportPage />,
               },
 =======
                 element: <AttendanceReportPage />
               }
 >>>>>>> dcf2e4a (feature : teacher inivitation.)
+=======
+                element: <AttendanceReportPage />,
+              },
+>>>>>>> fbe3cbc (feature implement teacher invitation routes)
             ],
           },
         ],
