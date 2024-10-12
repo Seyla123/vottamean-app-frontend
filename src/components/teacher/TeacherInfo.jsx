@@ -90,6 +90,7 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
 
   // Handle form submission
   const onSubmit = (data) => {
+    console.log('Form Data:', data);
     handleNextClick(true, {
       ...data,
       gender: data.gender || '',

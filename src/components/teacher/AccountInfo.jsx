@@ -26,22 +26,33 @@ import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import dayjs from 'dayjs';
 const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
+  console.log('data from teacher info:', teacherData)
   const [showPassword, setShowPassword] = useState(false);
 
   // Form submit function
   const onSubmit = async (data) => {
     const formData = new FormData();
-    // Append all the form fields
+    // Log each field before appending
+    console.log('Email:', data.email);
+    console.log('Password:', data.password);
+    console.log('PasswordConfirm:', data.passwordConfirm);
+    console.log('FirstName:', teacherData.firstName);
+    console.log('LastName:', teacherData.lastName);
+    console.log('DOB:', dayjs(teacherData.dob).format('YYYY-MM-DD'));
+    console.log('Gender:', teacherData.gender);
+    console.log('PhoneNumber:', teacherData.phoneNumber);
+    console.log('Address:', teacherData.address || '');
+
+    // Append fields to FormData
     formData.append('email', data.email);
     formData.append('password', data.password);
     formData.append('passwordConfirm', data.passwordConfirm);
     formData.append('first_name', teacherData.firstName);
     formData.append('last_name', teacherData.lastName);
-    formData.append('dob', dayjs(data.dob).format('YYYY-MM-DD'));
+    formData.append('dob', dayjs(teacherData.dob).format('YYYY-MM-DD'));
     formData.append('gender', teacherData.gender);
     formData.append('phone_number', teacherData.phoneNumber);
     formData.append('address', teacherData.address || '');
-    
     // Append the photo if it exists
     if (teacherData.photo) {
       if (teacherData.photo instanceof File) {
@@ -51,9 +62,9 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
         teacherData.photo.startsWith('blob:')
       ) {
         try {
-          // const response = await fetch(teacherData.photo);
-          // const blob = await response.blob();
-          // formData.append('photo', blob, 'profile_photo.jpg');
+          const response = await fetch(teacherData.photo);
+          const blob = await response.blob();
+          formData.append('photo', blob, 'profile_photo.jpg');
           formData.append('photo', teacherData.photo ?? null);
 
           console.log('Form data in AccountInfo:', formData);
