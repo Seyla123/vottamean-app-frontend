@@ -372,20 +372,19 @@ export const GuardianValidator = createFormSchema([
   'guardian_phone_number',
 ]);
 
-// Student Validations for Updating Student
-export const UpdateStudentValidator = createFormSchema([
-  'photo',
+// Send Teacher Invitation
+export const SendTeacherInvitationValidator = createFormSchema([
+  'email',
   'first_name',
   'last_name',
-  'dob',
   'gender',
   'phone_number',
   'address',
-  'class_id',
-  'guardian_first_name',
-  'guardian_last_name',
-  'guardian_email',
-  'guardian_relationship',
-  'guardian_phone_number',
+  'dob',
 ]);
 
+// Completed registration
+export const CompletedRegistrationValidator = createFormSchema([
+  'password',
+  'passwordConfirm',
+]);
