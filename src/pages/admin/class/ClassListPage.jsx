@@ -19,6 +19,7 @@ import {
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
   useGetClassesByIdQuery,
+  useDeleteManyClassesMutation
 } from '../../../services/classApi';
 import { ClassValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
@@ -43,6 +44,8 @@ const ClassListPage = () => {
 
   // API hooks
   const { data, isLoading, isSuccess, isError } = useGetClassesDataQuery();
+  const [deleteManyClasses] = useDeleteManyClassesMutation();
+
   const [
     deleteClasses,
     {
@@ -123,31 +126,16 @@ const ClassListPage = () => {
   };
 
   // DELETE FUNCTIONS
+  // Handle delete button click for deleting one class
   const handleDelete = (row) => {
     setSelectedClass(row);
     dispatch(setModal({ open: true }));
   };
 
+  // Handle confirm deletion of selected classes (many)
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    try {
-      await deleteClasses(selectedClass?.class_id).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Class deleted successfully',
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to delete class',
-          severity: 'error',
-        }),
-      );
-    }
+    await deleteManyClasses(selectedClass?.class_id).unwrap();
   };
 
   // VIEW FUNCTIONS
