@@ -19,7 +19,7 @@ import {
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
   useGetClassesByIdQuery,
-  useDeleteManyClassesMutation
+  useDeleteManyClassesMutation,
 } from '../../../services/classApi';
 import { ClassValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
@@ -38,14 +38,25 @@ const ClassListPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+  
 
   const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
 
-  // API hooks
+  //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
   const { data, isLoading, isSuccess, isError } = useGetClassesDataQuery();
-  const [deleteManyClasses] = useDeleteManyClassesMutation();
 
+  //useDeleteManyClassesMutation :  a hook that returns a function to delete many class record
+  const [
+    deleteManyClasses,
+    {
+      isLoading: isDeletingMany,
+      isSuccess: isDeleteManySuccess,
+      isError: isDeleteManyError,
+    },
+  ] = useDeleteManyClassesMutation();
+
+  //useDeleteClassesDataMutation :  a hook that returns a function to delete an class record
   const [
     deleteClasses,
     {
@@ -56,6 +67,7 @@ const ClassListPage = () => {
     },
   ] = useDeleteClassesDataMutation();
 
+  //usePostClassesDataMutation :  a hook that returns a function to create an class record
   const [postClassesData] = usePostClassesDataMutation();
 
   useEffect(() => {
@@ -63,11 +75,11 @@ const ClassListPage = () => {
       setRows(data.data);
     }
 
-    if (isDeleting) {
+    if (isDeleting || isDeletingMany) {
       dispatch(
         setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
       );
-    } else if (isDeleteError) {
+    } else if (isDeleteError || isDeleteManyError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -75,7 +87,7 @@ const ClassListPage = () => {
           severity: 'error',
         }),
       );
-    } else if (isDeleteSuccess) {
+    } else if (isDeleteSuccess || isDeleteManySuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -101,7 +113,6 @@ const ClassListPage = () => {
   if (isError) {
     console.log('error message:', isError.data.message);
   }
-
   // CREATE FUNCTION
   const handleCreate = async (formData) => {
     try {
@@ -125,50 +136,34 @@ const ClassListPage = () => {
     }
   };
 
-  // DELETE FUNCTIONS
-  // Handle delete button click for deleting one class
+  // Handle delete button click
   const handleDelete = (row) => {
     setSelectedClass(row);
     dispatch(setModal({ open: true }));
   };
 
-  // Handle confirm deletion of selected classes (many)
+  // Handle confirm deletion
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    await deleteManyClasses(selectedClass?.class_id).unwrap();
+    await deleteClasses(selectedClass?.class_id).unwrap();
   };
 
-  // VIEW FUNCTIONS
+  // Handle view button clickl
   const handleView = (row) => {
     setSelectedClass(row);
     setViewModalOpen(true);
   };
 
+  // Handle edit button click
   const handleEditOpen = (row) => {
     setSelectedClass(row);
     setEditModalOpen(true);
   };
 
-  // DELETE MULTIPLE FUNCTIONS
+  // Handle delete multiple button click
   const handleSelectedDelete = async (selectedIds) => {
-    try {
-      await Promise.all(selectedIds.map((id) => deleteClasses(id).unwrap()));
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Selected classes deleted successfully',
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to delete selected classes',
-          severity: 'error',
-        }),
-      );
-    }
+    dispatch(setModal({ open: false }));
+    await deleteManyClasses(selectedIds).unwrap();
   };
 
   if (isLoading) {

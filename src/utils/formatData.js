@@ -322,6 +322,13 @@ export const transformedFilterClasses = (classes) => {
   }));
 };
 
+export const transformedForFilter = (data, dataId , dataName) => {
+  return data.map((item) => ({
+    value: item.dataId,
+    label: item.dataName,
+  }));
+}
+
 // Function to transform the data
 export const transformMarkAttendancetTable = (apiResponse) => {
   return apiResponse.map((item) => ({

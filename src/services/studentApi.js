@@ -4,9 +4,15 @@ export const studentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch all students' data
     getAllStudents: builder.query({
-      query: () => ({
+      query: (data) => ({
         url: 'students',
         method: 'GET',
+        params: data.class_id ? {
+          class_id: data.class_id,
+          search: data.search,
+        } : {
+          search: data.search
+        },
         credentials: 'include',
       }),
       providesTags: ['Students'],
@@ -57,7 +63,7 @@ export const studentApi = baseApi.injectEndpoints({
     // Delete multiple students by marking them as inactive
     deleteManyStudents: builder.mutation({
       query: (ids) => ({
-        url: 'students/delete-many',
+        url: 'students',
         method: 'DELETE',
         body: { ids },
         credentials: 'include',

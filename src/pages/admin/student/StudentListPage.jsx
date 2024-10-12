@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Box, Stack } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
 import FormComponent from '../../../components/common/FormComponent';
@@ -9,24 +9,46 @@ import { PlusIcon } from 'lucide-react';
 import {
   useDeleteStudentMutation,
   useGetAllStudentsQuery,
+  useDeleteManyStudentsMutation,
 } from '../../../services/studentApi';
+import { useGetClassesDataQuery } from '../../../services/classApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
-import { formatStudentsList } from '../../../utils/formatData';
-import { setSnackbar } from '../../../store/slices/uiSlice';
-import StudentListTable from '../../../components/student/StudentListTable';
+import { formatStudentsList, transformedFilterClasses } from '../../../utils/formatData';
+import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
+import DataTable from '../../../components/common/DataTable';
+import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import { BookIcon } from 'lucide-react';
 
+const columns = [
+  { id: 'name', label: 'Name' },
+  { id: 'gender', label: 'Gender' },
+  { id: 'Date of Birth', label: 'Date Of Birth' },
+  { id: 'class', label: 'Class Name' },
+  { id: 'address', label: 'Address' },
+];
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [classes, setClasses] = useState([{
+    value: 'all',
+    label: 'All',
+  }]);
 
-  // Fetch students using the API hook
-  const { data, isLoading, isError, isSuccess } = useGetAllStudentsQuery({
-    search: searchTerm,
-  });
+  const { modal } = useSelector((state) => state.ui);
 
+  //useGetAllStudentsQuery : a hook for return function to fetch students record
+  const { data, isLoading, isError, isSuccess, isFetching } =
+    useGetAllStudentsQuery({
+      search: searchTerm,
+      class_id: filter,
+    });
+
+  // useDeleteStudentMutation : a hook for return function to delete an student record
   const [
     deleteStudent,
     {
@@ -37,33 +59,44 @@ const StudentListPage = () => {
     },
   ] = useDeleteStudentMutation();
 
+  //useDeleteManyStudentsMutation : a hook for return function to delete many student record
+  const [
+    deleteManyStudents,
+    {
+      isLoading: isDeletingMany,
+      isSuccess: isDeleteManySuccess,
+      isError: isDeleteManyError,
+      error: deleteManyError,
+    },
+  ] = useDeleteManyStudentsMutation();
+
+  //useGetClassesDataQuery : a hook for return function to fetch classes record
+  const { data: classesData, isSuccess: isClassesSuccess } = useGetClassesDataQuery();
+
   useEffect(() => {
-    if (isSuccess && data) {
+    if (isSuccess && data && isClassesSuccess && classesData) {
       const formattedStudents = formatStudentsList(data.data);
+      const formattedFilterClass = transformedFilterClasses(classesData.data, 'class_id', 'class_name');
+      setClasses([...classes, ...formattedFilterClass]);
       setRows(formattedStudents);
     }
-  }, [isSuccess, data, dispatch]);
+  }, [isSuccess, data]);
+  console.log('this class ', classes);
 
-  //If loading is error, show error message
-  if (isError) {
-    console.log('error message :', error.data.message);
-  }
-  //filter change
-  const handleChange = (event) => {
-    setFilter(event.target.value);
-  };
-  // Handle Search by  name
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
 
-  // When the delete is in progress, show a snackbar with a message "Deleting..."
-  // When the delete is failed, show a snackbar with an error message
-  // When the delete is successful, show a snackbar with a success message and navigate to the class list page
+  // Snackbar handling for delete operations
   useEffect(() => {
-    if (isDeleting) {
+    if (isDeleting || isDeletingMany) {
       dispatch(
         setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteSuccess || isDeleteManySuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
       );
     } else if (isDeleteError) {
       dispatch(
@@ -73,28 +106,81 @@ const StudentListPage = () => {
           severity: 'error',
         }),
       );
-    } else if (isDeleteSuccess) {
+    } else if (isDeleteManyError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Deleted successfully',
-          severity: 'success',
+          message: deleteManyError.data.message,
+          severity: 'error',
         }),
       );
-      navigate('/admin/students');
     }
-  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting]);
+  }, [
+    dispatch,
+    isDeleteError,
+    isDeleteSuccess,
+    isDeleting,
+    isDeletingMany,
+    isDeleteManyError,
+    isDeleteManySuccess,
+  ]);
+
+  //If loading is error, show error message
+  if (isError) {
+    console.log('error message :', error.data.message);
+  }
+  //filter change
+  const handleClassesChange = (event) => {
+    if (event.target.value === 'all') {
+      dispatch(setFilter(''));
+    } {
+      setFilter(event.target.value);
+    }
+  };
+  // Handle Search by  name
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  //
+  // Handle for goes to edit page
+  const handleEdit = (row) => {
+    navigate(`/admin/students/update/${row.id}`);
+  };
+
+  // Handle delete clicked
+  const handleDelete = (row) => {
+    setSelectedStudent(row);
+    dispatch(setModal({ open: true }));
+  };
+
+  // Handle confirm deletion of a single student
+  const handleDeleteConfirmed = async () => {
+    dispatch(setModal({ open: false }));
+    await deleteStudent(selectedStudent?.id).unwrap();
+  };
+
+  // Handle for delete All
+  const handleSelectedDelete = async (selectedIds) => {
+    dispatch(setModal({ open: false }));
+    console.log('this is ids :', selectedIds);
+
+    await deleteManyStudents(selectedIds).unwrap();
+  };
+
+  const handleView = (row) => {
+    navigate(`/admin/students/${row.id}`);
+  };
 
   //Loading Data
   if (isLoading) {
     return <LoadingCircle />;
   }
-
   return (
     <Box>
       <FormComponent
         title={'Student Lists'}
-        subTitle={`There are ${rows.length} Students`}
+        subTitle={`Total Students : ${rows.length} `}
       >
         <Stack direction="row" justifyContent="flex-end">
           <Link to="/admin/students/create">
@@ -117,11 +203,12 @@ const StudentListPage = () => {
             gap={2}
           >
             <FilterComponent
-              onChange={handleChange}
-              placeholder="By Class"
-              data={[]}
+              onChange={handleClassesChange}
+              placeholder="Class"
+              data={classes}
               value={filter}
-              customStyles={{ minWidth: '100px', maxWidth: '150px' }}
+              customStyles={{ maxHeight: '50px', width: '150px' }}
+              icon={<BookIcon size={18} color='#B5B5B5' />}
             />
 
             <SearchComponent
@@ -132,8 +219,26 @@ const StudentListPage = () => {
             />
           </Stack>
         </Box>
-        {/* Student Table */}
-        <StudentListTable />
+        <DataTable
+          rows={rows}
+          columns={columns}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onView={handleView}
+          onSelectedDelete={handleSelectedDelete}
+          isLoading={isFetching}
+          emptyTitle={'No Student'}
+          emptySubTitle={'No Student Available'}
+          hideColumns={['address', 'Date of Birth']}
+          showNO={false}
+        />
+
+        <DeleteConfirmationModal
+          open={modal.open}
+          onClose={() => dispatch(setModal({ open: false }))}
+          onConfirm={handleDeleteConfirmed}
+          itemName={selectedStudent?.name}
+        />
       </FormComponent>
     </Box>
   );

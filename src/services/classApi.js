@@ -53,7 +53,7 @@ export const classApi = baseApi.injectEndpoints({
       query: (ids) => ({
         url: `classes`,
         method: 'DELETE',
-        body: {ids: ids},
+        body: { ids },
         credentials: 'include',
       }),
       invalidatesTags: ['Classes'],
