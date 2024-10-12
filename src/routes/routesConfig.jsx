@@ -1,5 +1,4 @@
 // auth
-import LoginPage from '../pages/auth/LoginPage';
 import SignupPage from '../pages/auth/SignupPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
@@ -7,6 +6,9 @@ import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
 import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
+
+// Teacher Invitation and registration
+import TeacherRegistrationPage from '../pages/admin/teacher/TeacherRegistrationPage';
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
@@ -103,6 +105,10 @@ const routesConfig = [
       {
         path: 'reset-password/:token',
         element: <ResetNewPasswordPage />,
+      },
+      {
+        path: 'complete-registration/:token',
+        element: <TeacherRegistrationPage />,
       },
     ],
   },
@@ -340,7 +346,7 @@ const routesConfig = [
                 element: <AttendanceViewPage />,
               },
               {
-                path:'reports',
+                path: 'reports',
                 element: <AttendanceReportPage />
               }
             ],

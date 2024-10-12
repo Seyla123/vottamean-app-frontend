@@ -370,3 +370,20 @@ export const GuardianValidator = createFormSchema([
   'guardian_relationship',
   'guardian_phone_number',
 ]);
+
+// Send Teacher Invitation
+export const SendTeacherInvitationValidator = createFormSchema([
+  'email',
+  'first_name',
+  'last_name',
+  'gender',
+  'phone_number',
+  'address',
+  'dob',
+]);
+
+// Completed registration
+export const CompletedRegistrationValidator = createFormSchema([
+  'password',
+  'passwordConfirm',
+]);
