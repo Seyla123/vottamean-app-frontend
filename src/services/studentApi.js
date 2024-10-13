@@ -60,7 +60,7 @@ export const studentApi = baseApi.injectEndpoints({
       invalidatesTags: ['Students'],
     }),
 
-    // Delete multiple students by marking them as inactive
+    // Delete many stundets
     deleteManyStudents: builder.mutation({
       query: (ids) => ({
         url: 'students',
