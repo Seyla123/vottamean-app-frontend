@@ -1,47 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGetUserProfileQuery } from '../../../services/userApi';
 import DateCalendarCard from '../../../components/common/DateCalendarCard';
-import { Box, Typography, Avatar, Paper, Grid, Chip } from '@mui/material';
+import { Box, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/system';
-import { shadow } from '../../../styles/global';
 import FormComponent from '../../../components/common/FormComponent';
-import greetingImage from '../../../assets/images/startup-1.svg';
-import { School } from 'lucide-react';
 import ShortcutCard from '../../../components/teacherSite/ShortcutCard';
 import teacherIcon from '../../../assets/images/teacher-93.svg';
 import checkListIcon from '../../../assets/images/checklist-1-97.svg';
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  marginBottom: theme.spacing(3),
-  background: 'linear-gradient(45deg, #4e54c8 30%, #EBD3F8  70%)',
-  color: 'white',
-  height: '100%',
-  width: '100%',
-  overflow: 'hidden',
-}));
+import WelcomeCard from '../../../components/common/WelcomeCard'
+import LoadingCircle from '../../../components/loading/LoadingCircle';
+import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
 
 const TeacherDashboardPage = () => {
   const { data: user, isLoading, error } = useGetUserProfileQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading user data</div>;
-
+  if (isLoading){
+    return <LoadingCircle/>
+  };
+  if (error){
+    return <SomthingWentWrong/>
+  };
   console.log(user);
-
-  const { first_name } = user.data.teacherProfile.Info;
+  
+  const {first_name}  = user.data.teacherProfile.Info;
   const { school_name } = user.data.teacherProfile.School;
-
-  // Get the current hour to determine the appropriate greeting
-  const currentHour = new Date().getHours();
-  let greeting = 'Good evening';
-
-  if (currentHour < 12) {
-    greeting = 'Good morning';
-  } else if (currentHour < 18) {
-    greeting = 'Good afternoon';
-  }
-
+  
   return (
     <FormComponent
       title={'Dashboard'}
@@ -51,43 +34,11 @@ const TeacherDashboardPage = () => {
     >
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <StyledPaper elevation={3} sx={shadow}>
-            <Box
-              position={'relative'}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <Box sx={{ position: 'relative', zIndex: '100', width: '100%' }}>
-                <Chip
-                  icon={<School size={16} />}
-                  label={school_name || 'School Name'}
-                  color="primary"
-                  sx={{ mb: 3 }}
-                />
-                <Typography variant="h4" gutterBottom>
-                  {greeting}, {first_name}! 👋
-                </Typography>
-                <Typography variant="subtitle1">
-                  Welcome back to your dashboard
-                </Typography>
-              </Box>
-              <img
-                src={greetingImage}
-                alt="greeting"
-                style={{
-                  width: '300px',
-                  objectFit: 'contain',
-                  position: 'absolute',
-                  right: 0,
-                  zIndex: 1,
-                }}
-              />
-            </Box>
-          </StyledPaper>
+          <WelcomeCard
+            subTitle="Welcome back to your dashboard"
+            name={first_name}
+            schoolName={school_name}
+          />
         </Grid>
 
         <Grid item xs={12} md={8}>
