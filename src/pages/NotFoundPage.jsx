@@ -9,7 +9,7 @@ const NotFoundPage = ({
   imageUrl = notFoundImage,
   title = '404: Page Not Found',
   description = "Oops! Why you're here? We're sorry, but the page you're looking for doesn't exist.",
-  buttonText = 'Go to Dashboard',
+  buttonText = 'Go to Home',
 }) => {
   const { user } = useSelector((state) => state.auth);
 
