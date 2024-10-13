@@ -39,6 +39,12 @@ import { validationSchema } from './TeacherInfo';
 
 // Format data
 import { formatTeacherFormData } from '../../utils/formatData';
+import InputField from '../common/InputField';
+import GenderSelect from '../common/GenderSelect';
+import PhoneInputField from '../common/PhoneInputField';
+import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
+import RandomAvatar from '../common/RandomAvatar';
+import StyledButton from '../common/StyledMuiButton';
 
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const navigate = useNavigate();
@@ -51,11 +57,12 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     isError,
   } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId }); // skip if teacherId is not available
 
-
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [profileImg, setProfileImg] = useState('');
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
-  const [form, setForm] = useState(false); 
+
 
   // Update teacher information
   const [updateTeacher] = useUpdateTeacherMutation();
@@ -66,6 +73,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     formState: { errors },
     reset,
     getValues,
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -78,7 +86,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     },
   });
 
-  // Format teacher form data and check dob validation
+  // Effect to load teacher data
   useEffect(() => {
     if (teacherData && teacherData.data) {
       const formattedData = formatTeacherFormData(teacherData);
@@ -90,11 +98,12 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         reset(teacherInfo);
         setDob(teacherInfo.dob);
         setOriginalData(teacherInfo);
+        setProfileImg(formattedData.photo);
       }
     }
   }, [teacherData, reset]);
 
-  // Submit form 
+  // Submit form
   const onSubmit = async (data) => {
     // Get the current state of the form and the original data that was loaded for checking changes purposes
     const submittedData = {
@@ -104,6 +113,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       gender: data.gender,
       dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : null,
       address: data.address,
+      photo: selectedFile ? selectedFile : profileImg,
     };
     const dataOriginal = {
       first_name: originalData.firstName,
@@ -114,12 +124,19 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         ? dayjs(originalData.dob).format('YYYY-MM-DD')
         : null,
       address: originalData.address,
+      photo: originalData.photo,
     };
+
+    if (profileImg instanceof File ){
+      
+    }
+    console.log('photo:', selectedFile ? selectedFile : profileImg);
 
     // Check if any of the fields have changed
     const hasChanges = Object.keys(dataOriginal).some(
       (key) => dataOriginal[key] !== submittedData[key],
     );
+
 
     // If no changes were made, close the modal
     if (!hasChanges) {
@@ -135,13 +152,30 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       navigate('/admin/teachers');
       return;
     }
+    // Log submitted data
+    console.log('Submitted Data photo:', submittedData.photo)
 
-    // Update the teacher information with the new data 
+    console.log("UpdateTeacherForm says: submitting photo");
+
+  //   submittedData = {
+  //     "first_name" : "Dolphinss",
+  //     "last_name" : "Dolly",
+  //     "phone_number" : "+855 56 565 656",
+  //     "address" : "Phnom penh",
+  //     "dob" : "2002-05-30",
+  //     "gender" : "Male",
+  //     "photo":"basic101.png"
+  // }
+
+    // Update the teacher information with the new data
     try {
       const result = await updateTeacher({
         id: teacherId,
         updates: submittedData,
       }).unwrap();
+
+      console.log("UpdateTeacherForm says: result is ", result);
+
       if (result.status === 'success') {
         dispatch(
           setSnackbar({
@@ -167,6 +201,33 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         }),
       );
     }
+  };
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (
+      file &&
+      file.type.startsWith('image/') &&
+      file.size <= 5 * 1024 * 1024
+    ) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setValue('photo', file); //// Update the form value
+    } else {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Invalid image file',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setSelectedFile(null);
+    setProfileImg(null);
+    setPreviewUrl(null);
+    setValue('photo', null); // Update the form value
   };
 
   // Loading and error handling
@@ -205,23 +266,68 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box
               sx={{
+                width: '100%',
                 display: 'flex',
-                flexDirection: 'row',
-                gap: 2,
+                justifyContent: 'flex-start',
                 alignItems: 'center',
-                marginBottom: 2,
+                gap: 2,
+                pb: {
+                  xs: 2,
+                  sm: 4,
+                },
+                pt: {
+                  xs: 0,
+                  sm: 4,
+                },
               }}
             >
-              {/* Profile */}
-              <Box sx={profilePic}>
-                <Avatar sx={imgStyle} alt="profile picture" src="r" />
-              </Box>
-              {/* Button for photo */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Button variant="contained">Change Photo</Button>
-                <Button variant="outlined" color="error">
+              {/* profile */}
+              {/* Avatar Preview */}
+              {previewUrl || profileImg ? (
+                <Avatar
+                  src={previewUrl || profileImg}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140 }}
+                />
+              ) : (
+                <RandomAvatar
+                  username={`${getValues('firstName')} ${getValues('lastName')}`}
+                  size={140}
+                />
+              )}
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handlePhotoChange}
+              />
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="start"
+                gap={2}
+              >
+                <label htmlFor="photo-upload">
+                  <StyledButton
+                    variant="contained"
+                    size="small"
+                    component="span"
+                    startIcon={<ImagePlus size={18} />}
+                  >
+                    Upload
+                  </StyledButton>
+                </label>
+
+                <StyledButton
+                  variant="outlined"
+                  size="small"
+                  color="error"
+                  startIcon={<Trash2 size={18} />}
+                  onClick={handleRemovePhoto}
+                >
                   Remove
-                </Button>
+                </StyledButton>
               </Box>
             </Box>
             <Divider />
@@ -229,88 +335,43 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
               {/* First Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
-                <Box sx={textFieldGap}>
-                  <Typography variant="body2" fontWeight="bold">
-                    First Name {''}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-                  <Controller
-                    name="firstName"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        type="text"
-                        placeholder="First Name"
-                        error={!!errors.firstName}
-                        helperText={errors.firstName?.message}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Box>
+                <InputField
+                  name="firstName"
+                  icon={UserRoundPen}
+                  control={control}
+                  label="First Name"
+                  placeholder="First Name"
+                  errors={errors}
+                />
               </Box>
               {/* Last Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
-                <Box sx={textFieldGap}>
-                  <Typography variant="body2" fontWeight="bold">
-                    Last Name {''}
-                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                  </Typography>
-                  <Controller
-                    name="lastName"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        type="text"
-                        placeholder="Last Name"
-                        error={!!errors.lastName}
-                        helperText={errors.lastName?.message}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Box>
+                <InputField
+                  name="lastName"
+                  control={control}
+                  icon={UserRoundPen}
+                  label="Last Name "
+                  placeholder="Last Name "
+                  errors={errors}
+                />
               </Box>
             </Box>
             {/* Gender */}
             <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <Typography variant="body2" fontWeight="bold">
-                Gender <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
               <Controller
                 name="gender"
                 control={control}
+                defaultValue="" // Make sure to set an appropriate default value
+                rules={{ required: 'Gender is required' }} // Validation rule
                 render={({ field }) => (
-                  <FormControl fullWidth error={!!errors.gender}>
-                    <Select
-                      {...field}
-                      displayEmpty
-                      error={!!errors.gender}
-                      renderValue={(selected) => {
-                        if (!selected) {
-                          return <Box sx={{ color: '#B5B5B5' }}>Gender</Box>;
-                        }
-                        return selected;
-                      }}
-                    >
-                      <MenuItem value="Male">Male</MenuItem>
-                      <MenuItem value="Female">Female</MenuItem>
-                      <MenuItem value="Other">Other</MenuItem>
-                    </Select>
-                    <Typography
-                      variant="caption"
-                      color="error"
-                      sx={{
-                        marginLeft: errors.gender?.message ? '14px' : '0',
-                        marginTop: errors.gender?.message ? '3px' : '0',
-                      }}
-                    >
-                      {errors.gender?.message}
-                    </Typography>
-                  </FormControl>
+                  <GenderSelect
+                    control={control}
+                    errors={errors}
+                    name={field.name}
+                    label="Gender"
+                    defaultValue={field.value} // Use the field value
+                    disabled={false}
+                  />
                 )}
               />
             </Box>
@@ -357,44 +418,24 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             </Box>
             {/* Phone Number */}
             <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <Typography variant="body2" fontWeight="bold">
-                Contact Number {''}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
-              <Controller
+              <PhoneInputField
                 name="phoneNumber"
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    placeholder="Contact Number"
-                    error={!!errors.phoneNumber}
-                    helperText={errors.phoneNumber?.message}
-                    fullWidth
-                  />
-                )}
+                label="Contact Number"
+                errors={errors}
               />
             </Box>
             {/* Address */}
             <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <Typography variant="body2" fontWeight="bold">
-                Street Address{' '}
-              </Typography>
-              <Controller
+              <InputField
                 name="address"
+                required={false}
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    placeholder="Phnom Penh, Street 210, ..."
-                    type="text"
-                    error={!!errors.address}
-                    helperText={errors.address?.message}
-                    fullWidth
-                    multiline
-                    minRows={5}
-                  />
-                )}
+                label="Street Address"
+                placeholder="Phnom Penh, Street 210,..."
+                errors={errors}
+                multiline={true}
+                minRows={5}
               />
             </Box>
             {/* Buttons */}

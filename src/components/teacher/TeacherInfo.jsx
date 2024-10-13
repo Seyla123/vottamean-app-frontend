@@ -112,8 +112,6 @@ const TeacherInfo = ({ handleNextClick, defaultValues }) => {
       const newPreviewUrl = URL.createObjectURL(file);
       setPhotoPreview(newPreviewUrl);
       setValue('photo', newPreviewUrl);
-      handlePhotoChange(newPreviewUrl);
-      // Update the preview URL in form state
     } else {
       dispatch(
         setSnackbar({
@@ -380,7 +378,7 @@ const textFieldGap = {
 // Define validation schema
 export const validationSchema = yup.object({
   firstName: yup
-    .string()
+    .string().trim()
     .required('First name is required')
     .matches(
       /^[A-Za-z]+( [A-Za-z]+)*$/,
@@ -389,7 +387,7 @@ export const validationSchema = yup.object({
     .min(2, 'Name must be at least 2 characters long')
     .max(40, 'Name must be less than 40 characters'),
   lastName: yup
-    .string()
+    .string().trim()
     .required('Last name is required')
     .matches(
       /^[A-Za-z]+( [A-Za-z]+)*$/,
@@ -398,7 +396,7 @@ export const validationSchema = yup.object({
     .min(2, 'Name must be at least 2 characters long')
     .max(40, 'Name must be less than 40 characters'),
   phoneNumber: yup
-    .string()
+    .string().trim()
     .required('Phone number is required')
     .test(
       'length',
@@ -415,7 +413,7 @@ export const validationSchema = yup.object({
     ),
   photo: yup.mixed().nullable(),
   gender: yup
-    .string()
+    .string().trim()
     .transform((value) => capitalize(value))
     // Transform the value before validation
     .oneOf(
@@ -424,12 +422,12 @@ export const validationSchema = yup.object({
     )
     .required('Gender is required'),
   dob: yup
-    .string()
+    .string().trim()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
     .typeError('Invalid date format'),
   address: yup
-    .string()
+    .string().trim()
     .nullable()
     .notRequired()
     .max(200, 'Address must be less than 200 characters'),

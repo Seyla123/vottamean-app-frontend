@@ -26,23 +26,12 @@ import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import dayjs from 'dayjs';
 const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
-  console.log('data from teacher info:', teacherData)
+
   const [showPassword, setShowPassword] = useState(false);
 
   // Form submit function
   const onSubmit = async (data) => {
     const formData = new FormData();
-    // Log each field before appending
-    console.log('Email:', data.email);
-    console.log('Password:', data.password);
-    console.log('PasswordConfirm:', data.passwordConfirm);
-    console.log('FirstName:', teacherData.firstName);
-    console.log('LastName:', teacherData.lastName);
-    console.log('DOB:', dayjs(teacherData.dob).format('YYYY-MM-DD'));
-    console.log('Gender:', teacherData.gender);
-    console.log('PhoneNumber:', teacherData.phoneNumber);
-    console.log('Address:', teacherData.address || '');
-
     // Append fields to FormData
     formData.append('email', data.email);
     formData.append('password', data.password);
@@ -55,11 +44,13 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
     formData.append('address', teacherData.address || '');
     // Append the photo if it exists
     if (teacherData.photo) {
+      // Check if the photo is a File object
       if (teacherData.photo instanceof File) {
         formData.append('photo', teacherData.photo);
       } else if (
+        // if photo is string type or blob type
         typeof teacherData.photo === 'string' &&
-        teacherData.photo.startsWith('blob:')
+        teacherData.photo.startsWith('')
       ) {
         try {
           const response = await fetch(teacherData.photo);
@@ -69,13 +60,13 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
 
           console.log('Form data in AccountInfo:', formData);
         } catch (error) {
-          console.error('Error fetching blob:', error);
+          console.error('Error fetching', error);
         }
       } else {
-        console.warn('Unexpected photo type:', typeof teacherData.photo);
+        console.log('Unexpected photo type:', typeof teacherData.photo);
       }
     } else {
-      console.warn('No photo data available');
+      console.log('No photo data available');
     }
 
 

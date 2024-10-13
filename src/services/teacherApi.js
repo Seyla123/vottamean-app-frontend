@@ -29,7 +29,7 @@ export const teacherApi = baseApi.injectEndpoints({
       query: ({ id, updates }) => ({
         url: `teachers/${id}`,
         method: 'PUT',
-        body: updates,
+        body: updates
       }),
       invalidatesTags: ['Teachers'],
     }),
