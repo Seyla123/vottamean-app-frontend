@@ -1,15 +1,17 @@
+
 import React from 'react';
-import { Box, Typography, Button, Container } from '@mui/material';
+import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import notFoundImage from '../assets/images/404-page-not-found.svg';
-import StyledButton from '../components/common/StyledMuiButton';
+import EorrImage from '../../assets/images/500-error.svg';
+import StyledButton from './StyledMuiButton';
 
-const NotFoundPage = ({
-  imageUrl = notFoundImage,
-  title = '404: Page Not Found',
-  description = "Oops! Why you're here? We're sorry, but the page you're looking for doesn't exist.",
-  buttonText = 'Go to Home',
+const SomthingWentWrong = ({
+  imageUrl = EorrImage,
+  title = 'Oops, Something Went Wrong!',
+  description = "We're experiencing some issue. Please try again",
+  buttonText = 'Go to home',
+  customStyles 
 }) => {
   const { user } = useSelector((state) => state.auth);
 
@@ -37,8 +39,9 @@ const NotFoundPage = ({
           alignItems: 'center',
           justifyContent: 'center',
           gap: 3,
-          minHeight: '100vh',
+          minHeight: '80vh',
           textAlign: 'center',
+          ...customStyles
         }}
       >
         <Box
@@ -50,15 +53,15 @@ const NotFoundPage = ({
         >
           <img
             src={imageUrl}
-            alt="404 Not Found"
+            alt="500 Internal Server Error"
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
+              objectFit: 'contain',
             }}
           />
         </Box>
-        <Box sx={{ width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+        <Box sx={{ width: '100%', maxWidth: '500px', textAlign: 'center' }}>
           <Typography
             variant="h4"
             component="h4"
@@ -71,6 +74,7 @@ const NotFoundPage = ({
             {description}
           </Typography>
         </Box>
+        <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
         <StyledButton
           component={Link}
           to={dashboardLink}
@@ -80,9 +84,19 @@ const NotFoundPage = ({
         >
           {buttonText}
         </StyledButton>
+        <StyledButton
+          onClick={() => window.location.reload()}
+          variant="contained"
+          color="primary"
+          size="large"
+        >
+          Refresh Page
+        </StyledButton>
+        </Stack>
+
       </Box>
     </Container>
   );
 };
 
-export default NotFoundPage;
+export default SomthingWentWrong;

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
@@ -16,6 +16,7 @@ import {
   useCreateClassPeriodMutation,
   useUpdateClassPeriodMutation,
   useGetClassPeriodByIdQuery,
+  useDeleteManyClassPeriodsMutation,
 } from '../../../services/classPeriodApi';
 import {
   calculatePeriod,
@@ -23,12 +24,17 @@ import {
   formatTimeToHHMM,
 } from '../../../utils/formatHelper';
 import { SessionValidator } from '../../../validators/validationSchemas';
+import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
   { id: 'start_time', label: 'Start Time' },
   { id: 'end_time', label: 'End Time' },
   { id: 'period', label: 'Period' },
+];
+const fields = [
+  { name: 'start_time', label: 'Start Time', type: 'time', required: true },
+  { name: 'end_time', label: 'End Time', type: 'time', required: true },
 ];
 
 function ClassPeriodListPage() {
@@ -41,7 +47,19 @@ function ClassPeriodListPage() {
   const dispatch = useDispatch();
   const { modal } = useSelector((state) => state.ui);
 
-  const { data, isLoading, isSuccess, isError } = useGetClassPeriodQuery();
+  const { data, isLoading, isSuccess, isError, isFetching } = useGetClassPeriodQuery();
+
+  // useDeleteManyClassPeriodsMutation : returns a function to delete many class periods
+  const [
+    deleteManyClassPeriods,
+    {
+      isLoading: isDeletingMany,
+      isSuccess: isDeleteManySuccess,
+      isError: isDeleteManyError,
+      error: deleteManyError,
+    },
+  ] = useDeleteManyClassPeriodsMutation();
+
   const [
     deleteClassPeriod,
     {
@@ -65,10 +83,26 @@ function ClassPeriodListPage() {
       }));
       setRows(formattedData);
     }
+  }, [
+    data,
+    isSuccess,
+  ]);
 
-    if (isDeleting) {
+  // when delete is in progress, show a snackbar with a message "Deleting..."
+  // when delete is failed, show a snackbar with an error message
+  // when delete is successful, show a snackbar with a success message
+  useEffect(() => {
+    if (isDeleting || isDeletingMany) {
       dispatch(
         setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteSuccess || isDeleteManySuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
       );
     } else if (isDeleteError) {
       dispatch(
@@ -78,26 +112,25 @@ function ClassPeriodListPage() {
           severity: 'error',
         }),
       );
-    } else if (isDeleteSuccess) {
+    } else if (isDeleteManyError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Deleted successfully',
-          severity: 'success',
+          message: deleteManyError.data?.message || 'Failed to delete class',
+          severity: 'error',
         }),
       );
     }
   }, [
-    data,
-    isSuccess,
     isDeleting,
     isDeleteError,
     isDeleteSuccess,
     dispatch,
     deleteError,
-  ]);
-  if (isLoading) return <CircularIndeterminate />;
-  if (isError) console.log('error message:', isError.data.message);
+    isDeletingMany,
+    isDeleteManyError,
+    isDeleteManySuccess,
+    deleteManyError])
 
   const handleCreate = async (formData) => {
     try {
@@ -160,35 +193,18 @@ function ClassPeriodListPage() {
 
   // DELETE MULTIPLE FUNCTIONS
   const handleSelectedDelete = async (selectedIds) => {
-    try {
-      await Promise.all(
-        selectedIds.map((id) => deleteClassPeriod(id).unwrap()),
-      );
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Selected classes period deleted successfully',
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message:
-            error.data?.message || 'Failed to delete selected classes period',
-          severity: 'error',
-        }),
-      );
-    }
+    await deleteManyClassPeriods(selectedIds).unwrap();
   };
-  const fields = [
-    { name: 'start_time', label: 'Start Time', type: 'time', required: true },
-    { name: 'end_time', label: 'End Time', type: 'time', required: true },
-  ];
 
-  if (isLoading) {
+
+  // if data is loading
+  if(isLoading) {
     return <LoadingCircle />;
+  }
+  
+  // if there is an error
+  if(isError){
+    return <SomthingWentWrong/>
   }
 
   return (

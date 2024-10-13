@@ -2,7 +2,7 @@ import { baseApi } from './baseApi';
 
 export const subjectApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // GET ALL subjects
+    // Get all subjects
     getSubjects: builder.query({
       query: () => ({
         url: 'subjects',
@@ -12,7 +12,7 @@ export const subjectApi = baseApi.injectEndpoints({
       providesTags: ['Subjects'],
     }),
 
-    // GET ONE subject
+    // Get one subject
     getSubjectById: builder.query({
       query: (id) => ({
         url: `subjects/${id}`,
@@ -22,7 +22,7 @@ export const subjectApi = baseApi.injectEndpoints({
       providesTags: ['Subjects'],
     }),
 
-    // DELETE ONE subject by ID
+    // Delete one subject by ID
     deleteSubject: builder.mutation({
       query: (id) => ({
         url: `subjects/${id}`,
@@ -32,7 +32,7 @@ export const subjectApi = baseApi.injectEndpoints({
       invalidatesTags: ['Subjects'],
     }),
 
-    // CREATE subject
+    // Create subject
     createSubject: builder.mutation({
       query: (subjectData) => ({
         url: 'subjects',
@@ -43,7 +43,7 @@ export const subjectApi = baseApi.injectEndpoints({
       invalidatesTags: ['Subjects'],
     }),
 
-    // UPDATE a subject by ID
+    // Update a subject by ID
     updateSubject: builder.mutation({
       query: ({ id, formData }) => ({
         url: `subjects/${id}`,
@@ -53,6 +53,17 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subjects'],
     }),
+
+   // Delete many subjects
+   deleteManySubjects: builder.mutation({
+    query: (ids) => ({
+      url: 'subjects',
+      method: 'DELETE',
+      body: { ids },
+      credentials: 'include',
+    }),
+    invalidatesTags: ['Subjects'],
+   }),
   }),
 });
 
@@ -62,4 +73,5 @@ export const {
   useDeleteSubjectMutation,
   useCreateSubjectMutation,
   useUpdateSubjectMutation,
+  useDeleteManySubjectsMutation,
 } = subjectApi;

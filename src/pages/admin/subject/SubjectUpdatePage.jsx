@@ -8,7 +8,7 @@ import { Library, ScrollText } from 'lucide-react';
 // import components
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 import ButtonContainer from '../../../components/common/ButtonContainer';
 // import style, api and uiSlice
 import { SubjectValidator } from '../../../validators/validationSchemas';
@@ -111,7 +111,7 @@ function SubjectUpdatePage() {
   };
 
   if (isLoading) {
-    return <CircularIndeterminate />;
+    return <LoadingCircle />;
   }
 
   if (fetchError) return <p>Error loading subject: {fetchError.message}</p>;

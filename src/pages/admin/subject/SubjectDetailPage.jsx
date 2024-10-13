@@ -6,7 +6,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 // import api and uiSlice
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import { useGetSubjectByIdQuery, useDeleteSubjectMutation } from '../../../services/subjectApi';
@@ -63,7 +63,7 @@ function SubjectDetailPage() {
 
   // loading the data until it successfully fetched
   if (isLoading) {
-    return <CircularIndeterminate />;
+    return <LoadingCircle />;
   }
 
   // Handle error state

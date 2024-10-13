@@ -21,7 +21,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
-import CircularIndeterminate from '../loading/LoadingCircle';
+import LoadingCircle from '../loading/LoadingCircle';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 
@@ -208,7 +208,7 @@ const EditModal = ({
   };
 
   if (isLoading) {
-    return <CircularIndeterminate />;
+    return <LoadingCircle />;
   }
 
   return (

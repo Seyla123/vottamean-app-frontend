@@ -3,7 +3,7 @@ import { baseApi } from './baseApi';
 // Define your custom endpoints here
 export const sessionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // update session
+    // Update session
     updateSession: builder.mutation({
       query: ({ id, sessionData }) => ({
         url: `sessions/${id}`,
@@ -14,7 +14,7 @@ export const sessionApi = baseApi.injectEndpoints({
       invalidatesTags: ['Sessions'],
     }),
 
-    // create session
+    // Create session
     createSession: builder.mutation({
       query: (data) => ({
         url: 'sessions',
@@ -25,7 +25,7 @@ export const sessionApi = baseApi.injectEndpoints({
       invalidatesTags: ['Sessions'],
     }),
 
-    // delete session
+    // Delete session
     deleteSession: builder.mutation({
       query: (id) => ({
         url: `sessions/${id}`,
@@ -35,7 +35,7 @@ export const sessionApi = baseApi.injectEndpoints({
       invalidatesTags: ['Sessions'],
     }),
 
-    // get session by id
+    // Get session by id
     getSessionById: builder.query({
       query: (id) => ({
         url: `sessions/${id}`,
@@ -44,7 +44,7 @@ export const sessionApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Sessions'],
     }),
-    // Fetch data into list
+    // Get all sessions
     getSessions: builder.query({
       query: () => ({
         url: 'sessions',
@@ -52,6 +52,17 @@ export const sessionApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       providesTags: ['Sessions'],
+    }),
+
+    // Delete many sessions
+    deleteManySessions: builder.mutation({
+      query: (ids) => ({
+        url: 'sessions',
+        method: 'DELETE',
+        body: { ids },
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Sessions'],
     }),
   }),
 });
@@ -63,4 +74,5 @@ export const {
   useGetSessionByIdQuery,
   useCreateSessionMutation,
   useUpdateSessionMutation,
+  useDeleteManySessionsMutation,
 } = sessionApi;

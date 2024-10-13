@@ -53,6 +53,17 @@ export const classPeriodApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['ClassPeriods'],
     }),
+    
+    // Delete many class periods
+    deleteManyClassPeriods : builder.mutation({
+      query: (ids) => ({
+        url: 'periods',
+        method: 'DELETE',
+        body: { ids },
+        credentials: 'include',
+      }),
+      invalidatesTags: ['ClassPeriods'],
+    })
   }),
 });
 
@@ -61,5 +72,6 @@ export const {
   useGetClassPeriodByIdQuery,
   useCreateClassPeriodMutation,
   useDeleteClassPeriodMutation,
-  useUpdateClassPeriodMutation
+  useUpdateClassPeriodMutation,
+  useDeleteManyClassPeriodsMutation
 } = classPeriodApi;

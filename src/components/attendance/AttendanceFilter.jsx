@@ -19,14 +19,14 @@ const filterOptions = [
     { value: "lastYear", label: "Yearly" },
 ]
 
-function AttendanceFilter({pdfData}) {
+function AttendanceFilter({ pdfData }) {
     // Get the dispatch function and the current filter state from the store
     const dispatch = useDispatch();
     const filter = useSelector((state) => state.attendance.filter);
 
     // Get the data from the subject and class api
-    const { data: subjectData, isSuccess: isSubjectSuccess} = useGetSubjectsQuery();
-    const { data: dataClass, isSuccess: isClassSuccess} = useGetClassesDataQuery();
+    const { data: subjectData, isSuccess: isSubjectSuccess } = useGetSubjectsQuery();
+    const { data: dataClass, isSuccess: isClassSuccess } = useGetClassesDataQuery();
 
     // Set the initial state for the subjects and classes
     const allSelector = [{
@@ -52,85 +52,85 @@ function AttendanceFilter({pdfData}) {
 
     // handle subject change
     const handleSubjectChange = (event) => {
-        if(event.target.value === 'all'){
+        if (event.target.value === 'all') {
             dispatch(setFilter({ ...filter, subject: '' }));
-        }else{
-        dispatch(setFilter({ ...filter, subject: event.target.value }));
+        } else {
+            dispatch(setFilter({ ...filter, subject: event.target.value }));
         }
     };
 
     // handle class change
     const handleClassChange = (event) => {
-        if(event.target.value === 'all'){
+        if (event.target.value === 'all') {
             dispatch(setFilter({ ...filter, class: '' }));
-        }else{
+        } else {
             dispatch(setFilter({ ...filter, class: event.target.value }));
         }
     };
 
     //handle filter change
     const handleFilterChange = (event) => {
-        if(event.target.value === 'all'){
+        if (event.target.value === 'all') {
             dispatch(setFilter({ ...filter, filter: '' }));
-        }else{
-        const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
-        dispatch(setFilter({ ...filter, filter: event.target.value, filterLabel: selectedLabel }));
+        } else {
+            const selectedLabel = filterOptions.find(item => item.value === event.target.value)?.label || 'All';
+            dispatch(setFilter({ ...filter, filter: event.target.value, filterLabel: selectedLabel }));
         }
     };
 
     // handle export CSV file
     const handleExportsCsv = async () => {
         setIsExporting(true);
-        console.log('Exporting CSV...',isExporting);
-        
-      try {
-        const blob = await fetch(`${import.meta.env.VITE_API_URL}/attendance/export-attendance`,
-          { credentials: 'include' }).then((res) => res.blob());          // Create a download link and auto-download the CSV file
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'attendance_data.csv');  // Filename for the CSV
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } catch (error) {
-        console.error('Failed to download CSV:', error);
-        dispatch(setSnackbar({ open: true, message: 'Failed to download CSV', severity: 'error' }));
-      }
-      finally{
-        setIsExporting(false);  // Reset exporting status after exporting is done.
-      }
+        console.log('Exporting CSV...', isExporting);
+
+        try {
+            const blob = await fetch(`${import.meta.env.VITE_API_URL}/attendance/export-attendance`,
+                { credentials: 'include' }).then((res) => res.blob());          // Create a download link and auto-download the CSV file
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'attendance_data.csv');  // Filename for the CSV
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Failed to download CSV:', error);
+            dispatch(setSnackbar({ open: true, message: 'Failed to download CSV', severity: 'error' }));
+        }
+        finally {
+            setIsExporting(false);  // Reset exporting status after exporting is done.
+        }
     }
     return (
         <Box sx={filterBoxStyle}>
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start" , flexWrap: "wrap"}}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignSelf: "start", flexWrap: "wrap" }}>
                 <FilterComponent
                     value={filter.subject}
                     data={subjects}
                     onChange={handleSubjectChange}
                     placeholder={"Subject"}
-                    customStyles={ {maxHeight: '50px', width:'150px'}}
-                    icon={<BookIcon size={18} color='#B5B5B5'/>}
+                    customStyles={{ maxHeight: '50px', width: '150px' }}
+                    icon={<BookIcon size={18} color='#B5B5B5' />}
                 />
                 <FilterComponent
                     value={filter.class}
                     data={classes}
                     onChange={handleClassChange}
                     placeholder={"Class"}
-                    customStyles={ {maxHeight: '50px', width:'150px'}}
-                    icon={<LibraryIcon size={18} color='#B5B5B5'/>}
+                    customStyles={{ maxHeight: '50px', width: '150px' }}
+                    icon={<LibraryIcon size={18} color='#B5B5B5' />}
                 />
                 <FilterComponent
                     value={filter.filter}
                     data={filterOptions}
                     onChange={handleFilterChange}
                     placeholder={"Date range"}
-                    customStyles={ {maxHeight: '50px', width:'150px'}}
-                    icon={<Filter  size={18} color='#B5B5B5'/>}
+                    customStyles={{ maxHeight: '50px', width: '150px' }}
+                    icon={<Filter size={18} color='#B5B5B5' />}
                 />
             </Box>
             <Box alignSelf={"end"} >
-                {pdfData? <Button
+                {pdfData ? <Button
                     variant="contained"
                     size="large"
                     color="primary"
@@ -168,6 +168,6 @@ const filterBoxStyle = {
     backgroundColor: "white",
     height: "100%",
     px: 2,
-    py:3,
-    
+    py: 3,
+
 };
