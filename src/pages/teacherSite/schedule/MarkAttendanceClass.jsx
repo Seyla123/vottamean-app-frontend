@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AttendanceTable from '../../../components/teacherSite/AttendanceTable';
 import FormComponent from '../../../components/common/FormComponent';
-import { Box, Button,CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { SendIcon, DownloadIcon } from 'lucide-react';
 import { useGetAllStudentsByClassInSessionQuery } from '../../../services/teacherApi';
 import { useGetStatusQuery } from '../../../services/statusApi';
@@ -11,6 +11,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useMarkAttendanceMutation } from '../../../services/attendanceApi';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../../store/slices/uiSlice';
+import StyledButton from '../../../components/common/StyledMuiButton';
+import WelcomeCard from '../../../components/common/WelcomeCard';
+import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+
 const columns = [
   {
     id: 'id',
@@ -39,77 +43,118 @@ const columns = [
   },
 ];
 
-function TeacherAttendanceListPage() {
-
-  const { id:sessionId } = useParams();
+function MarkAttendanceClass() {
+  const { id: sessionId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // - useGetAllStudentsByClassInSessionQuery : get all students by class in session
-  // - useGetStatusQuery : get all status
-  const { data: studentsData, isLoading, isError, isSuccess, error } = useGetAllStudentsByClassInSessionQuery(sessionId);
-  const { data: statusData, isLoading: isLoadingStatus, isError: isErrorStatus, isSuccess: isSuccessStatus, error: errorStatus } = useGetStatusQuery();
-  const [markAttendance, { isError: isMarkAttendanceError, error: markAttendanceError, isLoading: isMarkAttendanceLoading, isSuccess: isMarkAttendanceSuccess }] = useMarkAttendanceMutation();
+  // - useGetAllStudentsByClassInSessionQuery : a hook return fuction for fetching all students by class in session
+  const {
+    data: studentsData,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  } = useGetAllStudentsByClassInSessionQuery(sessionId);
+
+  // - useGetStatusQuery : a hook return fuction for fetching all status
+  const {
+    data: statusData,
+    isLoading: isLoadingStatus,
+    isError: isErrorStatus,
+    isSuccess: isSuccessStatus,
+    error: errorStatus,
+  } = useGetStatusQuery();
+
+// useMarkAttendanceMutation : a hook return fuction for mark attendance students
+  const [
+    markAttendance,
+    {
+      isError: isMarkAttendanceError,
+      error: markAttendanceError,
+      isLoading: isMarkAttendanceLoading,
+      isSuccess: isMarkAttendanceSuccess,
+    },
+  ] = useMarkAttendanceMutation();
 
   // rows : the data to be displayed in the table
   // status : the status of attendance to be displayed in the table
   const [rows, setRows] = useState([]);
   const [status, setStatus] = useState([]);
+  const [classInfo, setClassInfo] = useState({});
 
-  // if get all students by class in session is success, 
+  // if get all students by class in session is success,
   // then set rows to transformed data
   useEffect(() => {
     if (studentsData && isSuccess) {
       const formattedData = transformMarkAttendancetTable(studentsData.data);
-      setRows(formattedData)
+      setRows(formattedData);
+      setClassInfo(studentsData.Class);
     }
-  }, [studentsData, isSuccess])
+  }, [studentsData, isSuccess]);
+
+    // if get all status is success,
+  // then set status to status data
+  useEffect(() => {
+    if (statusData && isSuccessStatus) {
+      setStatus(statusData.data);
+    }
+  }, [statusData]);
 
   // when Mark Attendance is in progress, show a snackbar with a message "Loading..."
   // when Mark Attendance is failed, show a snackbar with an error message
   // when Mark Attendance is successful, show a snackbar with a success message and navigate to the teacher dashboard
   useEffect(() => {
-    if (isMarkAttendanceLoading) {
-      dispatch(setSnackbar({ open: true, message: 'Loading...', severity: 'info' }));
-    } else if (isMarkAttendanceError) {
-      console.log('MarkAttendance error :', markAttendanceError);
-      
-      dispatch(setSnackbar({ open: true, message: markAttendanceError.data.message, severity: 'error' }));
+    if (isMarkAttendanceError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: markAttendanceError.data.message,
+          severity: 'error',
+        }),
+      );
     } else if (isMarkAttendanceSuccess) {
-      dispatch(setSnackbar({ open: true, message: 'Mark attendance successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Mark attendance successfully',
+          severity: 'success',
+        }),
+      );
       navigate('/teacher/dashboard');
     }
-  }, [isMarkAttendanceSuccess, markAttendanceError, isMarkAttendanceError, navigate, dispatch, isMarkAttendanceLoading]);
-
-  // if get all status is success, 
-  // then set status to status data
-  useEffect(() => {
-    if (statusData && isSuccessStatus) {
-      setStatus(statusData.data)
-    }
-  }, [statusData])
+  }, [
+    isMarkAttendanceSuccess,
+    markAttendanceError,
+    isMarkAttendanceError,
+    navigate,
+    dispatch,
+    isMarkAttendanceLoading,
+  ]);
 
   // handle loading
   if (isLoading || isLoadingStatus) {
-    return <LoadingCircle />
+    return <LoadingCircle />;
   }
 
   // if isError or isErrorStatus is true, then show error message
   if (isError) {
-    return <div>this is error : {error.data.message}</div>
+    return <SomthingWentWrong description={error?.data.message} />;
   }
   if (isErrorStatus) {
-    return <div>this is error : {errorStatus.data.message}</div>
+    <SomthingWentWrong description={errorStatus?.data.message} />;
   }
+
   //handle submit mark attendance student
   const handleSubmit = async () => {
-    const submitData = rows.map(row => ({
+    const submitData = rows.map((row) => ({
       student_id: row.id,
       status_id: row.status || 3, // Default to 'Absent'
     }));
     const data = { session_id: sessionId, attendance: submitData };
     await markAttendance(data);
-  }
+  };
+
   // handle status change
   const handleStatusChange = (updatedRow, newStatus) => {
     setRows((prevRows) =>
@@ -121,19 +166,30 @@ function TeacherAttendanceListPage() {
 
   return (
     <FormComponent
-      title="Attendance List"
-      subTitle={`This is attendance list of ${rows.length} students`}
+      title={`Mark Attendance`}
+      subTitle={`This is total ${classInfo?.total_students} students `}
     >
+      <WelcomeCard
+        subTitle={`Welcome to class ${classInfo?.class_name}`}
+        name="seyla"
+        schoolName={'Above & beyond school'}
+      />
       <Box display={'flex'} justifyContent={'end'} gap={2}>
-        <Button
+        <StyledButton
+          size="large"
           variant="contained"
-          endIcon={<SendIcon size={16} />}
-         startIcon = {isMarkAttendanceLoading && <CircularProgress size={24} color="inherit" />}
+          color="primary"
+          startIcon={
+            isMarkAttendanceLoading && (
+              <CircularProgress size={24} color="inherit" />
+            )
+          }
+          endIcon={<SendIcon size={18} />}
           onClick={handleSubmit}
           disabled={isMarkAttendanceLoading}
         >
-           Submit attendance
-        </Button>
+          Mark attendance
+        </StyledButton>
       </Box>
       <AttendanceTable
         rows={rows}
@@ -146,4 +202,4 @@ function TeacherAttendanceListPage() {
   );
 }
 
-export default TeacherAttendanceListPage;
+export default MarkAttendanceClass;

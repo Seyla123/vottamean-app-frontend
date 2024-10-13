@@ -18,8 +18,6 @@ const SomthingWentWrong = ({
   const { user } = useSelector((state) => state.auth);
 
   const getDashboardLink = () => {
-    if (!user) return '/admin/dashboard';
-
     switch (user.role) {
       case 'admin':
         return '/admin/dashboard';
@@ -53,7 +51,7 @@ const SomthingWentWrong = ({
             height: '300px',
           }}
         >
-          <img
+          <Box component={'img'}
             src={imageUrl}
             alt="500 Internal Server Error"
             style={{

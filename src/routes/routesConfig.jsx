@@ -63,15 +63,13 @@ import AttendanceListPage from '../pages/admin/report/attendance/AttendanceListP
 import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
 // Teacher site
-import TeacherAttendanceListPage from '../pages/teacherSite/teacherClass/TeacherAttendanceListPage';
+import MarkAttendanceClass from '../pages/teacherSite/schedule/MarkAttendanceClass';
 import TeacherScheduleClassPage from '../pages/teacherSite/schedule/TeacherScheduleClassPage';
 import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAccountProfilePage';
-import TeacherSchedulePage from '../pages/teacherSite/schedule/TeacherSchedulePage';
 
 // Layout
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
-import ChangePasswordForm from '../pages/admin/setting/account/ChangePasswordForm';
 import TeacherDashboardPage from '../pages/teacherSite/dashboard/TeacherDashboardPage';
 // Routes configuration
 const routesConfig = [
@@ -151,17 +149,18 @@ const routesConfig = [
           },
         ],
       },
-      // {
-      //   path: 'classes',
-      //   element: <TeacherScheduleClassPage />,
-      // },
-      {
-        path: 'mark-attendance/:id',
-        element: <TeacherAttendanceListPage />,
-      },
       {
         path: 'schedule',
-        element: <TeacherScheduleClassPage />,
+        children: [
+          {
+            path: '',
+            element: <TeacherScheduleClassPage />,
+          },
+          {
+            path: ':id',
+            element: <MarkAttendanceClass />,
+          }
+        ],
       },
       {
         path: 'settings',
@@ -356,7 +355,6 @@ const routesConfig = [
               },
               {
                 path: 'reports',
-
                 element: <AttendanceReportPage />,
               },
             ],
