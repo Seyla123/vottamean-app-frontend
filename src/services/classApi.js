@@ -49,6 +49,8 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Classes'],
     }),
+
+    // Delete many classes
     deleteManyClasses: builder.mutation({
       query: (ids) => ({
         url: `classes`,

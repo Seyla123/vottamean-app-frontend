@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Stack, Button } from '@mui/material';
+import { Stack } from '@mui/material';
 import { FolderPen, IdCard, LetterText, PlusIcon, Timer } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
@@ -16,14 +16,14 @@ import {
   useCreateSubjectMutation,
   useUpdateSubjectMutation,
   useGetSubjectByIdQuery,
+  useDeleteManySubjectsMutation,
 } from '../../../services/subjectApi';
 import { SubjectValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import {
   formatDate,
-  formatTimeTo12Hour,
-  formatTimeToHHMM,
 } from '../../../utils/formatHelper';
+import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
 
 const columns = [
   { id: 'subject_id', label: 'Subject ID' },
@@ -32,17 +32,41 @@ const columns = [
 ];
 
 function SubjectListPage() {
+  const dispatch = useDispatch();
+
+  // rows : The data to be displayed in the table
   const [rows, setRows] = useState([]);
+
+  // selectedSubject : The selected subject to be edited or viewed
   const [selectedSubject, setSelectedSubject] = useState('');
+
+  // createModalOpen : The state of the create subject modal
   const [createModalOpen, setCreateModalOpen] = useState(false);
+
+  // editModalOpen : The state of the edit subject modal
   const [editModalOpen, setEditModalOpen] = useState(false);
+
+  // viewModalOpen : The state of the view subject modal
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
-  const dispatch = useDispatch();
+  // open: the state of the modal
   const { modal } = useSelector((state) => state.ui);
 
-  // API hooks
+  // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
   const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
+
+  // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
+  const [
+    deleteManySubjects,
+    {
+      isLoading: isDeletingMany,
+      isSuccess: isDeleteManySuccess,
+      isError: isDeleteManyError,
+      error: deleteManyError,
+    },
+  ] = useDeleteManySubjectsMutation();
+
+  // useDeleteSubjectMutation : a hook that returns a function to delete many subjects
   const [
     deleteSubject,
     {
@@ -53,17 +77,39 @@ function SubjectListPage() {
     },
   ] = useDeleteSubjectMutation();
 
-  const [createSubject] = useCreateSubjectMutation();
-  const [updateSubject] = useUpdateSubjectMutation();
+  //useCreateSubjectMutation : a hook that returns a function to create a subject record
+  const [
+    createSubject,
+    {
+      isLoading: isCreating,
+      isSuccess: isCreateSuccess,
+      error: createError,
+      isError: isCreateError,
+    },
+  ] = useCreateSubjectMutation();
 
+  // when the subjects records are fetched successfully, set the rows state
   useEffect(() => {
     if (data && isSuccess) {
       setRows(data.data);
     }
+  }, [data, isSuccess]);
 
-    if (isDeleting) {
+  // when delete is in progress, show a snackbar with a message "Deleting..."
+  // when delete is failed, show a snackbar with an error message
+  // when delete is successful, show a snackbar with a success message
+  useEffect(() => {
+    if (isDeleting || isDeletingMany) {
       dispatch(
         setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteSuccess || isDeleteManySuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
       );
     } else if (isDeleteError) {
       dispatch(
@@ -73,31 +119,40 @@ function SubjectListPage() {
           severity: 'error',
         }),
       );
-    } else if (isDeleteSuccess) {
+    } else if (isDeleteManyError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Deleted successfully',
-          severity: 'success',
+          message: deleteManyError.data?.message || 'Failed to delete subject',
+          severity: 'error',
         }),
       );
     }
   }, [
-    data,
-    isSuccess,
     isDeleting,
     isDeleteError,
     isDeleteSuccess,
-    dispatch,
     deleteError,
+    isDeletingMany,
+    isDeleteManyError,
+    deleteManyError,
+    dispatch,
   ]);
 
-  if (isLoading) return <LoadingCircle />;
-  if (isError) console.log('error message:', isError.data.message);
-
-  const handleCreate = async (formData) => {
-    try {
-      await createSubject(formData).unwrap();
+  // when create is in progress, show a snackbar with a message "Creating..."
+  // when create is failed, show a snackbar with an error message
+  // when create is successful, show a snackbar with a success message and close the create modal
+  useEffect(() => {
+    if (isCreating) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Creating...',
+          severity: 'info',
+        }),
+      );
+      setCreateModalOpen(false);
+    } else if (isCreateSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -105,80 +160,55 @@ function SubjectListPage() {
           severity: 'success',
         }),
       );
-      setCreateModalOpen(false);
-    } catch (error) {
+      setEditModalOpen(false);
+    } else if (isCreateError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.data?.message || 'Failed to create subject',
+          message: createError.data?.message || 'Failed to create subject',
           severity: 'error',
         }),
       );
     }
+  }, [isCreateError, isCreateSuccess, isCreating, dispatch]);
+
+  // Handle create a new subject
+  const handleCreate = async (formData) => {
+    await createSubject(formData).unwrap();
   };
 
-  // DELETE FUNCTIONS
+  // Handle click delete subject
   const handleDelete = (row) => {
     setSelectedSubject(row);
     dispatch(setModal({ open: true }));
   };
 
+  // Handle delete a subject confirmed
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    try {
-      await deleteSubject(selectedSubject.subject_id).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Subject deleted successfully',
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to delete subject',
-          severity: 'error',
-        }),
-      );
-    }
+    await deleteSubject(selectedSubject.subject_id).unwrap();
   };
 
-  // VIEW FUNCTIONS
+  // Handle view a subject
   const handleView = (row) => {
     setSelectedSubject(row);
     setViewModalOpen(true);
   };
 
+  // Handle edit a subject
   const handleEditOpen = (row) => {
     setSelectedSubject(row);
     setEditModalOpen(true);
   };
 
-  // DELETE MULTIPLE FUNCTIONS
+  // handle delete multiple subjects
   const handleSelectedDelete = async (selectedIds) => {
-    try {
-      await Promise.all(selectedIds.map((id) => deleteSubject(id).unwrap()));
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Selected subject deleted successfully',
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to delete selected subject',
-          severity: 'error',
-        }),
-      );
-    }
+    await deleteManySubjects(selectedIds).unwrap();
   };
-
+  // Get the selected subject details
   const { subject_id, subject_name, description, updatedAt } = selectedSubject;
+
+  // subject data details
   const subjectDataDetails = [
     {
       'Subject ID': subject_id,
@@ -194,6 +224,16 @@ function SubjectListPage() {
     },
     { 'Updated At': formatDate(updatedAt), icon: <Timer size={18} /> },
   ];
+
+  // if data is loading, show a loading circle
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+
+  // if there is an error
+  if (isError) {
+    return <SomthingWentWrong />;
+  }
 
   return (
     <FormComponent
@@ -286,7 +326,6 @@ function SubjectListPage() {
               severity: 'success',
             }),
           );
-          console.log(updatedData);
           setEditModalOpen(false);
         }}
       />
