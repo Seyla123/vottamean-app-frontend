@@ -6,7 +6,7 @@ import { PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
 import FormComponent from '../../../components/common/FormComponent';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
@@ -107,7 +107,7 @@ const ClassListPage = () => {
   ]);
 
   if (isLoading) {
-    return <CircularIndeterminate />;
+    return <LoadingCircle />;
   }
 
   if (isError) {

@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 // import components
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 import CardComponent from '../../../components/common/CardComponent';
 import FormComponent from '../../../components/common/FormComponent';
 import ButtonContainer from '../../../components/common/ButtonContainer';
@@ -108,7 +108,7 @@ function ClassPeriodUpdatePage() {
   };
 
   // Handle stages
-  if (isLoading)  return <CircularIndeterminate />;
+  if (isLoading)  return <LoadingCircle />;
 
   return (
     <>

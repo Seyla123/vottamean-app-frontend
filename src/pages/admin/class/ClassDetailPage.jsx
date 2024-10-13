@@ -7,7 +7,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import CardInformation from '../../../components/common/CardInformation';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 // import api and uiSlice
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import {
@@ -66,7 +66,7 @@ function ClassDetailPage() {
     }
   }, [ data, isSuccess, isDeleteSuccess, isDeleteError, isDeleting, dispatch ]);
 
-  if (isLoading) return <CircularIndeterminate />
+  if (isLoading) return <LoadingCircle />
   if (error) return <div>Error loading class periods: {error.message}</div>
 
   // Handle EDIT action

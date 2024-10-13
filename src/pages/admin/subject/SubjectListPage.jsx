@@ -4,7 +4,7 @@ import { Stack, Button } from '@mui/material';
 import { FolderPen, IdCard, LetterText, PlusIcon, Timer } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
-import CircularIndeterminate from '../../../components/loading/LoadingCircle';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CreateModal from '../../../components/common/CreateModal';
 import EditModal from '../../../components/common/EditModal';
@@ -92,7 +92,7 @@ function SubjectListPage() {
     deleteError,
   ]);
 
-  if (isLoading) return <CircularIndeterminate />;
+  if (isLoading) return <LoadingCircle />;
   if (isError) console.log('error message:', isError.data.message);
 
   const handleCreate = async (formData) => {
