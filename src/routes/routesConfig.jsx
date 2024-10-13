@@ -73,6 +73,10 @@ import TeacherDashboardPage from '../pages/teacherSite/dashboard/TeacherDashboar
 // Routes configuration
 const routesConfig = [
   {
+    path:'/',
+    element:<ProtectedRoutes/>
+  },
+  {
     path: '/auth',
     element: <Layout />,
     children: [

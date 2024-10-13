@@ -12,17 +12,27 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
 
   // If checkAuth query is still loading, we can render a loading screen
   if (isLoading) return <LoadingPage/>;
-
   // If not authenticated, redirect to the login page
   if (!isAuthenticated) {
     return <Navigate to="/auth/signin" />;
+  }
+
+  if (window.location.pathname === '/') {
+    console.log('this /', user?.role);
+    if (user?.role == 'admin') {
+      return <Navigate to="/admin/dashboard" />;
+    }
+    if (user?.role == 'teacher') {
+      return <Navigate to="/teacher/dashboard" />;
+    }else{
+      return <Navigate to="/" />;
+    }
   }
 
   // Check roles if the route is role-specific (admin or teacher)
   if (adminSite && user?.role !== 'admin') {
     return <Navigate to="/unauthorized" />;
   }
-
   if (teacherSite && user?.role !== 'teacher') {
     return <Navigate to="/unauthorized" />;
   }
