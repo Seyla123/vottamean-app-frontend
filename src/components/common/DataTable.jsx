@@ -383,7 +383,7 @@ const LoadingTable = ({ columns }) => {
       <TableCell
         colSpan={columns.length + 2}
         sx={{
-          height: '400px',
+          height: '600px',
           textAlign: 'center',
           verticalAlign: 'middle',
         }}
