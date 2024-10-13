@@ -314,6 +314,28 @@ const routesConfig = [
         ],
       },
       {
+        path:'attendance',
+        children: [
+          {
+            path: '',
+            element: <AttendanceListPage />,
+          },
+          {
+            path: ':id',
+            element: <AttendanceViewPage />,
+          }
+        ],
+      },
+      {
+        path: 'reports',
+        children: [
+          {
+            path: 'attendance',
+            element: <AttendanceReportPage />,
+          },
+        ],
+      },
+      {
         path: 'settings',
         children: [
           {

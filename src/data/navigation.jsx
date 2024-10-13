@@ -51,21 +51,26 @@ const navigation = [
     icon: <ClassPeriodIcon />,
   },
   {
+    segment: 'payment',
+    title: 'Payment Trial',
+    icon: <ClassPeriodIcon />,
+  },
+  {
+    segment: 'admin/attendance',
+    title: 'Attendance',
+    icon: <ChecklistIcon />,
+  },
+  {
     segment: 'admin/reports',
     title: 'Report',
     icon: <ReportGmailerrorredIcon />,
     children: [
       {
         segment: 'attendance',
-        title: 'Attendance',
+        title: 'Attendance Report ',
         icon: <ChecklistIcon />,
       },
     ],
-  },
-  {
-    segment: 'payment',
-    title: 'Payment Trial',
-    icon: <ClassPeriodIcon />,
   },
 
   { kind: 'divider' },

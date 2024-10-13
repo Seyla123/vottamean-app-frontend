@@ -80,7 +80,7 @@ const AttendanceListPage = () => {
 
   // handle view action
   const onView = (id) => {
-    navigate(`/admin/reports/attendance/${id}`);
+    navigate(`/admin/attendance/${id}`);
   };
 
   if (isLoading) {
