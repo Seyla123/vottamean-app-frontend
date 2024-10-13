@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
+import SomthingWentWrong from '../common/SomthingWentWrong';
+import LoadingCircle from '../loading/loadingCircle';
 
 // - Material UI Components
 import { MenuItem, Box, Typography, Select, Button } from '@mui/material';
@@ -24,9 +26,13 @@ import { updateFormData } from '../../store/slices/studentSlice';
 // - Validation
 import { StudentValidator } from '../../validators/validationSchemas';
 
+import { useNavigate } from 'react-router-dom';
+
 const StudentForm = ({ handleNext, handleFormChange }) => {
   // - Dispatch actions
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const studentData = useSelector((state) => state.student);
 
   // - API Class
@@ -155,12 +161,14 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
     handleNext();
   };
 
+  // - Show loading circle while fetching class data
   if (isClassDataLoading || isRowsLoading) {
-    return <Typography>Loading...</Typography>;
+    return <LoadingCircle />;
   }
 
+  // if there is an error fetching class data
   if (classDataError) {
-    return <Typography color="error">Failed to load classes.</Typography>;
+    return <SomthingWentWrong customStyles={{minHeight: '70vh'}} />;
   }
 
   return (
@@ -179,7 +187,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
           }}
         >
           <img
-            src={previewUrl || studentData.photo}
+            src={previewUrl || studentData.photo || }
             alt="Profile"
             style={{ width: '120px', borderRadius: '50%' }}
           />
@@ -307,7 +315,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
             justifyContent: 'flex-end',
           }}
         >
-          <StyledButton variant="outlined" color="inherit" size="large">
+          <StyledButton variant="outlined" color="inherit" size="large" onClick={()=> navigate('/admin/students')}>
             Cancel
           </StyledButton>
           <StyledButton
