@@ -11,6 +11,7 @@ const SomthingWentWrong = ({
   title = 'Oops, Something Went Wrong!',
   description = "We're experiencing some issue. Please try again",
   buttonText = 'Go to home',
+  customStyles 
 }) => {
   const { user } = useSelector((state) => state.auth);
 
@@ -40,6 +41,7 @@ const SomthingWentWrong = ({
           gap: 3,
           minHeight: '80vh',
           textAlign: 'center',
+          ...customStyles
         }}
       >
         <Box
