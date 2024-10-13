@@ -11,7 +11,9 @@ const SomthingWentWrong = ({
   title = 'Oops, Something Went Wrong!',
   description = "We're experiencing some issue. Please try again",
   buttonText = 'Go to home',
-  customStyles 
+  customStyles ,
+  defaultBtn = true,
+  children
 }) => {
   const { user } = useSelector((state) => state.auth);
 
@@ -74,6 +76,7 @@ const SomthingWentWrong = ({
             {description}
           </Typography>
         </Box>
+        {defaultBtn && (
         <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
         <StyledButton
           component={Link}
@@ -93,6 +96,8 @@ const SomthingWentWrong = ({
           Refresh Page
         </StyledButton>
         </Stack>
+        )}
+        {children}
 
       </Box>
     </Container>
