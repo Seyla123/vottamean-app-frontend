@@ -123,7 +123,7 @@ function SubjectListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: deleteManyError.data?.message || 'Failed to delete subject',
+          message: deleteManyError.data?.message || 'Failed to delete subjects',
           severity: 'error',
         }),
       );

@@ -49,8 +49,6 @@ const AttendanceListPage = () => {
     if (isSuccess && allAttendanceData) {
       const formattedData = transformAttendanceData(allAttendanceData.data);
       setRows(formattedData);
-      console.log(formattedData);
-
     }
   }, [allAttendanceData, isDeleted]);
 
