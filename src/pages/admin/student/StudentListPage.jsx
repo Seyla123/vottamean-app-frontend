@@ -18,6 +18,7 @@ import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { BookIcon } from 'lucide-react';
+import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -30,14 +31,16 @@ const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
-  const [filter, setFilter] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [selectedClass, setSelectedClass] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [classes, setClasses] = useState([{
+  const [selectedClass, setSelectedClass] = useState('');
+
+  // Set the initial state for classes
+  const allSelector = [{
     value: 'all',
-    label: 'All',
-  }]);
+    label: 'All'
+  }]
+  const [classes, setClasses] = useState(allSelector);
 
   const { modal } = useSelector((state) => state.ui);
 
@@ -45,7 +48,7 @@ const StudentListPage = () => {
   const { data, isLoading, isError, isSuccess, isFetching } =
     useGetAllStudentsQuery({
       search: searchTerm,
-      class_id: filter,
+      class_id: selectedClass,
     });
 
   // useDeleteStudentMutation : a hook for return function to delete an student record
@@ -73,16 +76,22 @@ const StudentListPage = () => {
   //useGetClassesDataQuery : a hook for return function to fetch classes record
   const { data: classesData, isSuccess: isClassesSuccess } = useGetClassesDataQuery();
 
+  //  when the student records are fetched successfully, transform the data and set the classes state
   useEffect(() => {
-    if (isSuccess && data && isClassesSuccess && classesData) {
-      const formattedStudents = formatStudentsList(data.data);
+    if (isClassesSuccess && classesData) {
       const formattedFilterClass = transformedFilterClasses(classesData.data, 'class_id', 'class_name');
-      setClasses([...classes, ...formattedFilterClass]);
+      setClasses([...allSelector, ...formattedFilterClass]);
+    }
+  }, [isClassesSuccess, classesData])
+
+  //  when the student records are fetched successfully, transform the data and set the rows state
+  useEffect(() => {
+    if (isSuccess && data) {
+      const formattedStudents = formatStudentsList(data.data);
+
       setRows(formattedStudents);
     }
   }, [isSuccess, data]);
-  console.log('this class ', classes);
-
 
   // Snackbar handling for delete operations
   useEffect(() => {
@@ -125,30 +134,27 @@ const StudentListPage = () => {
     isDeleteManySuccess,
   ]);
 
-  //If loading is error, show error message
-  if (isError) {
-    console.log('error message :', error.data.message);
-  }
-  //filter change
+
+  //classes filter change
   const handleClassesChange = (event) => {
     if (event.target.value === 'all') {
-      dispatch(setFilter(''));
-    } {
-      setFilter(event.target.value);
+      setSelectedClass('');
+    } else {
+      setSelectedClass(event.target.value);
     }
   };
-  // Handle Search by  name
+
+  // Handle search change
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  //
   // Handle for goes to edit page
   const handleEdit = (row) => {
     navigate(`/admin/students/update/${row.id}`);
   };
 
-  // Handle delete clicked
+  // Handle delete one clicked
   const handleDelete = (row) => {
     setSelectedStudent(row);
     dispatch(setModal({ open: true }));
@@ -160,11 +166,9 @@ const StudentListPage = () => {
     await deleteStudent(selectedStudent?.id).unwrap();
   };
 
-  // Handle for delete All
+  // Handle for many delete 
   const handleSelectedDelete = async (selectedIds) => {
     dispatch(setModal({ open: false }));
-    console.log('this is ids :', selectedIds);
-
     await deleteManyStudents(selectedIds).unwrap();
   };
 
@@ -175,6 +179,11 @@ const StudentListPage = () => {
   //Loading Data
   if (isLoading) {
     return <LoadingCircle />;
+  }
+
+  //If loading is error occurs
+  if (isError) {
+    return <SomthingWentWrong />
   }
   return (
     <Box>
@@ -206,13 +215,13 @@ const StudentListPage = () => {
               onChange={handleClassesChange}
               placeholder="Class"
               data={classes}
-              value={filter}
+              value={selectedClass}
               customStyles={{ maxHeight: '50px', width: '150px' }}
-              icon={<BookIcon size={18} color='#B5B5B5' />}
+              icon={<BookIcon size={18}  color='#B5B5B5' />}
             />
 
             <SearchComponent
-              sx={{ width: '100%', maxWidth: '700px' }}
+              sx={{ width: '100%', maxWidth: '700px'}}
               placeholder="Search"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -226,7 +235,7 @@ const StudentListPage = () => {
           onDelete={handleDelete}
           onView={handleView}
           onSelectedDelete={handleSelectedDelete}
-          isLoading={isFetching}
+          isLoading={isFetching || isLoading}
           emptyTitle={'No Student'}
           emptySubTitle={'No Student Available'}
           hideColumns={['address', 'Date of Birth']}
