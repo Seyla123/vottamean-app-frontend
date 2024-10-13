@@ -30,7 +30,6 @@ const AttendanceListPage = () => {
   const [rows, setRows] = useState([]);
 
   // - filter: the current filter data attendance records
-  // - filterLabel: the label of the current filter that is displayed on the page
   const filter = useSelector((state) => state.attendance.filter);
 
   // - itemToDelete: the item that is currently being deleted
@@ -40,8 +39,9 @@ const AttendanceListPage = () => {
   const { modal } = useSelector((state) => state.ui);
 
   // - useGetAllAttendanceQuery: a hook that returns a function to fetch all attendance records
-  // - useDeleteAttendanceMutation: a hook that returns a function to delete an attendance record
   const { data: allAttendanceData, isLoading, isSuccess, isFetching } = useGetAllAttendanceQuery(filter);
+
+  // - useDeleteAttendanceMutation: a hook that returns a function to delete an attendance record
   const [deleteAttendance, { isError, error, isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteAttendanceMutation();
 
   // - when the attendance records are fetched successfully, transform the data and set the rows state

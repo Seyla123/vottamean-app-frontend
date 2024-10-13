@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
 import SomthingWentWrong from '../common/SomthingWentWrong';
-import LoadingCircle from '../loading/loadingCircle';
+import LoadingCircle from '../loading/LoadingCircle';
 
 // - Material UI Components
 import { MenuItem, Box, Typography, Select, Button } from '@mui/material';
@@ -187,7 +187,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
           }}
         >
           <img
-            src={previewUrl || studentData.photo || }
+            src={previewUrl || studentData.photo }
             alt="Profile"
             style={{ width: '120px', borderRadius: '50%' }}
           />
