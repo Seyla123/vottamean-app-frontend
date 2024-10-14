@@ -67,7 +67,6 @@ const TeacherInfo = ({
     },
   });
 
-  // Set propertis to default values
   useEffect(() => {
     if (defaultValues) {
       reset({
@@ -75,14 +74,20 @@ const TeacherInfo = ({
         dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
       });
       setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
+
+      // If there is a photo, create a preview URL
       if (defaultValues.photo) {
-        setPhotoPreview(defaultValues.photo || null);
+        const photoUrl =
+          typeof defaultValues.photo === 'string'
+            ? defaultValues.photo
+            : URL.createObjectURL(defaultValues.photo);
+        setPhotoPreview(photoUrl);
       }
     }
-    // Clean up photo preview
+
+    // Cleanup function to revoke the preview URL
     return () => {
-      // Revoke photo preview URL
-      if (photoPreview) {
+      if (photoPreview && typeof photoPreview !== 'string') {
         URL.revokeObjectURL(photoPreview);
       }
     };
@@ -112,6 +117,8 @@ const TeacherInfo = ({
   const handleCancel = () => {
     navigate('/admin/teachers');
   };
+
+  // Preview photo
   const photoSrc =
     photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
 

@@ -42,7 +42,7 @@ function FormInfo() {
   const theme = useTheme();
 
   // Responsive Mobile size
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // States
   const [value, setValue] = useState('1');
@@ -51,7 +51,7 @@ function FormInfo() {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  // Sign up teacher api 
+  // Sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
 
@@ -90,12 +90,11 @@ function FormInfo() {
 
   // Handle Submit form
   const handleSubmitForm = async (formData) => {
-      const response = await signUpTeacher(formData).unwrap();
-      if (response.error) {
-        throw new Error(
-          response.error.data.message || 'An error occurred during signup',
-        );
-      }
+    try {
+      await signUpTeacher(formData).unwrap();
+    } catch (error) {
+      console.error('Error signing up teacher:', error.message);
+    }
   };
 
   // Hanlde Photo Upload
@@ -108,7 +107,6 @@ function FormInfo() {
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
-      setValue('photo', null);
     }
   };
 
@@ -185,7 +183,15 @@ function FormInfo() {
               handleSubmitForm={handleSubmitForm}
             />
           </TabPanel>
-          <TabPanel sx={{ flexGrow: 1, height: '100vh' }} value="2">
+          <TabPanel
+            sx={{
+              flexGrow: 1,
+              height: {
+                sm: '60vh',
+              },
+            }}
+            value="2"
+          >
             <AccountInfo
               teacherData={teacherData}
               isLoading={isLoading}
