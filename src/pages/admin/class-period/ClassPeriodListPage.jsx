@@ -23,7 +23,7 @@ import {
   formatTimeTo12Hour,
   formatTimeToHHMM,
 } from '../../../utils/formatHelper';
-import { SessionValidator } from '../../../validators/validationSchemas';
+import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
 
 const tableTitles = [
@@ -246,6 +246,8 @@ function ClassPeriodListPage() {
         description="Enter the details for the new class period"
         fields={fields}
         onSubmit={handleCreate}
+        validationSchema={ClassPeriodValidator}
+        submitText={'Create Period'}
       />
 
       <EditModal
