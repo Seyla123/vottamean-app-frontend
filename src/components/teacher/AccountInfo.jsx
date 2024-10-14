@@ -15,17 +15,78 @@ import {
 import StyledButton from '../common/StyledMuiButton';
 
 // Icons from Lucide
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 
 // Custom components
 import SubHeader from './SubHeader';
 import { AccountInformationValidator } from '../../validators/validationSchemas';
-
+import InputField from '../common/InputField';
+import PasswordInput from '../auth/PasswordInput';
+import { useDispatch } from 'react-redux';
+import { setSnackbar } from '../../store/slices/uiSlice';
+import dayjs from 'dayjs';
 const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
+
   const [showPassword, setShowPassword] = useState(false);
+
+  // Form submit function
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    // Append fields to FormData
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('passwordConfirm', data.passwordConfirm);
+    formData.append('first_name', teacherData.firstName);
+    formData.append('last_name', teacherData.lastName);
+    formData.append('dob', dayjs(teacherData.dob).format('YYYY-MM-DD'));
+    formData.append('gender', teacherData.gender);
+    formData.append('phone_number', teacherData.phoneNumber);
+    formData.append('address', teacherData.address || '');
+    // Append the photo if it exists
+    if (teacherData.photo) {
+      // Check if the photo is a File object
+      if (teacherData.photo instanceof File) {
+        formData.append('photo', teacherData.photo);
+      } else if (
+        // if photo is string type or blob type
+        typeof teacherData.photo === 'string' &&
+        teacherData.photo.startsWith('')
+      ) {
+        try {
+          const response = await fetch(teacherData.photo);
+          const blob = await response.blob();
+          formData.append('photo', blob, 'profile_photo.jpg');
+          formData.append('photo', teacherData.photo ?? null);
+
+          console.log('Form data in AccountInfo:', formData);
+        } catch (error) {
+          console.error('Error fetching', error);
+        }
+      } else {
+        console.log('Unexpected photo type:', typeof teacherData.photo);
+      }
+    } else {
+      console.log('No photo data available');
+    }
+
+
+    // Log the FormData contents
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
+      await handleAccountSubmit(formData);
+    } catch (error) {
+      console.error('Failed to sign up teacher:', error.message);
+    }
+  };
+
+
   // yup validation from account information schema
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -35,84 +96,56 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
       password: '',
       passwordConfirm: '',
     },
-  });
-
-  const onSubmit = (data) => {
-    // Combine the account data with the teacher information tab
-    const combinedData = {
-      ...teacherData,
-      ...data,
-    };
-    handleAccountSubmit(combinedData);
-  };
+  })
 
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
-          <SubHeader title={'Account Information'} />
+          <Box
+            sx={{
+              width: '100%',
+              marginTop: {
+                xs: 1,
+                sm: 3,
+              },
+            }}
+          >
+            <SubHeader title={'Account Information'} />
+          </Box>
           {/* Email */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
-              placeholder="Enter your email"
-              variant="outlined"
-              type="email"
-              fullWidth
-              {...register('email')}
-              error={!!errors.email}
-              helperText={errors.email?.message}
+            <InputField
+              name="email"
+              control={control}
+              label="Email Address"
+              placeholder="Email"
+              errors={errors}
+              icon={Mail}
             />
           </Box>
           {/* Password */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Password <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
+            <PasswordInput
+              name="password"
+              label="Password"
+              control={control}
+              showPassword={showPassword}
+              togglePasswordVisibility={() => setShowPassword(!showPassword)}
               placeholder="Create password"
-              variant="outlined"
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              {...register('password')}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+              error={errors.password}
             />
           </Box>
           {/* Confirm Password */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Confirm Password{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
-            <TextField
+            <PasswordInput
+              name="passwordConfirm"
+              label="Confirm Password"
+              control={control}
+              showPassword={showPassword}
+              togglePasswordVisibility={() => setShowPassword(!showPassword)}
               placeholder="Confirm password"
-              variant="outlined"
-              fullWidth
-              type={showPassword ? 'text' : 'password'}
-              {...register('passwordConfirm')}
-              error={!!errors.passwordConfirm}
-              helperText={errors.passwordConfirm?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+              error={errors.passwordConfirm}
             />
           </Box>
           {/* Buttons */}
@@ -120,8 +153,8 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
             direction={'row'}
             alignSelf={'flex-end'}
             justifyContent={'flex-end'}
-            width={{ xs: '100%', sm: '340px' }}
-            gap={{ xs: 1, sm: 2 }}
+            width={{ xs: '100%', sm: '300px', md: '280px' }}
+            gap={2}
             marginTop={{ xs: 2, sm: 0 }}
           >
             <StyledButton
@@ -133,7 +166,7 @@ const AccountInfo = ({ handleBack, handleAccountSubmit, teacherData }) => {
               Back
             </StyledButton>
             <StyledButton fullWidth variant="contained" type="submit">
-              Add Teacher
+              Add
             </StyledButton>
           </Stack>
         </Box>
@@ -148,10 +181,10 @@ export default AccountInfo;
 const profileBox = {
   width: '100%',
   bgcolor: '#ffffff',
-  padding: {
-    xs: 2,
-    sm: 3,
-  },
+  // padding: {
+  //   xs: 2,
+  //   sm: 3,
+  // },
   gap: {
     xs: '12px',
     sm: 3,

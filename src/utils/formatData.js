@@ -346,6 +346,7 @@ export const transformMarkAttendancetTable = (apiResponse) => {
 // Format teacher form data for updating
 export const formatTeacherFormData = (teacherData) => {
   if (teacherData && teacherData.data && teacherData.data.Info) {
+
     const Info = teacherData.data.Info;
     return {
       firstName: Info.first_name || '',
@@ -354,8 +355,10 @@ export const formatTeacherFormData = (teacherData) => {
       gender: Info.gender || '',
       dob: Info.dob || null,
       address: Info.address || '',
+      photo: Info.photo || '',
     };
   }
+
   return null;
 };
 export const formatStudentFormData = (studentData) => {

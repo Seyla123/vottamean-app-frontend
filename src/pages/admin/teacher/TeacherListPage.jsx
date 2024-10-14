@@ -30,7 +30,7 @@ const columns = [
   { id: 'name', label: 'Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'email', label: 'Email' },
-  { id: 'phoneNumber', label: 'Phone Number' },
+  { id: 'phoneNumber', label: 'Contact Number' },
 ];
 
 const TeacherListPage = () => {
@@ -141,11 +141,7 @@ const TeacherListPage = () => {
   return (
     <FormComponent
       title="Teacher List"
-      subTitle={
-        rows.length === 1
-          ? `There is ${rows.length} teacher`
-          : `There are ${rows.length} teachers`
-      }
+      subTitle={`Total Teachers : ${rows.length}`}
     >
       {/* Add Teacher Button */}
       <Stack
