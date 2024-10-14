@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '@assets/images/logo.png';
+import Logo from '../../assets/images/Logo.png';
 
 const ShortHeader = () => {
   return (
