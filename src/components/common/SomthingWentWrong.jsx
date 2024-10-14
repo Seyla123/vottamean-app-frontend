@@ -17,8 +17,8 @@ const SomthingWentWrong = ({
 }) => {
   const { user } = useSelector((state) => state.auth);
 
-  const getDashboardLink = () => {
-    switch (user.role) {
+  const getHomeLink = () => {
+    switch (user?.role) {
       case 'admin':
         return '/admin/dashboard';
       case 'teacher':
@@ -28,7 +28,7 @@ const SomthingWentWrong = ({
     }
   };
 
-  const dashboardLink = getDashboardLink();
+  const homeLink = getHomeLink();
 
   return (
     <Container maxWidth="sm">
@@ -78,7 +78,7 @@ const SomthingWentWrong = ({
         <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
         <StyledButton
           component={Link}
-          to={dashboardLink}
+          to={homeLink}
           variant="contained"
           color="primary"
           size="large"

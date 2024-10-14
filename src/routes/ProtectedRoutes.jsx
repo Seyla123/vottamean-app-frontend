@@ -16,15 +16,18 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   if (!isAuthenticated) {
     return <Navigate to="/auth/signin" />;
   }
-
+  // redirect to the relevant dashboard
+  // depending on their role
   if (window.location.pathname === '/') {
-    console.log('this /', user?.role);
-    if (user?.role == 'admin') {
+    if (user?.role === 'admin') {
+      // Redirect to the admin dashboard
       return <Navigate to="/admin/dashboard" />;
     }
-    if (user?.role == 'teacher') {
+    if (user?.role === 'teacher') {
+      // Redirect to the teacher dashboard
       return <Navigate to="/teacher/dashboard" />;
-    }else{
+    } else {
+      // If the user is not an admin or teacher
       return <Navigate to="/" />;
     }
   }
