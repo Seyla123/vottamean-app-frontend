@@ -30,7 +30,7 @@ import { PlusIcon } from 'lucide-react';
 
 // Table columns
 const columns = [
-  { id: 'name', label: 'Name' },
+  { id: 'name', label: 'Full Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'email', label: 'Email' },
   { id: 'phoneNumber', label: 'Contact Number' },
@@ -42,16 +42,24 @@ const TeacherListPage = () => {
 
   // - rows: the teacher records that are currently being displayed on the page
   // - searchTerm: the search term that is currently being used to filter the table
-  // - selectedItems: the teacher records that are currently being selected
-  // - isUpdateOpen: the state of the update modal
-  // - selectedTeacherId: the id of the teacher that is currently being updated
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // - selectedItems: the teacher records that are currently being selected
+  // - selectedTeacherId: the id of the teacher that is currently being updated
+  // - isUpdateOpen: the state of the update modal
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
-  // - open: the state of the delete confirmation modal
+  // - rowsPerPage: the number of rows per page 
+  // - page: the current page number that is being displayed
+  // - totalRows: the total number of rows that are available 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalRows, setTotalRows] = useState(0)
+
+  // open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
   // useGetAllTeachersQuery : a hook return function for fetching all teachers records
@@ -61,7 +69,7 @@ const TeacherListPage = () => {
     isSuccess,
     isError,
     error,
-  } = useGetAllTeachersQuery({ search: searchTerm });
+  } = useGetAllTeachersQuery({ search: searchTerm, limit: rowsPerPage, page: page + 1 });
 
   // useDeleteTeacherMutation : a hook return function for Delete teacher
   const [
@@ -90,6 +98,7 @@ const TeacherListPage = () => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
+      setTotalRows(allTeachersData.results);
     }
   }, [allTeachersData, isSuccess, searchTerm]);
 
@@ -136,6 +145,15 @@ const TeacherListPage = () => {
     isDeleteManySuccess,
   ]);
 
+  // Handle page change
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  }
+  // Handle row per page change
+  const handleChangeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
+  };
+
   // Handle search name
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -174,14 +192,16 @@ const TeacherListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
+
+  // if error occur
   if (isError) {
-    return <SomethingWentWrong description={`${error.data.message}`} />;
+    return <SomethingWentWrong description={error?.data.message} />;
   }
 
   return (
     <FormComponent
       title="Teacher List"
-      subTitle={`Total Teachers : ${rows.length}`}
+      subTitle={`Total Teachers : ${totalRows}`}
     >
       {/* Add Teacher Button */}
       <Stack
@@ -218,9 +238,14 @@ const TeacherListPage = () => {
         onDelete={handleDelete}
         onView={handleView}
         onSelectedDelete={handleMultiDelete}
-        hideColumns={['phoneNumber', 'email']}
         emptyTitle="No Teachers"
         emptySubTitle="No Teachers Available."
+        hideColumns={['phoneNumber', 'email']}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
