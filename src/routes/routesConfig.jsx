@@ -20,7 +20,7 @@ import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 
 // admin
-import AdminDashboardPage from '../pages/admin/dashboard/DashboardPage';
+import AdminHomePage from '../pages/admin/home/HomePage';
 
 import SessionListPage from '../pages/admin/session/SessionListPage';
 import SessionDetailPage from '../pages/admin/session/SessionDetailPage';
@@ -70,7 +70,7 @@ import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAcco
 // Layout
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
-import TeacherDashboardPage from '../pages/teacherSite/dashboard/TeacherDashboardPage';
+import TeacherHomePage from '../pages/teacherSite/home/TeacherHomePage';
 // Routes configuration
 const routesConfig = [
   {
@@ -141,11 +141,11 @@ const routesConfig = [
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
     children: [
       {
-        path: 'dashboard',
+        path: 'home',
         children: [
           {
             path: '',
-            element: <TeacherDashboardPage />,
+            element: <TeacherHomePage />,
           },
         ],
       },
@@ -179,8 +179,8 @@ const routesConfig = [
     element: <ProtectedRoutes adminSite />,
     children: [
       {
-        path: 'dashboard',
-        element: <AdminDashboardPage />,
+        path: 'home',
+        element: <AdminHomePage />,
         children: [],
       },
       {
@@ -314,7 +314,7 @@ const routesConfig = [
         ],
       },
       {
-        path:'attendance',
+        path: 'attendance',
         children: [
           {
             path: '',

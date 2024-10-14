@@ -20,9 +20,9 @@ const SomethingWentWrong = ({
   const getHomeLink = () => {
     switch (user?.role) {
       case 'admin':
-        return '/admin/dashboard';
+        return '/admin/home';
       case 'teacher':
-        return '/teacher/dashboard';
+        return '/teacher/home';
       default:
         return '/';
     }

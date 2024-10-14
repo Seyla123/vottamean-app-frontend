@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AttendanceTable from '../../../components/teacherSite/AttendanceTable';
 import FormComponent from '../../../components/common/FormComponent';
-import { Box, Button, CircularProgress } from '@mui/material';
-import { SendIcon, DownloadIcon } from 'lucide-react';
+import { Box, CircularProgress } from '@mui/material';
+import { SendIcon } from 'lucide-react';
 import { useGetAllStudentsByClassInSessionQuery } from '../../../services/teacherApi';
 import { useGetStatusQuery } from '../../../services/statusApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -12,8 +12,8 @@ import { useMarkAttendanceMutation } from '../../../services/attendanceApi';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import StyledButton from '../../../components/common/StyledMuiButton';
-import WelcomeCard from '../../../components/common/WelcomeCard';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import TeacherWelcomeCard from '../../../components/teacherSite/TeacherWelcomeCard';
 
 const columns = [
   {
@@ -121,7 +121,7 @@ function MarkAttendanceClass() {
           severity: 'success',
         }),
       );
-      navigate('/teacher/dashboard');
+      navigate('/teacher/home');
     }
   }, [
     isMarkAttendanceSuccess,
@@ -141,8 +141,8 @@ function MarkAttendanceClass() {
   if (isError) {
     return <SomethingWentWrong description={error?.data.message} />;
   }
-  if (isErrorStatus) {
-    <SomethingWentWrong description={errorStatus?.data.message} />;
+  if (!isErrorStatus) {
+    return <SomethingWentWrong description={errorStatus?.data.message} />;
   }
 
   //handle submit mark attendance student
@@ -169,11 +169,9 @@ function MarkAttendanceClass() {
       title={`Mark Attendance`}
       subTitle={`This is total ${classInfo?.total_students} students `}
     >
-      <WelcomeCard
-        subTitle={`Welcome to class ${classInfo?.class_name}`}
-        name="seyla"
-        schoolName={'Above & beyond school'}
-      />
+      {/* welcome card */}
+      <TeacherWelcomeCard  subTitle={`Welcome to class ${classInfo?.class_name}`} />
+
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
           size="large"

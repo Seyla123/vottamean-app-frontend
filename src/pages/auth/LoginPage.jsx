@@ -31,9 +31,9 @@ function LoginPage() {
 
         // Navigate based on the user role
         if (role === 'admin') {
-          navigate('/admin/dashboard');
+          navigate('/admin/home');
         } else if (role === 'teacher') {
-          navigate('/teacher/dashboard');
+          navigate('/teacher/home');
         } else {
           navigate('/default-dashboard');
         }

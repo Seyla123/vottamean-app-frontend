@@ -11,8 +11,8 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   const { isLoading } = useCheckAuthQuery();
 
   // If checkAuth query is still loading, we can render a loading screen
-  if (isLoading) return <LoadingPage/>;
-  
+  if (isLoading) return <LoadingPage />;
+
   // If not authenticated, redirect to the login page
   if (!isAuthenticated) {
     return <Navigate to="/auth/signin" />;
@@ -23,11 +23,11 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   if (window.location.pathname === '/') {
     if (user?.role === 'admin') {
       // Redirect to the admin dashboard
-      return <Navigate to="/admin/dashboard" />;
+      return <Navigate to="/admin/home" />;
     }
     if (user?.role === 'teacher') {
       // Redirect to the teacher dashboard
-      return <Navigate to="/teacher/dashboard" />;
+      return <Navigate to="/teacher/home" />;
     } else {
       // If the user is not an admin or teacher
       return <Navigate to="/" />;

@@ -16,8 +16,8 @@ import {
 const navigation = [
   { kind: 'header', title: 'Menu' },
   {
-    segment: 'admin/dashboard',
-    title: 'Dashboard',
+    segment: 'admin/home',
+    title: 'Home',
     icon: <HomeIcon />,
   },
   {
@@ -94,8 +94,8 @@ const navigation = [
 const teacherSiteNavigation = [
   { kind: 'header', title: 'Menu' },
   {
-    segment: 'teacher/dashboard',
-    title: 'Dashboard',
+    segment: 'teacher/home',
+    title: 'Home',
     icon: <HomeIcon />,
   },
   {
