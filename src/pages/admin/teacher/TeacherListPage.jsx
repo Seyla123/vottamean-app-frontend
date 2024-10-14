@@ -1,7 +1,7 @@
 // React and third-party libraries
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Stack, Button } from '@mui/material';
 
 // Custom components
@@ -16,8 +16,9 @@ import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import {
   useGetAllTeachersQuery,
   useDeleteTeacherMutation,
+  useDeleteManyTeachersMutation,
 } from '../../../services/teacherApi';
-import { setSnackbar } from '../../../store/slices/uiSlice';
+import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 // Format data
 import { teacherData } from '../../../utils/formatData';
@@ -25,6 +26,7 @@ import { teacherData } from '../../../utils/formatData';
 import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 // Icon from lucide
 import { PlusIcon } from 'lucide-react';
+
 
 // Table columns
 const columns = [
@@ -44,6 +46,8 @@ const TeacherListPage = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+
+  const { modal } = useSelector((state) => state.ui);
 
   // useGetAllTeachersQuery : a hook return function for fetching all teachers records
   const {
@@ -65,13 +69,64 @@ const TeacherListPage = () => {
     },
   ] = useDeleteTeacherMutation();
 
-  // Format data
+  // useDeleteManyTeachersMutation : a hook return function for Delete many teachers
+  const [
+    deleteManyTeachers,
+    {
+      isLoading: isDeletingMany,
+      isError: isDeleteManyError,
+      isSuccess: isDeleteManySuccess,
+      error: deleteManyError,
+    },
+  ] = useDeleteManyTeachersMutation();
+
   useEffect(() => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
     }
   }, [allTeachersData, isSuccess, searchTerm]);
+
+  // Snackbar handling for delete operations
+  useEffect(() => {
+    if (isDeleting || isDeletingMany) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteSuccess || isDeleteManySuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
+    } else if (isDeleteError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error.data.message,
+          severity: 'error',
+        }),
+      );
+    } else if (isDeleteManyError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: deleteManyError.data.message,
+          severity: 'error',
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    isDeleteError,
+    isDeleteSuccess,
+    isDeleting,
+    isDeletingMany,
+    isDeleteManyError,
+    isDeleteManySuccess,
+  ]);
 
   // Handle search name
   const handleSearchChange = (event) => {
@@ -91,54 +146,18 @@ const TeacherListPage = () => {
 
   // Handle delete a single teacher
   const handleDelete = (row) => {
-    setSelectedItems([row.id]);
-    setIsOpen(true);
+    setSelectedItems(row);
+    dispatch(setModal({ open: true }));
   };
   // Handle delete multiple teachers
-  const handleMultiDelete = (selected) => {
-    if (selected.length > 0) {
-      setSelectedItems(selected);
-      setIsOpen(true);
-    }
+  const handleMultiDelete = async (selectedIds) => {
+    dispatch(setModal({ open: false }));
+    await deleteManyTeachers(selectedIds).unwrap();
   };
 
-  // Confirm delete
-  const confirmDelete = async () => {
-    setIsOpen(false);
-    try {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-          severity: 'info',
-        }),
-      );
-      // Loop through selected items to delete
-      // Delete each of the selected teachers
-      for (const id of selectedItems) {
-        // extract the result of the mutation
-        await deleteTeacher(id).unwrap();
-      }
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Deleted successfully ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      console.error('Error deleting teachers:', error);
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Failed to delete ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-          severity: 'error',
-        }),
-      );
-    } finally {
-      setSelectedItems([]);
-      // Clear selected items
-    }
+  const handleConfirmDeleteOne = async () => {
+    dispatch(setModal({ open: false }));
+    await deleteTeacher(selectedItems?.id).unwrap();
   };
 
   // Loading and error state
@@ -188,17 +207,17 @@ const TeacherListPage = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}
+        onSelectedDelete={handleMultiDelete}
         hideColumns={['phoneNumber', 'email']}
         emptyTitle="No Teachers"
         emptySubTitle="No Teachers Available."
-        onSelectedDelete={handleMultiDelete}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={confirmDelete}
-        itemName={` Teacher${selectedItems.length > 1 ? 's' : ''} `}
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleConfirmDeleteOne}
+        itemName={selectedItems?.name}
       />
       {/* Update teacher modal */}
       <UpdateTeacherForm

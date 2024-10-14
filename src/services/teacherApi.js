@@ -80,6 +80,17 @@ export const teacherApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Teachers'],
     }),
+
+    // Delete many teachers
+    deleteManyTeachers: builder.mutation({
+      query: (ids) => ({
+        url: `teachers`,
+        method: 'DELETE',
+        body: {ids},
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Teachers']
+    })
   }),
 });
 
@@ -93,4 +104,5 @@ export const {
   useGetAllStudentsByClassInSessionQuery,
   useSendTeacherInvitationMutation,
   useCompleteRegistrationMutation,
+  useDeleteManyTeachersMutation,
 } = teacherApi;
