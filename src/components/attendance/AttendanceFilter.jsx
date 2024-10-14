@@ -8,15 +8,17 @@ import FilterComponent from "../common/FilterComponent";
 import { useEffect, useState } from "react";
 import { transformedFilterSubjects, transformedFilterClasses } from "../../utils/formatData";
 import { setSnackbar } from "../../store/slices/uiSlice";
-import { tableShadow } from "../../styles/global";
 import { Filter, BookIcon, LibraryIcon } from 'lucide-react';
 
 const filterOptions = [
     { value: "all", label: "All" },
-    { value: "today", label: "Daily" },
-    { value: "lastWeek", label: "Weekly" },
-    { value: "lastMonth", label: "Monthly" },
-    { value: "lastYear", label: "Yearly" },
+    { value: "today", label: "Today" },
+    { value: "weekly", label: "This Week" },
+    { value: "monthly", label: "This Month" },
+    { value: "yearly", label: "This Year" },
+    { value: "lastWeek", label: "Last Week" },
+    { value: "lastMonth", label: "Last Month" },
+    { value: "lastYear", label: "Last Year" },
 ]
 
 function AttendanceFilter({ pdfData }) {
@@ -169,5 +171,5 @@ const filterBoxStyle = {
     height: "100%",
     px: 2,
     py: 3,
-
+    borderRadius: '8px',
 };

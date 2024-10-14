@@ -4,6 +4,7 @@ import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import { useGetReportAttendanceByClassQuery } from "../../../../services/attendanceApi";
 import AttendanceTable from "../../../../components/attendance/AttendanceTable";
 import { useSelector } from "react-redux";
+import { Stack } from "@mui/material";
 const AttendanceReportPage = () => {
   const [reportData, setReportData] = useState({});  
   const [toggleAttendanceKey, setToggleAttendanceKey] = useState(true);
@@ -25,6 +26,7 @@ const AttendanceReportPage = () => {
 
   return (
     <FormComponent title={"Attendance Report"}>
+      <Stack bgcolor={'white'} borderRadius={'8px'}>
       <AttendanceTable 
         subjects={subjects} 
         dates={dates} 
@@ -33,6 +35,7 @@ const AttendanceReportPage = () => {
         school={school}
         toggleAttendanceKey={toggleAttendanceKey}
       />
+      </Stack>
     </FormComponent>
   );
 };
