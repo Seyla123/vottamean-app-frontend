@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCreateCheckoutSessionMutation } from '../../services/paymentApi';
 import { Button } from '@mui/material';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 const SubscriptionButton = ({
   planType,
@@ -58,20 +59,21 @@ const SubscriptionButton = ({
   };
 
   return (
-    <Button
+    <StyledButton
       onClick={handleCheckout}
       variant="contained"
-      color="primary"
       disabled={isLoading || isProcessing}
+      sx={{ width: '100%' }}
+      size="large"
     >
       {isLoading || isProcessing
         ? 'Processing...'
         : isSubscribed
-          ? `Extend ${planType} Plan`
+          ? `Extend ${planType}`
           : isFree
             ? 'Activate Free Trial'
-            : `Subscribe to ${planType} Plan`}
-    </Button>
+            : `Upgrade to ${planType}`}
+    </StyledButton>
   );
 };
 

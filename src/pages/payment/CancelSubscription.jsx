@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Typography, Box } from '@mui/material';
 import { useCancelPaymentIntentMutation } from '../../services/paymentApi';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 function CancelSubscription({ adminId }) {
   const [cancelPaymentIntent, { isLoading, isSuccess, isError }] =
@@ -17,17 +18,14 @@ function CancelSubscription({ adminId }) {
 
   return (
     <Box sx={{ textAlign: 'center', mt: 4 }}>
-      <Typography variant="h6" gutterBottom>
-        Cancel your Subscription
-      </Typography>
-      <Button
-        variant="contained"
-        color="secondary"
+      <StyledButton
+        variant="outlined"
         onClick={handleCancel}
         disabled={isLoading}
+        size="large"
       >
         {isLoading ? 'Cancelling...' : 'Cancel Subscription'}
-      </Button>
+      </StyledButton>
       {isSuccess && (
         <Typography color="success.main" sx={{ mt: 2 }}>
           Subscription cancelled successfully!

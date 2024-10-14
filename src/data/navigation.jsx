@@ -10,6 +10,7 @@ import {
   ScrollTextIcon as ChecklistIcon,
   SettingsIcon,
   LogOutIcon,
+  Zap,
   UserRoundIcon as Person,
 } from 'lucide-react';
 
@@ -28,7 +29,7 @@ const navigation = [
   {
     segment: 'admin/subjects',
     title: 'Subject',
-    icon: <SubjectIcon />,
+    icon: <SubjectIcon size={20} />,
   },
   {
     segment: 'admin/classes',
@@ -38,17 +39,17 @@ const navigation = [
   {
     segment: 'admin/students',
     title: 'Student',
-    icon: <StudentIcon />,
+    icon: <StudentIcon size={20} />,
   },
   {
     segment: 'admin/teachers',
     title: 'Teacher',
-    icon: <TeacherIcon />,
+    icon: <TeacherIcon size={20} />,
   },
   {
-    segment: 'admin/sessions',
-    title: 'Session',
-    icon: <CalendarMonthIcon />,
+    segment: 'admin/class-periods',
+    title: 'Class Period',
+    icon: <ClassPeriodIcon size={20} />,
   },
   {
     segment: 'admin/attendance',
@@ -56,16 +57,15 @@ const navigation = [
     icon: <ChecklistIcon />,
   },
 
-
   {
     segment: 'admin/reports',
     title: 'Report',
-    icon: <ReportGmailerrorredIcon />,
+    icon: <ReportGmailerrorredIcon size={20} />,
     children: [
       {
         segment: 'attendance',
-        title: 'Attendance Report ',
-        icon: <ChecklistIcon />,
+        title: 'Attendance',
+        icon: <ChecklistIcon size={20} />,
       },
     ],
   },
@@ -74,19 +74,19 @@ const navigation = [
 
   { kind: 'header', title: 'General' },
   {
-    segment: 'payment',
-    title: 'Payment',
-    icon: <ClassPeriodIcon />,
+    segment: 'admin/payment',
+    title: 'Usage and plan',
+    icon: <Zap size={20} />,
   },
   {
     segment: 'admin/settings',
     title: 'Settings',
-    icon: <SettingsIcon />,
+    icon: <SettingsIcon size={20} />,
     children: [
       {
         segment: 'account',
         title: 'Account',
-        icon: <Person />,
+        icon: <Person size={20} />,
       },
     ],
   },
@@ -102,7 +102,7 @@ const teacherSiteNavigation = [
   {
     segment: 'teacher/schedule',
     title: 'Schedule',
-    icon: <CalendarMonthIcon />,
+    icon: <CalendarMonthIcon size={20} />,
   },
 
   { kind: 'divider' },
@@ -112,12 +112,12 @@ const teacherSiteNavigation = [
   {
     segment: 'teacher/settings',
     title: 'Settings',
-    icon: <SettingsIcon />,
+    icon: <SettingsIcon size={20} />,
     children: [
       {
         segment: 'account',
         title: 'Account',
-        icon: <Person />,
+        icon: <Person size={20} />,
       },
     ],
   },

@@ -78,23 +78,6 @@ const Layout = ({ teacherSite, adminSite }) => {
     },
   });
 
-  const getAvatarUrl = useMemo(() => {
-    const getAvatarStyle = (gender) => {
-      switch (gender?.toLowerCase()) {
-        case 'male':
-          return 'avataaars';
-        case 'female':
-          return 'lorelei';
-        default:
-          return 'bottts';
-      }
-    };
-
-    const avatarStyle = getAvatarStyle(userData.gender);
-    const randomParam = Math.random().toString(36).substring(7);
-    return `https://api.dicebear.com/6.x/${avatarStyle}/svg?seed=${encodeURIComponent(userData.username)}&r=${randomParam}`;
-  }, [userData.username, userData.gender]);
-
   const router = useMemo(() => {
     return {
       pathname: location.pathname,

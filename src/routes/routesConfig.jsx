@@ -115,27 +115,7 @@ const routesConfig = [
       },
     ],
   },
-  {
-    path: '/payment',
-    children: [
-      {
-        path: '',
-        element: <SubscriptionPlansPage />,
-      },
-      {
-        path: 'success',
-        element: <PaymentSuccessPage />,
-      },
-      {
-        path: 'cancel',
-        element: <PaymentCancelPage />,
-      },
-      {
-        path: 'payment-required',
-        element: <PaymentRequiredPage />,
-      },
-    ],
-  },
+
   {
     path: 'teacher',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
@@ -222,6 +202,27 @@ const routesConfig = [
           {
             path: 'update/:id',
             element: <StudentUpdatePage />,
+          },
+        ],
+      },
+      {
+        path: 'payment',
+        children: [
+          {
+            path: '',
+            element: <SubscriptionPlansPage />,
+          },
+          {
+            path: 'success',
+            element: <PaymentSuccessPage />,
+          },
+          {
+            path: 'cancel',
+            element: <PaymentCancelPage />,
+          },
+          {
+            path: 'payment-required',
+            element: <PaymentRequiredPage />,
           },
         ],
       },

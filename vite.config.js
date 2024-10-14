@@ -17,7 +17,7 @@ export default defineConfig({
     open: '/auth/signin',
     proxy: {
       '/api/v1': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:5001',
         changeOrigin: true,
         pathRewrite: { '^/api/v1': '' },
       },
