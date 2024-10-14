@@ -43,6 +43,8 @@ const CreateModal = ({
   onSubmit,
   validationSchema,
   submitText,
+  isLoading,
+  loadingSubmitText = 'Creating...'
 }) => {
   const {
     control,
@@ -206,8 +208,9 @@ const CreateModal = ({
           variant="contained"
           color="primary"
           size="small"
+          disabled={isLoading}
         >
-          {submitText}
+          {isLoading ? loadingSubmitText : submitText}
         </StyledButton>
       </DialogActions>
     </BootstrapDialog>
