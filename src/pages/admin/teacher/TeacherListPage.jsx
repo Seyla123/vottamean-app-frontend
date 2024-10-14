@@ -80,6 +80,7 @@ const TeacherListPage = () => {
     },
   ] = useDeleteManyTeachersMutation();
 
+  //  when the teachers records are fetched successfully, transform the data and set the rows state
   useEffect(() => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
@@ -105,7 +106,7 @@ const TeacherListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.data.message,
+          message: deleteError.data.message || 'Failed to delete teacher',
           severity: 'error',
         }),
       );
@@ -113,7 +114,7 @@ const TeacherListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: deleteManyError.data.message,
+          message: deleteManyError.data.message || 'Failed to delete teachers',
           severity: 'error',
         }),
       );
@@ -133,7 +134,7 @@ const TeacherListPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  // Handle Update teacher information
+  // Handle Update clicked
   const handleEdit = (teacher) => {
     setSelectedTeacherId(teacher.id);
     setIsUpdateOpen(true);
@@ -144,17 +145,19 @@ const TeacherListPage = () => {
     navigate(`/admin/teachers/${row.id}`);
   };
 
-  // Handle delete a single teacher
+  // Handle delete one clicked
   const handleDelete = (row) => {
     setSelectedItems(row);
     dispatch(setModal({ open: true }));
   };
+
   // Handle delete multiple teachers
   const handleMultiDelete = async (selectedIds) => {
     dispatch(setModal({ open: false }));
     await deleteManyTeachers(selectedIds).unwrap();
   };
 
+  // Handle confirm deletion of a single teacher
   const handleConfirmDeleteOne = async () => {
     dispatch(setModal({ open: false }));
     await deleteTeacher(selectedItems?.id).unwrap();
