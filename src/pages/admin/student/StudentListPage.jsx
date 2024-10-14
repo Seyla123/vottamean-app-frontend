@@ -18,9 +18,10 @@ import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { BookIcon } from 'lucide-react';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
+  { id: 'id', label: 'ID' },
   { id: 'name', label: 'Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'Date of Birth', label: 'Date Of Birth' },
@@ -34,6 +35,10 @@ const StudentListPage = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
+
+  const [rowsPerPage,setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalRows, setTotalRows] = useState(0)
 
   // Set the initial state for classes
   const allSelector = [{
@@ -49,6 +54,8 @@ const StudentListPage = () => {
     useGetAllStudentsQuery({
       search: searchTerm,
       class_id: selectedClass,
+      page: page,
+      limit: rowsPerPage,
     });
 
   // useDeleteStudentMutation : a hook for return function to delete an student record
@@ -90,6 +97,7 @@ const StudentListPage = () => {
       const formattedStudents = formatStudentsList(data.data);
 
       setRows(formattedStudents);
+      setTotalRows(data.results);
     }
   }, [isSuccess, data]);
 
@@ -135,6 +143,13 @@ const StudentListPage = () => {
   ]);
 
 
+
+  const handleChangePage = (newPage)=>{
+    setPage(newPage);
+  }  
+  const handleChangeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
+  };
   //classes filter change
   const handleClassesChange = (event) => {
     if (event.target.value === 'all') {
@@ -180,16 +195,19 @@ const StudentListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-
+  console.log('this is page :', page , 'this row ', rowsPerPage);
+  console.log('this student data :', rows);
+  
   //If loading is error occurs
   if (isError) {
-    return <SomthingWentWrong />
+    return <SomethingWentWrong />
   }
+  
   return (
     <Box>
       <FormComponent
         title={'Student Lists'}
-        subTitle={`Total Students : ${rows.length} `}
+        subTitle={`Total Students : ${data.results} `}
       >
         <Stack direction="row" justifyContent="flex-end">
           <Link to="/admin/students/create">
@@ -217,11 +235,11 @@ const StudentListPage = () => {
               data={classes}
               value={selectedClass}
               customStyles={{ maxHeight: '50px', width: '150px' }}
-              icon={<BookIcon size={18}  color='#B5B5B5' />}
+              icon={<BookIcon size={18} color='#B5B5B5' />}
             />
 
             <SearchComponent
-              sx={{ width: '100%', maxWidth: '700px'}}
+              sx={{ width: '100%', maxWidth: '700px' }}
               placeholder="Search"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -240,6 +258,11 @@ const StudentListPage = () => {
           emptySubTitle={'No Student Available'}
           hideColumns={['address', 'Date of Birth']}
           showNO={false}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          setPage={handleChangePage}
+          setRowsPerPage={handleChangeRowsPerPage}
+          totalRows={totalRows}
         />
 
         <DeleteConfirmationModal

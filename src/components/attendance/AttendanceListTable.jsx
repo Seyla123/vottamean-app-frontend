@@ -71,7 +71,7 @@ const AttendanceListTable = ({
     <Paper sx={{ boxShadow:'none' }}>
       <TableContainer>
         <Table aria-label="sticky table">
-          <TableHead sx={{bgcolor: '#f8f8f8', height: '60px'}}>
+          <TableHead sx={{ height: '60px'}}>
             <TableRow>
               {visibleColumns.map((column) => (
                 <TableCell key={column.id} sx={{ width: column.id === 'id' ? '' : 'auto' }}>

@@ -27,6 +27,7 @@ import classHeaderImg6 from '../../../assets/images/class-header-img-6.avif';
 import { shadow } from '../../../styles/global';
 import FormComponent from '../../../components/common/FormComponent';
 import emptyClassesImage from '../../../assets/images/teacher-99.svg';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const headerImages = [
   classHeaderImg1,
@@ -37,7 +38,7 @@ const headerImages = [
   classHeaderImg6,
 ];
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+export const StyledPaper = styled(Paper)(({ theme }) => ({
   width: '100%',
   overflow: 'hidden',
   cursor: 'pointer',
@@ -61,6 +62,17 @@ const IconWrapper = styled(Box)(({ theme }) => ({
     marginRight: theme.spacing(1),
   },
 }));
+
+const days = [
+  'All',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
 
 const ClassListItem = ({ classData, onClick }) => {
   const dayIndex = [
@@ -130,7 +142,7 @@ const ClassListItem = ({ classData, onClick }) => {
         <IconWrapper>
           <Users size={16} />
           <Typography variant="body2">
-            {classData.students} student {classData.students > 1 ? 's' : ''}
+            {classData.students} student{classData.students > 1 ? 's' : ''}
           </Typography>
         </IconWrapper>
       </Box>
@@ -142,36 +154,28 @@ function TeacherScheduleClassPage() {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const {
-    data: getTeacherClasses,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-  } = useGetTeacherScheduleClassesQuery();
 
   const [classesData, setClassesData] = useState([]);
   const [selectedDay, setSelectedDay] = useState('All');
   const [anchorEl, setAnchorEl] = useState(null);
 
+  //useGetTeacherScheduleClassesQuery : a hook return a function that fetch the classes schedule
+  const {
+    data: getTeacherClasses,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetTeacherScheduleClassesQuery();
+
+  // when the classes schedule records are fetched successfully, set to the state
   useEffect(() => {
-    console.log(getTeacherClasses)
     if (getTeacherClasses && isSuccess) {
-      setClassesData(getTeacherClasses.data || []);
+      setClassesData(getTeacherClasses.data);
     }
   }, [getTeacherClasses, isSuccess]);
 
-  const days = [
-    'All',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-
+  // Returns all classesData if selectedDay is 'All', otherwise
+  // filters classesData to only include classes that match the selectedDay
   const filteredClasses = useMemo(() => {
     if (selectedDay === 'All') {
       return classesData;
@@ -181,31 +185,28 @@ function TeacherScheduleClassPage() {
     );
   }, [classesData, selectedDay]);
 
-  if (isError) {
-    return (
-      <Typography color="error">
-        Error loading class data: {error.data?.message || 'Unknown error'}
-      </Typography>
-    );
-  }
-
+  // handle class clicked
   const handleClassClick = (sessionId) => {
-    navigate(`/teacher/mark-attendance/${sessionId}`);
+    navigate(`${sessionId}`);
   };
 
+  // handle filter clicked
   const handleFilterClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  // handle filter menu closed
   const handleFilterClose = () => {
     setAnchorEl(null);
   };
 
+  //handle filter day change
   const handleDayChange = (day) => {
     setSelectedDay(day);
     handleFilterClose();
   };
 
+  // render skeleton
   const renderSkeleton = () => (
     <Grid container spacing={2}>
       {[...Array(4)].map((_, index) => (
@@ -221,10 +222,21 @@ function TeacherScheduleClassPage() {
   );
 
   const renderContent = () => {
+    // if loading, render skeleton
     if (isLoading) {
       return renderSkeleton();
     }
 
+    // if error, render error page
+    if (isError) {
+      return (
+        <SomethingWentWrong
+          customStyles={{ minHeight: "50vh" }}
+        />
+      );
+    }
+
+    // if no classes, render empty list
     if (filteredClasses.length === 0) {
       return (
         <EmptyList
@@ -232,6 +244,7 @@ function TeacherScheduleClassPage() {
           title="No classes scheduled"
           description={`You don't have any classes scheduled for ${selectedDay === 'All' ? 'any day' : selectedDay}.`}
         />
+        
       );
     }
 
@@ -249,6 +262,7 @@ function TeacherScheduleClassPage() {
     );
   };
 
+  // render Day Selector
   const renderDaySelector = () => {
     if (isMobile) {
       return (
@@ -304,7 +318,7 @@ function TeacherScheduleClassPage() {
   return (
     <FormComponent
       title="Class Schedule"
-      subTitle={`You have ${classesData.length} upcoming classes scheduled for today`}
+      subTitle={`You have ${classesData.length} upcoming classes scheduled`}
     >
       {renderDaySelector()}
       {renderContent()}

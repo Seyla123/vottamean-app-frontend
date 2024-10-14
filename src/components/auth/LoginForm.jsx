@@ -57,8 +57,8 @@ const LoginForm = () => {
         reset();
 
         const dashboardRoutes = {
-          admin: '/admin/dashboard',
-          teacher: '/teacher/dashboard',
+          admin: '/admin/home',
+          teacher: '/teacher/home',
         };
         navigate(dashboardRoutes[role] || '/something-went-wrong');
       }

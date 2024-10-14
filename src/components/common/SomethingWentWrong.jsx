@@ -1,36 +1,34 @@
 
 import React from 'react';
-import { Box, Typography, Button, Container, Stack } from '@mui/material';
+import { Box, Typography, Container, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import EorrImage from '../../assets/images/500-error.svg';
 import StyledButton from './StyledMuiButton';
 
-const SomthingWentWrong = ({
+const SomethingWentWrong = ({
   imageUrl = EorrImage,
   title = 'Oops, Something Went Wrong!',
   description = "We're experiencing some issue. Please try again",
   buttonText = 'Go to home',
-  customStyles ,
+  customStyles,
   defaultBtn = true,
   children
 }) => {
   const { user } = useSelector((state) => state.auth);
 
-  const getDashboardLink = () => {
-    if (!user) return '/admin/dashboard';
-
-    switch (user.role) {
+  const getHomeLink = () => {
+    switch (user?.role) {
       case 'admin':
-        return '/admin/dashboard';
+        return '/admin/home';
       case 'teacher':
-        return '/teacher/dashboard';
+        return '/teacher/home';
       default:
         return '/';
     }
   };
 
-  const dashboardLink = getDashboardLink();
+  const homeLink = getHomeLink();
 
   return (
     <Container maxWidth="sm">
@@ -53,7 +51,7 @@ const SomthingWentWrong = ({
             height: '300px',
           }}
         >
-          <img
+          <Box component={'img'}
             src={imageUrl}
             alt="500 Internal Server Error"
             style={{
@@ -77,25 +75,25 @@ const SomthingWentWrong = ({
           </Typography>
         </Box>
         {defaultBtn && (
-        <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
-        <StyledButton
-          component={Link}
-          to={dashboardLink}
-          variant="contained"
-          color="primary"
-          size="large"
-        >
-          {buttonText}
-        </StyledButton>
-        <StyledButton
-          onClick={() => window.location.reload()}
-          variant="contained"
-          color="primary"
-          size="large"
-        >
-          Refresh Page
-        </StyledButton>
-        </Stack>
+          <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
+            <StyledButton
+              component={Link}
+              to={homeLink}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              {buttonText}
+            </StyledButton>
+            <StyledButton
+              onClick={() => window.location.reload()}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Refresh Page
+            </StyledButton>
+          </Stack>
         )}
         {children}
 
@@ -104,4 +102,4 @@ const SomthingWentWrong = ({
   );
 };
 
-export default SomthingWentWrong;
+export default SomethingWentWrong;

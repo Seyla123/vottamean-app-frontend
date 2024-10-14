@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -88,14 +88,19 @@ const DataTable = ({
   showNO,
   isLoading = false,
   idField = 'id',
+  page,
+  rowsPerPage,
+  setPage,
+  setRowsPerPage,
+  totalRows
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuRow, setMenuRow] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
 
   const handleSelectAllClick = (event) => {
@@ -190,10 +195,9 @@ const DataTable = ({
     setPage(0);
   };
 
-  const paginatedRows = rows.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
+
+  
+  const height = rowsPerPage === 5 ? '300px' : '500px';
 
   return (
     <TableContainer component={Paper} sx={shadow}>
@@ -226,10 +230,9 @@ const DataTable = ({
                 <StyledButton
                   onClick={handleSelectedDelete}
                   color="error"
-                  startIcon={<Trash2 size={18} />}
-                >
-                  Delete
-                </StyledButton>
+                  startIcon={<Trash2 size={18} />
+                }
+                />
               </TableCell>
             ) : (
               <TableCell align="right"></TableCell>
@@ -238,9 +241,9 @@ const DataTable = ({
         </TableHead>
         <TableBody sx={{ position: 'relative' }}>
           {isLoading ? (
-            <LoadingTable columns={columns} />
+            <LoadingTable columns={columns} height={height}/>
           ) : rows.length > 0 ? (
-            paginatedRows.map((row, index) => {
+            rows.map((row, index) => {
               const isItemSelected = isSelected(row[idField]);
               const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -288,7 +291,7 @@ const DataTable = ({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={totalRows}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -377,13 +380,15 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
   );
 };
 
-const LoadingTable = ({ columns }) => {
+
+const LoadingTable = ({ columns, height }) => {
+
   return (
     <TableRow>
       <TableCell
         colSpan={columns.length + 2}
         sx={{
-          height: '600px',
+          height: height,
           textAlign: 'center',
           verticalAlign: 'middle',
         }}

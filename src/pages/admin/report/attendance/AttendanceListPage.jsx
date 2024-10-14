@@ -10,11 +10,10 @@ import LoadingCircle from "../../../../components/loading/LoadingCircle";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
 import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
-import { Box, Stack } from '@mui/material'
-import { tableShadow } from './../../../../styles/global'
+import { Box, Stack, Divider } from '@mui/material'
+import { tableShadow, shadow } from './../../../../styles/global'
 
 const columns = [
-  { id: "id", label: "StudentID" },
   { id: "name", label: "Name" },
   { id: "time", label: "Time" },
   { id: "subject", label: "Subject" },
@@ -80,7 +79,7 @@ const AttendanceListPage = () => {
 
   // handle view action
   const onView = (id) => {
-    navigate(`/admin/reports/attendance/${id}`);
+    navigate(`/admin/attendance/${id}`);
   };
 
   if (isLoading) {
@@ -92,8 +91,9 @@ const AttendanceListPage = () => {
   return (
     <FormComponent title={"Attendance List"}>
       <ReportHeader data={rows} title={filter.filterLabel} />
-      <Stack sx={{...tableShadow}}>
+      <Stack sx={tableShadow}>
       <AttendanceFilter />
+      <Divider />
       <AttendanceTable
         rows={rows}
         columns={columns}

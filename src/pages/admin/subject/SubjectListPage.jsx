@@ -23,7 +23,7 @@ import StyledButton from '../../../components/common/StyledMuiButton';
 import {
   formatDate,
 } from '../../../utils/formatHelper';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
   { id: 'subject_id', label: 'Subject ID' },
@@ -232,7 +232,7 @@ function SubjectListPage() {
 
   // if there is an error
   if (isError) {
-    return <SomthingWentWrong />;
+    return <SomethingWentWrong />;
   }
 
   return (

@@ -10,6 +10,7 @@ import {
     TableHead,
     TableBody,
     Paper,
+    Divider,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { truncate } from '../../utils/truncate';
@@ -150,6 +151,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
     return (
         <>
         <AttendanceFilter pdfData={exportToPDF}/>
+        <Divider/>
         <Paper 
         ref={pdfRef}
         sx={{ backgroundColor: 'white',

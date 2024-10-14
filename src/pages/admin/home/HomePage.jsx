@@ -98,7 +98,7 @@ const statusCard = [
   },
 ];
 
-function Dashboard() {
+function HomePage() {
   const [userData, setUserData] = useState({
     username: 'Username',
   });
@@ -294,4 +294,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default HomePage;
