@@ -19,7 +19,8 @@ import FormComponent from '../../components/common/FormComponent';
 import { grey } from '@mui/material/colors';
 import { Leaf, Sprout, TreeDeciduous } from 'lucide-react';
 import PricingPlanCard from '../../components/admin/PricingPlanCard';
-import AccountUsage from '../../components/admin/AccountUsage';
+import AccountUsagePanel from '../../components/admin/AccountUsagePanel';
+import PlanComparison from '../../components/admin/PlanComparison';
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -167,8 +168,16 @@ const SubscriptionPlansPage = () => {
               }}
             />
             <Tab
-              label="Account"
+              label="Upgrade Plan"
               value="2"
+              sx={{
+                display: 'flex',
+                justifyContent: 'start',
+              }}
+            />
+            <Tab
+              label="Plan Comparison"
+              value="3"
               sx={{
                 display: 'flex',
                 justifyContent: 'start',
@@ -177,11 +186,16 @@ const SubscriptionPlansPage = () => {
           </TabList>
         </Box>
 
-        <TabPanel sx={{ flexGrow: 1 }} value="1">
-          <AccountUsage />
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
+          <AccountUsagePanel
+            plans={plans}
+            currentSubscription={currentSubscription}
+            isSubscriptionActive={isSubscriptionActive}
+            setValue={setValue}
+          />
         </TabPanel>
 
-        <TabPanel sx={{ flexGrow: 1 }} value="2">
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="2">
           <Box sx={{ width: '100%', py: 4 }}>
             <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
               Upgrade Plan
@@ -244,6 +258,7 @@ const SubscriptionPlansPage = () => {
                 ))}
               </Grid>
             </Box>
+
             <Box mt={14}>
               <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
                 Cancel Subscription
@@ -255,6 +270,11 @@ const SubscriptionPlansPage = () => {
               {isSubscriptionActive && <CancelSubscription adminId={adminId} />}
             </Box>
           </Box>
+        </TabPanel>
+
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="3">
+          {/* Plan Comparison Table */}
+          <PlanComparison plans={plans} />
         </TabPanel>
       </TabContext>
     </FormComponent>
