@@ -26,11 +26,11 @@ const PlanComparison = ({ plans }) => {
 
   return (
     <>
+      <Typography variant="h5" py={4} fontWeight={'bold'}>
+        Plan Comparison
+      </Typography>
       {!isMobile ? (
         <>
-          <Typography variant="h5" sx={{ p: 2 }} fontWeight={'bold'}>
-            Plan Comparison
-          </Typography>
           <Paper sx={{ width: '100%', margin: 'auto', boxShadow: shadow }}>
             <TableContainer>
               <Table aria-label="plan comparison table">
@@ -121,7 +121,7 @@ const PlanComparison = ({ plans }) => {
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant='body2'>{plan.description}</Typography>
+                  <Typography variant="body2">{plan.description}</Typography>
                   <Typography variant="h6" fontWeight={'bold'}>
                     {plan.features.length} Features
                   </Typography>

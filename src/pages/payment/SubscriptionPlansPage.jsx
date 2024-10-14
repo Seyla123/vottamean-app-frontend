@@ -159,30 +159,9 @@ const SubscriptionPlansPage = () => {
             aria-label="Vertical tabs"
             sx={{ width: '100%' }}
           >
-            <Tab
-              label="Account usage"
-              value="1"
-              sx={{
-                display: 'flex',
-                justifyContent: 'start',
-              }}
-            />
-            <Tab
-              label="Upgrade Plan"
-              value="2"
-              sx={{
-                display: 'flex',
-                justifyContent: 'start',
-              }}
-            />
-            <Tab
-              label="Plan Comparison"
-              value="3"
-              sx={{
-                display: 'flex',
-                justifyContent: 'start',
-              }}
-            />
+            <Tab label="Account usage" value="1" />
+            <Tab label="Upgrade Plan" value="2" />
+            <Tab label="Plan Comparison" value="3" />
           </TabList>
         </Box>
 
@@ -214,7 +193,7 @@ const SubscriptionPlansPage = () => {
                   backgroundColor: grey[200],
                   zIndex: 10,
                   borderRadius: 2,
-                  p: 0.8,
+                  p: 1,
                   mt: 4,
                 }}
               >
