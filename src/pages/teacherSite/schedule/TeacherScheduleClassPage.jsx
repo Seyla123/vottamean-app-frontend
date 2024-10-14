@@ -244,6 +244,7 @@ function TeacherScheduleClassPage() {
           title="No classes scheduled"
           description={`You don't have any classes scheduled for ${selectedDay === 'All' ? 'any day' : selectedDay}.`}
         />
+        
       );
     }
 

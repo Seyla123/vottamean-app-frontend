@@ -47,7 +47,10 @@ function WelcomeCard({ name, subTitle, schoolName, img = greetingImage, isLoadin
                 }}
             >
                 <Box sx={{ position: 'relative', zIndex: '100', width: '100%' }}>
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/feature/teacher-site-class-session
                     <Chip
                         icon={<School size={16} />}
                         label={schoolName || 'School Name'}
@@ -58,7 +61,11 @@ function WelcomeCard({ name, subTitle, schoolName, img = greetingImage, isLoadin
                         {greeting}, {name}! 👋
                     </Typography>
                     <Typography variant="subtitle1">
+<<<<<<< HEAD
                         {subTitle}
+=======
+                       {subTitle}
+>>>>>>> refs/remotes/origin/feature/teacher-site-class-session
                     </Typography>
                 </Box>
                 <img
@@ -72,7 +79,10 @@ function WelcomeCard({ name, subTitle, schoolName, img = greetingImage, isLoadin
                         zIndex: 1,
                     }}
                 />
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/feature/teacher-site-class-session
             </Box>
         </StyledPaper>
     )
