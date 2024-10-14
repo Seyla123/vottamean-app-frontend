@@ -38,6 +38,7 @@ export const teacherApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Teachers'],
     }),
+
     deleteTeacher: builder.mutation({
       query: (id) => ({
         url: `teachers/${id}`,
@@ -45,6 +46,7 @@ export const teacherApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Teachers'],
     }),
+
     updateTeacher: builder.mutation({
       query: ({ id, updates }) => ({
         url: `teachers/${id}`,
@@ -58,6 +60,7 @@ export const teacherApi = baseApi.injectEndpoints({
       query: (id) => `teachers/${id}`,
       providesTags: ['Teachers'],
     }),
+
     getTeacherScheduleClasses: builder.query({
       query: (data) => ({
         url: `teachers/sessions`,
@@ -68,6 +71,7 @@ export const teacherApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Teachers'],
     }),
+
     getAllStudentsByClassInSession: builder.query({
       query: (id) => ({
         url: `teachers/sessions/${id}`,
