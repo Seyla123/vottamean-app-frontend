@@ -47,9 +47,9 @@ const navigation = [
     icon: <TeacherIcon size={20} />,
   },
   {
-    segment: 'admin/class-periods',
-    title: 'Class Period',
-    icon: <ClassPeriodIcon size={20} />,
+    segment: 'admin/sessions',
+    title: 'Session',
+    icon: <CalendarMonthIcon />,
   },
   {
     segment: 'admin/attendance',
