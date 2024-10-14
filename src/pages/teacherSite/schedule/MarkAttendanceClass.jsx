@@ -141,7 +141,7 @@ function MarkAttendanceClass() {
   if (isError) {
     return <SomethingWentWrong description={error?.data.message} />;
   }
-  if (!isErrorStatus) {
+  if (isErrorStatus) {
     return <SomethingWentWrong description={errorStatus?.data.message} />;
   }
 
