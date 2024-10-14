@@ -126,7 +126,8 @@ const TeacherListPage = () => {
         }),
       );
     } finally {
-      setSelectedItems([]); // Clear selected items
+      setSelectedItems([]); 
+      // Clear selected items
     }
   };
 
