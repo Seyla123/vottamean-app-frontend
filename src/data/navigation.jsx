@@ -57,7 +57,6 @@ const navigation = [
     icon: <ChecklistIcon />,
   },
 
-
   {
     segment: 'admin/reports',
     title: 'Report',
@@ -70,19 +69,14 @@ const navigation = [
       },
     ],
   },
-  {
-    segment: 'admin/payment',
-    title: 'Usage and plan',
-    icon: <Zap size={20} />,
-  },
 
   { kind: 'divider' },
 
   { kind: 'header', title: 'General' },
   {
-    segment: 'payment',
-    title: 'Payment',
-    icon: <ClassPeriodIcon />,
+    segment: 'admin/payment',
+    title: 'Usage and plan',
+    icon: <Zap size={20} />,
   },
   {
     segment: 'admin/settings',
