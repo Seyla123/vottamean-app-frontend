@@ -213,7 +213,7 @@ const StudentListPage = () => {
 
   //If error occurs
   if (isError) {
-    return <SomethingWentWrong description={error?.data.message}/>
+    return <SomethingWentWrong description={error?.data?.message}/>
   }
 
   return (
