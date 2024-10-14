@@ -1,0 +1,58 @@
+# Define pipeline stages
+stages:
+  - build
+  - test
+  - deploy
+
+# Cache node_modules to speed up subsequent builds
+cache:
+  paths:
+    - node_modules/
+
+# Build job
+build-job:
+  stage: build
+  image: node:16 # Use the appropriate Node.js version for your project
+  script:
+    - echo "Installing dependencies..."
+    - npm ci # or npm install
+    - echo "Building frontend..."
+    - npm run build # Build the frontend, assuming `vite build` is part of the npm script
+  artifacts:
+    paths:
+      - dist/ # Store build artifacts (dist folder or similar)
+    expire_in: 1 week # Adjust retention as per your needs
+  only:
+    - main # Run build job only on the main branch
+
+# Test job
+test-job:
+  stage: test
+  image: node:16 # Same Node.js environment as in build job
+  script:
+    - echo "Running frontend tests..."
+    - npm run test # Runs your test suite
+  dependencies:
+    - build-job
+  artifacts:
+    when: always
+    paths:
+      - test-results/ # Assuming you store test results here, adjust based on your setup
+    expire_in: 1 week
+  only:
+    - merge_requests # Test on merge requests or adjust as needed
+
+# Deploy job
+deploy-job:
+  stage: deploy
+  image: docker:latest
+  script:
+    - echo "Deploying frontend..."
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+  environment:
+    name: production
+    url: https://your-frontend-production-url.com
+  only:
+    - main
