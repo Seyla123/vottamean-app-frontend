@@ -40,13 +40,18 @@ const TeacherListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // - rows: the teacher records that are currently being displayed on the page
+  // - searchTerm: the search term that is currently being used to filter the table
+  // - selectedItems: the teacher records that are currently being selected
+  // - isUpdateOpen: the state of the update modal
+  // - selectedTeacherId: the id of the teacher that is currently being updated
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
+  // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
   // useGetAllTeachersQuery : a hook return function for fetching all teachers records
@@ -88,7 +93,9 @@ const TeacherListPage = () => {
     }
   }, [allTeachersData, isSuccess, searchTerm]);
 
-  // Snackbar handling for delete operations
+  // when delete is in progress, show a snackbar with a message "Deleting..."
+  // when delete is failed, show a snackbar with an error message
+  // when delete is successful, show a snackbar with a success message
   useEffect(() => {
     if (isDeleting || isDeletingMany) {
       dispatch(
