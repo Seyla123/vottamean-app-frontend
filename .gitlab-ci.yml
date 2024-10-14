@@ -15,7 +15,7 @@ build-job:
   image: node:16 # Use the appropriate Node.js version for your project
   script:
     - echo "Installing dependencies..."
-    - npm ci
+    - npm ci # or npm install
     - echo "Building frontend..."
     - npm run build # Build the frontend, assuming `vite build` is part of the npm script
   artifacts:
