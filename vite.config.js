@@ -9,5 +9,12 @@ export default defineConfig({
     port: 5173,
     historyApiFallback: true,
     open: '/auth/signin',
+    proxy: {
+      '/api/v1': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        pathRewrite: { '^/api/v1': '' },
+      },
+    },
   },
 });

@@ -1,5 +1,4 @@
 // auth
-import LoginPage from '../pages/auth/LoginPage';
 import SignupPage from '../pages/auth/SignupPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
@@ -7,6 +6,10 @@ import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
 import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
+
+// Teacher Invitation and registration
+import TeacherRegistrationPage from '../pages/admin/teacher/TeacherRegistrationPage';
+import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage';
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
@@ -73,8 +76,8 @@ import TeacherDashboardPage from '../pages/teacherSite/dashboard/TeacherDashboar
 // Routes configuration
 const routesConfig = [
   {
-    path:'/',
-    element:<ProtectedRoutes/>
+    path: '/',
+    element: <ProtectedRoutes />,
   },
   {
     path: '/auth',
@@ -107,6 +110,10 @@ const routesConfig = [
       {
         path: 'reset-password/:token',
         element: <ResetNewPasswordPage />,
+      },
+      {
+        path: 'complete-registration/:token',
+        element: <TeacherRegistrationPage />,
       },
     ],
   },
@@ -280,6 +287,10 @@ const routesConfig = [
             path: 'update/:id',
             element: <TeacherUpdatePage />,
           },
+          {
+            path: 'invitation',
+            element: <TeacherInvitationPage />,
+          },
         ],
       },
       {
@@ -344,9 +355,10 @@ const routesConfig = [
                 element: <AttendanceViewPage />,
               },
               {
-                path:'reports',
-                element: <AttendanceReportPage />
-              }
+                path: 'reports',
+
+                element: <AttendanceReportPage />,
+              },
             ],
           },
         ],
