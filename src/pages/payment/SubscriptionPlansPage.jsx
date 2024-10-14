@@ -8,7 +8,10 @@ import {
   Tabs,
   Tab,
   styled,
+  Grid,
+  useMediaQuery,
 } from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 import SubscriptionButton from './SubscriptionButton';
 import CancelSubscription from './CancelSubscription';
 import { useGetUserProfileQuery } from '../../services/userApi';
@@ -16,6 +19,7 @@ import FormComponent from '../../components/common/FormComponent';
 import { grey } from '@mui/material/colors';
 import { Leaf, Sprout, TreeDeciduous } from 'lucide-react';
 import PricingPlanCard from '../../components/admin/PricingPlanCard';
+import AccountUsage from '../../components/admin/AccountUsage';
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -56,6 +60,12 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
 );
 
 const SubscriptionPlansPage = () => {
+  const [value, setValue] = React.useState('1');
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   const { data: userData, isLoading } = useGetUserProfileQuery();
   const [billingCycle, setBillingCycle] = useState('monthly');
 
@@ -131,78 +141,122 @@ const SubscriptionPlansPage = () => {
   ];
 
   return (
-    <FormComponent sx={{ p: 4 }}>
-      <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
-        My Subscription
-      </Typography>
-      <Typography variant="body1" textAlign={'center'}>
-        Upgrade your Marketing Platform
-      </Typography>
-      {/* Tabs for switching between Monthly and Yearly billing cycles */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          mx: 'auto',
-        }}
-      >
+    <FormComponent
+      title={'My Subscription'}
+      subTitle={'Upgrade your Marketing Platform'}
+    >
+      <TabContext value={value}>
         <Box
           sx={{
-            width: '100%',
-            backgroundColor: grey[200],
-            zIndex: 10,
-            borderRadius: 4,
-            p: 1,
+            borderColor: 'divider',
           }}
         >
-          <StyledTabs
-            value={billingCycle}
-            onChange={(e, value) => setBillingCycle(value)}
-            textColor="primary"
-            indicatorColor="primary"
-            aria-label="billing cycle tabs"
+          <TabList
+            orientation={'horizontal'}
+            variant="scrollable"
+            onChange={handleChange}
+            aria-label="Vertical tabs"
+            sx={{ width: '100%' }}
           >
-            <StyledTab value="monthly" label="Monthly" />
-            <StyledTab value="yearly" label="Yearly (Save 10%)" />
-          </StyledTabs>
+            <Tab
+              label="Account usage"
+              value="1"
+              sx={{
+                display: 'flex',
+                justifyContent: 'start',
+              }}
+            />
+            <Tab
+              label="Account"
+              value="2"
+              sx={{
+                display: 'flex',
+                justifyContent: 'start',
+              }}
+            />
+          </TabList>
         </Box>
-      </Box>
 
-      {/* Display Subscription Plans */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
-          gap: 3,
-          mt: 14,
-          mx: 'auto',
-          width: '100%',
-          height: '800px',
-          maxWidth: '1000px',
-        }}
-      >
-        {plans.map((plan) => (
-          <PricingPlanCard
-            plan={plan}
-            key={plan.type}
-            billingCycle={billingCycle}
-            adminId={adminId}
-            currentSubscription={currentSubscription}
-            isSubscriptionActive={isSubscriptionActive}
-          />
-        ))}
-      </Box>
-      <Box mt={14}>
-        <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
-          Cancel Subscription
-        </Typography>
-        <Typography variant="body1" textAlign={'center'} mt={2}>
-          Cancel your Subscription
-        </Typography>
-        {/* Add the CancelSubscription component */}
-        {isSubscriptionActive && <CancelSubscription adminId={adminId} />}
-      </Box>
+        <TabPanel sx={{ flexGrow: 1 }} value="1">
+          <AccountUsage />
+        </TabPanel>
+
+        <TabPanel sx={{ flexGrow: 1 }} value="2">
+          <Box sx={{ width: '100%', py: 4 }}>
+            <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
+              Upgrade Plan
+            </Typography>
+            {/* Tabs for switching between Monthly and Yearly billing cycles */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                mx: 'auto',
+                width: '100%',
+              }}
+            >
+              <Box
+                sx={{
+                  backgroundColor: grey[200],
+                  zIndex: 10,
+                  borderRadius: 2,
+                  p: 0.8,
+                  mt: 4,
+                }}
+              >
+                <StyledTabs
+                  value={billingCycle}
+                  onChange={(e, value) => setBillingCycle(value)}
+                  textColor="primary"
+                  indicatorColor="primary"
+                  aria-label="billing cycle tabs"
+                >
+                  <StyledTab value="monthly" label="Monthly" />
+                  <StyledTab value="yearly" label="Yearly (Save 10%)" />
+                </StyledTabs>
+              </Box>
+            </Box>
+
+            {/* Display Subscription Plans */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'start',
+                gap: 3,
+                mt: 14,
+                mx: 'auto',
+                width: '100%',
+                maxWidth: '1000px',
+              }}
+            >
+              <Grid container spacing={3}>
+                {plans.map((plan) => (
+                  <Grid item xs={12} sm={6} md={4} key={plan.type}>
+                    <PricingPlanCard
+                      plan={plan}
+                      billingCycle={billingCycle}
+                      adminId={adminId}
+                      currentSubscription={currentSubscription}
+                      isSubscriptionActive={isSubscriptionActive}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+            <Box mt={14}>
+              <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
+                Cancel Subscription
+              </Typography>
+              <Typography variant="body1" textAlign={'center'} mt={2}>
+                Cancel your Subscription
+              </Typography>
+              {/* Add the CancelSubscription component */}
+              {isSubscriptionActive && <CancelSubscription adminId={adminId} />}
+            </Box>
+          </Box>
+        </TabPanel>
+      </TabContext>
     </FormComponent>
   );
 };

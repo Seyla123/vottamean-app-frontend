@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Tabs,
-  Tab,
-  styled,
-  CardHeader,
-} from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import SubscriptionButton from '../../pages/payment/SubscriptionButton';
 import { shadow } from '../../styles/global';
 import { Check } from 'lucide-react';
