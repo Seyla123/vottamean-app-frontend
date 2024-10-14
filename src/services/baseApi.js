@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // Base API
 export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
+    baseUrl: '/api/v1',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
       const token = getState()?.auth?.token;
