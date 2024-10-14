@@ -46,7 +46,6 @@ const StyledTabs = styled((props) => (
 const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     textTransform: 'none',
-    fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     fontWeight: 'bold',
     borderRadius: 10,

@@ -54,7 +54,7 @@ const StudentListPage = () => {
     useGetAllStudentsQuery({
       search: searchTerm,
       class_id: selectedClass,
-      page: page,
+      page: page+1,
       limit: rowsPerPage,
     });
 
