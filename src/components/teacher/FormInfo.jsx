@@ -8,7 +8,6 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import dayjs from 'dayjs';
 import {
   Box,
-  Tabs,
   Tab,
   Typography,
   Card,
@@ -17,10 +16,9 @@ import {
   useTheme,
 } from '@mui/material';
 
-// Icon from lucide
+// Icons from lucide
 import {
   User,
-  KeyRound,
   CalendarRange,
   UsersRound,
   FolderDown,
@@ -36,25 +34,24 @@ import { useSignUpTeacherMutation } from '../../services/teacherApi';
 // Custom Components
 import TeacherInfo from './TeacherInfo';
 import AccountInfo from './AccountInfo';
-import LoadingCircle from '../../components/loading/LoadingCircle';
 import { shadow } from '../../styles/global';
-import { Photo } from '@mui/icons-material';
 
 function FormInfo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
 
-  // Responsive in mobile mode
+  // Responsive Mobile size
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // States
   const [value, setValue] = useState('1');
   const [isTeacherInfoValid, setIsTeacherInfoValid] = useState(false);
   const [teacherData, setTeacherData] = useState({});
-  const [formError, setFormError] = useState('');
-  const [photoFile, setPhotoFile] = useState(null); // State to store the uploaded photo
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
 
-  // Sign up Teacher Api
+  // Sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
 
@@ -91,55 +88,45 @@ function FormInfo() {
     }
   }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
 
-  // handle submit
-  const handleAccountSubmit = async (formData) => {
+  // Handle Submit form
+  const handleSubmitForm = async (formData) => {
     try {
-      const response = await signUpTeacher(formData);
-      if (response.error) {
-        throw new Error(
-          response.error.data.message || 'An error occurred during signup',
-        );
-      }
+      await signUpTeacher(formData).unwrap();
     } catch (error) {
       console.error('Error signing up teacher:', error.message);
-      throw error;
     }
   };
 
-  // Function to handle photo upload
+  // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
-    const file = event.target.files[0]; 
-    // Get the first file selected
+    const file = event.target.files[0];
     if (file) {
       setPhotoFile(file);
+      const newPreviewUrl = URL.createObjectURL(file);
+      setPhotoPreview(newPreviewUrl);
     } else {
-      console.log('No photo selected');
+      setPhotoFile(null);
+      setPhotoPreview(null);
     }
-  }
+  };
 
-  // Handle continue to account info after check validation correct
+  // Handle Next that continue to account info after checked validations
   const handleNextClick = (isValid, data) => {
     if (isValid) {
-      setTeacherData((prevData) => {
-        const newData = {
-          ...prevData,
-          ...data,
-          photo: data.photo,
-        };
-        return newData;
-      });
+      setTeacherData((prevData) => ({
+        ...prevData,
+        ...data,
+        photo: data.photo,
+      }));
       setValue('2');
       setIsTeacherInfoValid(true);
     }
   };
 
-  // Handle back
+  // handle back to teacher info
   const handleBack = () => {
     setValue('1');
   };
-
-  // loading state
-  if (isLoading) return <LoadingCircle />;
 
   return (
     <Box
@@ -157,20 +144,17 @@ function FormInfo() {
               borderColor: 'divider',
             }}
           >
+            {/* Tab Title */}
             <TabList
               orientation={isMobile ? 'horizontal' : 'vertical'}
               variant="scrollable"
               onChange={(event, newValue) => setValue(newValue)}
               aria-label="Vertical tabs"
               sx={{
-                width: '100%',
-                pb: {
-                  xs: 0,
-                  sm: 4,
-                },
+                width: { xs: '100%', sm: '200px' },
+                pb: { xs: 0, sm: 4 },
               }}
             >
-              {/* Tabs Title */}
               <Tab
                 label="Personal"
                 icon={<User size={18} />}
@@ -189,17 +173,30 @@ function FormInfo() {
           {/* Tab Contents */}
           <TabPanel sx={{ flexGrow: 1 }} value="1">
             <TeacherInfo
-              handleNextClick={handleNextClick}
               defaultValues={teacherData}
+              handleNextClick={handleNextClick}
               handlePhotoChange={handlePhotoChange}
-              handleAccountSubmit={handleAccountSubmit}
+              photoFile={photoFile}
+              setPhotoFile={setPhotoFile}
+              photoPreview={photoPreview}
+              setPhotoPreview={setPhotoPreview}
+              handleSubmitForm={handleSubmitForm}
             />
           </TabPanel>
-          <TabPanel sx={{ flexGrow: 1 }} value="2">
+          <TabPanel
+            sx={{
+              flexGrow: 1,
+              height: {
+                sm: '60vh',
+              },
+            }}
+            value="2"
+          >
             <AccountInfo
               teacherData={teacherData}
+              isLoading={isLoading}
               handleBack={handleBack}
-              handleAccountSubmit={handleAccountSubmit}
+              handleSubmitForm={handleSubmitForm}
               disabled={!isTeacherInfoValid}
             />
           </TabPanel>
@@ -209,7 +206,7 @@ function FormInfo() {
       <Box sx={infoBox}>
         <Box>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
-            By setting up teacher accounts
+            By setting up teacher accounts, Teachers will be able to:
           </Typography>
           <Grid container spacing={2}>
             <GridInfo

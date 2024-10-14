@@ -10,6 +10,7 @@ import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 // Redux API and slice
 import {
@@ -44,16 +45,25 @@ const TeacherListPage = () => {
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
 
-  // Get all teachers
+  // useGetAllTeachersQuery : a hook return function for fetching all teachers records
   const {
     data: allTeachersData,
     isLoading,
     isSuccess,
     isError,
+    error,
   } = useGetAllTeachersQuery({ search: searchTerm });
 
-  // Delete teacher
-  const [deleteTeacher] = useDeleteTeacherMutation();
+  // useDeleteTeacherMutation : a hook return function for Delete teacher
+  const [
+    deleteTeacher,
+    {
+      isLoading: isDeleting,
+      isError: isDeleteError,
+      isSuccess: isDeleteSuccess,
+      error: deleteError,
+    },
+  ] = useDeleteTeacherMutation();
 
   // Format data
   useEffect(() => {
@@ -126,7 +136,8 @@ const TeacherListPage = () => {
         }),
       );
     } finally {
-      setSelectedItems([]); // Clear selected items
+      setSelectedItems([]);
+      // Clear selected items
     }
   };
 
@@ -135,7 +146,7 @@ const TeacherListPage = () => {
     return <LoadingCircle />;
   }
   if (isError) {
-    return <div>Error fetching data</div>;
+    return <SomethingWentWrong description={`${error.data.message}`} />;
   }
 
   return (
@@ -179,7 +190,7 @@ const TeacherListPage = () => {
         onView={handleView}
         hideColumns={['phoneNumber', 'email']}
         emptyTitle="No Teachers"
-        emptySubTitle="No Teachers Available. Click 'ADD TEACHER' to create one."
+        emptySubTitle="No Teachers Available."
         onSelectedDelete={handleMultiDelete}
       />
       {/* Delete confirmation modal */}
