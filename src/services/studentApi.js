@@ -8,10 +8,14 @@ export const studentApi = baseApi.injectEndpoints({
         url: 'students',
         method: 'GET',
         params: data.class_id ? {
+          page: data.page,
+          limit: data.rowsPerPage,
           class_id: data.class_id,
           search: data.search,
         } : {
-          search: data.search
+          page: data.page+1,
+          limit: data.limit,
+          search: data.search,
         },
         credentials: 'include',
       }),
