@@ -195,7 +195,7 @@ const TeacherListPage = () => {
 
   // if error occur
   if (isError) {
-    return <SomethingWentWrong description={error?.data.message} />;
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   return (
