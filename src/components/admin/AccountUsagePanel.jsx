@@ -43,8 +43,6 @@ const AccountUsagePanel = ({
   console.log(isSubscriptionActive);
   console.log(plans);
 
-  const [seeMore, setSeeMore] = useState(false);
-
   const activePlan = plans.find(
     (plan) => plan.type.toLowerCase() === currentSubscription,
   );
