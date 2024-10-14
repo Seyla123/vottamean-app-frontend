@@ -119,7 +119,7 @@ const StudentListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.data.message,
+          message: error.data.message || 'Failed to delete student',
           severity: 'error',
         }),
       );
@@ -127,7 +127,7 @@ const StudentListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: deleteManyError.data.message,
+          message: deleteManyError.data.message || 'Failed to delete students',
           severity: 'error',
         }),
       );
