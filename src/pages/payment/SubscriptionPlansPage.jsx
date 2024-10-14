@@ -14,6 +14,8 @@ import CancelSubscription from './CancelSubscription';
 import { useGetUserProfileQuery } from '../../services/userApi';
 import FormComponent from '../../components/common/FormComponent';
 import { grey } from '@mui/material/colors';
+import { Leaf, Sprout, TreeDeciduous } from 'lucide-react';
+import PricingPlanCard from '../../components/admin/PricingPlanCard';
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -45,9 +47,7 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
     borderRadius: 10,
     display: 'flex',
     marginRight: 0,
-
     justifyContent: 'center',
-
     '&.Mui-selected': {
       color: theme.palette.text.primary.main,
       backgroundColor: theme.palette.background.default,
@@ -75,35 +75,77 @@ const SubscriptionPlansPage = () => {
   const plans = [
     {
       type: 'Basic',
-      monthlyPrice: 'Free Trial',
-      yearlyPrice: 'Free Trial',
-      description: 'Access to basic features and support.',
+      icon: <Leaf size={24} />,
+      monthlyPrice: '$0',
+      yearlyPrice: '$0',
+      description: 'Discover WaveTrack',
+      features: [
+        'Basic Reports',
+        'Basic Attendance',
+        'Basic Class',
+        'Basic Subject',
+        'Basic Student',
+        'Basic Teacher',
+        'Basic Account',
+      ],
       isFree: true,
     },
     {
       type: 'Standard',
-      monthlyPrice: '$3.99/month',
-      yearlyPrice: '$39.99/year',
-      description: 'Standard features with more capacity and priority support.',
+      icon: <Sprout size={24} />,
+      monthlyPrice: '$3.99',
+      yearlyPrice: '$39.99',
+      description: 'Ideal for growing businesses',
+      features: [
+        'Advanced Reports',
+        'Advanced Attendance',
+        'Advanced Class',
+        'Advanced Subject',
+        'Advanced Student',
+        'Advanced Teacher',
+        'Advanced Account',
+        'Advanced Reports',
+      ],
       isFree: false,
     },
     {
       type: 'Premium',
-      monthlyPrice: '$9.99/month',
-      yearlyPrice: '$99.99/year',
-      description: 'All features and top-tier support for large institutions.',
+      icon: <TreeDeciduous size={24} />,
+      monthlyPrice: '$9.99',
+      yearlyPrice: '$99.99',
+      description: 'Built for school manager',
+      features: [
+        'Premium Reports',
+        'Premium Attendance',
+        'Premium Class',
+        'Premium Subject',
+        'Premium Student',
+        'Premium Teacher',
+        'Premium Account',
+        'Premium Reports',
+        'Premium Attendance',
+        'Premium Class',
+      ],
       isFree: false,
     },
   ];
 
   return (
-    <FormComponent
-      title={'My Subscription'}
-      subTitle={'Upgrade your Marketing Platform'}
-      sx={{ p: 4 }}
-    >
+    <FormComponent sx={{ p: 4 }}>
+      <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
+        My Subscription
+      </Typography>
+      <Typography variant="body1" textAlign={'center'}>
+        Upgrade your Marketing Platform
+      </Typography>
       {/* Tabs for switching between Monthly and Yearly billing cycles */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mx: 'auto' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          mx: 'auto',
+        }}
+      >
         <Box
           sx={{
             width: '100%',
@@ -131,77 +173,36 @@ const SubscriptionPlansPage = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          gap: 4,
-          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: 'start',
+          gap: 3,
+          mt: 14,
+          mx: 'auto',
+          width: '100%',
+          height: '800px',
+          maxWidth: '1000px',
         }}
       >
         {plans.map((plan) => (
-          <Card
+          <PricingPlanCard
+            plan={plan}
             key={plan.type}
-            sx={{
-              minWidth: 300,
-              border: '1px solid #ccc',
-              borderRadius: 2,
-              boxShadow: 3,
-              '&:hover': {
-                boxShadow: 6,
-                borderColor: 'primary.main',
-              },
-              textAlign: 'center',
-            }}
-          >
-            <CardContent>
-              <Typography variant="h5">{plan.type} Plan</Typography>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
-                {plan.isFree
-                  ? 'Free Trial'
-                  : billingCycle === 'monthly'
-                    ? plan.monthlyPrice
-                    : plan.yearlyPrice}
-              </Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
-                {plan.description}
-              </Typography>
-              {/* Show current subscription status */}
-              {currentSubscription === plan.type.toLowerCase() &&
-                isSubscriptionActive && (
-                  <Typography
-                    variant="body2"
-                    sx={{ mt: 1, color: 'success.main' }}
-                  >
-                    You are currently subscribed to this plan.
-                  </Typography>
-                )}
-            </CardContent>
-            <CardActions sx={{ justifyContent: 'center', mb: 2 }}>
-              {/* Only show the SubscriptionButton if it's not a Free or Basic plan */}
-              {!plan.isFree && (
-                <SubscriptionButton
-                  planType={plan.type}
-                  adminId={adminId}
-                  currentPlan={currentSubscription}
-                  billingCycle={billingCycle}
-                  isFree={plan.isFree}
-                  isSubscribed={
-                    currentSubscription === plan.type.toLowerCase() &&
-                    isSubscriptionActive
-                  }
-                />
-              )}
-            </CardActions>
-          </Card>
+            billingCycle={billingCycle}
+            adminId={adminId}
+            currentSubscription={currentSubscription}
+            isSubscriptionActive={isSubscriptionActive}
+          />
         ))}
       </Box>
-
-      {/* Add the CancelSubscription component */}
-      {isSubscriptionActive && (
-        <Box>
-          <Typography variant="h4" sx={{ mt: 4 }} gutterBottom align="center">
-            Cancel your Subscription
-          </Typography>
-          <CancelSubscription adminId={adminId} />
-        </Box>
-      )}
+      <Box mt={14}>
+        <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
+          Cancel Subscription
+        </Typography>
+        <Typography variant="body1" textAlign={'center'} mt={2}>
+          Cancel your Subscription
+        </Typography>
+        {/* Add the CancelSubscription component */}
+        {isSubscriptionActive && <CancelSubscription adminId={adminId} />}
+      </Box>
     </FormComponent>
   );
 };
