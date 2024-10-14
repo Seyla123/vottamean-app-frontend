@@ -15,7 +15,7 @@ import { transformSessionsData } from '../../../utils/formatData';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
   { id: 'time', label: 'Time' },
@@ -140,7 +140,7 @@ function SessionListPage() {
 
   // if error
   if (isError) {
-    return <SomthingWentWrong />
+    return <SomethingWentWrong />
   }
 
   return (

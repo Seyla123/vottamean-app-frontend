@@ -198,13 +198,13 @@ function ClassPeriodListPage() {
 
 
   // if data is loading
-  if(isLoading) {
+  if (isLoading) {
     return <LoadingCircle />;
   }
-  
+
   // if there is an error
-  if(isError){
-    return <SomthingWentWrong/>
+  if (isError) {
+    return <SomethingWentWrong />
   }
 
   return (

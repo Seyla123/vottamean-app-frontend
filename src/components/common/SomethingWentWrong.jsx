@@ -1,17 +1,17 @@
 
 import React from 'react';
-import { Box, Typography, Button, Container, Stack } from '@mui/material';
+import { Box, Typography, Container, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import EorrImage from '../../assets/images/500-error.svg';
 import StyledButton from './StyledMuiButton';
 
-const SomthingWentWrong = ({
+const SomethingWentWrong = ({
   imageUrl = EorrImage,
   title = 'Oops, Something Went Wrong!',
   description = "We're experiencing some issue. Please try again",
   buttonText = 'Go to home',
-  customStyles ,
+  customStyles,
   defaultBtn = true,
   children
 }) => {
@@ -75,25 +75,25 @@ const SomthingWentWrong = ({
           </Typography>
         </Box>
         {defaultBtn && (
-        <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
-        <StyledButton
-          component={Link}
-          to={homeLink}
-          variant="contained"
-          color="primary"
-          size="large"
-        >
-          {buttonText}
-        </StyledButton>
-        <StyledButton
-          onClick={() => window.location.reload()}
-          variant="contained"
-          color="primary"
-          size="large"
-        >
-          Refresh Page
-        </StyledButton>
-        </Stack>
+          <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
+            <StyledButton
+              component={Link}
+              to={homeLink}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              {buttonText}
+            </StyledButton>
+            <StyledButton
+              onClick={() => window.location.reload()}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Refresh Page
+            </StyledButton>
+          </Stack>
         )}
         {children}
 
@@ -102,4 +102,4 @@ const SomthingWentWrong = ({
   );
 };
 
-export default SomthingWentWrong;
+export default SomethingWentWrong;

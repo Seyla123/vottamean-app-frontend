@@ -12,10 +12,12 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
 
   // If checkAuth query is still loading, we can render a loading screen
   if (isLoading) return <LoadingPage/>;
+  
   // If not authenticated, redirect to the login page
   if (!isAuthenticated) {
     return <Navigate to="/auth/signin" />;
   }
+
   // redirect to the relevant dashboard
   // depending on their role
   if (window.location.pathname === '/') {

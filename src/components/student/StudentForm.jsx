@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
-import SomthingWentWrong from '../common/SomthingWentWrong';
+import SomethingWentWrong from '../common/SomethingWentWrong';
 import LoadingCircle from '../loading/LoadingCircle';
 
 // - Material UI Components
@@ -168,7 +168,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
 
   // if there is an error fetching class data
   if (classDataError) {
-    return <SomthingWentWrong customStyles={{minHeight: '70vh'}} />;
+    return <SomethingWentWrong customStyles={{ minHeight: '70vh' }} />;
   }
 
   return (
@@ -187,7 +187,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
           }}
         >
           <img
-            src={previewUrl || studentData.photo }
+            src={previewUrl || studentData.photo}
             alt="Profile"
             style={{ width: '120px', borderRadius: '50%' }}
           />
@@ -315,7 +315,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
             justifyContent: 'flex-end',
           }}
         >
-          <StyledButton variant="outlined" color="inherit" size="large" onClick={()=> navigate('/admin/students')}>
+          <StyledButton variant="outlined" color="inherit" size="large" onClick={() => navigate('/admin/students')}>
             Cancel
           </StyledButton>
           <StyledButton

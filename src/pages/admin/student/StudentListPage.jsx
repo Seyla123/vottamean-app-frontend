@@ -18,7 +18,7 @@ import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { BookIcon } from 'lucide-react';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -183,7 +183,7 @@ const StudentListPage = () => {
 
   //If loading is error occurs
   if (isError) {
-    return <SomthingWentWrong />
+    return <SomethingWentWrong />
   }
   return (
     <Box>
@@ -217,11 +217,11 @@ const StudentListPage = () => {
               data={classes}
               value={selectedClass}
               customStyles={{ maxHeight: '50px', width: '150px' }}
-              icon={<BookIcon size={18}  color='#B5B5B5' />}
+              icon={<BookIcon size={18} color='#B5B5B5' />}
             />
 
             <SearchComponent
-              sx={{ width: '100%', maxWidth: '700px'}}
+              sx={{ width: '100%', maxWidth: '700px' }}
               placeholder="Search"
               value={searchTerm}
               onChange={handleSearchChange}

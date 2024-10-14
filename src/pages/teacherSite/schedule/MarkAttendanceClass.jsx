@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import WelcomeCard from '../../../components/common/WelcomeCard';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
   {
@@ -66,7 +66,7 @@ function MarkAttendanceClass() {
     error: errorStatus,
   } = useGetStatusQuery();
 
-// useMarkAttendanceMutation : a hook return fuction for mark attendance students
+  // useMarkAttendanceMutation : a hook return fuction for mark attendance students
   const [
     markAttendance,
     {
@@ -93,7 +93,7 @@ function MarkAttendanceClass() {
     }
   }, [studentsData, isSuccess]);
 
-    // if get all status is success,
+  // if get all status is success,
   // then set status to status data
   useEffect(() => {
     if (statusData && isSuccessStatus) {
@@ -139,10 +139,10 @@ function MarkAttendanceClass() {
 
   // if isError or isErrorStatus is true, then show error message
   if (isError) {
-    return <SomthingWentWrong description={error?.data.message} />;
+    return <SomethingWentWrong description={error?.data.message} />;
   }
   if (isErrorStatus) {
-    <SomthingWentWrong description={errorStatus?.data.message} />;
+    <SomethingWentWrong description={errorStatus?.data.message} />;
   }
 
   //handle submit mark attendance student

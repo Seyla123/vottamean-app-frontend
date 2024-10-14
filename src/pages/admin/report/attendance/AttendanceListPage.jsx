@@ -11,7 +11,7 @@ import ReportHeader from "../../../../components/attendance/ReportHeader";
 import DeleteConfirmationModal from "../../../../components/common/DeleteConfirmationModal";
 import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
 import { Box, Stack } from '@mui/material'
-import { tableShadow } from './../../../../styles/global'
+import { tableShadow, shadow } from './../../../../styles/global'
 
 const columns = [
   { id: "id", label: "StudentID" },
@@ -92,7 +92,7 @@ const AttendanceListPage = () => {
   return (
     <FormComponent title={"Attendance List"}>
       <ReportHeader data={rows} title={filter.filterLabel} />
-      <Stack sx={{...tableShadow}}>
+      <Stack sx={{...shadow}}>
       <AttendanceFilter />
       <AttendanceTable
         rows={rows}

@@ -9,22 +9,22 @@ import teacherIcon from '../../../assets/images/teacher-93.svg';
 import checkListIcon from '../../../assets/images/checklist-1-97.svg';
 import WelcomeCard from '../../../components/common/WelcomeCard'
 import LoadingCircle from '../../../components/loading/LoadingCircle';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const TeacherDashboardPage = () => {
   const { data: user, isLoading, error } = useGetUserProfileQuery();
 
-  if (isLoading){
-    return <LoadingCircle/>
+  if (isLoading) {
+    return <LoadingCircle />
   };
-  if (error){
-    return <SomthingWentWrong/>
+  if (error) {
+    return <SomethingWentWrong />
   };
   console.log(user);
-  
-  const {first_name}  = user.data.teacherProfile.Info;
+
+  const { first_name } = user.data.teacherProfile.Info;
   const { school_name } = user.data.teacherProfile.School;
-  
+
   return (
     <FormComponent
       title={'Dashboard'}
