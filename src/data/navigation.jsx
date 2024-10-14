@@ -21,19 +21,19 @@ const navigation = [
     icon: <HomeIcon />,
   },
   {
-    segment: 'admin/sessions',
-    title: 'Session',
-    icon: <CalendarMonthIcon />,
-  },
-  {
-    segment: 'admin/classes',
-    title: 'Class',
-    icon: <ClassIcon />,
+    segment: 'admin/class-periods',
+    title: 'Class Period',
+    icon: <ClassPeriodIcon />,
   },
   {
     segment: 'admin/subjects',
     title: 'Subject',
     icon: <SubjectIcon />,
+  },
+  {
+    segment: 'admin/classes',
+    title: 'Class',
+    icon: <ClassIcon />,
   },
   {
     segment: 'admin/students',
@@ -46,20 +46,17 @@ const navigation = [
     icon: <TeacherIcon />,
   },
   {
-    segment: 'admin/class-periods',
-    title: 'Class Period',
-    icon: <ClassPeriodIcon />,
-  },
-  {
-    segment: 'payment',
-    title: 'Payment Trial',
-    icon: <ClassPeriodIcon />,
+    segment: 'admin/sessions',
+    title: 'Session',
+    icon: <CalendarMonthIcon />,
   },
   {
     segment: 'admin/attendance',
     title: 'Attendance',
     icon: <ChecklistIcon />,
   },
+
+
   {
     segment: 'admin/reports',
     title: 'Report',
@@ -76,7 +73,11 @@ const navigation = [
   { kind: 'divider' },
 
   { kind: 'header', title: 'General' },
-
+  {
+    segment: 'payment',
+    title: 'Payment',
+    icon: <ClassPeriodIcon />,
+  },
   {
     segment: 'admin/settings',
     title: 'Settings',
