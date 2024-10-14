@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Typography, Paper, Chip } from '@mui/material';
+import { Box, Typography, Paper, Chip, Skeleton } from '@mui/material';
 import { styled } from '@mui/system';
 import { shadow } from '../../styles/global';
 import greetingImage from '../../assets/images/startup-1.svg';
-import { School, Subtitles } from 'lucide-react';
+import { School } from 'lucide-react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
@@ -13,20 +14,29 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     height: '100%',
     width: '100%',
     overflow: 'hidden',
-  }));
-function WelcomeCard({name, subTitle, schoolName,img=greetingImage}) {
+}));
+function WelcomeCard({ name, subTitle, schoolName, img = greetingImage, isLoading }) {
 
     const currentHour = new Date().getHours();
     let greeting = 'Good evening';
-  
+
     if (currentHour < 12) {
-      greeting = 'Good morning';
+        greeting = 'Good morning';
     } else if (currentHour < 18) {
-      greeting = 'Good afternoon';
+        greeting = 'Good afternoon';
     }
-    
+
+    if (isLoading) {
+        return <Skeleton
+            variant="rectangular"
+            height={200}
+            sx={{ borderRadius: 4 }}
+        />
+    }
+
     return (
         <StyledPaper elevation={3} sx={shadow}>
+
             <Box
                 position={'relative'}
                 sx={{
@@ -37,6 +47,7 @@ function WelcomeCard({name, subTitle, schoolName,img=greetingImage}) {
                 }}
             >
                 <Box sx={{ position: 'relative', zIndex: '100', width: '100%' }}>
+
                     <Chip
                         icon={<School size={16} />}
                         label={schoolName || 'School Name'}
@@ -47,7 +58,7 @@ function WelcomeCard({name, subTitle, schoolName,img=greetingImage}) {
                         {greeting}, {name}! 👋
                     </Typography>
                     <Typography variant="subtitle1">
-                       {subTitle}
+                        {subTitle}
                     </Typography>
                 </Box>
                 <img
@@ -61,6 +72,7 @@ function WelcomeCard({name, subTitle, schoolName,img=greetingImage}) {
                         zIndex: 1,
                     }}
                 />
+
             </Box>
         </StyledPaper>
     )
