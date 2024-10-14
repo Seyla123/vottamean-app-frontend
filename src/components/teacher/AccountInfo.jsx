@@ -142,7 +142,7 @@ const AccountInfo = ({
             >
               Back
             </StyledButton>
-            <StyledButton fullWidth variant="contained" type="submit">
+            <StyledButton fullWidth variant="contained" type="submit" disabled={isLoading}>
               {isLoading ? 'Adding...' : 'Add'}
             </StyledButton>
           </Stack>

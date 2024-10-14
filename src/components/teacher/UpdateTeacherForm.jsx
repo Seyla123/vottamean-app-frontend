@@ -17,6 +17,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+
 // Redux API
 import {
   useGetTeacherQuery,
@@ -30,14 +31,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // react hook form
 import { useForm, Controller } from 'react-hook-form';
 
-// formated data 
+// formated data
 import { formatTeacherFormData } from '../../utils/formatData';
 
 // icons from luicide react
 import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
 
 // Custom components
-import LoadingCircle from '../../components/loading/LoadingCircle';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
@@ -48,24 +48,32 @@ import StyledButton from '../common/StyledMuiButton';
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   // States
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileImg, setProfileImg] = useState('');
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
-  
-  // Get teacher data
+
+  // useGetTeacherQuery : a hook return function for fetching all teacher data
   const {
     data: teacherData,
     isLoading,
     isError,
+    isSuccess,
+    error
   } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId });
-  // Update teacher api
+
+  // useUpdateTeacherMutation : a hook return function for Update teacher api
   const [
     updateTeacher,
-    { isLoading: isUpdateLoading, isError: isUpdateError, error: updateError },
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      error: updateError,
+      isSuccess: isUpdateSuccess,
+    },
   ] = useUpdateTeacherMutation();
 
   // React hook form
@@ -107,7 +115,32 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         setOriginalData(teacherInfo);
       }
     }
-  }, [teacherData, reset]);
+  }, [teacherData, reset, isSuccess]);
+
+  // Check if the update was successful and if so, close the modal and navigate to teachers page
+  // If the update was not successful, show an error message
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Teacher information updated successfully!',
+          severity: 'success',
+        }),
+      );
+      onClose();
+      navigate('/admin/teachers');
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Update failed: ' + (updateError.message || 'Unknown error'),
+          severity: 'error',
+          autoHideDuration: 6000,
+        }),
+      );
+    }
+  }, [isUpdateError, isUpdateSuccess, dispatch, updateError]);
 
   // Handle submit
   const onSubmit = async (data) => {
@@ -134,35 +167,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     }
 
     // Update teacher with new data
-    try {
-      const result = await updateTeacher({
-        id: teacherId,
-        updates: formData,
-      }).unwrap();
-      if (result.status === 'success') {
-        dispatch(
-          setSnackbar({
-            open: true,
-            message: 'Teacher information updated successfully!',
-            severity: 'success',
-            autoHideDuration: 6000,
-          }),
-        );
-        onClose();
-        navigate('/admin/teachers');
-      } else {
-        throw new Error('Update failed');
-      }
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Update failed: ' + (updateError.message || 'Unknown error'),
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
-    }
+    await updateTeacher({ id: teacherId, updates: formData }).unwrap();
   };
 
   // handle change photo
@@ -195,11 +200,16 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     setValue('photo', null);
   };
 
-  if (isLoading) return <LoadingCircle />;
+
   if (isError)
-    return <Typography color="error">Error loading teacher data</Typography>;
+    dispatch(setSnackbar({
+      open: true, message: `Error fetching teacher data, ${error.data?.message}`, severity: 'error'
+    }));
+
   if (isUpdateError)
-    return <Typography color="error">Error updating teacher data</Typography>;
+    dispatch(setSnackbar({
+      open: true, message: `Error updating teacher data , ${updateError.data?.message}`, severity: 'error'
+    }));
 
   return (
     <Modal
@@ -325,15 +335,15 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               <Controller
                 name="gender"
                 control={control}
-                defaultValue="" 
-                rules={{ required: 'Gender is required' }} 
+                defaultValue=""
+                rules={{ required: 'Gender is required' }}
                 render={({ field }) => (
                   <GenderSelect
                     control={control}
                     errors={errors}
                     name={field.name}
                     label="Gender"
-                    defaultValue={field.value} 
+                    defaultValue={field.value}
                     disabled={false}
                   />
                 )}
@@ -426,6 +436,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   type="submit"
                   variant="contained"
                   sx={{ width: { xs: '100%', sm: '160px' } }}
+                  disabled={isUpdateLoading}
                 >
                   {isUpdateLoading ? 'Saving...' : 'Save Changes'}
                 </Button>
