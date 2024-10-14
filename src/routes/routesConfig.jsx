@@ -366,20 +366,7 @@ const routesConfig = [
         children: [
           {
             path: 'attendance',
-            children: [
-              {
-                path: '',
-                element: <AttendanceListPage />,
-              },
-              {
-                path: ':id',
-                element: <AttendanceViewPage />,
-              },
-              {
-                path: 'reports',
-                element: <AttendanceReportPage />,
-              },
-            ],
+            element: <AttendanceReportPage />,
           },
         ],
       },

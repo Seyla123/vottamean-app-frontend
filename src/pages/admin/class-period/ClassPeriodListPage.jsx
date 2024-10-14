@@ -24,7 +24,7 @@ import {
   formatTimeToHHMM,
 } from '../../../utils/formatHelper';
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
-import SomthingWentWrong from '../../../components/common/SomthingWentWrong';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
