@@ -85,7 +85,6 @@ const AttendanceListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-  console.log('this filter :', filter);
 
 
   return (
