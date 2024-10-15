@@ -9,11 +9,11 @@ export const studentApi = baseApi.injectEndpoints({
         method: 'GET',
         params: data.class_id ? {
           page: data.page,
-          limit: data.rowsPerPage,
+          limit: data.limit,
           class_id: data.class_id,
           search: data.search,
         } : {
-          page: data.page+1,
+          page: data.page,
           limit: data.limit,
           search: data.search,
         },

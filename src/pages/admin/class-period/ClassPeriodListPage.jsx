@@ -21,7 +21,6 @@ import {
 import {
   calculatePeriod,
   formatTimeTo12Hour,
-  formatTimeToHHMM,
 } from '../../../utils/formatHelper';
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
@@ -38,16 +37,34 @@ const fields = [
 ];
 
 function ClassPeriodListPage() {
+  const dispatch = useDispatch();
+
+  // - rows: the class periods that are currently being displayed on the page
   const [rows, setRows] = useState([]);
+
+  // - selectedClassPeriod: the selected class period that currently selected
   const [selectedClassPeriod, setSelectedClassPeriod] = useState(null);
+
+
+  // - createModalOpen: the state of the create class period modal
+  // - editModalOpen: the state of the edit class period modal
+  // - viewModalOpen: the state of the view class period modal
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
-  const dispatch = useDispatch();
+  // - rowsPerPage: the number of rows per page 
+  // - page: the current page number that is being displayed
+  // - totalRows: the total number of rows that are available 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalRows, setTotalRows] = useState(0)
+
+  // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
-  const { data, isLoading, isSuccess, isError, isFetching } = useGetClassPeriodQuery();
+  //useGetClassPeriodQuery : a hook that return a function to fetch all class periods
+  const { data, isLoading, isSuccess, isError, isFetching, error } = useGetClassPeriodQuery({ page: page + 1, limit: rowsPerPage });
 
   // useDeleteManyClassPeriodsMutation : returns a function to delete many class periods
   const [
@@ -60,6 +77,7 @@ function ClassPeriodListPage() {
     },
   ] = useDeleteManyClassPeriodsMutation();
 
+  // useCreateClassPeriodMutation : a hook that returns a function to create a class period
   const [
     deleteClassPeriod,
     {
@@ -69,10 +87,9 @@ function ClassPeriodListPage() {
       error: deleteError,
     },
   ] = useDeleteClassPeriodMutation();
-  const [createClassPeriod] = useCreateClassPeriodMutation();
-  const [updateClassPeriod] = useUpdateClassPeriodMutation();
-  const [selectedClass, setSelectedClass] = useState(null);
+  const [createClassPeriod, { isLoading: isCreating, isSuccess: isCreateSuccess, isError: isCreateError, error: createError }] = useCreateClassPeriodMutation();
 
+  // when the class periods records are fetched successfully, set the rows state
   useEffect(() => {
     if (data && isSuccess) {
       const formattedData = data.data.map((item) => ({
@@ -82,6 +99,7 @@ function ClassPeriodListPage() {
         period: calculatePeriod(item.start_time, item.end_time),
       }));
       setRows(formattedData);
+      setTotalRows(data.results);
     }
   }, [
     data,
@@ -130,11 +148,13 @@ function ClassPeriodListPage() {
     isDeletingMany,
     isDeleteManyError,
     isDeleteManySuccess,
-    deleteManyError])
+    deleteManyError
+  ]);
 
-  const handleCreate = async (formData) => {
-    try {
-      await createClassPeriod(formData).unwrap();
+  // when create is successful, show a snackbar with a success message
+  // when create is failed, show a snackbar with an error message
+  useEffect(() => {
+    if (isCreateSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -143,57 +163,59 @@ function ClassPeriodListPage() {
         }),
       );
       setCreateModalOpen(false);
-    } catch (error) {
+    } else if (isCreateError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.data?.message || 'Failed to create class period',
+          message: createError?.data?.message || 'Failed to create class period',
           severity: 'error',
         }),
       );
+      setCreateModalOpen(false);
     }
+  }, [isCreateError, isCreateSuccess, dispatch]);
+
+  // Handle page change
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  }
+  // Handle row per page change
+  const handleChangeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
   };
 
+  // handle create class period
+  const handleCreate = async (formData) => {
+    await createClassPeriod(formData).unwrap();
+  };
+
+  // handle delete class period clicked
   const handleDelete = (row) => {
     setSelectedClassPeriod(row);
     dispatch(setModal({ open: true }));
   };
 
+  // handle delete one confirmed
   const handleDeleteConfirmed = async () => {
     dispatch(setModal({ open: false }));
-    try {
-      await deleteClassPeriod(selectedClassPeriod.period_id).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Class period deleted successfully',
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error.data?.message || 'Failed to delete class period',
-          severity: 'error',
-        }),
-      );
-    }
+    await deleteClassPeriod(selectedClassPeriod.period_id).unwrap();
   };
 
+  // Delete Multiple Class Periods
+  const handleSelectedDelete = async (selectedIds) => {
+    await deleteManyClassPeriods(selectedIds).unwrap();
+  };
+
+  // View Class Period
   const handleView = (row) => {
-    setSelectedClass(row);
+    setSelectedClassPeriod(row);
     setViewModalOpen(true);
   };
 
+  // Edit Class Period
   const handleEditOpen = (row) => {
-    setSelectedClass(row);
+    setSelectedClassPeriod(row);
     setEditModalOpen(true);
-  };
-
-  // DELETE MULTIPLE FUNCTIONS
-  const handleSelectedDelete = async (selectedIds) => {
-    await deleteManyClassPeriods(selectedIds).unwrap();
   };
 
 
@@ -204,13 +226,13 @@ function ClassPeriodListPage() {
 
   // if there is an error
   if (isError) {
-    return <SomethingWentWrong />
+    return <SomethingWentWrong description={error?.data?.message} />
   }
 
   return (
     <FormComponent
       title="Class Period List"
-      subTitle={`Total Class Periods: ${rows.length}`}
+      subTitle={`Total Class Periods: ${totalRows}`}
     >
       <Stack direction="row" justifyContent="flex-end">
         <Button
@@ -234,9 +256,14 @@ function ClassPeriodListPage() {
         hideColumns={['period_id']}
         emptyTitle="No Class Periods"
         emptySubTitle="No class periods available"
-        isLoading={isLoading}
+        isLoading={isFetching || isLoading}
         showNO={false}
         idField="period_id"
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
       />
 
       <CreateModal
@@ -248,6 +275,7 @@ function ClassPeriodListPage() {
         onSubmit={handleCreate}
         validationSchema={ClassPeriodValidator}
         submitText={'Create Period'}
+        isLoading={isCreating}
       />
 
       <EditModal
@@ -258,7 +286,7 @@ function ClassPeriodListPage() {
         fields={fields}
         initialData={selectedClassPeriod}
         validationSchema={ClassPeriodListPage}
-        id={selectedClass?.classperiod_id}
+        id={selectedClassPeriod?.period_id}
         getDataQuery={useGetClassPeriodByIdQuery}
         useUpdateDataMutation={useUpdateClassPeriodMutation}
       />
@@ -276,7 +304,7 @@ function ClassPeriodListPage() {
         onConfirm={handleDeleteConfirmed}
         itemName={
           selectedClassPeriod
-            ? `Period ${selectedClassPeriod.period}`
+            ? `${selectedClassPeriod.start_time} - ${selectedClassPeriod.end_time}`
             : 'this period'
         }
       />

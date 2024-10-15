@@ -31,12 +31,21 @@ const columns = [
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // - rows: the student records that are currently being displayed on the page
+  // - searchTerm: the search term that is currently being used to filter the table
+  // - selectedClass: the id class of the filter class that is currently being selected
   const [rows, setRows] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
 
-  const [rowsPerPage,setRowsPerPage] = useState(5);
+  // - selectedStudent: the student records that are currently being selected
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  // - rowsPerPage: the number of rows per page 
+  // - page: the current page number that is being displayed
+  // - totalRows: the total number of rows that are available 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [totalRows, setTotalRows] = useState(0)
 
@@ -45,16 +54,19 @@ const StudentListPage = () => {
     value: 'all',
     label: 'All'
   }]
+
+  //classes : the state for filter classes
   const [classes, setClasses] = useState(allSelector);
 
+  // open: the state of the delete confirmation moda
   const { modal } = useSelector((state) => state.ui);
 
   //useGetAllStudentsQuery : a hook for return function to fetch students record
-  const { data, isLoading, isError, isSuccess, isFetching } =
+  const { data, isLoading, isError, isSuccess, isFetching, error } =
     useGetAllStudentsQuery({
       search: searchTerm,
       class_id: selectedClass,
-      page: page,
+      page: page + 1,
       limit: rowsPerPage,
     });
 
@@ -65,7 +77,7 @@ const StudentListPage = () => {
       isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error,
+      error: deleteError,
     },
   ] = useDeleteStudentMutation();
 
@@ -119,7 +131,7 @@ const StudentListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: error.data.message,
+          message: deleteError.data.message || 'Failed to delete student',
           severity: 'error',
         }),
       );
@@ -127,7 +139,7 @@ const StudentListPage = () => {
       dispatch(
         setSnackbar({
           open: true,
-          message: deleteManyError.data.message,
+          message: deleteManyError.data.message || 'Failed to delete students',
           severity: 'error',
         }),
       );
@@ -143,13 +155,15 @@ const StudentListPage = () => {
   ]);
 
 
-
-  const handleChangePage = (newPage)=>{
+  // Handle page change
+  const handleChangePage = (newPage) => {
     setPage(newPage);
-  }  
+  }
+  // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
   };
+
   //classes filter change
   const handleClassesChange = (event) => {
     if (event.target.value === 'all') {
@@ -187,6 +201,7 @@ const StudentListPage = () => {
     await deleteManyStudents(selectedIds).unwrap();
   };
 
+  // handle click view
   const handleView = (row) => {
     navigate(`/admin/students/${row.id}`);
   };
@@ -195,14 +210,12 @@ const StudentListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-  console.log('this is page :', page , 'this row ', rowsPerPage);
-  console.log('this student data :', rows);
-  
-  //If loading is error occurs
+
+  //If error occurs
   if (isError) {
-    return <SomethingWentWrong />
+    return <SomethingWentWrong description={error?.data?.message}/>
   }
-  
+
   return (
     <Box>
       <FormComponent

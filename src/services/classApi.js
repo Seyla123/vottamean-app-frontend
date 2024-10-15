@@ -2,16 +2,18 @@ import { baseApi } from './baseApi';
 
 export const classApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Fetch classes data
+    // Get all classes
     getClassesData: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: 'classes',
         method: 'GET',
+        params: params,
         credentials: 'include',
       }),
       providesTags: ['Classes'],
     }),
-    //GEt class by id
+    
+    // Get class by ID
     getClassesById: builder.query({
       query: (id) => ({
         url: `classes/${id}`,
@@ -20,7 +22,8 @@ export const classApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Classes'],
     }),
-    //Post Class
+
+    // Create a new class
     postClassesData: builder.mutation({
       query: (data) => ({
         url: `classes`,
@@ -30,7 +33,8 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Classes'],
     }),
-    //Update Class
+
+    // Update an existing class
     updateClassesData: builder.mutation({
       query: ({ id, formData }) => ({
         url: `classes/${id}`,
@@ -40,7 +44,8 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Classes'],
     }),
-    //Delete Class
+
+    // Delete a class by ID
     deleteClassesData: builder.mutation({
       query: (id) => ({
         url: `classes/${id}`,
@@ -50,7 +55,7 @@ export const classApi = baseApi.injectEndpoints({
       invalidatesTags: ['Classes'],
     }),
 
-    // Delete many classes
+    // Delete multiple classes
     deleteManyClasses: builder.mutation({
       query: (ids) => ({
         url: `classes`,

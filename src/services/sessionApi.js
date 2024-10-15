@@ -46,10 +46,11 @@ export const sessionApi = baseApi.injectEndpoints({
     }),
     // Get all sessions
     getSessions: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: 'sessions',
         method: 'GET',
         credentials: 'include',
+        params: params,
       }),
       providesTags: ['Sessions'],
     }),

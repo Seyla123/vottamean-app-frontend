@@ -19,7 +19,7 @@ import { useGetSubjectsQuery } from '../../../services/subjectApi';
 import { useNavigate } from 'react-router-dom';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import { useDispatch } from 'react-redux';
-
+import { formatTimeTo12Hour } from '../../../utils/formatHelper'
 // - Validation Schema
 import { SessionValidator } from '../../../validators/validationSchemas';
 
@@ -46,7 +46,7 @@ const SessionCreatePage = () => {
     if (periodData) {
       const transformPeriod = periodData.data.map((item) => ({
         value: item.period_id,
-        label: `${item.start_time} - ${item.end_time}`,
+        label: `${formatTimeTo12Hour(item.start_time)} - ${formatTimeTo12Hour(item.end_time)}`,
       }));
       setPeriods(transformPeriod);
     }

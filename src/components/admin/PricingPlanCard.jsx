@@ -99,13 +99,14 @@ const PricingPlanCard = ({
                 : 'Premium'}{' '}
             :
           </Typography>
-          {plan.features.map((feature) => (
+          {plan.features.map((feature, index) => (
             <Typography
               variant="body1"
               mt={2}
               display={'flex'}
               alignItems={'center'}
               gap={2}
+              key={index}
             >
               <Check size={18} color="green" />
               {feature}

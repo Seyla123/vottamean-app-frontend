@@ -1,7 +1,7 @@
 // React and third-party libraries
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Stack, Button } from '@mui/material';
 
 // Custom components
@@ -16,8 +16,9 @@ import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import {
   useGetAllTeachersQuery,
   useDeleteTeacherMutation,
+  useDeleteManyTeachersMutation,
 } from '../../../services/teacherApi';
-import { setSnackbar } from '../../../store/slices/uiSlice';
+import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 
 // Format data
 import { teacherData } from '../../../utils/formatData';
@@ -26,9 +27,10 @@ import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 // Icon from lucide
 import { PlusIcon } from 'lucide-react';
 
+
 // Table columns
 const columns = [
-  { id: 'name', label: 'Name' },
+  { id: 'name', label: 'Full Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'email', label: 'Email' },
   { id: 'phoneNumber', label: 'Contact Number' },
@@ -38,12 +40,27 @@ const TeacherListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // - rows: the teacher records that are currently being displayed on the page
+  // - searchTerm: the search term that is currently being used to filter the table
   const [rows, setRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
+
+  // - selectedItems: the teacher records that are currently being selected
+  // - selectedTeacherId: the id of the teacher that is currently being updated
+  // - isUpdateOpen: the state of the update modal
   const [selectedItems, setSelectedItems] = useState([]);
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+
+  // - rowsPerPage: the number of rows per page 
+  // - page: the current page number that is being displayed
+  // - totalRows: the total number of rows that are available 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalRows, setTotalRows] = useState(0)
+
+  // open: the state of the delete confirmation modal
+  const { modal } = useSelector((state) => state.ui);
 
   // useGetAllTeachersQuery : a hook return function for fetching all teachers records
   const {
@@ -52,7 +69,7 @@ const TeacherListPage = () => {
     isSuccess,
     isError,
     error,
-  } = useGetAllTeachersQuery({ search: searchTerm });
+  } = useGetAllTeachersQuery({ search: searchTerm, limit: rowsPerPage, page: page + 1 });
 
   // useDeleteTeacherMutation : a hook return function for Delete teacher
   const [
@@ -65,20 +82,84 @@ const TeacherListPage = () => {
     },
   ] = useDeleteTeacherMutation();
 
-  // Format data
+  // useDeleteManyTeachersMutation : a hook return function for Delete many teachers
+  const [
+    deleteManyTeachers,
+    {
+      isLoading: isDeletingMany,
+      isError: isDeleteManyError,
+      isSuccess: isDeleteManySuccess,
+      error: deleteManyError,
+    },
+  ] = useDeleteManyTeachersMutation();
+
+  //  when the teachers records are fetched successfully, transform the data and set the rows state
   useEffect(() => {
     if (isSuccess && allTeachersData) {
       const formattedData = teacherData(allTeachersData.data);
       setRows(formattedData);
+      setTotalRows(allTeachersData.results);
     }
   }, [allTeachersData, isSuccess, searchTerm]);
+
+  // when delete is in progress, show a snackbar with a message "Deleting..."
+  // when delete is failed, show a snackbar with an error message
+  // when delete is successful, show a snackbar with a success message
+  useEffect(() => {
+    if (isDeleting || isDeletingMany) {
+      dispatch(
+        setSnackbar({ open: true, message: 'Deleting...', severity: 'info' }),
+      );
+    } else if (isDeleteSuccess || isDeleteManySuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Deleted successfully',
+          severity: 'success',
+        }),
+      );
+    } else if (isDeleteError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: deleteError.data.message || 'Failed to delete teacher',
+          severity: 'error',
+        }),
+      );
+    } else if (isDeleteManyError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: deleteManyError.data.message || 'Failed to delete teachers',
+          severity: 'error',
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    isDeleteError,
+    isDeleteSuccess,
+    isDeleting,
+    isDeletingMany,
+    isDeleteManyError,
+    isDeleteManySuccess,
+  ]);
+
+  // Handle page change
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  }
+  // Handle row per page change
+  const handleChangeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
+  };
 
   // Handle search name
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Handle Update teacher information
+  // Handle Update clicked
   const handleEdit = (teacher) => {
     setSelectedTeacherId(teacher.id);
     setIsUpdateOpen(true);
@@ -89,70 +170,38 @@ const TeacherListPage = () => {
     navigate(`/admin/teachers/${row.id}`);
   };
 
-  // Handle delete a single teacher
+  // Handle delete one clicked
   const handleDelete = (row) => {
-    setSelectedItems([row.id]);
-    setIsOpen(true);
-  };
-  // Handle delete multiple teachers
-  const handleMultiDelete = (selected) => {
-    if (selected.length > 0) {
-      setSelectedItems(selected);
-      setIsOpen(true);
-    }
+    setSelectedItems(row);
+    dispatch(setModal({ open: true }));
   };
 
-  // Confirm delete
-  const confirmDelete = async () => {
-    setIsOpen(false);
-    try {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Deleting ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-          severity: 'info',
-        }),
-      );
-      // Loop through selected items to delete
-      // Delete each of the selected teachers
-      for (const id of selectedItems) {
-        // extract the result of the mutation
-        await deleteTeacher(id).unwrap();
-      }
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Deleted successfully ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-          severity: 'success',
-        }),
-      );
-    } catch (error) {
-      console.error('Error deleting teachers:', error);
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Failed to delete ${selectedItems.length > 1 ? 'teachers' : 'teacher'}`,
-          severity: 'error',
-        }),
-      );
-    } finally {
-      setSelectedItems([]);
-      // Clear selected items
-    }
+  // Handle delete multiple teachers
+  const handleMultiDelete = async (selectedIds) => {
+    dispatch(setModal({ open: false }));
+    await deleteManyTeachers(selectedIds).unwrap();
+  };
+
+  // Handle confirm deletion of a single teacher
+  const handleConfirmDeleteOne = async () => {
+    dispatch(setModal({ open: false }));
+    await deleteTeacher(selectedItems?.id).unwrap();
   };
 
   // Loading and error state
   if (isLoading) {
     return <LoadingCircle />;
   }
+
+  // if error occur
   if (isError) {
-    return <SomethingWentWrong description={`${error.data.message}`} />;
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   return (
     <FormComponent
       title="Teacher List"
-      subTitle={`Total Teachers : ${rows.length}`}
+      subTitle={`Total Teachers : ${totalRows}`}
     >
       {/* Add Teacher Button */}
       <Stack
@@ -188,17 +237,22 @@ const TeacherListPage = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}
-        hideColumns={['phoneNumber', 'email']}
+        onSelectedDelete={handleMultiDelete}
         emptyTitle="No Teachers"
         emptySubTitle="No Teachers Available."
-        onSelectedDelete={handleMultiDelete}
+        hideColumns={['phoneNumber', 'email']}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={confirmDelete}
-        itemName={` Teacher${selectedItems.length > 1 ? 's' : ''} `}
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleConfirmDeleteOne}
+        itemName={selectedItems?.name}
       />
       {/* Update teacher modal */}
       <UpdateTeacherForm

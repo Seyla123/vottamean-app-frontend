@@ -25,19 +25,23 @@ function AttendanceFilter({ pdfData }) {
     // Get the dispatch function and the current filter state from the store
     const dispatch = useDispatch();
     const filter = useSelector((state) => state.attendance.filter);
-
-    // Get the data from the subject and class api
-    const { data: subjectData, isSuccess: isSubjectSuccess } = useGetSubjectsQuery();
-    const { data: dataClass, isSuccess: isClassSuccess } = useGetClassesDataQuery();
-
+    
     // Set the initial state for the subjects and classes
     const allSelector = [{
         value: 'all',
         label: 'All'
     }]
+    // - subjects: the state of the subjects
+    // - classes: the state of the classes
+    // - isExporting: the state of the export modal
     const [subjects, setSubjects] = useState(allSelector);
     const [classes, setClasses] = useState(allSelector);
     const [isExporting, setIsExporting] = useState(false);
+    
+
+    // Get the data from the subject and class api
+    const { data: subjectData, isSuccess: isSubjectSuccess } = useGetSubjectsQuery();
+    const { data: dataClass, isSuccess: isClassSuccess } = useGetClassesDataQuery();
 
     // When the data is loaded, format the data and set the state
     useEffect(() => {
@@ -83,10 +87,13 @@ function AttendanceFilter({ pdfData }) {
     // handle export CSV file
     const handleExportsCsv = async () => {
         setIsExporting(true);
-        console.log('Exporting CSV...', isExporting);
-
         try {
-            const blob = await fetch(`${import.meta.env.VITE_API_URL}/attendance/export-attendance`,
+            const params = new URLSearchParams({
+                subject_id: filter.subject,
+                class_id: filter.class,
+                filter: filter.filter,
+            });
+            const blob = await fetch(`/api/v1/attendance/export-attendance?${params.toString()}`,
                 { credentials: 'include' }).then((res) => res.blob());          // Create a download link and auto-download the CSV file
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
