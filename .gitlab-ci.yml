@@ -1,134 +1,44 @@
-# # Define pipeline stages
-# stages:
-#   - build
-#   - test
-#   - deploy
-
-# # Cache node_modules to speed up subsequent builds
-# cache:
-#   paths:
-#     - node_modules/
-
-# # Build job
-# build-job:
-#   stage: build
-#   image: node:16 # Use the appropriate Node.js version for your project
-#   script:
-#     - echo "Installing dependencies..."
-#     - npm ci # or npm install
-#     - echo "Building frontend..."
-#     - npm run build # Build the frontend, assuming `vite build` is part of the npm script
-#   artifacts:
-#     paths:
-#       - dist/ # Store build artifacts (dist folder or similar)
-#     expire_in: 1 week # Adjust retention as per your needs
-#   only:
-#     - main # Run build job only on the main branch
-
-# # Test job
-# test-job:
-#   stage: test
-#   image: node:16 # Same Node.js environment as in build job
-#   script:
-#     - echo "Running frontend tests..."
-#     - npm run test # Runs your test suite
-#   dependencies:
-#     - build-job
-#   artifacts:
-#     when: always
-#     paths:
-#       - test-results/ # Assuming you store test results here, adjust based on your setup
-#     expire_in: 1 week
-#   only:
-#     - merge_requests # Test on merge requests or adjust as needed
-
-# # Deploy job
-# deploy-job:
-#   stage: deploy
-#   image: docker:latest
-#   script:
-#     - echo "Deploying frontend..."
-#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY_IMAGE:latest .
-#     - docker push $CI_REGISTRY_IMAGE:latest
-#   environment:
-#     name: production
-#     url: https://your-frontend-production-url.com
-#   only:
-#     - main
-
-# stages:
-#   - build
-#   - test
-#   - deploy
-
-# build_job:
-#   stage: build
-#   image: alpine:latest
-#   script:
-#     - echo "Building the project..."
-#     - apk update && apk add --no-cache git
-#     - git --version
-
-# test_job:
-#   stage: test
-#   image: alpine:latest
-#   script:
-#     - echo "Running tests..."
-#     - echo "Tests are successful!"
-
-# deploy_job:
-#   stage: deploy
-#   image: alpine:latest
-#   script:
-#     - echo "Deploying the project..."
-#     - echo "Deployment complete!"
-
-image: node:16-alpine
-
+# Define pipeline stages
 stages:
   - build
-  - test
   - deploy
 
+# Cache node_modules to speed up subsequent builds
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
 
-build_app:
+# Build job
+build-frontend:
   stage: build
+  image: node:20
   script:
-    - echo "Installing dependencies..."
+    - echo "Installing frontend dependencies..."
     - npm install
-    - echo "Building the server..."
     - npm run build
   artifacts:
     paths:
       - dist/
-    expire_in: 1 hour
+    expire_in: 1 week
   only:
     - main
-    - develop
 
-test_app:
-  stage: test
-  script:
-    - echo "Running tests..."
-    - npm run dev
-  artifacts:
-    reports:
-      junit: test-results.xml
-    expire_in: 1 hour
-  only:
-    - main
-    - develop
-
-deploy_production:
+# Deploy job
+deploy-frontend:
   stage: deploy
+  image: docker:latest
   script:
-    - echo "Starting deployment..."
-    - npm run dev
-    - echo "Deployment complete!"
+    - echo "Deploying frontend to EC2..."
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
+    - docker push $CI_REGISTRY_IMAGE/frontend:latest
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-184-73-16-169.compute-1.amazonaws.com "
+      cd /home/ubuntu/wavetrack-client &&
+      git pull origin main &&
+      docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
+      docker-compose -f /home/ubuntu/wavetrack-client/docker-compose.yml up -d"
+  environment:
+    name: production
+    url: https://web.vottamean.com
   only:
     - main
