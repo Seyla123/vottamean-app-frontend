@@ -24,6 +24,7 @@ build-frontend:
   only:
     - main
     - develop
+    - feature/cicd
 
 # Deploy job
 deploy-frontend:
@@ -45,3 +46,4 @@ deploy-frontend:
   only:
     - main
     - develop
+    - feature/cicd
