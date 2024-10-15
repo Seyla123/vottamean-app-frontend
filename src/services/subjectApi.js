@@ -4,9 +4,10 @@ export const subjectApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get all subjects
     getSubjects: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: 'subjects',
         method: 'GET',
+        params: params,
         credentials: 'include',
       }),
       providesTags: ['Subjects'],

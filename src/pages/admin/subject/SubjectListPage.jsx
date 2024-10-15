@@ -28,7 +28,7 @@ import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 const columns = [
   { id: 'subject_id', label: 'Subject ID' },
   { id: 'subject_name', label: 'Subject Name' },
-  { id: 'description', label: 'Subject Description' },
+  { id: 'description', label: 'Description' },
 ];
 
 function SubjectListPage() {
@@ -41,19 +41,24 @@ function SubjectListPage() {
   const [selectedSubject, setSelectedSubject] = useState('');
 
   // createModalOpen : The state of the create subject modal
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-
   // editModalOpen : The state of the edit subject modal
-  const [editModalOpen, setEditModalOpen] = useState(false);
-
   // viewModalOpen : The state of the view subject modal
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+
+  // - rowsPerPage: the number of rows per page 
+  // - page: the current page number that is being displayed
+  // - totalRows: the total number of rows that are available 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalRows, setTotalRows] = useState(0)
 
   // open: the state of the modal
   const { modal } = useSelector((state) => state.ui);
 
   // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
-  const { data, isLoading, isSuccess, isError } = useGetSubjectsQuery();
+  const { data, isLoading, isSuccess, isError, error, isFetching } = useGetSubjectsQuery({page:page + 1, limit: rowsPerPage});
 
   // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
   const [
@@ -92,6 +97,7 @@ function SubjectListPage() {
   useEffect(() => {
     if (data && isSuccess) {
       setRows(data.data);
+      setTotalRows(data.results);
     }
   }, [data, isSuccess]);
 
@@ -171,6 +177,15 @@ function SubjectListPage() {
       );
     }
   }, [isCreateError, isCreateSuccess, isCreating, dispatch]);
+  
+  // Handle page change
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  }
+  // Handle row per page change
+  const handleChangeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
+  };
 
   // Handle create a new subject
   const handleCreate = async (formData) => {
@@ -224,7 +239,21 @@ function SubjectListPage() {
     },
     { 'Updated At': formatDate(updatedAt), icon: <Timer size={18} /> },
   ];
-
+  const subjectFields = [
+    {
+      name: 'subject_name',
+      label: 'Subject Name',
+      required: true,
+      icon: '',
+    },
+    {
+      name: 'description',
+      label: 'Description',
+      required: true,
+      multiline: true,
+      icon: '',
+    },
+  ];
   // if data is loading, show a loading circle
   if (isLoading) {
     return <LoadingCircle />;
@@ -232,13 +261,14 @@ function SubjectListPage() {
 
   // if there is an error
   if (isError) {
-    return <SomethingWentWrong />;
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
+console.log('rows :', rows);
 
   return (
     <FormComponent
       title="Subject List"
-      subTitle={`Total Subjects: ${rows.length}`}
+      subTitle={`Total Subjects: ${totalRows}`}
     >
       <Stack direction="row" justifyContent="flex-end">
         <StyledButton
@@ -262,9 +292,14 @@ function SubjectListPage() {
         hideColumns={['description']}
         emptyTitle="No Subjects"
         emptySubTitle="No subjects available"
-        isLoading={isLoading}
+        isLoading={isFetching || isLoading}
         showNO={false}
         idField="subject_id"
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
       />
 
       {/* CREATE SUBJECT MODAL */}
@@ -273,21 +308,7 @@ function SubjectListPage() {
         onClose={() => setCreateModalOpen(false)}
         title="Create New Subject"
         description="Enter the details for the new subject"
-        fields={[
-          {
-            name: 'subject_name',
-            label: 'Subject Name',
-            required: true,
-            icon: '',
-          },
-          {
-            name: 'description',
-            label: 'Description',
-            required: true,
-            multiline: true,
-            icon: '',
-          },
-        ]}
+        fields={subjectFields}
         onSubmit={handleCreate}
         validationSchema={SubjectValidator}
         submitText={'Create Subject'}
@@ -299,21 +320,7 @@ function SubjectListPage() {
         onClose={() => setEditModalOpen(false)}
         title="Update Subject"
         description="Update the subject details"
-        fields={[
-          {
-            name: 'subject_name',
-            label: 'Subject Name',
-            required: true,
-            icon: '',
-          },
-          {
-            name: 'description',
-            label: 'Description',
-            required: true,
-            multiline: true,
-            icon: '',
-          },
-        ]}
+        fields={subjectFields}
         validationSchema={SubjectValidator}
         id={selectedSubject?.subject_id}
         getDataQuery={useGetSubjectByIdQuery}
