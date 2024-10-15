@@ -37,7 +37,7 @@ function SubjectListPage() {
   // rows : The data to be displayed in the table
   const [rows, setRows] = useState([]);
 
-  // selectedSubject : The selected subject to be edited or viewed
+  // selectedSubject : The selected subject that currently selected
   const [selectedSubject, setSelectedSubject] = useState('');
 
   // createModalOpen : The state of the create subject modal
@@ -339,7 +339,7 @@ function SubjectListPage() {
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={handleDeleteConfirmed}
         itemName={
-          selectedSubject ? selectedSubject.subject_name : 'this subject'
+          selectedSubject ? selectedSubject?.subject_name : 'this subject'
         }
       />
     </FormComponent>
