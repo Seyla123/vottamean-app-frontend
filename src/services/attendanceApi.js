@@ -10,6 +10,8 @@ export const attendanceApi = baseApi.injectEndpoints({
           class_id: data.class,
           subject_id: data.subject,
           filter: data.filter,
+          limit: data.limit,
+          page: data.page,
         },
       }),
       providesTags: ['Attendance'],
@@ -18,6 +20,16 @@ export const attendanceApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: `attendance/${data.id}`,
         method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Attendance'],
+    }),
+
+    deleteManyAttendance: builder.mutation({
+      query: (ids) => ({
+        url: `attendance`,
+        method: 'DELETE',
+        body: { ids: ids },
         credentials: 'include',
       }),
       invalidatesTags: ['Attendance'],
@@ -39,7 +51,7 @@ export const attendanceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Attendance'],
     }),
-    getReportAttendanceByClass : builder.query({
+    getReportAttendanceByClass: builder.query({
       query: (data) => ({
         url: `attendance/reports`,
         method: 'GET',
@@ -51,8 +63,15 @@ export const attendanceApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       providesTags: ['Attendance'],
-    })
+    }),
   }),
 });
 
-export const { useGetAllAttendanceQuery, useDeleteAttendanceMutation, useGetAttendanceQuery, useMarkAttendanceMutation , useGetReportAttendanceByClassQuery} = attendanceApi;
+export const {
+  useGetAllAttendanceQuery,
+  useDeleteAttendanceMutation,
+  useGetAttendanceQuery,
+  useMarkAttendanceMutation,
+  useGetReportAttendanceByClassQuery,
+  useDeleteManyAttendanceMutation,
+} = attendanceApi;
