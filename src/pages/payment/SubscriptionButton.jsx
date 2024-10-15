@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useCreateCheckoutSessionMutation } from '../../services/paymentApi';
-import { Button } from '@mui/material';
 import StyledButton from '../../components/common/StyledMuiButton';
 
 const SubscriptionButton = ({

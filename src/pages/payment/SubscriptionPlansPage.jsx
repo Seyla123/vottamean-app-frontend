@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Tabs,
-  Tab,
-  styled,
-  Grid,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Typography, Tabs, Tab, styled, Grid } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import SubscriptionButton from './SubscriptionButton';
 import CancelSubscription from './CancelSubscription';
@@ -46,7 +35,6 @@ const StyledTabs = styled((props) => (
 const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     textTransform: 'none',
-    fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     fontWeight: 'bold',
     borderRadius: 10,

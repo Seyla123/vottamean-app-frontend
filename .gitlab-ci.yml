@@ -102,7 +102,7 @@ build_app:
     - echo "Installing dependencies..."
     - npm install
     - echo "Building the server..."
-    - npm run build # Adjust this if you have a specific build process
+    - npm run build
   artifacts:
     paths:
       - dist/
@@ -115,7 +115,7 @@ test_app:
   stage: test
   script:
     - echo "Running tests..."
-    - npm run start:test # Adjust this based on your testing command
+    - npm run dev
   artifacts:
     reports:
       junit: test-results.xml
@@ -128,7 +128,7 @@ deploy_production:
   stage: deploy
   script:
     - echo "Starting deployment..."
-    - npm run start:prod # Adjust this to your production start command
+    - npm run dev
     - echo "Deployment complete!"
   only:
     - main
