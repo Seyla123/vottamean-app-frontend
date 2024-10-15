@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -11,14 +11,12 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Tooltip,
   TablePagination,
   Typography,
   ListItemIcon,
   ListItemText,
   MenuList,
   Divider,
-  Button,
   CircularProgress,
   Box,
 } from '@mui/material';
@@ -195,8 +193,6 @@ const DataTable = ({
     setPage(0);
   };
 
-
-  
   const height = rowsPerPage === 5 ? '300px' : '500px';
 
   return (
