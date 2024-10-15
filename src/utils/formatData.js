@@ -13,19 +13,20 @@ import {
 // Transform API response into table data format
 export const transformAttendanceData = (apiResponse) =>
   apiResponse.map((item) => ({
-    id: item.student_id,
-    attendance_id: item.attendance_id,
-    name: getFullName(item.Student.Info),
-    time: `${item.Sessions.Period.start_time.slice(0, 5)} - ${item.Sessions.Period.end_time.slice(0, 5)}`,
-    subjectId: item.Sessions.Subject.id,
-    subject: item.Sessions.Subject.subject_name,
-    classId: item.Student.Class.id,
+    attendanceId: item.attendance_id,
+    studentId: item.student_id,
     class: item.Student.Class.class_name,
+    name: getFullName(item.Student.Info),
+    time: `${formatTimeTo12Hour(item.Sessions.Period.start_time)} - ${formatTimeTo12Hour(item.Sessions.Period.end_time)}`,
+    subjectId: item.Sessions.Subject.subject_id,
+    subject: item.Sessions.Subject.subject_name,
     address: item.Student.Info.address,
-    date: item.date,
-    status_id: item.status_id,
+    statusId: item.status_id,
     status: capitalize(item.Status.status),
     img: item.Student.Info.photo,
+    date: item.date,
+    day:item.Sessions.DayOfWeek.day,
+    teacherName: item.Sessions.Teacher.Info.first_name + ' ' + item.Sessions.Teacher.Info.last_name
   }));
 
 // Format attendance data detail
