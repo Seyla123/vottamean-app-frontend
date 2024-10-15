@@ -8,17 +8,21 @@ import {
 } from '../../../../services/attendanceApi';
 import { setModal, setSnackbar } from '../../../../store/slices/uiSlice';
 import { transformAttendanceData } from '../../../../utils/formatData';
+import { formatDate } from '../../../../utils/formatHelper';
 import FormComponent from '../../../../components/common/FormComponent';
 import AttendanceTable from '../../../../components/attendance/AttendanceListTable';
 import LoadingCircle from '../../../../components/loading/LoadingCircle';
 import ReportHeader from '../../../../components/attendance/ReportHeader';
 import DeleteConfirmationModal from '../../../../components/common/DeleteConfirmationModal';
 import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
+import EditModal from '../../../../components/common/EditModal';
+import ViewModal from '../../../../components/common/ViewModal';
 import { Box, Stack, Divider } from '@mui/material';
 import { tableShadow, shadow } from './../../../../styles/global';
+import { FolderPen, IdCard, Timer ,MapPinHouse, School} from 'lucide-react';
 
 const columns = [
-  { id: 'name', label: 'Name' },
+  { id: 'name', label: 'Full Name' },
   { id: 'time', label: 'Time' },
   { id: 'subject', label: 'Subject' },
   { id: 'class', label: 'Class' },
@@ -35,8 +39,8 @@ const AttendanceListPage = () => {
   // - filter: the current filter data attendance records
   const filter = useSelector((state) => state.attendance.filter);
 
-  // - itemToDelete: the item that is currently being deleted
-  const [itemToDelete, setItemToDelete] = useState(null);
+  // - selectedAttendance: the item that is currently being deleted
+  const [selectedAttendance, setSelectedAttendance] = useState('');
 
   // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
@@ -47,6 +51,11 @@ const AttendanceListPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [totalRows, setTotalRows] = useState(0);
+
+  // editModalOpen : The state of the edit subject modal
+  // - viewModalOpen: the state of the view class period modal
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   // - useGetAllAttendanceQuery: a hook that returns a function to fetch all attendance records
   const {
@@ -140,16 +149,21 @@ const AttendanceListPage = () => {
     setRowsPerPage(newRowsPerPage);
   };
 
+    // Handle edit a subject
+    const handleEditOpen = (row) => {
+      setSelectedAttendance(row);
+      setEditModalOpen(true);
+    };
   // handle delete action
   const onDelete = (id) => {
-    setItemToDelete(id);
+    setSelectedAttendance(id);
     dispatch(setModal({ open: true }));
   };
 
   // confirm delete action
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
-    await deleteAttendance({ id: itemToDelete }).unwrap();
+    await deleteAttendance({ id: selectedAttendance }).unwrap();
   };
   // handle delete multiple subjects
   const handleSelectedDelete = async (selectedIds) => {
@@ -157,14 +171,56 @@ const AttendanceListPage = () => {
     await deleteManyAttendance(selectedIds).unwrap();
   };
   // handle view action
-  const onView = (id) => {
-    navigate(`/admin/attendance/${id}`);
+  const onView = (rows) => {
+    // navigate(`/admin/attendance/${rows}`);
+    setSelectedAttendance(rows);
+    setViewModalOpen(true);
   };
 
   if (isLoading) {
     return <LoadingCircle />;
   }
+  console.log('this is rows :', rows);
+  
+  console.log('this selected attendance : ', selectedAttendance);
+  
+  const {class:className, studentId ,subject, time, date  , name, teacherName, day, status, address} = selectedAttendance ;
+  const attendanceDetail = [
+    {
+      'Student ID': studentId,
+      icon: <IdCard size={18} />,
+    },
+    {
+      'Full Name': name,
+      icon: <IdCard size={18} />,
+    },
+    {
+      'Address': address,
+      icon: <MapPinHouse size={18} />,
+    },
+    {
+      'Status': status,
+      icon: <FolderPen size={18} />,
+    },
+    {
+      'Class': className,
+      icon: <School size={18} />,
+    },
+    {
+      'Subject': subject,
+      icon: <FolderPen size={18} />,
+    },
+    {
+      'Teach By': teacherName,
+      icon: <FolderPen size={18} />,
+    },
+    {
+      'Time': `${time}, ${day}, ${formatDate(date)}`,
+      icon: <Timer size={18} />,
+    },
+  ];
 
+  
   return (
     <FormComponent title={'Attendance List'}>
       <ReportHeader data={rows} title={filter.filterLabel} />
@@ -176,6 +232,7 @@ const AttendanceListPage = () => {
           columns={columns}
           hideColumns={['id', 'subject', 'class', 'address']}
           handleDelete={onDelete}
+          onEdit={handleEditOpen}
           handleView={onView}
           onSelectedDelete={handleSelectedDelete}
           loading={isLoading}
@@ -186,6 +243,12 @@ const AttendanceListPage = () => {
           totalRows={totalRows}
         />
       </Stack>
+      <ViewModal
+        open={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        title="Attendance Details"
+        data={attendanceDetail}
+      />
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}

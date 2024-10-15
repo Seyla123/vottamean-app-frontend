@@ -18,7 +18,8 @@ import {
   Typography,
   Checkbox,
   CircularProgress,
-  Button
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import StatusChip from '../common/StatusChip';
@@ -27,7 +28,8 @@ import EmptyDataImage from '../../assets/images/empty-image.svg';
 import StyledButton from './../common/StyledMuiButton';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
 
-import { Trash2 } from 'lucide-react';
+import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
+
 
 
 const AttendanceListTable = ({
@@ -43,7 +45,8 @@ const AttendanceListTable = ({
   setPage,
   setRowsPerPage,
   totalRows,
-  idField = 'attendance_id',
+  idField = 'attendanceId',
+  onEdit
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -53,38 +56,6 @@ const AttendanceListTable = ({
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
-
-
-  console.log('this is rows', rows);
-
-  const handleClick = (event, row) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setSelectedRow(null);
-  };
-
-  const handleMenuAction = (action) => {
-    if (selectedRow) {
-      action === 'view' ? handleView(selectedRow.attendance_id) : handleDelete(selectedRow.attendance_id);
-      handleClose();
-    }
-  };
-
-  const visibleColumns = columns.filter((col) =>
-    isMobile ? !hideColumns.includes(col.id) : true
-  );
-
-  const handleChangePage = (event, newPage) => setPage(newPage);
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-  const height = rowsPerPage === 5 ? '300px' : '700px';
 
 
   const handleSelectedDelete = () => {
@@ -141,6 +112,44 @@ const AttendanceListTable = ({
     console.log('Selected row ID:', id);
     console.log('Updated selected IDs:', newSelected);
   };
+
+  const handleClick = (event, row) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  const handleMenuAction = (action) => {
+    if (selectedRow) {
+      action === 'view' ? handleView(selectedRow) : handleDelete(selectedRow.attendance_id);
+      handleClose();
+    }
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+  const handleEdit = () => {
+    if (onEdit && selectedRow) onEdit(selectedRow);
+    handleMenuClose();
+  };
+
+  const visibleColumns = columns.filter((col) =>
+    isMobile ? !hideColumns.includes(col.id) : true
+  );
+
+  const handleChangePage = (event, newPage) => setPage(newPage);
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const height = rowsPerPage === 5 ? '300px' : '700px';
+
   return (
     <Paper sx={{ boxShadow: 'none' }}>
       <TableContainer>
@@ -161,18 +170,18 @@ const AttendanceListTable = ({
                   {column.label}
                 </TableCell>
               ))}
-                {selected.length > 0 ? (
-              <TableCell align="right" sx={{ maxWidth: '50px', paddingY: '0px' }}>
-                <StyledButton
-                  onClick={handleSelectedDelete}
-                  color="error"
-                  startIcon={<Trash2 size={18} />}
-                
-                />
-              </TableCell>
-            ) : (
-              <TableCell align="right">Status / Action</TableCell>
-            )}
+              {selected.length > 0 ? (
+                <TableCell align="right" sx={{ maxWidth: '50px', paddingY: '0px' }}>
+                  <StyledButton
+                    onClick={handleSelectedDelete}
+                    color="error"
+                    startIcon={<Trash2 size={18} />}
+
+                  />
+                </TableCell>
+              ) : (
+                <TableCell align="right">Status / Action</TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -188,7 +197,7 @@ const AttendanceListTable = ({
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row[idField]}>
+                  key={index}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isItemSelected}
@@ -211,7 +220,7 @@ const AttendanceListTable = ({
                   ))}
                   <TableCell sx={{ width: 'auto' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                      <StatusChip statusId={row.status_id} />
+                      <StatusChip statusId={row.statusId} />
                       <IconButton size="small" onClick={(e) => handleClick(e, row)}>
                         <MoreVertIcon fontSize="small" />
                       </IconButton>
@@ -223,11 +232,11 @@ const AttendanceListTable = ({
           </TableBody>
         </Table>
         <DeleteConfirmationModal
-        open={isDeleteModalOpen}
-        onClose={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-        itemName={`${selected.length} selected item${selected.length > 1 ? 's' : ''}`}
-      />
+          open={isDeleteModalOpen}
+          onClose={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
+          itemName={`${selected.length} selected item${selected.length > 1 ? 's' : ''}`}
+        />
       </TableContainer>
 
       <TablePagination
@@ -245,8 +254,24 @@ const AttendanceListTable = ({
         anchorEl={anchorEl}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => handleMenuAction('view')}>View</MenuItem>
-        <MenuItem onClick={() => handleMenuAction('delete')}>Delete</MenuItem>
+        <MenuItem onClick={handleEdit}>
+          <ListItemIcon>
+            <Pencil size={18} />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuAction('view')}>
+          <ListItemIcon>
+            <FileText size={18} />
+          </ListItemIcon>
+          <ListItemText>View Details</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuAction('delete')}>
+          <ListItemIcon sx={{ color: 'error.main' }}>
+            <Trash2 size={18} />
+          </ListItemIcon>
+          <ListItemText sx={{ color: 'error.main' }}>Delete</ListItemText>
+        </MenuItem>
       </Menu>
     </Paper>
   );
