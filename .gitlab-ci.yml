@@ -22,6 +22,7 @@ build-frontend:
     expire_in: 1 week
   only:
     - main
+    - develop
 
 # Deploy job
 deploy-frontend:
@@ -42,3 +43,4 @@ deploy-frontend:
     url: https://web.vottamean.com
   only:
     - main
+    - develop
