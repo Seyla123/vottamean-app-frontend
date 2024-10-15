@@ -21,9 +21,6 @@ build-frontend:
     paths:
       - dist/
     expire_in: 1 week
-  only:
-    - main
-    - develop
 
 # Deploy job
 deploy-frontend:
@@ -42,6 +39,3 @@ deploy-frontend:
   environment:
     name: production
     url: https://web.vottamean.com
-  only:
-    - main
-    - develop
