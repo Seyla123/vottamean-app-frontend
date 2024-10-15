@@ -32,6 +32,8 @@ const columns = [
   { id: 'description', label: 'Description' },
 ];
 
+
+
 const ClassListPage = () => {
   const dispatch = useDispatch();
 
@@ -70,6 +72,7 @@ const ClassListPage = () => {
       isLoading: isDeletingMany,
       isSuccess: isDeleteManySuccess,
       isError: isDeleteManyError,
+      erorr: deleteManyError
     },
   ] = useDeleteManyClassesMutation();
 
@@ -148,14 +151,16 @@ const ClassListPage = () => {
   };
 
   useEffect(() => {
-    if (isCreatedSuccess){
-      dispatch(setModal({ open: false, message: 'Class created successfully', severity: 'success' }));
+    if (isCreatedSuccess) {
+      dispatch(setSnackbar({ open: true, message: 'Class created successfully', severity: 'success' }));
       setCreateModalOpen(false);
-    } else if(isError){
-      dispatch(setModal({ open: false, message: createError.data.message || 'Failed to create class', severity: 'error' }));
+    } else if (isError) {
+      dispatch(setSnackbar({ open: true, message: createError.data.message || 'Failed to create class', severity: 'error' }));
       setCreateModalOpen(false);
     }
-  }, []);
+  }, [isCreateError, isCreatedSuccess, createError, dispatch]);
+
+
   // CREATE FUNCTION
   const handleCreate = async (formData) => {
     await postClassesData(formData).unwrap();
@@ -198,6 +203,23 @@ const ClassListPage = () => {
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />
   }
+
+  const classField = [
+    {
+      name: 'class_name',
+      label: 'Class Name',
+      required: true,
+      icon: '',
+    },
+    {
+      name: 'description',
+      label: 'Description',
+      required: true,
+      multiline: true,
+      icon: '',
+    },
+  ]
+
   return (
     <FormComponent
       title="Class List"
@@ -226,7 +248,6 @@ const ClassListPage = () => {
             placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onClickIcon={() => console.log('click search icon')}
           />
         </Stack>
       </Box>
@@ -255,21 +276,7 @@ const ClassListPage = () => {
         onClose={() => setCreateModalOpen(false)}
         title="Create New Class"
         description="Enter the details for the new class"
-        fields={[
-          {
-            name: 'class_name',
-            label: 'Class Name',
-            required: true,
-            icon: '',
-          },
-          {
-            name: 'description',
-            label: 'Description',
-            required: true,
-            multiline: true,
-            icon: '',
-          },
-        ]}
+        fields={classField}
         onSubmit={handleCreate}
         validationSchema={ClassValidator}
         submitText={'Create Class'}
@@ -281,21 +288,7 @@ const ClassListPage = () => {
         onClose={() => setEditModalOpen(false)}
         title="Update Class"
         description="Update the class details"
-        fields={[
-          {
-            name: 'class_name',
-            label: 'Class Name',
-            required: true,
-            icon: '',
-          },
-          {
-            name: 'description',
-            label: 'Description',
-            required: true,
-            multiline: true,
-            icon: '',
-          },
-        ]}
+        fields={classField}
         validationSchema={ClassValidator}
         id={selectedClass?.class_id}
         getDataQuery={useGetClassesByIdQuery}

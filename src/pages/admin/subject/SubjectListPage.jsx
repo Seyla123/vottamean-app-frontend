@@ -263,7 +263,6 @@ function SubjectListPage() {
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
-console.log('rows :', rows);
 
   return (
     <FormComponent
@@ -325,16 +324,6 @@ console.log('rows :', rows);
         id={selectedSubject?.subject_id}
         getDataQuery={useGetSubjectByIdQuery}
         useUpdateDataMutation={useUpdateSubjectMutation}
-        onSuccessfulUpdate={(updatedData) => {
-          dispatch(
-            setSnackbar({
-              open: true,
-              message: 'Class updated successfully',
-              severity: 'success',
-            }),
-          );
-          setEditModalOpen(false);
-        }}
       />
 
       <ViewModal
