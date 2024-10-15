@@ -13,6 +13,7 @@ import {
   InputAdornment,
   MenuItem,
   IconButton,
+  CircularProgress,
 } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -21,7 +22,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
-import LoadingCircle from '../loading/LoadingCircle';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 
@@ -48,11 +48,18 @@ const EditModal = ({
   getDataQuery,
   useUpdateDataMutation,
 }) => {
+
+  // data: data from Redux store of the record to be edited
+  // isLoading: boolean indicating if the data is still being fetched
   const { data, isLoading } = getDataQuery(id, { skip: !id });
+
+  // initialData: the initial values of the form fields
+  // it is used to check if there are any changes made to the form
   const [initialData, setInitialData] = useState(null);
 
   const dispatch = useDispatch();
 
+  // useUpdateDataMutation : returns a function to update data from props
   const [
     updateData,
     {
@@ -62,6 +69,7 @@ const EditModal = ({
       error: updateError,
     },
   ] = useUpdateDataMutation();
+
   const {
     control,
     handleSubmit,
@@ -78,6 +86,7 @@ const EditModal = ({
     mode: 'onChange',
   });
 
+  // Set initial form data
   useEffect(() => {
     if (data) {
       const initialFormData = {};
@@ -89,6 +98,36 @@ const EditModal = ({
       setInitialData(initialFormData);
     }
   }, [data, setValue, fields]);
+
+  // when update is failed, show a snackbar with an error message
+  // when update is successful, show a snackbar with a success message
+  useEffect(() => {
+    if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: updateError?.data?.message || 'Failed to update',
+          severity: 'error',
+        }),
+      );
+      onClose();
+    } else if (isUpdatedSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Update successfully',
+          severity: 'success',
+        }),
+      );
+      onClose();
+    }
+  }, [
+    isUpdating,
+    isUpdateError,
+    isUpdatedSuccess,
+    updateError,
+    dispatch,
+  ]);
 
   const renderField = (field) => {
     switch (field.type) {
@@ -174,11 +213,13 @@ const EditModal = ({
   };
 
   const onSubmit = async () => {
+    // Check if any of the form data has changed
     const formData = getValues();
     const hasChanges = Object.keys(formData).some(
       (key) => formData[key] !== initialData[key],
     );
 
+    // If no changes were made, show a message and exit
     if (!hasChanges) {
       dispatch(
         setSnackbar({
@@ -189,27 +230,16 @@ const EditModal = ({
       );
       return;
     }
-
+    // Submit update form
     await updateData({ id, formData }).unwrap();
-
-    dispatch(
-      setSnackbar({
-        open: true,
-        message: 'Updated successfully',
-        severity: 'success',
-      }),
-    );
-    onClose();
   };
 
+  // Handles closing the modal.
+  //  Resets the form state and calls the onClose callback function.
   const handleClose = () => {
     onClose();
     reset();
   };
-
-  if (isLoading) {
-    return <LoadingCircle />;
-  }
 
   return (
     <BootstrapDialog
@@ -238,22 +268,28 @@ const EditModal = ({
       </IconButton>
 
       <DialogContent dividers>
-        <Stack spacing={2}>
-          {fields.map((field) => (
-            <Box
-              key={field.name}
-              sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-            >
-              <Typography variant="body2" fontWeight="bold">
-                {field.label}{' '}
-                {field.required && (
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                )}
-              </Typography>
-              {renderField(field)}
-            </Box>
-          ))}
-        </Stack>
+        {isLoading ? (
+          <Stack spacing={2} alignItems="center" justifyContent="center">
+            <CircularProgress />
+          </Stack>
+        ) : (
+          <Stack spacing={2}>
+            {fields.map((field) => (
+              <Box
+                key={field.name}
+                sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+              >
+                <Typography variant="body2" fontWeight="bold">
+                  {field.label}{' '}
+                  {field.required && (
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                  )}
+                </Typography>
+                {renderField(field)}
+              </Box>
+            ))}
+          </Stack>
+        )}
       </DialogContent>
       <DialogActions>
         <StyledButton onClick={handleClose} size="small">
