@@ -99,7 +99,8 @@ export const transformSessionsData = (apiResponse) =>
     teacher: getFullName(item.Teacher.Info),
     class: item.Class.class_name,
     subject: item.Subject.subject_name,
-    time: calculatePeriod(item.Period.start_time, item.Period.end_time),
+    duration: calculatePeriod(item.Period.start_time, item.Period.end_time),
+    time: `${formatTimeTo12Hour(item.Period.start_time)} - ${formatTimeTo12Hour(item.Period.end_time)}`,
     day: item.DayOfWeek.day,
   }));
 
