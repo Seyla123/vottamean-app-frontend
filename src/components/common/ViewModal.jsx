@@ -54,7 +54,7 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
               <Typography
                 variant="body1"
                 sx={{
-                  fontSize: key === 'description' ? '1.25rem' : '1rem',
+                  fontSize: key === 'description' ? '1.25rem' : '1rem', textTransform:'capitalize'
                 }}
               >
                 {value !== null && value !== undefined
