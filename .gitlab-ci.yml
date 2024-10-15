@@ -15,6 +15,7 @@ build-frontend:
   script:
     - echo "Installing frontend dependencies..."
     - npm install
+    - export NODE_OPTIONS="--max-old-space-size=4096"
     - npm run build
   artifacts:
     paths:
