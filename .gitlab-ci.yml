@@ -57,30 +57,78 @@
 #   only:
 #     - main
 
+# stages:
+#   - build
+#   - test
+#   - deploy
+
+# build_job:
+#   stage: build
+#   image: alpine:latest
+#   script:
+#     - echo "Building the project..."
+#     - apk update && apk add --no-cache git
+#     - git --version
+
+# test_job:
+#   stage: test
+#   image: alpine:latest
+#   script:
+#     - echo "Running tests..."
+#     - echo "Tests are successful!"
+
+# deploy_job:
+#   stage: deploy
+#   image: alpine:latest
+#   script:
+#     - echo "Deploying the project..."
+#     - echo "Deployment complete!"
+
+image: node:16-alpine
 
 stages:
   - build
   - test
   - deploy
 
-build_job:
-  stage: build
-  image: alpine:latest
-  script:
-    - echo "Building the project..."
-    - apk update && apk add --no-cache git
-    - git --version
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
 
-test_job:
+build_app:
+  stage: build
+  script:
+    - echo "Installing dependencies..."
+    - npm install
+    - echo "Building the server..."
+    - npm run build # Adjust this if you have a specific build process
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  only:
+    - main
+    - develop
+
+test_app:
   stage: test
-  image: alpine:latest
   script:
     - echo "Running tests..."
-    - echo "Tests are successful!"
+    - npm run start:test # Adjust this based on your testing command
+  artifacts:
+    reports:
+      junit: test-results.xml
+    expire_in: 1 hour
+  only:
+    - main
+    - develop
 
-deploy_job:
+deploy_production:
   stage: deploy
-  image: alpine:latest
   script:
-    - echo "Deploying the project..."
+    - echo "Starting deployment..."
+    - npm run start:prod # Adjust this to your production start command
     - echo "Deployment complete!"
+  only:
+    - main
