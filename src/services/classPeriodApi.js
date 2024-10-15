@@ -4,10 +4,11 @@ export const classPeriodApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch data into list
     getClassPeriod: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: 'periods',
         method: 'GET',
         credentials: 'include',
+        params: params,
       }),
       providesTags: ['ClassPeriods'],
     }),
