@@ -15,14 +15,16 @@ import { transformSessionsData } from '../../../utils/formatData';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
+import ViewModal from '../../../components/common/ViewModal';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
+  { id: 'teacher', label: 'Teacher' },
   { id: 'time', label: 'Time' },
+  { id: 'duration', label: 'Duration' },
   { id: 'day', label: 'Day' },
   { id: 'subject', label: 'Subject' },
   { id: 'class', label: 'Class' },
-  { id: 'teacher', label: 'Teacher' },
 ];
 
 function SessionListPage() {
@@ -34,11 +36,21 @@ function SessionListPage() {
   const [rows, setRows] = useState([]);
   const [selectSession, setSelectSession] = useState(null);
 
+  // viewModalOpen : The state of the view subject modal
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+
+  // - rowsPerPage: the number of rows per page 
+  // - page: the current page number that is being displayed
+  // - totalRows: the total number of rows that are available 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalRows, setTotalRows] = useState(0)
+
   // model : The state of the modal
   const { modal } = useSelector((state) => state.ui);
 
   // useGetSessionsQuery : a hook that returns a function to fetch all session records
-  const { data, isError, isLoading, isSuccess } = useGetSessionsQuery();
+  const { data, isError, isLoading, isSuccess, isFetching } = useGetSessionsQuery({ page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySessionsMutation : returns a function to delete many sessions
   const [
@@ -67,6 +79,7 @@ function SessionListPage() {
     if (data && isSuccess) {
       const transformedData = transformSessionsData(data.data);
       setRows(transformedData);
+      setTotalRows(data.results);
     }
   }, [data, isSuccess, isDeleteSuccess]);
 
@@ -106,6 +119,14 @@ function SessionListPage() {
     }
   }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting, isDeleteManyError, isDeleteSuccess, isDeletingMany]);
 
+  // Handle page change
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  }
+  // Handle row per page change
+  const handleChangeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
+  };
   // handle edit action
   const handleEdit = (row) => {
     navigate(`/admin/sessions/update/${row.id}`);
@@ -124,14 +145,19 @@ function SessionListPage() {
   };
 
   // Handle view session
-  const handleView = (rows) => {
-    navigate(`/admin/sessions/${rows.id}`);
+  const handleView = (row) => {
+    // navigate(`/admin/sessions/${row.id}`);
+    setSelectSession(row);
+    setViewModalOpen(true)
+
   };
 
   // Handle selected delete action
   const handleSelectedDelete = (selectedIds) => {
     deleteManySessions(selectedIds).unwrap();
   };
+
+  // const {}
 
   // if loading, show loading circle
   if (isLoading) {
@@ -140,13 +166,13 @@ function SessionListPage() {
 
   // if error
   if (isError) {
-    return <SomethingWentWrong />
+    return <SomethingWentWrong description={error?.data?.message}/>
   }
 
   return (
     <FormComponent
       title={'Session List'}
-      subTitle={`There are ${rows.length} sessions`}
+      subTitle={`Total Sessions : ${totalRows}`}
     >
       {/* button add session container */}
       <Stack direction="row" justifyContent="flex-end">
@@ -169,15 +195,27 @@ function SessionListPage() {
         onView={handleView}
         onDelete={handleDelete}
         onSelectedDelete={handleSelectedDelete}
-        hideColumns={['day', 'teacher']}
+        hideColumns={['day', 'teacher', 'duration']}
         emptyTitle={'No Session'}
         emptySubTitle={'No Session Available'}
+        isLoading={isFetching || isLoading}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
       />
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={handleDeleteConfirmed}
-        itemName="Session"
+        itemName={'Session'}
+      />
+      <ViewModal
+        open={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        title="Session Details"
+        data={selectSession}
       />
     </FormComponent>
   );
