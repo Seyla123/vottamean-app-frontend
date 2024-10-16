@@ -181,6 +181,7 @@ const TeacherInfo = ({
                 variant="outlined"
                 size="small"
                 color="error"
+                component="span"
                 startIcon={<Trash2 size={18} />}
                 onClick={handleRemovePhoto}
               >
@@ -196,7 +197,7 @@ const TeacherInfo = ({
               fontWeight={'bold'}
               gutterBottom
             >
-              Teacher Information
+             Personal Information
             </Typography>
             <Divider />
           </Box>
@@ -233,11 +234,11 @@ const TeacherInfo = ({
               render={({ field }) => (
                 <GenderSelect
                   control={control}
-                  errors={errors}
                   name={field.name}
                   label="Gender"
                   defaultValue={field.value}
                   disabled={false}
+                  errors={errors}
                 />
               )}
             />
