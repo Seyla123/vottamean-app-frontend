@@ -33,7 +33,7 @@ deploy-frontend:
   before_script:
     - echo "Setting up SSH..."
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> ~/.ssh/known_hosts
   script:
