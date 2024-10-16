@@ -56,8 +56,15 @@ const AttendanceListTable = ({
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
-  console.log('this data row :', rows);
-  
+
+    // Adjust the page if the current page becomes empty after deleting rows
+  useEffect(() => {
+    if (rows.length === 0 && page > 0) {
+      handleSetPage(prevPage => prevPage - 1);
+    } else if (rows.length === 0 && page === 0) {
+      handleSetPage(0);
+    }
+  }, [rows, page, handleSetPage]);
 
   const handleSelectedDelete = () => {
     if (selected.length > 0) {
@@ -143,7 +150,7 @@ const AttendanceListTable = ({
     isMobile ? !hideColumns.includes(col.id) : true
   );
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
+
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -277,7 +284,7 @@ const AttendanceListTable = ({
       </TableContainer>
 
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
         component="div"
         count={totalRows}
         rowsPerPage={rowsPerPage}

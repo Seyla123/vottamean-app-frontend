@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -97,9 +97,23 @@ const DataTable = ({
   const [menuRow, setMenuRow] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
+
+  const handleChangePage = (event, newPage) => {
+    if (newPage > 0) {
+      setPage(newPage)
+    } else {
+      setPage(0)
+    }
+  };
+  // Adjust the page if the current page becomes empty after deleting rows
+  useEffect(() => {
+    if (rows.length === 0 && page > 0) {
+      handleChangePage(prevPage => prevPage - 1);
+    } else if (rows.length === 0 && page === 0) {
+      handleChangePage(0);
+    }
+  }, [rows]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -111,6 +125,7 @@ const DataTable = ({
       console.log('All rows deselected');
     }
   };
+
 
   const handleCheckboxClick = (event, id) => {
     event.stopPropagation();
@@ -170,22 +185,19 @@ const DataTable = ({
       console.log('No rows selected for deletion');
     }
   };
-
   const handleConfirmDelete = () => {
     if (onSelectedDelete) {
-      console.log('Deleting selected rows:', selected);
       onSelectedDelete(selected);
       setSelected([]);
     }
     setIsDeleteModalOpen(false);
   };
 
+
+
+
   const handleCancelDelete = () => {
     setIsDeleteModalOpen(false);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -285,7 +297,7 @@ const DataTable = ({
       </Table>
       {!isLoading && rows.length > 0 && (
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
           component="div"
           count={totalRows}
           rowsPerPage={rowsPerPage}
