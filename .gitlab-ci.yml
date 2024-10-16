@@ -29,21 +29,20 @@ build-frontend:
 # Deploy job
 deploy-frontend:
   stage: deploy
-  image: docker:20
+  image: docker:20.10.16 # Use a compatible Docker version
   services:
-    - docker:20-dind
+    - docker:dind
   variables:
     DOCKER_HOST: tcp://docker:2375
-    DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ''
   before_script:
     - echo "Waiting for Docker to initialize..."
-    - sleep 60
+    - sleep 20 # Try reducing the sleep time
     - echo "Running docker info..."
     - docker info || echo "Docker daemon is not accessible."
   script:
     - echo "Deploying frontend to EC2..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY # Use --password-stdin
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
     - docker push $CI_REGISTRY_IMAGE/frontend:latest
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
