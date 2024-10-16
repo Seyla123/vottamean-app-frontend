@@ -6,10 +6,10 @@ function TeacherCreatePage() {
     <>
       {/* Header */}
       <FormComponent
-        title="ADD TEACHER"
+        title="Add Teacher"
         subTitle="Please Add Teacher Information"
       >
-        {/* Form input */}
+        {/* Form Content */}
         <FormInfo />
       </FormComponent>
     </>
