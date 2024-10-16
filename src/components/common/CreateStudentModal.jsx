@@ -20,10 +20,10 @@ import { useCreateStudentMutation } from '../../services/studentApi';
 
 import StudentForm from '../student/StudentForm';
 import GuardianForm from '../student/GuardianForm';
+import { ColorlibConnector, ColorlibStepIcon } from './StepperComponent';
 
 const CreateStudentModal = ({ open, handleClose }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
   const studentData = useSelector((state) => state.student);
@@ -48,18 +48,22 @@ const CreateStudentModal = ({ open, handleClose }) => {
       await createStudent(combinedData).unwrap();
       dispatch(resetFormData());
       handleClose();
-      dispatch(setSnackbar({
-        open: true,
-        message: 'Student created successfully',
-        severity: 'success',
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Student created successfully',
+          severity: 'success',
+        }),
+      );
     } catch (err) {
       console.error('Failed to create student:', err);
-      dispatch(setSnackbar({
-        open: true,
-        message: err.data?.message || 'Failed to create student',
-        severity: 'error',
-      }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: err.data?.message || 'Failed to create student',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -69,42 +73,34 @@ const CreateStudentModal = ({ open, handleClose }) => {
   ];
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={handleClose}
-      fullWidth
-      maxWidth="md"
-      PaperProps={{
-        sx: {
-          height: '90vh',
-          maxHeight: 700,
-        },
-      }}
-    >
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Create New Student</DialogTitle>
       <DialogContent dividers>
-        <Box sx={{ width: '100%', height: '100%' }}>
-          <Stepper activeStep={activeStep} orientation={isMobile ? "horizontal" : "vertical"} sx={{ mb: 4 }}>
-            {steps.map((step, index) => (
-              <Step key={step.label}>
-                <StepLabel
-                  optional={
-                    <Typography variant="caption">{step.description}</Typography>
-                  }
-                >
-                  {step.label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <Box sx={{ mt: 2, height: 'calc(100% - 100px)', overflowY: 'auto' }}>
-            {activeStep === 0 ? (
-              <StudentForm handleNext={handleNext} handleFormChange={handleFormChange} />
-            ) : (
-              <GuardianForm handleBack={handleBack} handleFormChange={handleSubmit} />
-            )}
-          </Box>
-        </Box>
+        <Stepper
+          alternativeLabel
+          activeStep={1}
+          connector={<ColorlibConnector />}
+        >
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel StepIconComponent={ColorlibStepIcon}>
+                {label.label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        {activeStep === 0 ? (
+          <StudentForm
+            handleNext={handleNext}
+            handleFormChange={handleFormChange}
+          />
+        ) : (
+          <GuardianForm
+            handleBack={handleBack}
+            handleFormChange={handleSubmit}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

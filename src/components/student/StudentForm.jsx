@@ -8,8 +8,19 @@ import SomethingWentWrong from '../common/SomethingWentWrong';
 import LoadingCircle from '../loading/LoadingCircle';
 
 // - Material UI Components
-import { MenuItem, Box, Typography, Select, Button } from '@mui/material';
-import { UserRoundPen } from 'lucide-react';
+import {
+  MenuItem,
+  Box,
+  Typography,
+  Select,
+  Button,
+  Paper,
+  Grid,
+  Avatar,
+  IconButton,
+  Stack,
+} from '@mui/material';
+import { UserRoundPen, Upload, Trash2 } from 'lucide-react';
 
 // - Custom Components
 import DOBPicker from '../common/DOBPicker';
@@ -59,7 +70,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
   useEffect(() => {
     if (classData && Array.isArray(classData.data)) {
       setRows(
-        classData.data.map((classItem ) => ({
+        classData.data.map((classItem) => ({
           value: String(classItem.class_id),
           label: classItem.class_name,
         })),
@@ -172,130 +183,154 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Box sx={profileBox}>
-        <SubHeader title="Student Information" />
-
-        {/* STUDENT PROFILE IMAGE UPLOAD */}
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            mb: 2,
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-          }}
-        >
-          <img
-            src={previewUrl || studentData.photo}
-            alt="Profile"
-            style={{ width: '120px', borderRadius: '50%' }}
-          />
-        </Box>
-
-        {/* Photo Upload */}
-        <input
-          accept="image/*"
-          type="file"
-          id="photo-upload"
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
-        <label htmlFor="photo-upload">
-          <Button variant="contained" component="span" fullWidth>
-            Upload Photo
-          </Button>
-        </label>
-
-        {/* STUDENT NAME */}
-        <Box display="flex" flexDirection="row" sx={boxContainer}>
-          <InputField
-            name="first_name"
-            control={control}
-            label="First Name"
-            placeholder="First Name"
-            errors={errors}
-            icon={UserRoundPen}
-          />
-          <InputField
-            name="last_name"
-            control={control}
-            label="Last Name"
-            placeholder="Last Name"
-            errors={errors}
-            icon={UserRoundPen}
-          />
-        </Box>
-
-        {/* STUDENT GENDER AND DATE OF BIRTH */}
-        <Box display="flex" flexDirection="row" sx={boxContainer}>
-          <GenderSelect
-            control={control}
-            errors={errors}
-            name="gender"
-            label="Gender"
-            defaultValue={studentData.gender || ''}
-          />
-          <DOBPicker
-            control={control}
-            errors={errors}
-            name="dob"
-            dob={dob}
-            setDob={setDob}
-          />
-        </Box>
-
-        {/* STUDENT CLASS */}
-        <Box sx={{ ...textFieldGap, width: '100%' }}>
-          <Typography variant="body2" fontWeight="bold">
-            Class <span style={{ color: 'red' }}>*</span>
-          </Typography>
-          <Controller
-            name="class_id"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <>
-                <Select
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  displayEmpty
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack direction={'column'} gap={2}>
+          {/* STUDENT PROFILE IMAGE UPLOAD */}
+          <Stack direction={'row'} gap={2} mt={4} alignItems={'center'}>
+            <Avatar
+              src={previewUrl || studentData.photo}
+              alt="Profile"
+              sx={{ width: '120px', height: '120px' }}
+            />
+            <Stack direction={'column'} gap={2}>
+              <input
+                accept="image/*"
+                type="file"
+                id="photo-upload"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
+              <input
+                accept="image/*"
+                type="file"
+                id="photo-upload"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
+              <label htmlFor="photo-upload">
+                <StyledButton
+                  component="span"
+                  startIcon={<Upload size={18} />}
+                  variant={'contained'}
+                  size="small"
+                  color="primary"
                 >
-                  <MenuItem value="" disabled>
-                    Select Class
-                  </MenuItem>
-                  {rows.length > 0 ? (
-                    rows.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="" disabled>
-                      No Class Available
-                    </MenuItem>
-                  )}
-                </Select>
-                {/* Display error message */}
-                {errors.class_id && (
-                  <Typography variant="caption" color="error">
-                    {errors.class_id.message}
-                  </Typography>
-                )}
-              </>
-            )}
-          />
-        </Box>
+                  Upload Photo
+                </StyledButton>
+              </label>
 
-        {/* CONTACT INFORMATION */}
-        <Box sx={{ ...textFieldGap, width: '100%' }}>
-          <PhoneInputField
-            name="phone_number"
-            control={control}
-            label="Contact Number"
-            errors={errors}
-          />
+              <StyledButton
+                color="error"
+                variant="outlined"
+                size="small"
+                startIcon={<Trash2 size={18} />}
+                onClick={() => setSelectedFile(null)}
+              >
+                Delete{' '}
+              </StyledButton>
+            </Stack>
+          </Stack>
+          {/* STUDENT NAME */}
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <InputField
+                name="first_name"
+                control={control}
+                label="First Name"
+                placeholder="First Name"
+                errors={errors}
+                icon={UserRoundPen}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <InputField
+                name="last_name"
+                control={control}
+                label="Last Name"
+                placeholder="Last Name"
+                errors={errors}
+                icon={UserRoundPen}
+                fullWidth
+              />
+            </Grid>
+
+            {/* STUDENT GENDER AND DATE OF BIRTH */}
+            <Grid item xs={12} sm={6}>
+              <GenderSelect
+                control={control}
+                errors={errors}
+                name="gender"
+                label="Gender"
+                defaultValue={studentData.gender || ''}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <DOBPicker
+                control={control}
+                errors={errors}
+                name="dob"
+                dob={dob}
+                setDob={setDob}
+                fullWidth
+              />
+            </Grid>
+            {/* STUDENT CLASS */}
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body2" fontWeight="bold" gutterBottom>
+                Class <span style={{ color: 'red' }}>*</span>
+              </Typography>
+              <Controller
+                name="class_id"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <>
+                    <Select
+                      {...field}
+                      value={field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      displayEmpty
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Class
+                      </MenuItem>
+                      {rows.length > 0 ? (
+                        rows.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No Class Available
+                        </MenuItem>
+                      )}
+                    </Select>
+                    {errors.class_id && (
+                      <Typography variant="caption" color="error">
+                        {errors.class_id.message}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {/* CONTACT INFORMATION */}
+              <PhoneInputField
+                name="phone_number"
+                control={control}
+                label="Contact Number"
+                errors={errors}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+
           <InputField
             name="address"
             control={control}
@@ -305,64 +340,31 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
             required={false}
             multiline
             minRows={5}
+            fullWidth
           />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            width: '100%',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <StyledButton variant="outlined" color="inherit" size="large" onClick={() => navigate('/admin/students')}>
-            Cancel
-          </StyledButton>
-          <StyledButton
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-          >
-            Continue
-          </StyledButton>
-        </Box>
-      </Box>
-    </form>
+
+          {/* BUTTONS */}
+          <Stack direction={'row'} gap={1} justifyContent={'flex-end'}>
+            <StyledButton
+              variant="outlined"
+              size="small"
+              onClick={() => navigate('/admin/students')}
+            >
+              Cancel
+            </StyledButton>
+            <StyledButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Continue
+            </StyledButton>
+          </Stack>
+        </Stack>
+      </form>
+    </>
   );
 };
 
 export default StudentForm;
-
-// Styles
-const profileBox = {
-  width: '100%',
-  bgcolor: '#ffffff',
-  padding: {
-    xs: 2,
-    sm: 3,
-  },
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  position: 'relative',
-};
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
-  flexDirection: 'column',
-};
-const boxContainer = {
-  width: '100%',
-  marginTop: '14px',
-  padding: '0px',
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-};

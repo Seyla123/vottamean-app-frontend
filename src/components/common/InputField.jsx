@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Typography, InputAdornment } from '@mui/material';
+import { TextField, Typography, InputAdornment, Box } from '@mui/material';
 import { Controller } from 'react-hook-form';
 
 const InputField = ({
@@ -16,11 +16,11 @@ const InputField = ({
   disabled = false,
 }) => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
+        gap: 1,
         width: '100%',
       }}
     >
@@ -53,7 +53,7 @@ const InputField = ({
           />
         )}
       />
-    </div>
+    </Box>
   );
 };
 
