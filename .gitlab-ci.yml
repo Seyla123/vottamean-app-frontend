@@ -31,21 +31,19 @@ deploy-frontend:
   stage: deploy
   image: docker:20
   services:
-    - name: docker:20-dind
-      alias: docker
-      command: ['--host=tcp://0.0.0.0:2375']
+    - docker:20-dind
   variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
     DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ''
   before_script:
     - echo "Waiting for Docker to initialize..."
-    - sleep 120
+    - sleep 60
     - echo "Running docker info..."
     - docker info || echo "Docker daemon is not accessible."
   script:
     - echo "Deploying frontend to EC2..."
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY # Use --password-stdin
     - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
     - docker push $CI_REGISTRY_IMAGE/frontend:latest
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
