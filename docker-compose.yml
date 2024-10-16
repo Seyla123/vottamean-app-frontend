@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   frontend:
-    image: $CI_REGISTRY_IMAGE/frontend:latest
+    build:
+      context: ./wavetrack-client
+      dockerfile: Dockerfile
     container_name: frontend
     restart: always
     ports:
@@ -11,6 +13,8 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
+    working_dir: /usr/src/app
+    command: "npm run preview"
     deploy:
       resources:
         limits:
