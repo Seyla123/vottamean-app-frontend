@@ -1,47 +1,65 @@
 import React, { useState } from 'react';
 import {
-  Typography,
   Box,
   Dialog,
   DialogContent,
   DialogActions,
   DialogTitle,
-  DialogContentText,
-  useMediaQuery,
-  useTheme,
-  Tab,
+  Step,
+  StepLabel,
+  Stepper,
+  Button,
 } from '@mui/material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-
-import StyledButton from './StyledMuiButton';
-import FormInfoStudent from '../student/FormInfoStudent';
 import CreateStudentPandel from './CreateStudentPandel';
 import CreateGuardianPanel from './CreateGuardianPanel';
-
-import { styled } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Check from '@mui/icons-material/Check';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
-import StepConnector, {
-  stepConnectorClasses,
-} from '@mui/material/StepConnector';
+import { ColorlibConnector, ColorlibStepIcon } from './StepperComponent';
 
 const steps = ['Student Information', 'Guardian Information'];
 
 const CreateStudentModal = ({ open, handleCreateModalClose }) => {
-  const [value, setValue] = useState('1');
+  const [activeStep, setActiveStep] = useState(0);
+  const [skipped, setSkipped] = useState(new Set());
+  const [studentData, setStudentData] = useState({});
+  const [guardianData, setGuardianData] = useState({});
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const isStepSkipped = (step) => {
+    return skipped.has(step);
+  };
+
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const resetModal = () => {
+    setActiveStep(0);
+    setSkipped(new Set());
+    setStudentData({});
+    setGuardianData({});
+  };
+
+  const handleCreateModalCloseWithReset = () => {
+    resetModal();
+    handleCreateModalClose();
   };
 
   const onSubmit = () => {
-    alert('create succesfully');
+    console.log('Student Data:', studentData);
+    console.log('Guardian Data:', guardianData);
+
+    alert('Created successfully');
+    resetModal();
+    handleCreateModalClose();
   };
 
   return (
@@ -49,138 +67,57 @@ const CreateStudentModal = ({ open, handleCreateModalClose }) => {
       fullWidth
       maxWidth={'sm'}
       open={open}
-      onClose={handleCreateModalClose}
+      onClose={handleCreateModalCloseWithReset}
     >
-      <DialogTitle>Create Student</DialogTitle>
-      <DialogContent>
+      <DialogTitle>
+        {activeStep === 0 ? 'Create Student' : 'Create Guardian'}
         <Stepper
           alternativeLabel
-          activeStep={1}
+          activeStep={activeStep}
           connector={<ColorlibConnector />}
+          sx={{ mt: 4 }}
         >
-          {steps.map((label) => (
-            <Step key={label}>
+          {steps.map((label, index) => (
+            <Step key={index}>
               <StepLabel StepIconComponent={ColorlibStepIcon}>
                 {label}
               </StepLabel>
             </Step>
           ))}
         </Stepper>
-        {/* <TabContext value={value}>
-          <TabList
-            orientation={'horizontal'}
-            variant="scrollable"
-            onChange={handleChange}
-            aria-label="Vertical tabs"
-            sx={{ width: '100%' }}
-          >
-            <Tab
-              label="Student"
-              value="1"
-              // icon={<UserRound size={18} />}
-              iconPosition="start"
-            />
-            <Tab
-              label="Guardian"
-              value="2"
-              // icon={<Settings size={18} />}
-              iconPosition="start"
-            />
-          </TabList>
-
-          <TabPanel sx={{ flexGrow: 1 }} value="1">
-            <CreateStudentPandel />
-          </TabPanel>
-          <TabPanel sx={{ flexGrow: 1 }} value="2">
-            <CreateGuardianPanel />
-          </TabPanel>
-        </TabContext> */}
-        <DialogContentText>
-          Create a new student account for your class.
-        </DialogContentText>
+      </DialogTitle>
+      <DialogContent>
+        {activeStep === 0 ? (
+          <CreateStudentPandel setStudentData={setStudentData} />
+        ) : (
+          <CreateGuardianPanel setGuardianData={setGuardianData} />
+        )}
       </DialogContent>
       <DialogActions>
-        <StyledButton onClick={handleCreateModalClose}>Cancel</StyledButton>
-        <StyledButton variant="contained" onClick={onSubmit}>
-          Create
-        </StyledButton>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+          <Button
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+          <Box sx={{ flex: '1 1 auto' }} />
+          <Box>
+            {activeStep === steps.length - 1 ? (
+              <Button variant="contained" onClick={onSubmit}>
+                Create
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={handleNext}>
+                Next
+              </Button>
+            )}
+          </Box>
+        </Box>
       </DialogActions>
     </Dialog>
   );
 };
-
-const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 22,
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage: '#6c63ff',
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage: '#6c63ff',
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    height: 3,
-    border: 0,
-    backgroundColor: '#eaeaf0',
-    borderRadius: 1,
-    ...theme.applyStyles('dark', {
-      backgroundColor: theme.palette.grey[800],
-    }),
-  },
-}));
-
-const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
-  backgroundColor: '#ccc',
-  zIndex: 1,
-  color: '#fff',
-  width: 50,
-  height: 50,
-  display: 'flex',
-  borderRadius: '50%',
-  justifyContent: 'center',
-  alignItems: 'center',
-  ...theme.applyStyles('dark', {
-    backgroundColor: theme.palette.grey[700],
-  }),
-  variants: [
-    {
-      props: ({ ownerState }) => ownerState.active,
-      style: {
-        backgroundColor: '#6c63ff',
-        boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-      },
-    },
-    {
-      props: ({ ownerState }) => ownerState.completed,
-      style: {
-        backgroundColor: '#6c63ff',
-      },
-    },
-  ],
-}));
-
-function ColorlibStepIcon(props) {
-  const { active, completed, className } = props;
-
-  const icons = {
-    1: <SettingsIcon />,
-    2: <GroupAddIcon />,
-    3: <VideoLabelIcon />,
-  };
-
-  return (
-    <ColorlibStepIconRoot
-      ownerState={{ completed, active }}
-      className={className}
-    >
-      {icons[String(props.icon)]}
-    </ColorlibStepIconRoot>
-  );
-}
 
 export default CreateStudentModal;
