@@ -199,7 +199,7 @@ function SessionListPage() {
         hideColumns={['day', 'teacher', 'duration']}
         emptyTitle={'No Session'}
         emptySubTitle={'No Session Available'}
-        isLoading={isFetching || isLoading}
+        isLoading={isLoading}
         page={page}
         rowsPerPage={rowsPerPage}
         setPage={handleChangePage}

@@ -250,6 +250,7 @@ const TeacherListPage = () => {
         setPage={handleChangePage}
         setRowsPerPage={handleChangeRowsPerPage}
         totalRows={totalRows}
+        isLoading={isLoading}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal

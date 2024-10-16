@@ -293,7 +293,7 @@ const StudentListPage = () => {
           onDelete={handleDelete}
           onView={handleView}
           onSelectedDelete={handleSelectedDelete}
-          isLoading={isFetching || isLoading}
+          isLoading={isLoading}
           emptyTitle={'No Student'}
           emptySubTitle={'No Student Available'}
           hideColumns={['address', 'Date of Birth']}

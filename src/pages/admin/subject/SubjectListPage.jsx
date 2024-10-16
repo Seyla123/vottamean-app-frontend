@@ -58,7 +58,7 @@ function SubjectListPage() {
   const { modal } = useSelector((state) => state.ui);
 
   // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
-  const { data, isLoading, isSuccess, isError, error, isFetching } = useGetSubjectsQuery({page:page + 1, limit: rowsPerPage});
+  const { data, isLoading, isSuccess, isError, error, isFetching } = useGetSubjectsQuery({ page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
   const [
@@ -177,7 +177,7 @@ function SubjectListPage() {
       );
     }
   }, [isCreateError, isCreateSuccess, isCreating, dispatch]);
-  
+
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -291,7 +291,7 @@ function SubjectListPage() {
         hideColumns={['description']}
         emptyTitle="No Subjects"
         emptySubTitle="No subjects available"
-        isLoading={isFetching || isLoading}
+        isLoading={isLoading}
         showNO={false}
         idField="subject_id"
         page={page}
