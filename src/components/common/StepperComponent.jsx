@@ -1,8 +1,7 @@
 import { styled } from '@mui/material';
 import { StepConnector, stepConnectorClasses } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
+import { GraduationCap } from 'lucide-react';
 
 export const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -62,9 +61,8 @@ export function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
 
   const icons = {
-    1: <SettingsIcon />,
-    2: <GroupAddIcon />,
-    3: <VideoLabelIcon />,
+    1: <GraduationCap />,
+    2: <Diversity1Icon />,
   };
 
   return (
