@@ -31,14 +31,19 @@ deploy-frontend:
   stage: deploy
   image: node:20
   before_script:
-    # Create .ssh directory first to avoid 'No such file or directory' error
+    # Create .ssh directory
     - mkdir -p ~/.ssh
+    # Add the private key from the GitLab variable and remove carriage returns
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/wavetrack-deploy.pem
+    # Set the correct permissions for the private key
+    - chmod 600 ~/.ssh/wavetrack-deploy.pem
+    # Add the EC2 instance to known hosts
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> ~/.ssh/known_hosts
   script:
     - echo "Deploying frontend to EC2..."
-    # Directly reference the key in /home/ubuntu/wavetrack-deploy.pem
-    - scp -i /home/ubuntu/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
-    - ssh -i /home/ubuntu/wavetrack-deploy.pem ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
+    # Use the private key from ~/.ssh directory
+    - scp -i ~/.ssh/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
+    - ssh -i ~/.ssh/wavetrack-deploy.pem ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
       sudo systemctl restart my-frontend-service &&
       sudo systemctl restart nginx"
