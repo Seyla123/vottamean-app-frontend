@@ -26,7 +26,7 @@ build-frontend:
     - main
     - develop
 
-# Deploy job
+# Deploy job 
 deploy-frontend:
   stage: deploy
   image: node:20
