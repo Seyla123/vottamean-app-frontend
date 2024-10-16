@@ -19,7 +19,7 @@ const AttendanceReportPage = () => {
     }
   }, [data,isSuccess]);
   
-  const { subjects, dates, result, class: classData, school } = reportData;
+  const { subjects, dates, result, classes, school } = reportData;
   
   if (isLoading) {
     return <LoadingCircle />;
@@ -32,7 +32,7 @@ const AttendanceReportPage = () => {
         subjects={subjects} 
         dates={dates} 
         result={result} 
-        classData={classData} 
+        classData={classes} 
         school={school}
         toggleAttendanceKey={toggleAttendanceKey}
       />
