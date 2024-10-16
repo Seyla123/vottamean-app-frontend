@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 
 // - Material UI components
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Grid, Stack } from '@mui/material';
 
 // - Material UI and Lucid Icons
 import { Mail, UserRoundPen } from 'lucide-react';
@@ -25,6 +25,7 @@ import { resetFormData } from '../../store/slices/studentSlice';
 
 // - Student API
 import { useCreateStudentMutation } from '../../services/studentApi';
+import StyledButton from '../common/StyledMuiButton';
 
 const GuardianForm = ({ handleBack, handleFormChange }) => {
   // - Dispatch actions
@@ -124,52 +125,49 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
   if (isLoading) return <LoadingCircle />;
 
   return (
-    <Box>
+    <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={profileBox}>
-          <SubHeader title="Guardian Information" />
-
-          {/* Guardian Name Inputs */}
-          <Box display="flex" flexDirection="row" sx={boxContainer}>
-            <InputField
-              name="guardian_first_name"
-              control={control}
-              label="Guardian First Name"
-              placeholder="Guardian First Name"
-              errors={errors}
-              icon={UserRoundPen}
-            />
-
-            <InputField
-              name="guardian_last_name"
-              control={control}
-              label="Guardian Last Name"
-              placeholder="Guardian Last Name"
-              errors={errors}
-              icon={UserRoundPen}
-            />
-          </Box>
-
+        {/* Guardian Name Inputs */}
+        <Stack direction={'column'} gap={2}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <InputField
+                name="guardian_first_name"
+                control={control}
+                label="Guardian First Name"
+                placeholder="Guardian First Name"
+                errors={errors}
+                icon={UserRoundPen}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <InputField
+                name="guardian_last_name"
+                control={control}
+                label="Guardian Last Name"
+                placeholder="Guardian Last Name"
+                errors={errors}
+                icon={UserRoundPen}
+              />
+            </Grid>
+          </Grid>
           {/* GUARDIAN CONTACT INFORMATION */}
-          <Box display="flex" flexDirection="row" sx={boxContainer}>
-            {/* Guardian Phone Number */}
-            <PhoneInputField
-              name="guardian_phone_number"
-              control={control}
-              label="Contact Number"
-              errors={errors}
-            />
-            {/* Guardian Email */}
-            <InputField
-              name="guardian_email"
-              control={control}
-              label="Email"
-              placeholder="Enter guardian email"
-              errors={errors}
-              icon={Mail}
-            />
-          </Box>
-
+          {/* Guardian Phone Number */}
+          <PhoneInputField
+            name="guardian_phone_number"
+            control={control}
+            label="Contact Number"
+            errors={errors}
+          />
+          {/* Guardian Email */}
+          <InputField
+            name="guardian_email"
+            control={control}
+            label="Email"
+            placeholder="Enter guardian email"
+            errors={errors}
+            icon={Mail}
+          />
           {/* Guardian Relationship */}
           <InputField
             name="guardian_relationship"
@@ -182,48 +180,18 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
           />
 
           {/* Action Buttons */}
-          <Stack
-            direction="row"
-            justifyContent="flex-end"
-            width={{ xs: '100%', sm: '340px' }}
-            gap={{ xs: 1, sm: 2 }}
-            marginTop={{ xs: 2, sm: 0 }}
-          >
-            <Button
-              onClick={handleBack}
-              fullWidth
-              variant="outlined"
-              color="inherit"
-            >
+          <Stack direction="row" justifyContent="flex-end" gap={1}>
+            <StyledButton onClick={handleBack} variant="outlined">
               Back
-            </Button>
-            <Button fullWidth variant="contained" type="submit">
+            </StyledButton>
+            <StyledButton variant="contained" type="submit">
               Add Student
-            </Button>
+            </StyledButton>
           </Stack>
-        </Box>
+        </Stack>
       </form>
-    </Box>
+    </>
   );
 };
 
 export default GuardianForm;
-
-// Styles
-const profileBox = {
-  width: '100%',
-  bgcolor: '#ffffff',
-  padding: { xs: 2, sm: 3 },
-  gap: { xs: '12px', sm: 3 },
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  position: 'relative',
-};
-
-const boxContainer = {
-  width: '100%',
-  marginTop: '16px',
-  gap: { xs: '12px', sm: 3 },
-};
