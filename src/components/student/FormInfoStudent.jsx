@@ -1,7 +1,6 @@
 // - React and third-party libraries
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 // - Mui Component
 import { Box, Stepper, Step, StepLabel, Card, Typography } from '@mui/material';

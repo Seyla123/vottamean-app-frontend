@@ -4,7 +4,9 @@ import {
   Typography,
   TextField,
   MenuItem,
+  Stack,
   InputAdornment,
+  useTheme,
 } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import GroupIcon from '@mui/icons-material/Group';
@@ -12,7 +14,16 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
-const GenderSelect = ({ control, errors, name, label, defaultValue, disabled = false }) => {
+const GenderSelect = ({
+  control,
+  errors,
+  name,
+  label,
+  defaultValue,
+  disabled = false,
+}) => {
+  const theme = useTheme();
+
   // - Get the current selected icon to display
   const getIcon = (selectedGender) => {
     switch (selectedGender) {
@@ -28,9 +39,7 @@ const GenderSelect = ({ control, errors, name, label, defaultValue, disabled = f
   };
 
   return (
-    <Box
-      sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}
-    >
+    <Stack direction="column" spacing={1}>
       <Typography variant="body2" fontWeight="bold">
         {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
       </Typography>
@@ -40,14 +49,12 @@ const GenderSelect = ({ control, errors, name, label, defaultValue, disabled = f
         defaultValue={defaultValue || ''}
         render={({ field }) => (
           <TextField
-            variant="outlined"
-            fullWidth
             select
+            fullWidth
             {...field}
-            value={field.value || defaultValue}
+            value={field.value || ''}
             error={!!errors[name]}
             helperText={errors[name]?.message}
-            placeholder="Select your gender"
             disabled={disabled}
             InputProps={{
               startAdornment: (
@@ -56,6 +63,19 @@ const GenderSelect = ({ control, errors, name, label, defaultValue, disabled = f
                 </InputAdornment>
               ),
             }}
+            SelectProps={{
+              displayEmpty: true,
+              renderValue: (selected) => {
+                if (!selected) {
+                  return (
+                    <span style={{ color: theme.palette.grey[400] }}>
+                      Gender
+                    </span>
+                  );
+                }
+                return selected;
+              },
+            }}
           >
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
@@ -63,7 +83,7 @@ const GenderSelect = ({ control, errors, name, label, defaultValue, disabled = f
           </TextField>
         )}
       />
-    </Box>
+    </Stack>
   );
 };
 

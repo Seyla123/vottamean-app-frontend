@@ -19,7 +19,7 @@ import EditModal from '../../../../components/common/EditModal';
 import ViewModal from '../../../../components/common/ViewModal';
 import { Box, Stack, Divider } from '@mui/material';
 import { tableShadow, shadow } from './../../../../styles/global';
-import { FolderPen, IdCard, Timer ,MapPinHouse, School} from 'lucide-react';
+import { FolderPen, IdCard, Timer, MapPinHouse, School } from 'lucide-react';
 
 const columns = [
   { id: 'name', label: 'Full Name' },
@@ -72,10 +72,12 @@ const AttendanceListPage = () => {
   // - useDeleteAttendanceMutation: a hook that returns a function to delete an attendance record
   const [
     deleteAttendance,
-    { isLoading: isDeleting,
+    {
+      isLoading: isDeleting,
       isSuccess: isDeleteSuccess,
       isError: isDeleteError,
-      error: deleteError, },
+      error: deleteError,
+    },
   ] = useDeleteAttendanceMutation();
 
   const [
@@ -149,11 +151,11 @@ const AttendanceListPage = () => {
     setRowsPerPage(newRowsPerPage);
   };
 
-    // Handle edit a subject
-    const handleEditOpen = (row) => {
-      setSelectedAttendance(row);
-      setEditModalOpen(true);
-    };
+  // Handle edit a subject
+  const handleEditOpen = (row) => {
+    setSelectedAttendance(row);
+    setEditModalOpen(true);
+  };
   // handle delete action
   const onDelete = (id) => {
     setSelectedAttendance(id);
@@ -181,10 +183,21 @@ const AttendanceListPage = () => {
     return <LoadingCircle />;
   }
   console.log('this is rows :', rows);
-  
+
   console.log('this selected attendance : ', selectedAttendance);
-  
-  const {class:className, studentId ,subject, time, date  , name, teacherName, day, status, address} = selectedAttendance ;
+
+  const {
+    class: className,
+    studentId,
+    subject,
+    time,
+    date,
+    name,
+    teacherName,
+    day,
+    status,
+    address,
+  } = selectedAttendance;
   const attendanceDetail = [
     {
       'Student ID': studentId,
@@ -195,19 +208,19 @@ const AttendanceListPage = () => {
       icon: <IdCard size={18} />,
     },
     {
-      'Address': address,
+      Address: address,
       icon: <MapPinHouse size={18} />,
     },
     {
-      'Status': status,
+      Status: status,
       icon: <FolderPen size={18} />,
     },
     {
-      'Class': className,
+      Class: className,
       icon: <School size={18} />,
     },
     {
-      'Subject': subject,
+      Subject: subject,
       icon: <FolderPen size={18} />,
     },
     {
@@ -215,12 +228,11 @@ const AttendanceListPage = () => {
       icon: <FolderPen size={18} />,
     },
     {
-      'Time': `${time}, ${day}, ${formatDate(date)}`,
+      Time: `${time}, ${day}, ${formatDate(date)}`,
       icon: <Timer size={18} />,
     },
   ];
 
-  
   return (
     <FormComponent title={'Attendance List'}>
       <ReportHeader data={rows} title={filter.filterLabel} />

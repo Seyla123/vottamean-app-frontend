@@ -1,4 +1,3 @@
-// - React and third-party libraries
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -6,17 +5,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 
 // - Material UI components
-import { Box, Button, Grid, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 
 // - Material UI and Lucid Icons
 import { Mail, UserRoundPen } from 'lucide-react';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 
-// - Custom components
-import SubHeader from '../teacher/SubHeader';
-import InputField from '../common/InputField';
-import PhoneInputField from '../common/PhoneInputField';
-import LoadingCircle from '../../components/loading/LoadingCircle';
+import PhoneInputField from './PhoneInputField';
+import LoadingCircle from '../loading/LoadingCircle';
 import { GuardianValidator } from '../../validators/validationSchemas';
 
 // - Redux Slices
@@ -25,9 +21,9 @@ import { resetFormData } from '../../store/slices/studentSlice';
 
 // - Student API
 import { useCreateStudentMutation } from '../../services/studentApi';
-import StyledButton from '../common/StyledMuiButton';
+import InputField from './InputField';
 
-const GuardianForm = ({ handleBack, handleFormChange }) => {
+const CreateGuardianPanel = ({ handleFormChange, onSubmit }) => {
   // - Dispatch actions
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -72,21 +68,21 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
     }
   }, [studentData, setValue]);
 
-  // - Form submission handler
-  const onSubmit = async (data) => {
-    const combinedData = { ...studentData, ...data };
-    handleFormChange(combinedData);
+  // // - Form submission handler
+  // const onSubmit = async (data) => {
+  //   const combinedData = { ...studentData, ...data };
+  //   handleFormChange(combinedData);
 
-    try {
-      await createStudent(combinedData).unwrap();
+  //   try {
+  //     await createStudent(combinedData).unwrap();
 
-      // - Reset the form and Redux form data after successful submission
-      reset();
-      dispatch(resetFormData());
-    } catch (err) {
-      console.error('Failed to create student:', err);
-    }
-  };
+  //     // - Reset the form and Redux form data after successful submission
+  //     reset();
+  //     dispatch(resetFormData());
+  //   } catch (err) {
+  //     console.error('Failed to create student:', err);
+  //   }
+  // };
 
   // - Snackbar notifications based on API status
   useEffect(() => {
@@ -125,40 +121,28 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
   if (isLoading) return <LoadingCircle />;
 
   return (
-    <>
+    <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Guardian Name Inputs */}
-        <Stack direction={'column'} gap={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardian_first_name"
-                control={control}
-                label="Guardian First Name"
-                placeholder="Guardian First Name"
-                errors={errors}
-                icon={UserRoundPen}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardian_last_name"
-                control={control}
-                label="Guardian Last Name"
-                placeholder="Guardian Last Name"
-                errors={errors}
-                icon={UserRoundPen}
-              />
-            </Grid>
-          </Grid>
-          {/* GUARDIAN CONTACT INFORMATION */}
-          {/* Guardian Phone Number */}
-          <PhoneInputField
-            name="guardian_phone_number"
+        <Stack direction={'row'} gap={2}>
+          <InputField
+            name="guardian_first_name"
             control={control}
-            label="Contact Number"
+            label="Guardian First Name"
+            placeholder="Guardian First Name"
             errors={errors}
+            icon={UserRoundPen}
           />
+
+          <InputField
+            name="guardian_last_name"
+            control={control}
+            label="Guardian Last Name"
+            placeholder="Guardian Last Name"
+            errors={errors}
+            icon={UserRoundPen}
+          />
+        </Stack>
+        <Stack>
           {/* Guardian Email */}
           <InputField
             name="guardian_email"
@@ -167,6 +151,13 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
             placeholder="Enter guardian email"
             errors={errors}
             icon={Mail}
+          />
+          {/* Guardian Phone Number */}
+          <PhoneInputField
+            name="guardian_phone_number"
+            control={control}
+            label="Contact Number"
+            errors={errors}
           />
           {/* Guardian Relationship */}
           <InputField
@@ -178,20 +169,10 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
             icon={Diversity1Icon}
             required={false}
           />
-
-          {/* Action Buttons */}
-          <Stack direction="row" justifyContent="flex-end" gap={1}>
-            <StyledButton onClick={handleBack} variant="outlined">
-              Back
-            </StyledButton>
-            <StyledButton variant="contained" type="submit">
-              Add Student
-            </StyledButton>
-          </Stack>
         </Stack>
       </form>
-    </>
+    </div>
   );
 };
 
-export default GuardianForm;
+export default CreateGuardianPanel;

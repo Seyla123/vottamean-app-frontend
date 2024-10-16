@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Box, Stack } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
+import StyledButton from '../../../components/common/StyledMuiButton';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -13,12 +14,16 @@ import {
 } from '../../../services/studentApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
-import { formatStudentsList, transformedFilterClasses } from '../../../utils/formatData';
+import {
+  formatStudentsList,
+  transformedFilterClasses,
+} from '../../../utils/formatData';
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { BookIcon } from 'lucide-react';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import CreateStudentModal from '../../../components/common/CreateStudentModal';
 
 const columns = [
   { id: 'id', label: 'ID' },
@@ -32,6 +37,18 @@ const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+
+  const handleCreateModalOpen = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCreateModalClose = () => {
+    setOpenCreateModal(false);
+  };
+
   // - rows: the student records that are currently being displayed on the page
   // - searchTerm: the search term that is currently being used to filter the table
   // - selectedClass: the id class of the filter class that is currently being selected
@@ -42,18 +59,20 @@ const StudentListPage = () => {
   // - selectedStudent: the student records that are currently being selected
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   // Set the initial state for classes
-  const allSelector = [{
-    value: 'all',
-    label: 'All'
-  }]
+  const allSelector = [
+    {
+      value: 'all',
+      label: 'All',
+    },
+  ];
 
   //classes : the state for filter classes
   const [classes, setClasses] = useState(allSelector);
@@ -93,15 +112,20 @@ const StudentListPage = () => {
   ] = useDeleteManyStudentsMutation();
 
   //useGetClassesDataQuery : a hook for return function to fetch classes record
-  const { data: classesData, isSuccess: isClassesSuccess } = useGetClassesDataQuery();
+  const { data: classesData, isSuccess: isClassesSuccess } =
+    useGetClassesDataQuery();
 
   //  when the student records are fetched successfully, transform the data and set the classes state
   useEffect(() => {
     if (isClassesSuccess && classesData) {
-      const formattedFilterClass = transformedFilterClasses(classesData.data, 'class_id', 'class_name');
+      const formattedFilterClass = transformedFilterClasses(
+        classesData.data,
+        'class_id',
+        'class_name',
+      );
       setClasses([...allSelector, ...formattedFilterClass]);
     }
-  }, [isClassesSuccess, classesData])
+  }, [isClassesSuccess, classesData]);
 
   //  when the student records are fetched successfully, transform the data and set the rows state
   useEffect(() => {
@@ -154,11 +178,10 @@ const StudentListPage = () => {
     isDeleteManySuccess,
   ]);
 
-
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -195,7 +218,7 @@ const StudentListPage = () => {
     await deleteStudent(selectedStudent?.id).unwrap();
   };
 
-  // Handle for many delete 
+  // Handle for many delete
   const handleSelectedDelete = async (selectedIds) => {
     dispatch(setModal({ open: false }));
     await deleteManyStudents(selectedIds).unwrap();
@@ -213,7 +236,7 @@ const StudentListPage = () => {
 
   //If error occurs
   if (isError) {
-    return <SomethingWentWrong description={error?.data?.message}/>
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   return (
@@ -223,16 +246,14 @@ const StudentListPage = () => {
         subTitle={`Total Students : ${data.results} `}
       >
         <Stack direction="row" justifyContent="flex-end">
-          <Link to="/admin/students/create">
-            <Button
-              size="large"
-              variant="contained"
-              color="primary"
-              startIcon={<PlusIcon size={20} />}
-            >
-              ADD STUDENT
-            </Button>
-          </Link>
+          <StyledButton
+            variant="contained"
+            color="primary"
+            startIcon={<PlusIcon size={20} />}
+            onClick={handleCreateModalOpen}
+          >
+            Create Student
+          </StyledButton>
         </Stack>
 
         <Box sx={inputBoxStyles}>
@@ -248,7 +269,7 @@ const StudentListPage = () => {
               data={classes}
               value={selectedClass}
               customStyles={{ maxHeight: '50px', width: '150px' }}
-              icon={<BookIcon size={18} color='#B5B5B5' />}
+              icon={<BookIcon size={18} color="#B5B5B5" />}
             />
 
             <SearchComponent
@@ -276,6 +297,11 @@ const StudentListPage = () => {
           setPage={handleChangePage}
           setRowsPerPage={handleChangeRowsPerPage}
           totalRows={totalRows}
+        />
+
+        <CreateStudentModal
+          open={openCreateModal}
+          handleClose={handleCreateModalClose}
         />
 
         <DeleteConfirmationModal
