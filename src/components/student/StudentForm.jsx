@@ -59,7 +59,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
   useEffect(() => {
     if (classData && Array.isArray(classData.data)) {
       setRows(
-        classData.data.map((classItem) => ({
+        classData.data.map((classItem ) => ({
           value: String(classItem.class_id),
           label: classItem.class_name,
         })),
