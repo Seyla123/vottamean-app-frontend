@@ -14,13 +14,28 @@ import CreateStudentPandel from './CreateStudentPandel';
 import CreateGuardianPanel from './CreateGuardianPanel';
 import { ColorlibConnector, ColorlibStepIcon } from './StepperComponent';
 
+// - Redux Hooks and APIs
+import { updateFormData } from '../../store/slices/studentSlice';
+
+// - Custom Form Component
+import GuardianForm from '../student/GuardianForm';
+import StudentForm from '../student/StudentForm';
+import { useDispatch } from 'react-redux';
+
 const steps = ['Student Information', 'Guardian Information'];
 
 const CreateStudentModal = ({ open, handleCreateModalClose }) => {
+  const dispatch = useDispatch();
+
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [studentData, setStudentData] = useState({});
   const [guardianData, setGuardianData] = useState({});
+
+  // Function to handle the form data change
+  const handleFormChange = (stepData) => {
+    dispatch(updateFormData(stepData));
+  };
 
   const isStepSkipped = (step) => {
     return skipped.has(step);
@@ -88,9 +103,15 @@ const CreateStudentModal = ({ open, handleCreateModalClose }) => {
       </DialogTitle>
       <DialogContent>
         {activeStep === 0 ? (
-          <CreateStudentPandel setStudentData={setStudentData} />
+          <CreateStudentPandel
+            handleFormChange={handleFormChange}
+            setStudentData={setStudentData}
+          />
         ) : (
-          <CreateGuardianPanel setGuardianData={setGuardianData} />
+          <CreateGuardianPanel
+            setGuardianData={setGuardianData}
+            handleFormChange={handleFormChange}
+          />
         )}
       </DialogContent>
       <DialogActions>
