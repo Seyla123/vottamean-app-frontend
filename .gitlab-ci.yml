@@ -44,7 +44,7 @@ deploy-frontend:
     - docker push $CI_REGISTRY_IMAGE/frontend:latest
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
-      git pull origin main &&
+      git pull origin develop &&
       docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
       docker-compose -f /home/ubuntu/wavetrack-client/docker-compose.yml up -d"
   environment:
@@ -53,3 +53,5 @@ deploy-frontend:
   only:
     - main
     - develop
+  # Enable privileged mode for the job
+  privileged: true
