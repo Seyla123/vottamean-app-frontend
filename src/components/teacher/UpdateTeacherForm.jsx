@@ -88,6 +88,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     getValues,
   } = useForm({
     resolver: yupResolver(validationSchema),
+    // Set default values for the form
     defaultValues: {
       first_name: '',
       last_name: '',
@@ -101,23 +102,54 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
 
   // get values and set values
   useEffect(() => {
+    // If teacherData is available (not null or undefined), set the form values
     if (teacherData && teacherData.data) {
       const formattedData = formatTeacherFormData(teacherData);
       if (formattedData) {
+        // Format the date of birth
         const teacherInfo = {
           ...formattedData,
           dob: formattedData.dob ? dayjs(formattedData.dob) : null,
         };
+        // Reset the form values
         reset(teacherInfo);
         setDob(teacherInfo.dob);
         setProfileImg(formattedData.photo);
+        // Save the original data to compare with later
         setOriginalData(teacherInfo);
       }
     }
   }, [teacherData, reset, isSuccess]);
 
+  // Check if the update was successful and if so, close the modal and navigate to teachers page
+  // If the update was not successful, show an error message
+  useEffect(() => {
+      if (isUpdateSuccess) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'Teacher information updated successfully!',
+            severity: 'success',
+          }),
+        );
+        onClose();
+        navigate('/admin/teachers');
+      } else if (isUpdateError) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message:
+              'Update failed: ' + (updateError.message || 'Unknown error'),
+            severity: 'error',
+          }),
+        );
+      }
+    },
+    [isUpdateError, isUpdateSuccess, dispatch, updateError]);
+
   // Handle form submission
   const onSubmit = async (data) => {
+    // Data that submitted
     const submittedData = {
       first_name: data.firstName,
       last_name: data.lastName,
@@ -127,6 +159,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       address: data.address,
     };
 
+    // Data that is original
     const dataOriginal = {
       first_name: originalData.firstName,
       last_name: originalData.lastName,
@@ -143,11 +176,13 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       (key) => dataOriginal[key] !== submittedData[key],
     );
 
+    // Set the state of whether the form has changes
     setHasFormChanges(hasChanges);
 
     // Check for photo changes
     setHasPhotoChanges(!!selectedFile);
 
+    // If no changes were made, show a message and exit
     if (!hasChanges && !hasPhotoChanges) {
       dispatch(
         setSnackbar({
@@ -157,44 +192,29 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         }),
       );
       onClose();
-      navigate('/admin/teachers');
       return;
     }
 
+    // Create a new FormData object
     const formData = new FormData();
 
+    // Append the data properties to the FormData object
     Object.entries(submittedData).forEach(([key, value]) =>
       formData.append(key, value),
     );
 
+    // Append the photo if it exists
     if (selectedFile) {
       formData.append('photo', selectedFile);
     } else {
       formData.append('photo', profileImg);
     }
 
-    try {
-      await updateTeacher({ id: teacherId, updates: formData }).unwrap();
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Teacher data updated successfully',
-          severity: 'success',
-        }),
-      );
-      onClose();
-      navigate('/admin/teachers');
-    } catch (error) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: `Error updating teacher data: ${error.message}`,
-          severity: 'error',
-        }),
-      );
-    }
+    // Update the teacher data with new data
+    await updateTeacher({ id: teacherId, updates: formData }).unwrap();
   };
-  // handle change photo
+
+  // Handle change photo
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (
@@ -225,20 +245,12 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     setValue('photo', null);
   };
 
+  // Fetch data error message
   if (isError)
     dispatch(
       setSnackbar({
         open: true,
         message: `Error fetching teacher data, ${error.data?.message}`,
-        severity: 'error',
-      }),
-    );
-
-  if (isUpdateError)
-    dispatch(
-      setSnackbar({
-        open: true,
-        message: `Error updating teacher data , ${updateError.data?.message}`,
         severity: 'error',
       }),
     );
