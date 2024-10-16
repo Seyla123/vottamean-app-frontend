@@ -62,8 +62,9 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     isLoading,
     isError,
     isSuccess,
-    error
+    error,
   } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId });
+  // use skip to avoid unnecessary api calls
 
   // useUpdateTeacherMutation : a hook return function for Update teacher api
   const [
@@ -92,8 +93,9 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       last_name: '',
       phone_number: '',
       gender: '',
-      dob: null,
+      dob: '',
       address: '',
+      photo: '',
     },
   });
 
@@ -119,32 +121,48 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
 
   // Check if the update was successful and if so, close the modal and navigate to teachers page
   // If the update was not successful, show an error message
+  // indicate if there are form changes
+  let hasFormChanges = false;
+  // indicate if there are photo changes
+  let hasPhotoChanges = false;
+
   useEffect(() => {
     if (isUpdateSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Teacher information updated successfully!',
-          severity: 'success',
-        }),
-      );
+      // If there are form changes or photo changes
+      if (hasFormChanges || hasPhotoChanges) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'No Changes Made.',
+            severity: 'info',
+          }),
+        );
+      } else {
+        // No changes were detected, show an info snackbar message
+        dispatch(
+          setSnackbar({
+            open: true,
+            message:'Teacher information updated successfully!',
+            severity: 'success',
+          }),
+        );
+      }
+      // Close the modal and navigate to teachers page
       onClose();
       navigate('/admin/teachers');
-    } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Update failed: ' + (updateError.message || 'Unknown error'),
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
     }
-  }, [isUpdateError, isUpdateSuccess, dispatch, updateError]);
+  }, [
+    isUpdateSuccess,
+    isUpdateError,
+    updateError,
+    hasFormChanges,
+    hasPhotoChanges,
+  ]);
 
-  // Handle submit
+  // Handle form submission
   const onSubmit = async (data) => {
     const formData = new FormData();
+
     const formFields = {
       first_name: data.firstName,
       last_name: data.lastName,
@@ -153,6 +171,27 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : null,
       address: data.address,
     };
+
+    // Compare the current form values to the original data
+    hasFormChanges = originalData
+      ? Object.keys(formFields).some(
+          (key) => formFields[key] !== originalData[key],
+        )
+      : false;
+
+    // If no changes detected, show a snackbar message and return
+    // This is done to prevent the snackbar from showing a success message
+    // when no changes were made
+    if (!hasFormChanges && !hasPhotoChanges) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes made.',
+          severity: 'info',
+        }),
+      );
+      return;
+    }
 
     // Append fields to FormData
     Object.entries(formFields).forEach(([key, value]) =>
@@ -200,16 +239,23 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     setValue('photo', null);
   };
 
-
   if (isError)
-    dispatch(setSnackbar({
-      open: true, message: `Error fetching teacher data, ${error.data?.message}`, severity: 'error'
-    }));
+    dispatch(
+      setSnackbar({
+        open: true,
+        message: `Error fetching teacher data, ${error.data?.message}`,
+        severity: 'error',
+      }),
+    );
 
   if (isUpdateError)
-    dispatch(setSnackbar({
-      open: true, message: `Error updating teacher data , ${updateError.data?.message}`, severity: 'error'
-    }));
+    dispatch(
+      setSnackbar({
+        open: true,
+        message: `Error updating teacher data , ${updateError.data?.message}`,
+        severity: 'error',
+      }),
+    );
 
   return (
     <Modal
@@ -265,7 +311,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 />
               ) : (
                 <RandomAvatar
-                  username={`${getValues('firstName')} ${getValues('lastName')}`}
+                  username={`${getValues('firstName') || ''} ${getValues('lastName') || ''}`}
                   size={140}
                 />
               )}
@@ -309,24 +355,40 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
               {/* First Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
-                <InputField
+                <Controller
                   name="firstName"
-                  icon={UserRoundPen}
                   control={control}
-                  label="First Name"
-                  placeholder="First Name"
-                  errors={errors}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <InputField
+                      // {...field}
+                      control={control}
+                      label="First Name"
+                      name={field.name}
+                      defaultValue={field.value}
+                      placeholder="First Name"
+                      errors={errors}
+                    />
+                  )}
                 />
               </Box>
               {/* Last Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
-                <InputField
+                <Controller
                   name="lastName"
                   control={control}
-                  icon={UserRoundPen}
-                  label="Last Name "
-                  placeholder="Last Name "
-                  errors={errors}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <InputField
+                      // {...field}
+                      control={control}
+                      label="Last Name"
+                      placeholder="Last Name"
+                      name={field.name}
+                      defaultValue={field.value}
+                      errors={errors}
+                    />
+                  )}
                 />
               </Box>
             </Box>
@@ -401,15 +463,21 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             </Box>
             {/* Address */}
             <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <InputField
+              <Controller
                 name="address"
-                required={false}
                 control={control}
-                label="Street Address"
-                placeholder="Phnom Penh, Street 210,..."
-                errors={errors}
-                multiline={true}
-                minRows={5}
+                defaultValue=""
+                render={({ field }) => (
+                  <InputField
+                    // {...field}
+                    control={control}
+                    label="Address"
+                    placeholder="Address"
+                    name={field.name}
+                    defaultValue={field.value}
+                    errors={errors}
+                  />
+                )}
               />
             </Box>
             {/* Buttons */}
@@ -424,12 +492,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 }}
               >
                 {/* CANCEL BUTTON */}
-                <StyledButton
-                  variant="outlined"
-                  onClick={onClose}
-                  sx={{ width: { xs: '100%', sm: '160px' } }}
-                  size="small"
-                >
+                <StyledButton variant="text" size="small" onClick={onClose}>
                   Cancel
                 </StyledButton>
                 {/* SAVE CHANGES BUTTON */}
@@ -437,7 +500,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   type="submit"
                   size="small"
                   variant="contained"
-                  sx={{ width: { xs: '100%', sm: '160px' } }}
                   disabled={isUpdateLoading}
                 >
                   {isUpdateLoading ? 'Saving...' : 'Save Changes'}
