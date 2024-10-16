@@ -33,15 +33,14 @@ deploy-frontend:
   before_script:
     - echo "Setting up SSH..."
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > ~/.ssh/wavetrack-deploy.pem
+    - chmod 400 ~/.ssh/wavetrack-deploy.pem
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> ~/.ssh/known_hosts
   script:
     - echo "Deploying frontend to EC2..."
-    - scp -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
-    - ssh ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
+    - scp -i ~/.ssh/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
+    - ssh -i ~/.ssh/wavetrack-deploy.pem ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
-      git pull origin develop &&
       sudo systemctl restart my-frontend-service &&
       sudo systemctl restart nginx"
   environment:
@@ -50,3 +49,4 @@ deploy-frontend:
   only:
     - main
     - develop
+
