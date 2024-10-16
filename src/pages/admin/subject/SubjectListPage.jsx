@@ -303,7 +303,7 @@ function SubjectListPage() {
         hideColumns={['description']}
         emptyTitle="No Subjects"
         emptySubTitle="No subjects available"
-        isLoading={isFetching || isLoading}
+        isLoading={isLoading}
         showNO={false}
         idField="subject_id"
         page={page}
