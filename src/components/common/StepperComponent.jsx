@@ -47,7 +47,6 @@ export const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
       props: ({ ownerState }) => ownerState.active,
       style: {
         backgroundColor: '#6c63ff',
-        boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
       },
     },
     {
