@@ -33,20 +33,19 @@ deploy-frontend:
   before_script:
     - echo "Setting up SSH..."
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > ~/.ssh/wavetrack-deploy.pem
-    - chmod 400 ~/.ssh/wavetrack-deploy.pem
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> ~/.ssh/known_hosts
   script:
     - echo "Deploying frontend to EC2..."
-    - scp -i ~/.ssh/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
+    - scp -i ~/.ssh/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client || exit 1
     - ssh -i ~/.ssh/wavetrack-deploy.pem ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
       sudo systemctl restart my-frontend-service &&
-      sudo systemctl restart nginx"
+      sudo systemctl restart nginx || exit 1"
   environment:
     name: production
     url: https://web.vottamean.com
   only:
     - main
     - develop
-
