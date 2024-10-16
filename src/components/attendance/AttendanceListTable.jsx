@@ -56,7 +56,8 @@ const AttendanceListTable = ({
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
-
+  console.log('this data row :', rows);
+  
 
   const handleSelectedDelete = () => {
     if (selected.length > 0) {
@@ -125,7 +126,7 @@ const AttendanceListTable = ({
 
   const handleMenuAction = (action) => {
     if (selectedRow) {
-      action === 'view' ? handleView(selectedRow) : handleDelete(selectedRow.attendance_id);
+      action === 'view' ? handleView(selectedRow) : handleDelete(selectedRow);
       handleClose();
     }
   };
