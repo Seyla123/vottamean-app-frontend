@@ -8,12 +8,15 @@ import {
   Step,
   StepLabel,
   Stepper,
-  Button,
+  styled,
+  IconButton,
+  Stack,
 } from '@mui/material';
-import CreateStudentPandel from './CreateStudentPandel';
+import StyledButton from './StyledMuiButton';
+import CreateStudentPanel from './CreateStudentPannel';
 import CreateGuardianPanel from './CreateGuardianPanel';
 import { ColorlibConnector, ColorlibStepIcon } from './StepperComponent';
-
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 // - Redux Hooks and APIs
 import { updateFormData } from '../../store/slices/studentSlice';
 
@@ -21,6 +24,15 @@ import { updateFormData } from '../../store/slices/studentSlice';
 import GuardianForm from '../student/GuardianForm';
 import StudentForm from '../student/StudentForm';
 import { useDispatch } from 'react-redux';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
 
 const steps = ['Student Information', 'Guardian Information'];
 
@@ -78,7 +90,7 @@ const CreateStudentModal = ({ open, handleCreateModalClose }) => {
   };
 
   return (
-    <Dialog
+    <BootstrapDialog
       fullWidth
       maxWidth={'sm'}
       open={open}
@@ -101,9 +113,21 @@ const CreateStudentModal = ({ open, handleCreateModalClose }) => {
           ))}
         </Stepper>
       </DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleCreateModalClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
       <DialogContent>
         {activeStep === 0 ? (
-          <CreateStudentPandel
+          <CreateStudentPanel
             handleFormChange={handleFormChange}
             setStudentData={setStudentData}
           />
@@ -115,29 +139,38 @@ const CreateStudentModal = ({ open, handleCreateModalClose }) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          <Button
+        <Stack
+          width={'100%'}
+          direction={'row'}
+          gap={2}
+          justifyContent={'space-between'}
+        >
+          <StyledButton
             disabled={activeStep === 0}
             onClick={handleBack}
-            sx={{ mr: 1 }}
+            variant="contained"
+            startIcon={<ChevronLeft size={18} />}
           >
             Back
-          </Button>
-          <Box sx={{ flex: '1 1 auto' }} />
-          <Box>
+          </StyledButton>
+          <>
             {activeStep === steps.length - 1 ? (
-              <Button variant="contained" onClick={onSubmit}>
+              <StyledButton variant="contained" onClick={onSubmit}>
                 Create
-              </Button>
+              </StyledButton>
             ) : (
-              <Button variant="contained" onClick={handleNext}>
+              <StyledButton
+                variant="contained"
+                onClick={handleNext}
+                endIcon={<ChevronRight size={18} />}
+              >
                 Next
-              </Button>
+              </StyledButton>
             )}
-          </Box>
-        </Box>
+          </>
+        </Stack>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 
