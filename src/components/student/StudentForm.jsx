@@ -39,7 +39,7 @@ import { StudentValidator } from '../../validators/validationSchemas';
 
 import { useNavigate } from 'react-router-dom';
 
-const   StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
+const StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
   // - Dispatch actions
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -201,13 +201,6 @@ const   StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
-              <input
-                accept="image/*"
-                type="file"
-                id="photo-upload"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-              />
               <label htmlFor="photo-upload">
                 <StyledButton
                   component="span"
@@ -225,7 +218,6 @@ const   StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
                 variant="outlined"
                 size="small"
                 startIcon={<Trash2 size={18} />}
-                onClick={() => setSelectedFile(null)}
               >
                 Delete{' '}
               </StyledButton>
@@ -345,11 +337,7 @@ const   StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
 
           {/* BUTTONS */}
           <Stack direction={'row'} gap={1} justifyContent={'flex-end'}>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              onClick={handleClose}
-            >
+            <StyledButton variant="outlined" size="small" onClick={handleClose}>
               Cancel
             </StyledButton>
             <StyledButton

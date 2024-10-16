@@ -75,7 +75,7 @@ const CreateStudentModal = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Create New Student</DialogTitle>
-      <DialogContent dividers sx={{ height: '60vh  ' }}>
+      <DialogContent dividers sx={{ height: '700px' }}>
         <Stepper
           alternativeLabel
           activeStep={activeStep}
