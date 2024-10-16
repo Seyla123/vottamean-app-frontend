@@ -31,10 +31,17 @@ deploy-frontend:
   stage: deploy
   image: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+      command:
+        [
+          '--tls=false',
+          '--host=tcp://0.0.0.0:2375',
+          '--storage-driver=overlay2',
+        ]
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
+    DOCKER_HOST: tcp://docker:2375 # Explicitly define the Docker host
   before_script:
     - docker info # Check if Docker is running
   script:
@@ -53,5 +60,3 @@ deploy-frontend:
   only:
     - main
     - develop
-  # Enable privileged mode for the job
-  privileged: true
