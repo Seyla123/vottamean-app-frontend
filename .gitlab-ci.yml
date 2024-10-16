@@ -31,19 +31,15 @@ deploy-frontend:
   stage: deploy
   image: node:20
   before_script:
-    # Create .ssh directory in the home directory
     - mkdir -p $HOME/.ssh
-    # Add the private key from the GitLab variable and remove carriage returns
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > $HOME/.ssh/wavetrack-deploy.pem
-    # Set the correct permissions for the private key
+    - chmod 400 $HOME/.ssh/wavetrack-deploy.pem
     - chmod 600 $HOME/.ssh/wavetrack-deploy.pem
-    # Add the EC2 instance to known hosts
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> $HOME/.ssh/known_hosts
-    # Debugging: List the contents of the .ssh directory
     - ls -l $HOME/.ssh  # List files to ensure the key is there and permissions are correct
+    - chown gitlab-runner:gitlab-runner $HOME/.ssh/wavetrack-deploy.pem  # Change ownership if needed
   script:
     - echo "Deploying frontend to EC2..."
-    # Use the private key from the home directory
     - scp -i $HOME/.ssh/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
     - ssh -i $HOME/.ssh/wavetrack-deploy.pem ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
