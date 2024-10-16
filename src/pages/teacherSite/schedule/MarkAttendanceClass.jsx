@@ -170,7 +170,7 @@ function MarkAttendanceClass() {
       subTitle={`This is total ${classInfo?.total_students} students `}
     >
       {/* welcome card */}
-      <TeacherWelcomeCard  subTitle={`Welcome to class ${classInfo?.class_name}`} />
+      {/* <TeacherWelcomeCard  subTitle={`Welcome to class ${classInfo?.class_name}`} /> */}
 
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
