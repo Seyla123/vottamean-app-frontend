@@ -1,176 +1,112 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Dialog,
+  DialogTitle,
   DialogContent,
   DialogActions,
-  DialogTitle,
+  Stepper,
   Step,
   StepLabel,
-  Stepper,
-  styled,
-  IconButton,
-  Stack,
+  Typography,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
-import StyledButton from './StyledMuiButton';
-import CreateStudentPanel from './CreateStudentPannel';
-import CreateGuardianPanel from './CreateGuardianPanel';
-import { ColorlibConnector, ColorlibStepIcon } from './StepperComponent';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-// - Redux Hooks and APIs
-import { updateFormData } from '../../store/slices/studentSlice';
 
-// - Custom Form Component
-import GuardianForm from '../student/GuardianForm';
+import { updateFormData, resetFormData } from '../../store/slices/studentSlice';
+import { setSnackbar } from '../../store/slices/uiSlice';
+import { useCreateStudentMutation } from '../../services/studentApi';
+
 import StudentForm from '../student/StudentForm';
-import { useDispatch } from 'react-redux';
+import GuardianForm from '../student/GuardianForm';
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
-
-const steps = ['Student Information', 'Guardian Information'];
-
-const CreateStudentModal = ({ open, handleCreateModalClose }) => {
+const CreateStudentModal = ({ open, handleClose }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const dispatch = useDispatch();
-
   const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
-  const [studentData, setStudentData] = useState({});
-  const [guardianData, setGuardianData] = useState({});
+  const studentData = useSelector((state) => state.student);
 
-  // Function to handle the form data change
-  const handleFormChange = (stepData) => {
-    dispatch(updateFormData(stepData));
-  };
-
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
+  const [createStudent, { isLoading }] = useCreateStudentMutation();
 
   const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const resetModal = () => {
-    setActiveStep(0);
-    setSkipped(new Set());
-    setStudentData({});
-    setGuardianData({});
+  const handleFormChange = (data) => {
+    dispatch(updateFormData(data));
   };
 
-  const handleCreateModalCloseWithReset = () => {
-    resetModal();
-    handleCreateModalClose();
+  const handleSubmit = async (guardianData) => {
+    const combinedData = { ...studentData, ...guardianData };
+    try {
+      await createStudent(combinedData).unwrap();
+      dispatch(resetFormData());
+      handleClose();
+      dispatch(setSnackbar({
+        open: true,
+        message: 'Student created successfully',
+        severity: 'success',
+      }));
+    } catch (err) {
+      console.error('Failed to create student:', err);
+      dispatch(setSnackbar({
+        open: true,
+        message: err.data?.message || 'Failed to create student',
+        severity: 'error',
+      }));
+    }
   };
 
-  const onSubmit = () => {
-    console.log('Student Data:', studentData);
-    console.log('Guardian Data:', guardianData);
-
-    alert('Created successfully');
-    resetModal();
-    handleCreateModalClose();
-  };
+  const steps = [
+    { label: 'Student Information', description: 'Enter student details' },
+    { label: 'Guardian Information', description: 'Enter guardian details' },
+  ];
 
   return (
-    <BootstrapDialog
+    <Dialog 
+      open={open} 
+      onClose={handleClose}
       fullWidth
-      maxWidth={'sm'}
-      open={open}
-      onClose={handleCreateModalCloseWithReset}
+      maxWidth="md"
+      PaperProps={{
+        sx: {
+          height: '90vh',
+          maxHeight: 700,
+        },
+      }}
     >
-      <DialogTitle>
-        {activeStep === 0 ? 'Create Student' : 'Create Guardian'}
-        <Stepper
-          alternativeLabel
-          activeStep={activeStep}
-          connector={<ColorlibConnector />}
-          sx={{ mt: 4 }}
-        >
-          {steps.map((label, index) => (
-            <Step key={index}>
-              <StepLabel StepIconComponent={ColorlibStepIcon}>
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </DialogTitle>
-      <IconButton
-        aria-label="close"
-        onClick={handleCreateModalClose}
-        sx={(theme) => ({
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      >
-        <X />
-      </IconButton>
-      <DialogContent>
-        {activeStep === 0 ? (
-          <CreateStudentPanel
-            handleFormChange={handleFormChange}
-            setStudentData={setStudentData}
-          />
-        ) : (
-          <CreateGuardianPanel
-            setGuardianData={setGuardianData}
-            handleFormChange={handleFormChange}
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Stack
-          width={'100%'}
-          direction={'row'}
-          gap={2}
-          justifyContent={'space-between'}
-        >
-          <StyledButton
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            variant="contained"
-            startIcon={<ChevronLeft size={18} />}
-          >
-            Back
-          </StyledButton>
-          <>
-            {activeStep === steps.length - 1 ? (
-              <StyledButton variant="contained" onClick={onSubmit}>
-                Create
-              </StyledButton>
+      <DialogTitle>Create New Student</DialogTitle>
+      <DialogContent dividers>
+        <Box sx={{ width: '100%', height: '100%' }}>
+          <Stepper activeStep={activeStep} orientation={isMobile ? "horizontal" : "vertical"} sx={{ mb: 4 }}>
+            {steps.map((step, index) => (
+              <Step key={step.label}>
+                <StepLabel
+                  optional={
+                    <Typography variant="caption">{step.description}</Typography>
+                  }
+                >
+                  {step.label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <Box sx={{ mt: 2, height: 'calc(100% - 100px)', overflowY: 'auto' }}>
+            {activeStep === 0 ? (
+              <StudentForm handleNext={handleNext} handleFormChange={handleFormChange} />
             ) : (
-              <StyledButton
-                variant="contained"
-                onClick={handleNext}
-                endIcon={<ChevronRight size={18} />}
-              >
-                Next
-              </StyledButton>
+              <GuardianForm handleBack={handleBack} handleFormChange={handleSubmit} />
             )}
-          </>
-        </Stack>
-      </DialogActions>
-    </BootstrapDialog>
+          </Box>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 };
 

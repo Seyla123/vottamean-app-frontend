@@ -39,12 +39,14 @@ const StudentListPage = () => {
 
   const [open, setOpen] = useState(false);
 
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+
   const handleCreateModalOpen = () => {
-    setOpen(true);
+    setOpenCreateModal(true);
   };
 
   const handleCreateModalClose = () => {
-    setOpen(false);
+    setOpenCreateModal(false);
   };
 
   // - rows: the student records that are currently being displayed on the page
@@ -298,8 +300,8 @@ const StudentListPage = () => {
         />
 
         <CreateStudentModal
-          open={open}
-          handleCreateModalClose={handleCreateModalClose}
+          open={openCreateModal}
+          handleClose={handleCreateModalClose}
         />
 
         <DeleteConfirmationModal
