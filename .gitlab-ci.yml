@@ -43,7 +43,7 @@ deploy-frontend:
     DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
     DOCKER_HOST: tcp://docker:2375 # Explicitly define the Docker host
   before_script:
-    - docker info # Check if Docker is running
+    - docker info  # Check if Docker is running
   script:
     - echo "Deploying frontend to EC2..."
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
