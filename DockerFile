@@ -1,5 +1,5 @@
-# Use a Node.js image
-FROM node:18
+# Build stage
+FROM node:18 AS build
 
 # Set working directory
 WORKDIR /app
@@ -14,14 +14,14 @@ RUN npm install
 COPY . .
 
 # Set the Node.js memory limit
-ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Build the application
 RUN npm run build
 
-# Use a lightweight image to serve the app (if needed)
+# Production stage
 FROM nginx:alpine
-COPY --from=0 /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 

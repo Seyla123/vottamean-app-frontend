@@ -19,10 +19,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      // Optimize memory usage by reducing chunk splitting
       rollupOptions: {
         output: {
-          // Group common dependencies to reduce the number of chunks
           manualChunks(id) {
             if (id.includes('node_modules')) {
               return 'vendor';
@@ -30,14 +28,10 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      // Disable source maps in production to reduce memory usage
       sourcemap: mode === 'development',
       minify: mode === 'production',
       cssCodeSplit: true,
       target: 'es2015',
-
-      // Improve performance by reducing the number of parallel jobs during build
-      // Helpful for environments with limited CPU resources like AWS free tier
       terserOptions: {
         compress: {
           drop_console: mode === 'production',
