@@ -17,7 +17,7 @@ import { styled } from '@mui/system';
 import { truncate } from '../../utils/truncate';
 import HeaderReportTable from './HeaderReportTable';
 import AttendanceKey from './AttendanceKey';
-import { tableShadow } from '../../styles/global';
+import LoadingCircle from '../loading/LoadingCircle';
 import AttendanceFilter from './AttendanceFilter';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -27,13 +27,13 @@ const StyledTableCell = styled(TableCell)(({ theme, fontSize }) => ({
     border: '1px solid black',
     padding: '8px', // Increased padding for better readability
     fontWeight: 'bold',
-    fontSize: fontSize || '12px', // Ensure readability in PDF
+    fontSize: fontSize || '8px', // Ensure readability in PDF
     color: 'black', // Set text color to black for visibility
     height: 'auto', // Allow for automatic height based on content
     textTransform: "capitalize"
 }));
 
-const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAttendanceKey }) => {
+const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAttendanceKey, isLoading }) => {
     console.log('this data dates :', dates);
     dates?.map((date, i) =>{
         console.log('this data subject :', date.subject);
@@ -170,6 +170,8 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
             <AttendanceFilter pdfData={exportToPDF} />
             <Divider />
             <Button onClick={exportTableToExcel}>Export to Excel</Button>
+            {isLoading ? <LoadingCircle/>
+            :
             <Paper
                 ref={pdfRef}
                
@@ -230,6 +232,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
 
 
             </Paper>
+            }
         </>
     );
 };

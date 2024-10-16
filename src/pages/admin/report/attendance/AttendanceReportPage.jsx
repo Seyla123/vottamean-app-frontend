@@ -8,7 +8,7 @@ import { Stack } from "@mui/material";
 import { shadow } from "../../../../styles/global";
 const AttendanceReportPage = () => {
   const [reportData, setReportData] = useState({});  
-  const [toggleAttendanceKey, setToggleAttendanceKey] = useState(true);
+  const [toggleAttendanceKey, setToggleAttendanceKey] = useState(false);
 
   const filter = useSelector((state) => state.attendance.filter);
   const { data, isLoading, isError, isSuccess } = useGetReportAttendanceByClassQuery(filter);
@@ -21,9 +21,7 @@ const AttendanceReportPage = () => {
   
   const { subjects, dates, result, classes, school } = reportData;
   
-  if (isLoading) {
-    return <LoadingCircle />;
-  }
+
 
   return (
     <FormComponent title={"Attendance Report"}>
@@ -35,7 +33,9 @@ const AttendanceReportPage = () => {
         classData={classes} 
         school={school}
         toggleAttendanceKey={toggleAttendanceKey}
+        isLoading={isLoading}
       />
+
       </Stack>
     </FormComponent>
   );
