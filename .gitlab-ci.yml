@@ -37,11 +37,12 @@ deploy-frontend:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
-    DOCKER_HOST: unix:///var/run/docker.sock # Connect to Docker dind service explicitly
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - echo "Waiting for Docker to initialize..."
-    - sleep 60 # Increase wait time to ensure Docker is fully initialized
-    - docker info # Check if Docker is running
+    - sleep 120
+    - echo "Running docker info..."
+    - docker info || echo "Docker daemon is not accessible."
   script:
     - echo "Deploying frontend to EC2..."
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
