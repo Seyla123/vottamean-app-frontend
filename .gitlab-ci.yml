@@ -33,11 +33,13 @@ deploy-frontend:
   before_script:
     - echo "Setting up SSH..."
     - mkdir -p ~/.ssh
+    # Use the correct file path where the key is stored
     - echo "$SSH_PRIVATE_KEY" | sed 's/\\n/\n/g' > ~/.ssh/wavetrack-deploy.pem
     - chmod 400 ~/.ssh/wavetrack-deploy.pem
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> ~/.ssh/known_hosts
   script:
     - echo "Deploying frontend to EC2..."
+    # Use the correct path for your key
     - scp -i ~/.ssh/wavetrack-deploy.pem -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
     - ssh -i ~/.ssh/wavetrack-deploy.pem ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
@@ -49,4 +51,3 @@ deploy-frontend:
   only:
     - main
     - develop
-
