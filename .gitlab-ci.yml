@@ -29,27 +29,19 @@ build-frontend:
 # Deploy job
 deploy-frontend:
   stage: deploy
-  image: docker:20.10.16 # Use a compatible Docker version
-  services:
-    - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ''
+  image: node:20 # Using Node image to keep a similar environment
   before_script:
-    - echo "Waiting for Docker to initialize..."
-    - sleep 20 # Try reducing the sleep time
-    - echo "Running docker info..."
-    - docker info || echo "Docker daemon is not accessible."
+    - echo "Preparing for deployment..."
+    - apt-get update && apt-get install -y sshpass
   script:
     - echo "Deploying frontend to EC2..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
-    - docker push $CI_REGISTRY_IMAGE/frontend:latest
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
+    # Securely copy the built artifacts to the EC2 instance
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
       git pull origin develop &&
-      docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
-      docker-compose -f /home/ubuntu/wavetrack-client/docker-compose.yml up -d"
+      sudo systemctl restart nginx &&
+      sudo systemctl restart my-frontend-service" 
   environment:
     name: production
     url: https://web.vottamean.com
