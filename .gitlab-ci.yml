@@ -35,7 +35,7 @@ deploy-frontend:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
     - docker push $CI_REGISTRY_IMAGE/frontend:latest
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-184-73-16-169.compute-1.amazonaws.com "
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
       git pull origin main &&
       docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
