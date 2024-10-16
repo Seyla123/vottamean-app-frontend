@@ -29,21 +29,18 @@ build-frontend:
 # Deploy job
 deploy-frontend:
   stage: deploy
-  image: docker:latest
+  image: docker:20
   services:
-    - name: docker:dind
-      command:
-        [
-          '--tls=false',
-          '--host=tcp://0.0.0.0:2375',
-          '--storage-driver=overlay2',
-        ]
+    - name: docker:20-dind
+      alias: docker
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
-    DOCKER_HOST: tcp://docker:2375 # Explicitly define the Docker host
+    DOCKER_HOST: tcp://docker:2375 # Define Docker host as tcp://docker:2375
   before_script:
-    - docker info  # Check if Docker is running
+    - echo "Waiting for Docker to initialize..."
+    - sleep 10 # Wait for Docker to start
+    - docker info # Check if Docker is running
   script:
     - echo "Deploying frontend to EC2..."
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
