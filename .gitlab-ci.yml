@@ -36,10 +36,10 @@ deploy-frontend:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
-    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_HOST: tcp://docker:2375 # Connect to Docker dind service explicitly
   before_script:
     - echo "Waiting for Docker to initialize..."
-    - sleep 10 # Wait for Docker to start
+    - sleep 20 # Increase wait time to ensure Docker is fully initialized
     - docker info # Check if Docker is running
   script:
     - echo "Deploying frontend to EC2..."
