@@ -11,11 +11,12 @@ cache:
 # Build job
 build-frontend:
   stage: build
-  image: node:20-slim
+  image: node:20
   script:
     - echo "Installing frontend dependencies..."
     - npm install
     - export NODE_OPTIONS="--max-old-space-size=4096"
+    - echo "Building frontend..."
     - npm run build
   artifacts:
     paths:

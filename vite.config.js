@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      minify: 'esbuild',
+      minify: 'terser',
       rollupOptions: {
         output: {
           manualChunks(id) {
