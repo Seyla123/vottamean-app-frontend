@@ -75,11 +75,12 @@ const CreateStudentModal = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Create New Student</DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers sx={{ height: '60vh  ' }}>
         <Stepper
           alternativeLabel
-          activeStep={1}
+          activeStep={activeStep}
           connector={<ColorlibConnector />}
+          sx={{ py: 4 }}
         >
           {steps.map((label, index) => (
             <Step key={index}>
@@ -94,6 +95,7 @@ const CreateStudentModal = ({ open, handleClose }) => {
           <StudentForm
             handleNext={handleNext}
             handleFormChange={handleFormChange}
+            handleClose={handleClose}
           />
         ) : (
           <GuardianForm

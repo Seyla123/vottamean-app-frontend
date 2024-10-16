@@ -39,7 +39,7 @@ import { StudentValidator } from '../../validators/validationSchemas';
 
 import { useNavigate } from 'react-router-dom';
 
-const StudentForm = ({ handleNext, handleFormChange }) => {
+const   StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
   // - Dispatch actions
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -187,7 +187,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack direction={'column'} gap={2}>
           {/* STUDENT PROFILE IMAGE UPLOAD */}
-          <Stack direction={'row'} gap={2} mt={4} alignItems={'center'}>
+          <Stack direction={'row'} gap={2} alignItems={'center'}>
             <Avatar
               src={previewUrl || studentData.photo}
               alt="Profile"
@@ -348,7 +348,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
             <StyledButton
               variant="outlined"
               size="small"
-              onClick={() => navigate('/admin/students')}
+              onClick={handleClose}
             >
               Cancel
             </StyledButton>
@@ -357,6 +357,7 @@ const StudentForm = ({ handleNext, handleFormChange }) => {
               variant="contained"
               color="primary"
               size="small"
+              onClick={handleNext}
             >
               Continue
             </StyledButton>
