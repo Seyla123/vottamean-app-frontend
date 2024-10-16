@@ -27,7 +27,7 @@ const StyledTableCell = styled(TableCell)(({ theme, fontSize }) => ({
     border: '1px solid black',
     padding: '8px', // Increased padding for better readability
     fontWeight: 'bold',
-    fontSize: fontSize || '8px', // Ensure readability in PDF
+    fontSize: fontSize || '12px', // Ensure readability in PDF
     color: 'black', // Set text color to black for visibility
     height: 'auto', // Allow for automatic height based on content
     textTransform: "capitalize"
