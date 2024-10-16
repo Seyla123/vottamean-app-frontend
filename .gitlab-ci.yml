@@ -11,7 +11,7 @@ cache:
 # Build job
 build-frontend:
   stage: build
-  image: node:20
+  image: node:20-slim
   script:
     - echo "Installing frontend dependencies..."
     - npm install
