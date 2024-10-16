@@ -33,7 +33,7 @@ deploy-frontend:
   before_script:
     - mkdir -p $HOME/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > $HOME/.ssh/wavetrack-deploy.pem
-    - chmod 400 $HOME/.ssh/wavetrack-deploy.pem  # Set proper permissions for the private key
+    - chmod 600 $HOME/.ssh/wavetrack-deploy.pem  # Set proper permissions for the private key
     - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> $HOME/.ssh/known_hosts
     - ls -l $HOME/.ssh  # List files to ensure the key is there and permissions are correct
   script:
