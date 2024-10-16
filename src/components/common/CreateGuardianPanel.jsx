@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-const CreateGuardianPanel = () => {
-  return (
-    <div>CreateGuardianPanel</div>
-  )
-}
+const CreateGuardianPanel = ({ handleFormChange }) => {
+  return <div>CreateGuardianPanel</div>;
+};
 
-export default CreateGuardianPanel
+export default CreateGuardianPanel;
