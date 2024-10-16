@@ -6,7 +6,14 @@ export const attendanceApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: `attendance`,
         method: 'GET',
-        params: {
+        params: data.filter == 'custom' ? {
+          class_id: data.class,
+          subject_id: data.subject,
+          limit: data.limit,
+          page: data.page,
+          gte_date: data.startDate,
+          lte_date: data.endDate,
+        } : {
           class_id: data.class,
           subject_id: data.subject,
           filter: data.filter,
@@ -55,10 +62,19 @@ export const attendanceApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: `attendance/reports`,
         method: 'GET',
-        params: {
+        params: data.filter == 'custom' ? {
+          class_id: data.class,
+          subject_id: data.subject,
+          limit:1000,
+          page: data.page,
+          gte_date: data.startDate,
+          lte_date: data.endDate,
+        } : {
           class_id: data.class,
           subject_id: data.subject,
           filter: data.filter,
+          limit: 1000,
+          page: data.page,
         },
         credentials: 'include',
       }),
