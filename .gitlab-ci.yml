@@ -40,7 +40,7 @@ deploy-frontend:
     DOCKER_HOST: unix:///var/run/docker.sock # Connect to Docker dind service explicitly
   before_script:
     - echo "Waiting for Docker to initialize..."
-    - sleep 20 # Increase wait time to ensure Docker is fully initialized
+    - sleep 60 # Increase wait time to ensure Docker is fully initialized
     - docker info # Check if Docker is running
   script:
     - echo "Deploying frontend to EC2..."
