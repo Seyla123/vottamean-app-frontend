@@ -129,7 +129,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   useEffect(() => {
     if (isUpdateSuccess) {
       // If there are form changes or photo changes
-      if (hasFormChanges || hasPhotoChanges) {
+      if (!hasFormChanges || !hasPhotoChanges) {
         dispatch(
           setSnackbar({
             open: true,
