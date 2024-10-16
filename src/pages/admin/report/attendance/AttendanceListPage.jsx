@@ -25,7 +25,7 @@ const columns = [
   { id: 'name', label: 'Full Name' },
   { id: 'time', label: 'Time' },
   { id: 'subject', label: 'Subject' },
-  { id: 'class', label: 'Class' },
+  { id: 'className', label: 'Class' },
   { id: 'address', label: 'Address' },
 ];
 
@@ -157,15 +157,15 @@ const AttendanceListPage = () => {
     setEditModalOpen(true);
   };
   // handle delete action
-  const onDelete = (id) => {
-    setSelectedAttendance(id);
+  const onDelete = (row) => {
+    setSelectedAttendance(row);
     dispatch(setModal({ open: true }));
   };
 
   // confirm delete action
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
-    await deleteAttendance({ id: selectedAttendance }).unwrap();
+    await deleteAttendance({ id: selectedAttendance.attendanceId }).unwrap();
   };
   // handle delete multiple subjects
   const handleSelectedDelete = async (selectedIds) => {
@@ -185,19 +185,8 @@ const AttendanceListPage = () => {
   console.log('this is rows :', rows);
 
   console.log('this selected attendance : ', selectedAttendance);
-
-  const {
-    class: className,
-    studentId,
-    subject,
-    time,
-    date,
-    name,
-    teacherName,
-    day,
-    status,
-    address,
-  } = selectedAttendance;
+  
+  const {className, studentId ,subject, time, date  , name, teacherName, day, status, address} = selectedAttendance ;
   const attendanceDetail = [
     {
       'Student ID': studentId,
