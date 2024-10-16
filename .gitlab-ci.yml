@@ -29,19 +29,21 @@ build-frontend:
 # Deploy job
 deploy-frontend:
   stage: deploy
-  image: node:20 # Using Node image to keep a similar environment
+  image: node:20
   before_script:
-    - echo "Preparing for deployment..."
-    - apt-get update && apt-get install -y sshpass
+    - echo "Setting up SSH..."
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H ec2-54-164-58-149.compute-1.amazonaws.com >> ~/.ssh/known_hosts
   script:
     - echo "Deploying frontend to EC2..."
-    # Securely copy the built artifacts to the EC2 instance
-    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
-    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
+    - scp -r dist/ ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client
+    - ssh ubuntu@ec2-54-164-58-149.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
       git pull origin develop &&
-      sudo systemctl restart nginx &&
-      sudo systemctl restart my-frontend-service" 
+      sudo systemctl restart my-frontend-service &&
+      sudo systemctl restart nginx"
   environment:
     name: production
     url: https://web.vottamean.com
