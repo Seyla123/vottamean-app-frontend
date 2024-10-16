@@ -55,6 +55,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const [profileImg, setProfileImg] = useState('');
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
+  const [hasPhotoChanges, setHasPhotoChanges] = useState(false);
 
   // useGetTeacherQuery : a hook return function for fetching all teacher data
   const {
@@ -64,7 +66,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     isSuccess,
     error,
   } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId });
-  // use skip to avoid unnecessary api calls
 
   // useUpdateTeacherMutation : a hook return function for Update teacher api
   const [
@@ -87,7 +88,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     getValues,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    // Set default values for the form
     defaultValues: {
       first_name: '',
       last_name: '',
@@ -101,11 +101,9 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
 
   // get values and set values
   useEffect(() => {
-    // If teacherData is available (not null or undefined), set the form values
     if (teacherData && teacherData.data) {
       const formattedData = formatTeacherFormData(teacherData);
       if (formattedData) {
-        // Create a new object with the formattedData but with dob as a dayjs object
         const teacherInfo = {
           ...formattedData,
           dob: formattedData.dob ? dayjs(formattedData.dob) : null,
@@ -113,57 +111,14 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         reset(teacherInfo);
         setDob(teacherInfo.dob);
         setProfileImg(formattedData.photo);
-        // Save the original data to compare with later
         setOriginalData(teacherInfo);
       }
     }
   }, [teacherData, reset, isSuccess]);
 
-  // Check if the update was successful and if so, close the modal and navigate to teachers page
-  // If the update was not successful, show an error message
-  // indicate if there are form changes
-  let hasFormChanges = false;
-  // indicate if there are photo changes
-  let hasPhotoChanges = false;
-
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      // If there are form changes or photo changes
-      if (!hasFormChanges || !hasPhotoChanges) {
-        dispatch(
-          setSnackbar({
-            open: true,
-            message: 'No Changes Made.',
-            severity: 'info',
-          }),
-        );
-      } else {
-        // No changes were detected, show an info snackbar message
-        dispatch(
-          setSnackbar({
-            open: true,
-            message:'Teacher information updated successfully!',
-            severity: 'success',
-          }),
-        );
-      }
-      // Close the modal and navigate to teachers page
-      onClose();
-      navigate('/admin/teachers');
-    }
-  }, [
-    isUpdateSuccess,
-    isUpdateError,
-    updateError,
-    hasFormChanges,
-    hasPhotoChanges,
-  ]);
-
   // Handle form submission
   const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    const formFields = {
+    const submittedData = {
       first_name: data.firstName,
       last_name: data.lastName,
       phone_number: data.phoneNumber,
@@ -172,17 +127,28 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       address: data.address,
     };
 
-    // Compare the current form values to the original data
-    hasFormChanges = originalData
-      ? Object.keys(formFields).some(
-          (key) => formFields[key] !== originalData[key],
-        )
-      : false;
+    const dataOriginal = {
+      first_name: originalData.firstName,
+      last_name: originalData.lastName,
+      phone_number: originalData.phoneNumber,
+      gender: originalData.gender,
+      dob: originalData.dob
+        ? dayjs(originalData.dob).format('YYYY-MM-DD')
+        : null,
+      address: originalData.address,
+    };
 
-    // If no changes detected, show a snackbar message and return
-    // This is done to prevent the snackbar from showing a success message
-    // when no changes were made
-    if (!hasFormChanges && !hasPhotoChanges) {
+    // Check if any of the fields have changed
+    const hasChanges = Object.keys(dataOriginal).some(
+      (key) => dataOriginal[key] !== submittedData[key],
+    );
+
+    setHasFormChanges(hasChanges);
+
+    // Check for photo changes
+    setHasPhotoChanges(!!selectedFile);
+
+    if (!hasChanges && !hasPhotoChanges) {
       dispatch(
         setSnackbar({
           open: true,
@@ -190,25 +156,44 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           severity: 'info',
         }),
       );
+      onClose();
+      navigate('/admin/teachers');
       return;
     }
 
-    // Append fields to FormData
-    Object.entries(formFields).forEach(([key, value]) =>
+    const formData = new FormData();
+
+    Object.entries(submittedData).forEach(([key, value]) =>
       formData.append(key, value),
     );
 
-    // Append the photo if it exists
     if (selectedFile) {
       formData.append('photo', selectedFile);
     } else {
       formData.append('photo', profileImg);
     }
 
-    // Update teacher with new data
-    await updateTeacher({ id: teacherId, updates: formData }).unwrap();
+    try {
+      await updateTeacher({ id: teacherId, updates: formData }).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Teacher data updated successfully',
+          severity: 'success',
+        }),
+      );
+      onClose();
+      navigate('/admin/teachers');
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Error updating teacher data: ${error.message}`,
+          severity: 'error',
+        }),
+      );
+    }
   };
-
   // handle change photo
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -220,6 +205,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setValue('photo', file);
+      setHasPhotoChanges(true);
     } else {
       dispatch(
         setSnackbar({
@@ -361,7 +347,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   defaultValue=""
                   render={({ field }) => (
                     <InputField
-                      // {...field}
                       control={control}
                       label="First Name"
                       name={field.name}
@@ -380,7 +365,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   defaultValue=""
                   render={({ field }) => (
                     <InputField
-                      // {...field}
                       control={control}
                       label="Last Name"
                       placeholder="Last Name"
@@ -420,18 +404,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               <Controller
                 name="dob"
                 control={control}
-                rules={{
-                  required: 'Date of birth is required',
-                  validate: (value) => {
-                    if (!value) {
-                      return 'Date of birth is required';
-                    }
-                    if (dayjs(value).isAfter(dayjs())) {
-                      return 'Date of birth cannot be in the future';
-                    }
-                    return true;
-                  },
-                }}
+                defaultValue=""
                 render={({ field }) => (
                   <DatePicker
                     inputFormat="MM/DD/YYYY"
@@ -463,21 +436,15 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             </Box>
             {/* Address */}
             <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <Controller
+              <InputField
                 name="address"
+                required={false}
                 control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <InputField
-                    // {...field}
-                    control={control}
-                    label="Address"
-                    placeholder="Address"
-                    name={field.name}
-                    defaultValue={field.value}
-                    errors={errors}
-                  />
-                )}
+                label="Street Address"
+                placeholder="Phnom Penh, Street 210,..."
+                errors={errors}
+                multiline={true}
+                minRows={5}
               />
             </Box>
             {/* Buttons */}
