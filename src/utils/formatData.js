@@ -25,8 +25,11 @@ export const transformAttendanceData = (apiResponse) =>
     status: capitalize(item.Status.status),
     img: item.Student.Info.photo,
     date: item.date,
-    day:item.Sessions.DayOfWeek.day,
-    teacherName: item.Sessions.Teacher.Info.first_name + ' ' + item.Sessions.Teacher.Info.last_name
+    day: item.Sessions.DayOfWeek.day,
+    teacherName:
+      item.Sessions.Teacher.Info.first_name +
+      ' ' +
+      item.Sessions.Teacher.Info.last_name,
   }));
 
 // Format attendance data detail
@@ -140,21 +143,28 @@ export function teacherData(teachers) {
 // Format teacher detail
 export function formatTeacherDetail(teacherData) {
   if (!teacherData || !teacherData.data || !teacherData.data.Info) {
-    return null;
+    return []
   }
   const { email } = teacherData.data.User;
-  const { first_name, last_name, gender, dob, phone_number, address } =
-    teacherData.data.Info;
-  const formattedData = {
-    'Teacher ID': teacherData.data.teacher_id,
-    'Full Name': `${first_name} ${last_name}`,
-    Gender: gender,
-    'Date of Birth': dob,
-    'Phone Number': phone_number,
-    Email: email,
-    'Street Address': address,
+  const { 
+    first_name,
+    last_name, 
+    gender, 
+    dob, 
+    phone_number, 
+    address,
+    photo
+    } = teacherData.data.Info;
+
+  return {
+    fullName: `${first_name} ${last_name}`,
+    email: email,
+    phoneNumber: phone_number,
+    dateOfBirth: dob,
+    gender: gender,
+    address: address,
+    photo: photo,
   };
-  return formattedData;
 }
 
 // Transform User Profile Data
@@ -324,12 +334,12 @@ export const transformedFilterClasses = (classes) => {
   }));
 };
 
-export const transformedForFilter = (data, dataId , dataName) => {
+export const transformedForFilter = (data, dataId, dataName) => {
   return data.map((item) => ({
     value: item.dataId,
     label: item.dataName,
   }));
-}
+};
 
 // Function to transform the data
 export const transformMarkAttendancetTable = (apiResponse) => {
@@ -348,7 +358,6 @@ export const transformMarkAttendancetTable = (apiResponse) => {
 // Format teacher form data for updating
 export const formatTeacherFormData = (teacherData) => {
   if (teacherData && teacherData.data && teacherData.data.Info) {
-
     const Info = teacherData.data.Info;
     return {
       firstName: Info.first_name || '',
@@ -366,9 +375,16 @@ export const formatTeacherFormData = (teacherData) => {
 export const formatStudentFormData = (studentData) => {
   if (!studentData || !studentData.data) return null;
 
-  const { Info, class_id, guardian_first_name, guardian_last_name,guardian_email,guardian_phone_number,guardian_relationship } =
-    studentData.data;
-    console.log(Info.dob ? dayjs(Info.dob) : null);
+  const {
+    Info,
+    class_id,
+    guardian_first_name,
+    guardian_last_name,
+    guardian_email,
+    guardian_phone_number,
+    guardian_relationship,
+  } = studentData.data;
+  console.log(Info.dob ? dayjs(Info.dob) : null);
 
   return {
     first_name: Info.first_name || '',
