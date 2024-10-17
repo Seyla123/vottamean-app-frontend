@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       open: '/auth/signin',
       proxy: {
         '/api/v1': {
-          target: 'http://localhost:5002',
+          target: 'http://localhost:8000',
           changeOrigin: true,
           pathRewrite: { '^/api/v1': '' },
         },
