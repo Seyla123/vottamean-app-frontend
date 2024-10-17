@@ -214,22 +214,22 @@ function FormInfo() {
           </Typography>
           <Grid container spacing={2}>
             <GridInfo
-              icon={<CalendarRange color={theme.palette.primary.main} />}
+              icon={<CalendarRange color={'#6c63ff'} />}
               text="Gain access to class schedules"
             />
             <GridInfo
-              icon={<UsersRound color={theme.palette.primary.main} />}
+              icon={<UsersRound color={'#6c63ff'} />}
               text="Mark students attendance"
             />
             <GridInfo
-              icon={<WandSparkles color={theme.palette.primary.main} />}
+              icon={<WandSparkles color={'#6c63ff'} />}
               text="Enhanced Teacher Efficiency"
             />
           </Grid>
         </Box>
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Settings color={theme.palette.primary.main} />
+            <Settings color={'#6c63ff'} />
             <Typography variant="body2" fontWeight="medium">
               Gain better teacher experiences with our streamlined system
             </Typography>
@@ -247,6 +247,8 @@ function FormInfo() {
   );
 }
 
+
+export default FormInfo;
 // Grid Info Box
 const GridInfo = ({ icon, text }) => (
   <Grid item xs={12}>
@@ -256,8 +258,6 @@ const GridInfo = ({ icon, text }) => (
     </Box>
   </Grid>
 );
-export default FormInfo;
-
 // Styles
 const cardContainer = {
   display: 'flex',
