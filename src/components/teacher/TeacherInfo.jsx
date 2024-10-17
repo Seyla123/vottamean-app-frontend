@@ -126,16 +126,21 @@ const TeacherInfo = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
+          {/* Header */}
+          <Box alignSelf={'start'} sx={{ width: '100%' }}>
+            <Typography
+              alignSelf={'start'}
+              variant="h6"
+              component="h2"
+              fontWeight={'bold'}
+              gutterBottom
+            >
+              Teacher Information
+            </Typography>
+            {/* <Divider /> */}
+          </Box>
           <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              gap: 2,
-              pb: { xs: 2, sm: 4 },
-              pt: { xs: 0, sm: 4 },
-            }}
+            sx={profileContainer}
           >
             {/* Profile */}
             {photoPreview || photoFile ? (
@@ -189,20 +194,16 @@ const TeacherInfo = ({
               </StyledButton>
             </Box>
           </Box>
-          {/* Sub Header */}
-          <Box alignSelf={'start'} sx={{ width: '100%' }}>
-            <Typography
-              alignSelf={'start'}
-              variant="h6"
-              fontWeight={'bold'}
-              gutterBottom
-            >
-             Personal Information
-            </Typography>
-            <Divider />
-          </Box>
           {/* Name */}
-          <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+          <Stack
+            direction={{
+              xs: 'column',
+              md: 'row',
+            }}
+            width={'100%'}
+            spacing={2}
+            sx={textFieldGap}
+          >
             <Box sx={{ flex: 1, width: '100%' }}>
               <InputField
                 name="firstName"
@@ -223,7 +224,7 @@ const TeacherInfo = ({
                 errors={errors}
               />
             </Box>
-          </Box>
+          </Stack>
           {/* Gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Controller
@@ -342,17 +343,20 @@ const TeacherInfo = ({
 export default TeacherInfo;
 
 // Styles
-const boxContainer = {
+const profileContainer = {
   width: '100%',
-  marginTop: '16px',
-  padding: '0px',
-  gap: { xs: '12px', sm: 3 },
-};
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  gap: 2,
+  pb: { xs: 2, sm: 4 },
+  pt: { xs: 0, sm: 4 },
+}
 const profileBox = {
   width: '100%',
   margin: 'auto',
   bgcolor: '#ffffff',
-  gap: { xs: '12px', sm: 3 },
+  gap: { xs: 2, sm: 3 },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
