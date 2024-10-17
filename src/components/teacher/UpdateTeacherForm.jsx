@@ -55,6 +55,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const [profileImg, setProfileImg] = useState('');
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
+  const [hasPhotoChanges, setHasPhotoChanges] = useState(false);
 
   // useGetTeacherQuery : a hook return function for fetching all teacher data
   const {
@@ -62,7 +64,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     isLoading,
     isError,
     isSuccess,
-    error
+    error,
   } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId });
 
   // useUpdateTeacherMutation : a hook return function for Update teacher api
@@ -92,8 +94,9 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       last_name: '',
       phone_number: '',
       gender: '',
-      dob: null,
+      dob: '',
       address: '',
+      photo: '',
     },
   });
 
@@ -103,11 +106,12 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     if (teacherData && teacherData.data) {
       const formattedData = formatTeacherFormData(teacherData);
       if (formattedData) {
-        // Create a new object with the formattedData but with dob as a dayjs object
+        // Format the date of birth
         const teacherInfo = {
           ...formattedData,
           dob: formattedData.dob ? dayjs(formattedData.dob) : null,
         };
+        // Reset the form values
         reset(teacherInfo);
         setDob(teacherInfo.dob);
         setProfileImg(formattedData.photo);
@@ -120,32 +124,33 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   // Check if the update was successful and if so, close the modal and navigate to teachers page
   // If the update was not successful, show an error message
   useEffect(() => {
-    if (isUpdateSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Teacher information updated successfully!',
-          severity: 'success',
-        }),
-      );
-      onClose();
-      navigate('/admin/teachers');
-    } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Update failed: ' + (updateError.message || 'Unknown error'),
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
-    }
-  }, [isUpdateError, isUpdateSuccess, dispatch, updateError]);
+      if (isUpdateSuccess) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'Teacher information updated successfully!',
+            severity: 'success',
+          }),
+        );
+        onClose();
+        navigate('/admin/teachers');
+      } else if (isUpdateError) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message:
+              'Update failed: ' + (updateError.message || 'Unknown error'),
+            severity: 'error',
+          }),
+        );
+      }
+    },
+    [isUpdateError, isUpdateSuccess, dispatch, updateError]);
 
-  // Handle submit
+  // Handle form submission
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    const formFields = {
+    // Data that submitted
+    const submittedData = {
       first_name: data.firstName,
       last_name: data.lastName,
       phone_number: data.phoneNumber,
@@ -154,8 +159,47 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       address: data.address,
     };
 
-    // Append fields to FormData
-    Object.entries(formFields).forEach(([key, value]) =>
+    // Data that is original
+    const dataOriginal = {
+      first_name: originalData.firstName,
+      last_name: originalData.lastName,
+      phone_number: originalData.phoneNumber,
+      gender: originalData.gender,
+      dob: originalData.dob
+        ? dayjs(originalData.dob).format('YYYY-MM-DD')
+        : null,
+      address: originalData.address,
+    };
+
+    // Check if any of the fields have changed
+    const hasChanges = Object.keys(dataOriginal).some(
+      (key) => dataOriginal[key] !== submittedData[key],
+    );
+
+    // Set the state of whether the form has changes
+    setHasFormChanges(hasChanges);
+
+    // Check for photo changes
+    setHasPhotoChanges(!!selectedFile);
+
+    // If no changes were made, show a message and exit
+    if (!hasChanges && !hasPhotoChanges) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes made.',
+          severity: 'info',
+        }),
+      );
+      onClose();
+      return;
+    }
+
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Append the data properties to the FormData object
+    Object.entries(submittedData).forEach(([key, value]) =>
       formData.append(key, value),
     );
 
@@ -166,11 +210,11 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       formData.append('photo', profileImg);
     }
 
-    // Update teacher with new data
+    // Update the teacher data with new data
     await updateTeacher({ id: teacherId, updates: formData }).unwrap();
   };
 
-  // handle change photo
+  // Handle change photo
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (
@@ -181,6 +225,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setValue('photo', file);
+      setHasPhotoChanges(true);
     } else {
       dispatch(
         setSnackbar({
@@ -200,16 +245,15 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     setValue('photo', null);
   };
 
-
+  // Fetch data error message
   if (isError)
-    dispatch(setSnackbar({
-      open: true, message: `Error fetching teacher data, ${error.data?.message}`, severity: 'error'
-    }));
-
-  if (isUpdateError)
-    dispatch(setSnackbar({
-      open: true, message: `Error updating teacher data , ${updateError.data?.message}`, severity: 'error'
-    }));
+    dispatch(
+      setSnackbar({
+        open: true,
+        message: `Error fetching teacher data, ${error.data?.message}`,
+        severity: 'error',
+      }),
+    );
 
   return (
     <Modal
@@ -265,7 +309,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 />
               ) : (
                 <RandomAvatar
-                  username={`${getValues('firstName')} ${getValues('lastName')}`}
+                  username={`${getValues('firstName') || ''} ${getValues('lastName') || ''}`}
                   size={140}
                 />
               )}
@@ -309,24 +353,38 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
               {/* First Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
-                <InputField
+                <Controller
                   name="firstName"
-                  icon={UserRoundPen}
                   control={control}
-                  label="First Name"
-                  placeholder="First Name"
-                  errors={errors}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <InputField
+                      control={control}
+                      label="First Name"
+                      name={field.name}
+                      defaultValue={field.value}
+                      placeholder="First Name"
+                      errors={errors}
+                    />
+                  )}
                 />
               </Box>
               {/* Last Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
-                <InputField
+                <Controller
                   name="lastName"
                   control={control}
-                  icon={UserRoundPen}
-                  label="Last Name "
-                  placeholder="Last Name "
-                  errors={errors}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <InputField
+                      control={control}
+                      label="Last Name"
+                      placeholder="Last Name"
+                      name={field.name}
+                      defaultValue={field.value}
+                      errors={errors}
+                    />
+                  )}
                 />
               </Box>
             </Box>
@@ -358,18 +416,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               <Controller
                 name="dob"
                 control={control}
-                rules={{
-                  required: 'Date of birth is required',
-                  validate: (value) => {
-                    if (!value) {
-                      return 'Date of birth is required';
-                    }
-                    if (dayjs(value).isAfter(dayjs())) {
-                      return 'Date of birth cannot be in the future';
-                    }
-                    return true;
-                  },
-                }}
+                defaultValue=""
                 render={({ field }) => (
                   <DatePicker
                     inputFormat="MM/DD/YYYY"
@@ -424,12 +471,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 }}
               >
                 {/* CANCEL BUTTON */}
-                <StyledButton
-                  variant="outlined"
-                  onClick={onClose}
-                  sx={{ width: { xs: '100%', sm: '160px' } }}
-                  size="small"
-                >
+                <StyledButton variant="text" size="small" onClick={onClose}>
                   Cancel
                 </StyledButton>
                 {/* SAVE CHANGES BUTTON */}
@@ -437,7 +479,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   type="submit"
                   size="small"
                   variant="contained"
-                  sx={{ width: { xs: '100%', sm: '160px' } }}
                   disabled={isUpdateLoading}
                 >
                   {isUpdateLoading ? 'Saving...' : 'Save Changes'}
