@@ -294,7 +294,7 @@ const DataTable = ({
           )}
         </TableBody>
       </Table>
-      {!isLoading && rows.length > 0 && (
+    
         <TablePagination
           rowsPerPageOptions={[5, 10, 25, 50, 100]}
           component="div"
@@ -304,7 +304,7 @@ const DataTable = ({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      )}
+    
       <Menu
         id="basic-menu"
         open={Boolean(anchorEl)}
