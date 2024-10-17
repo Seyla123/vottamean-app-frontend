@@ -172,7 +172,7 @@ function FormInfo() {
             </TabList>
           </Box>
           {/* Tab Contents */}
-          <TabPanel sx={{ flexGrow: 1 }} value="1">
+          <TabPanel sx={{ flexGrow: 1 , padding:2}} value="1">
             <TeacherInfo
               defaultValues={teacherData}
               handleNextClick={handleNextClick}
@@ -190,6 +190,7 @@ function FormInfo() {
               height: {
                 sm: '60vh',
               },
+              padding:2
             }}
             value="2"
           >
