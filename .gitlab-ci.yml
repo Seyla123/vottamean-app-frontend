@@ -29,32 +29,39 @@ build-frontend:
 # Deploy job
 deploy-frontend:
   stage: deploy
-  image: docker:20
+  image: docker:24.0.5
   services:
     - name: docker:dind
-      alias: docker
-      command: ['--host=tcp://0.0.0.0:2375']
+      command: ["--host=tcp://0.0.0.0:2375"]
   variables:
+    DOCKER_HOST: tcp://docker:2375 # Use the alias and port to connect to the dind service.
     DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: '' # Disable TLS for Docker
-    DOCKER_HOST: unix:///var/run/docker.sock # Connect to Docker dind service explicitly
+    DOCKER_TLS_CERTDIR: "" # Disabling TLS for Docker communication.
   before_script:
     - echo "Waiting for Docker to initialize..."
-    - sleep 20 # Increase wait time to ensure Docker is fully initialized
+    - sleep 20 # Adjust this based on how long it takes for Docker to start.
     - docker info # Check if Docker is running
   script:
     - echo "Deploying frontend to EC2..."
+      # Docker login
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+      # Build and push Docker image
     - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
     - docker push $CI_REGISTRY_IMAGE/frontend:latest
+
+    # SSH to EC2 and deploy the updated backend
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-34-207-85-212.compute-1.amazonaws.com "
       cd /home/ubuntu/wavetrack-client &&
       git pull origin develop &&
       docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
       docker-compose -f /home/ubuntu/wavetrack-client/docker-compose.yml up -d"
+
   environment:
     name: production
     url: https://web.vottamean.com
   only:
     - main
     - develop
+  retry:
+    max: 2
