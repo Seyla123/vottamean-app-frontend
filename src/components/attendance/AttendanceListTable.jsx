@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -57,14 +57,21 @@ const AttendanceListTable = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
+  const handleChangePage = (event, newPage) => {
+    if (newPage > 0) {
+      setPage(newPage)
+    } else {
+      setPage(0)
+    }
+  };
     // Adjust the page if the current page becomes empty after deleting rows
   useEffect(() => {
     if (rows.length === 0 && page > 0) {
-      handleSetPage(prevPage => prevPage - 1);
+      handleChangePage(prevPage => prevPage - 1);
     } else if (rows.length === 0 && page === 0) {
-      handleSetPage(0);
+      handleChangePage(0);
     }
-  }, [rows, page, handleSetPage]);
+  }, [rows]);
 
   const handleSelectedDelete = () => {
     if (selected.length > 0) {
