@@ -19,6 +19,7 @@ import {
   DialogTitle,
   Stack,
   DialogActions,
+  IconButton,
 } from '@mui/material';
 
 // - Custom Components
@@ -50,6 +51,7 @@ import {
   Trash2,
   UserRoundPen,
   Users,
+  X,
 } from 'lucide-react';
 import RandomAvatar from '../common/RandomAvatar';
 
@@ -214,8 +216,18 @@ const EditAccountModal = ({
       aria-describedby="edit-account-modal-description"
     >
       <DialogTitle>Edit Account</DialogTitle>
-
-      <DialogContent>
+      <IconButton
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
+      <DialogContent dividers>
         {/* FORM CONTAINER */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction="column" gap={2}>

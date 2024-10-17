@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 
 // - Lucid Icons
-import { EyeIcon, EyeOff, KeyRound } from 'lucide-react';
+import { EyeIcon, EyeOff, KeyRound, X } from 'lucide-react';
 
 // - Custom Components
 import StyledButton from '../../../../components/common/StyledMuiButton';
@@ -83,6 +83,17 @@ const ChangePasswordForm = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Change Password</DialogTitle>
+      <IconButton
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {/* CURRENT PASSWORD INPUT */}
         <PasswordInput
