@@ -31,15 +31,35 @@ import {
   Avatar,
   Stack,
   useMediaQuery,
+  Button,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
-import { X, User2Icon, CalendarFold, Mails, Phone, Home } from 'lucide-react';
+import {
+  X,
+  User2Icon,
+  CalendarFold,
+  Mails,
+  Phone,
+  Ellipsis,
+  Home,
+  Pencil,
+  Settings,
+  ChevronLeft,
+  Trash2,
+  File,
+} from 'lucide-react';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import viewImage from '../../../assets/images/data-storage.svg';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
-import { cardContainer } from '../../../styles/global';
+import { cardContainer, shadow,tableShadow } from '../../../styles/global';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import { ThreeDRotation } from '@mui/icons-material';
 
 function TeacherDetailPage() {
   const { id } = useParams();
@@ -57,7 +77,14 @@ function TeacherDetailPage() {
 
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   // Format teacher data and set it in the state
   useEffect(() => {
     if (teacherData) {
@@ -115,81 +142,179 @@ function TeacherDetailPage() {
         title="Teacher Details"
         subTitle="View Teacher Information"
       >
-        <Card sx={{ ...cardContainer, bgcolor: 'white' }}>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            alignItems="center"
-            alignContent="center"
-            justifyContent="start"
-            spacing={4}
-            sx={{ p: 2 }}
+        <Stack direction={{ sm: 'column', md: 'row' }} spacing={3}>
+          <Card
+            sx={{ boxShadow: shadow, bgcolor: 'white', p: 3, width: '100%' }}
           >
-            <Avatar
-              src={formattedTeacher.photo}
-              alt="Profile"
-              sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-            />
             <Stack
-              direction="column"
-              alignItems={{ xs: 'center', sm: 'start' }}
+              direction="row"
+              alignItems={'center'}
+              justifyContent={'space-between'}
             >
-              <Typography
-                gutterBottom
-                variant="h5"
-                fontWeight={'bold'}
-                component="div"
+              <StyledButton
+                variant="text"
+                size={'small'}
+                startIcon={<ChevronLeft size={18} />}
+                onClick={hanldeBack}
               >
-                {formattedTeacher.fullName}
+                Back
+              </StyledButton>
+              <IconButton
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+              >
+                <Ellipsis size={18} />
+              </IconButton>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem onClick={handleEdit}>
+                  <ListItemIcon>
+                    <Pencil size={18} color="#1976d2" />
+                  </ListItemIcon>
+                  <ListItemText>Edit</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={handleDelete}>
+                  <ListItemIcon>
+                    <Trash2 size={18} color="#d32f2f" />
+                  </ListItemIcon>
+                  <ListItemText>Delete</ListItemText>
+                </MenuItem>
+              </Menu>
+            </Stack>
+            <Box>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                alignItems="center"
+                alignContent="center"
+                justifyContent="start"
+                spacing={4}
+                sx={{ py: 4 }}
+              >
+                <Avatar
+                  src={formattedTeacher.photo}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                />
+                <Stack
+                  direction="column"
+                  alignItems={{ xs: 'center', sm: 'start' }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    fontWeight={'bold'}
+                    component="div"
+                  >
+                    {formattedTeacher.fullName}
+                  </Typography>
+                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
+                    <Mails size={16} color="#797979" />
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      component="div"
+                      color="text.secondary"
+                    >
+                      {formattedTeacher.email}
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
+              <Box>
+                <GridDetail
+                  icon={<User2Icon size={18} color={'#6c63ff'} />}
+                  label={'Gender'}
+                  value={formattedTeacher.gender}
+                />
+                <GridDetail
+                  icon={<CalendarFold size={18} color={'#6c63ff'} />}
+                  label="Date of Birth"
+                  value={formattedTeacher.dateOfBirth}
+                />
+                <GridDetail
+                  icon={<Phone size={18} color={'#6c63ff'} />}
+                  label="Contact Number"
+                  value={formattedTeacher.phoneNumber}
+                />
+                <GridDetail
+                  icon={<Home size={18} color={'#6c63ff'} />}
+                  label="Street Address"
+                  value={formattedTeacher.address}
+                />
+              </Box>
+            </Box>
+          </Card>
+          <Stack
+            direction={'column'}
+            justifyContent={'space-between'}
+            spacing={4}
+            sx={{
+              ...cardContainer,
+              maxWidth: {
+                xs: '100%',
+                sm: '100%',
+                md: '330px',
+              },
+            }}
+          >
+            <Stack>
+              <Typography gutterBottom variant="h5" fontWeight="medium">
+                Gain detailed insights
               </Typography>
-              <Typography
-                gutterBottom
-                variant="body2"
-                component="div"
-                color="text.secondary"
-              >
-                Detail personal information below
+              <Typography variant="subtitle2" color="text.secondary">
+                into personal information of school instructors.
               </Typography>
             </Stack>
+      
+            {/* <Stack>
+              <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                <Settings color={'#6c63ff'} />
+                <Typography variant="body2" fontWeight="medium">
+                  Get a comprehensive view of the teacher’s personal background
+                </Typography>
+              </Stack>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                whiteSpace={'pre-line'}
+              >
+                allows for better management of the teaching staff, ensuring you
+                have the information needed to handle updates, remove
+                instructors if necessary, and maintain an up-to-date record of
+                all teaching personnel in the school system.
+              </Typography>
+            </Stack> */}
+          <Grid container gap={2}>
+            <GridInfo
+                icon={<Pencil color={'#6c63ff'} />}
+                text="Ensure accurate records for personnel management."
+              />
+        
+            <GridInfo
+                icon={<Pencil color={'#6c63ff'} />}
+                text="Address information for decision-making and compliance."
+              />  
+            <GridInfo
+                icon={<Pencil color={'#6c63ff'} />}
+                text="Facilitate communication by accessing updated contact details."
+              />
+            <GridInfo
+                icon={<Pencil color={'#6c63ff'} />}
+                text="Manage the instructors efficiently"
+              />
+          </Grid>
           </Stack>
-          <CardContent>
-            <GridDetail
-              icon={User2Icon}
-              label="Gender"
-              value={formattedTeacher.gender}
-            />
-            <GridDetail
-              icon={CalendarFold}
-              label="Date of Birth"
-              value={formattedTeacher.dateOfBirth}
-            />
-
-            <GridDetail
-              icon={Mails}
-              label="Email"
-              value={formattedTeacher.email}
-            />
-            <GridDetail
-              icon={Phone}
-              label="Contact Number"
-              value={formattedTeacher.phoneNumber}
-            />
-            <GridDetail
-              icon={Home}
-              label="Street Address"
-              value={formattedTeacher.address}
-            />
-          </CardContent>
-
-          <Stack direction="row" alignSelf={'flex-end'}>
-            <StyledButton
-              variant="contained"
-              size={'small'}
-              onClick={hanldeBack}
-            >
-              Back
-            </StyledButton>
-          </Stack>
-        </Card>
+        </Stack>
       </FormComponent>
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
@@ -208,8 +333,27 @@ function TeacherDetailPage() {
   );
 }
 
+// const DetailInfo = ({ text, icon: Icon }) => {
+//   return (
+//     <Stack direction={'row'} spacing={1} sx={{ display: 'flex', alignItems: 'center', boxShadow:tableShadow, py:2,px:2 }}>
+//         <Icon size={18} color={'#6c63ff'} />
+//         <Typography variant="body2">
+//           {text}
+//         </Typography>
+//     </Stack>
+//   );
+// };
+const GridInfo = ({ icon, text }) => (
+  <Grid item xs={8} sm={12} boxShadow={tableShadow} sx={{ borderRight: '3px solid', borderColor: '#6c63ff'}} >
+    <Stack direction={'row'} alignItems={'center'} spacing={2} sx={{ borderColor: 'divider',borderRadius: 2, p: 1}}>
+      <Box sx={{ display: 'flex', alignItems: 'center'}}  >{icon}</Box>
+      <Typography variant="body2" >{text}</Typography>
+    </Stack>
+{/* sx={{ borderLeft: '2px solid', borderColor: '#6c63ff', p: 1 }} */}
+  </Grid>
+);
 // Grid Detais
-const GridDetail = ({ icon: IconComponent, label, value }) => {
+const GridDetail = ({ icon, label, value }) => {
   return (
     <Grid
       container
@@ -219,19 +363,18 @@ const GridDetail = ({ icon: IconComponent, label, value }) => {
       <Grid item xs={12} sm={4}>
         <Chip
           label={label}
-          icon={<IconComponent size={18} />}
-          variant="outlined"
-          color="primary"
+          icon={icon}
           sx={{
-            px: 1,
+            px: 0,
+            fontWeight: 'medium',
+            bgcolor: 'transparent',
           }}
         />
       </Grid>
       <Grid item xs={12} sm={8}>
         <Typography
-          variant="body1"
+          variant="body2"
           sx={{
-            fontSize: '1rem',
             textTransform: 'capitalize',
             elipsis: 'true',
             wordBreak: 'break-word',
