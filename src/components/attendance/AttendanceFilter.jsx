@@ -145,8 +145,8 @@ function AttendanceFilter({ pdfData }) {
         };
 
         return (
-            <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ height: "50px" }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap:'wrap', justifyContent:'center'}}>
                     <DatePicker
                         value={startDate}
                         onChange={handleStartDateChange} // No need to use preventDefault here
@@ -193,7 +193,7 @@ function AttendanceFilter({ pdfData }) {
                     data={subjects}
                     onChange={handleSubjectChange}
                     placeholder={"Subject"}
-                    customStyles={{ maxHeight: '50px', width: '150px' }}
+                    customStyles={{width: '150px' }}
                     icon={<BookIcon size={18} color='#B5B5B5' />}
                 />
                 <FilterComponent
@@ -201,7 +201,7 @@ function AttendanceFilter({ pdfData }) {
                     data={classes}
                     onChange={handleClassChange}
                     placeholder={"Class"}
-                    customStyles={{ maxHeight: '50px', width: '150px' }}
+                    customStyles={{width: '150px' }}
                     icon={<LibraryIcon size={18} color='#B5B5B5' />}
                 />
                 <FilterComponent
@@ -209,7 +209,7 @@ function AttendanceFilter({ pdfData }) {
                     data={filterOptions}
                     onChange={handleFilterChange}
                     placeholder={"Date range"}
-                    customStyles={{ maxHeight: '50px', width: '150px' }}
+                    customStyles={{width: '150px' }}
                     icon={<Filter size={18} color='#B5B5B5' />}
                 />
 
