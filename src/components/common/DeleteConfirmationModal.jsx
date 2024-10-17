@@ -113,7 +113,6 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
             <StyledButton
               onClick={onClose}
               variant="text"
-              size="large"
               fullWidth
             >
               Cancel
@@ -122,7 +121,6 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
               onClick={onConfirm}
               color="error"
               variant="contained"
-              size="large"
               fullWidth
               autoFocus
             >

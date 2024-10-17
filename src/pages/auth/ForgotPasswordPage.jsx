@@ -32,6 +32,7 @@ import EmailSentIcon from '../../assets/icon/email-sent.svg';
 
 // Validator
 import { ForgotPasswordValidator } from '../../validators/validationSchemas';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 const ForgotPasswordPage = () => {
   const dispatch = useDispatch();
@@ -144,10 +145,9 @@ const ForgotPasswordPage = () => {
                   }}
                 />
               </Box>
-              <Button
+              <StyledButton
                 variant="contained"
                 fullWidth
-                size="large"
                 disabled={isLoading}
                 onClick={handleSubmit(handleForgotPassword)}
               >
@@ -156,7 +156,7 @@ const ForgotPasswordPage = () => {
                 ) : (
                   'Reset Password'
                 )}
-              </Button>
+              </StyledButton>
             </>
           )}
 

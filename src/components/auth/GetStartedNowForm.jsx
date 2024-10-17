@@ -186,7 +186,6 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
             variant="contained"
             type="submit"
             fullWidth
-            size="large"
           >
             Continue
           </StyledButton>

@@ -211,7 +211,6 @@ const GuardianUpdateForm = ({ onClose, handleNext }) => {
               <StyledButton
                 variant="outlined"
                 color="inherit"
-                size="large"
                 onClick={onClose}
               >
                 Cancel
@@ -220,7 +219,6 @@ const GuardianUpdateForm = ({ onClose, handleNext }) => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                size="large"
               >
                 Save Changes
               </StyledButton>

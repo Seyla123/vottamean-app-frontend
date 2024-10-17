@@ -29,6 +29,7 @@ import { SchoolValidator } from '../../../../validators/validationSchemas';
 
 // - Ui Slice for snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
+import StyledButton from '../../../../components/common/StyledMuiButton';
 
 /**
  * SchoolUpdatePage component allows users to update their school information,
@@ -211,19 +212,19 @@ function SchoolUpdatePage() {
           />
 
           {/* Submit button */}
-          <Button type="submit" variant="contained" fullWidth>
+          <StyledButton type="submit" variant="contained" fullWidth>
             Update School Info
-          </Button>
+          </StyledButton>
 
           {/* Cancel button */}
-          <Button
+          <StyledButton
             type="button"
             variant="outlined"
             fullWidth
             onClick={() => navigate('/admin/settings/account')}
           >
             Cancel
-          </Button>
+          </StyledButton>
         </Stack>
       </form>
     </FormComponent>

@@ -23,6 +23,7 @@ import change from '../../assets/icon/change.png';
 
 // Validator
 import { ChangePasswordValidator } from '../../validators/validationSchemas';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 function PasswordChangePage() {
   const [openError, setOpenError] = useState(false);
@@ -132,14 +133,14 @@ function PasswordChangePage() {
           </Box>
         </Box>
 
-        <Button
+        <StyledButton
           variant="contained"
           onClick={handleSubmit(handlePasswordChange)}
           disabled={isLoading}
           sx={{ width: '100%', height: { xs: '42px', md: '56px' } }}
         >
           {isLoading ? 'Saving...' : 'Save changes'}
-        </Button>
+        </StyledButton>
 
         {/* Snackbar for displaying error */}
         {openError && (

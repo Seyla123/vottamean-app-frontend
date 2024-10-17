@@ -39,6 +39,7 @@ import Logo from '../../assets/images/Logo.svg';
 
 // Validator
 import { ResetPasswordValidator } from '../../validators/validationSchemas';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 const ResetNewPasswordPage = () => {
   const navigate = useNavigate();
@@ -195,14 +196,13 @@ const ResetNewPasswordPage = () => {
                   message="Contain at least one special character."
                 />
               </Box>
-              <Button
+              <StyledButton
                 variant="contained"
                 type="submit"
                 disabled={isLoading}
-                size="large"
               >
                 {isLoading ? 'Resetting...' : 'Reset Password'}
-              </Button>
+              </StyledButton>
             </Box>
           </form>
           <Link to={'/auth/signin'} style={styles.footer}>

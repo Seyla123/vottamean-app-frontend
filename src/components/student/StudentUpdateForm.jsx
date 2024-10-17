@@ -306,7 +306,6 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
               <StyledButton
                 variant="outlined"
                 color="inherit"
-                size="large"
                 onClick={onClose}
                 handleBack={() => {'admin/student'}}
               >
@@ -316,7 +315,6 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                size="large"
               >
                 Save Changes
               </StyledButton>

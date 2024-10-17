@@ -114,7 +114,6 @@ const LoginForm = () => {
           variant="contained"
           type="submit"
           fullWidth
-          size="large"
           disabled={isLoading}
         >
           {isLoading ? (

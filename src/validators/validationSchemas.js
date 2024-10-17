@@ -30,7 +30,7 @@ import moment from 'moment';
  *        )}
  *      />
  *      ...
- *      <Button type="submit">Sign Up</Button>
+ *      <StyledButton type="submit">Sign Up</StyledButton>
  *    </Box>
  */
 

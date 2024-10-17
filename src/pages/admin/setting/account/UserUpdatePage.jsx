@@ -34,6 +34,7 @@ import { UserProfileValidator } from '../../../../validators/validationSchemas';
 
 // - UI Slice for Snackbar
 import { setSnackbar } from '../../../../store/slices/uiSlice';
+import StyledButton from '../../../../components/common/StyledMuiButton';
 
 /**
  * UserUpdatePage component enables users to update their personal information, including
@@ -244,14 +245,14 @@ function UserUpdatePage() {
             onChange={handleFileChange}
           />
           <label htmlFor="photo-upload">
-            <Button variant="contained" component="span" fullWidth>
+            <StyledButton variant="contained" component="span" fullWidth>
               Upload Photo
-            </Button>
+            </StyledButton>
           </label>
 
           {/* Clear Image Button */}
           {selectedFile && (
-            <Button
+            <StyledButton
               variant="outlined"
               fullWidth
               onClick={() => {
@@ -260,7 +261,7 @@ function UserUpdatePage() {
               }}
             >
               Clear Image
-            </Button>
+            </StyledButton>
           )}
 
           {/* First Name */}
@@ -361,19 +362,19 @@ function UserUpdatePage() {
           />
 
           {/* Submit button */}
-          <Button type="submit" variant="contained" fullWidth>
+          <StyledButton type="submit" variant="contained" fullWidth>
             Update
-          </Button>
+          </StyledButton>
 
           {/* Cancel button */}
-          <Button
+          <StyledButton
             type="button"
             variant="outlined"
             fullWidth
             onClick={() => navigate('/admin/settings/account')}
           >
             Cancel
-          </Button>
+          </StyledButton>
         </Stack>
       </form>
     </FormComponent>

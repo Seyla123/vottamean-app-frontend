@@ -17,6 +17,7 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import ViewModal from '../../../components/common/ViewModal';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 const columns = [
   { id: 'teacher', label: 'Teacher' },
@@ -178,14 +179,13 @@ function SessionListPage() {
       <Stack direction="row" justifyContent="flex-end">
         {/* add session button */}
         <Link to="/admin/sessions/create">
-          <Button
-            size="large"
+          <StyledButton
             variant="contained"
             color="primary"
             startIcon={<PlusIcon size={20} />}
           >
-            ADD SESSION
-          </Button>
+            Create Session
+          </StyledButton>
         </Link>
       </Stack>
       <DataTable

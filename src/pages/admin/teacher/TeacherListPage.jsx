@@ -26,7 +26,7 @@ import { teacherData } from '../../../utils/formatData';
 import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 // Icon from lucide
 import { PlusIcon } from 'lucide-react';
-
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 // Table columns
 const columns = [
@@ -52,12 +52,12 @@ const TeacherListPage = () => {
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   // open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
@@ -69,7 +69,11 @@ const TeacherListPage = () => {
     isSuccess,
     isError,
     error,
-  } = useGetAllTeachersQuery({ search: searchTerm, limit: rowsPerPage, page: page + 1 });
+  } = useGetAllTeachersQuery({
+    search: searchTerm,
+    limit: rowsPerPage,
+    page: page + 1,
+  });
 
   // useDeleteTeacherMutation : a hook return function for Delete teacher
   const [
@@ -148,7 +152,7 @@ const TeacherListPage = () => {
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -211,14 +215,13 @@ const TeacherListPage = () => {
         mb={2}
       >
         <Link to="/admin/teachers/create">
-          <Button
-            size="large"
+          <StyledButton
             variant="contained"
             color="primary"
             startIcon={<PlusIcon size={20} />}
           >
-            ADD TEACHER
-          </Button>
+            Create Teacher
+          </StyledButton>
         </Link>
       </Stack>
       {/* Search bar */}

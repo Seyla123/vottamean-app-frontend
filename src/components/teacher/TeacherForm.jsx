@@ -17,6 +17,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import { createFormSchema } from '../../validators/validationSchemas';
+import StyledButton from '../common/StyledMuiButton';
 
 function TeacherForm(handleNext, handleCancel, mode = 'create') {
   // Form validation
@@ -294,16 +295,16 @@ function TeacherForm(handleNext, handleCancel, mode = 'create') {
             justifyContent={'flex-end'}
             gap={2}
           >
-            <Button
+            <StyledButton
               variant="outlined"
               sx={{ borderColor: 'inherit', color: 'inherit' }}
               fullWidth
             >
               Back
-            </Button>
-            <Button fullWidth variant="contained" type="submit">
+            </StyledButton>
+            <StyledButton fullWidth variant="contained" type="submit">
               Add Teacher
-            </Button>
+            </StyledButton>
           </Box>
         </Box>
       </Box>
