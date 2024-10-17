@@ -90,7 +90,7 @@ const DataTable = ({
   rowsPerPage,
   setPage,
   setRowsPerPage,
-  totalRows
+  totalRows,
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -198,11 +198,7 @@ const DataTable = ({
   return (
     <TableContainer component={Paper} sx={shadow}>
       <Table className="min-w-full" aria-label="reusable table" size="small">
-        <TableHead
-          sx={{
-            height: '80px',
-          }}
-        >
+        <TableHead sx={{ height: '60px' }}>
           <TableRow>
             <TableCell padding="checkbox">
               <Checkbox
@@ -223,12 +219,13 @@ const DataTable = ({
             )}
             {selected.length > 0 ? (
               <TableCell align="right" sx={{ maxWidth: '50px' }}>
-                <StyledButton
+                <IconButton
                   size="small"
                   onClick={handleSelectedDelete}
                   color="error"
-                  startIcon={<Trash2 size={18} />}
-                />
+                >
+                  <Trash2 size={18} />
+                </IconButton>
               </TableCell>
             ) : (
               <TableCell align="right"></TableCell>
@@ -376,9 +373,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
   );
 };
 
-
 const LoadingTable = ({ columns, height }) => {
-
   return (
     <TableRow>
       <TableCell
