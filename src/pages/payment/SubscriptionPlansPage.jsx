@@ -10,6 +10,7 @@ import { Leaf, Sprout, TreeDeciduous } from 'lucide-react';
 import PricingPlanCard from '../../components/admin/PricingPlanCard';
 import AccountUsagePanel from '../../components/admin/AccountUsagePanel';
 import PlanComparison from '../../components/admin/PlanComparison';
+import { StyledTab } from '../../components/common/StyledTabs';
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -32,7 +33,7 @@ const StyledTabs = styled((props) => (
   },
 });
 
-const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
+const StyledTabPricing = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     textTransform: 'none',
     fontSize: theme.typography.pxToRem(15),
@@ -147,9 +148,9 @@ const SubscriptionPlansPage = () => {
             aria-label="Vertical tabs"
             sx={{ width: '100%' }}
           >
-            <Tab label="Account usage" value="1" />
-            <Tab label="Upgrade Plan" value="2" />
-            <Tab label="Plan Comparison" value="3" />
+            <StyledTab label="Account usage" value="1" />
+            <StyledTab label="Upgrade Plan" value="2" />
+            <StyledTab label="Plan Comparison" value="3" />
           </TabList>
         </Box>
 
@@ -192,8 +193,8 @@ const SubscriptionPlansPage = () => {
                   indicatorColor="primary"
                   aria-label="billing cycle tabs"
                 >
-                  <StyledTab value="monthly" label="Monthly" />
-                  <StyledTab value="yearly" label="Yearly (Save 10%)" />
+                  <StyledTabPricing value="monthly" label="Monthly" />
+                  <StyledTabPricing value="yearly" label="Yearly (Save 10%)" />
                 </StyledTabs>
               </Box>
             </Box>

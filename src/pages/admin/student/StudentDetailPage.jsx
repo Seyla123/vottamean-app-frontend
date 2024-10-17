@@ -14,6 +14,7 @@ import { updateFormData } from '../../../store/slices/formSlice';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import { StudentProfile } from '../../../utils/formatData';
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
+import { StyledTab } from '../../../components/common/StyledTabs';
 
 const StudentDetailPage = () => {
   const { id } = useParams();
@@ -119,8 +120,8 @@ const StudentDetailPage = () => {
       <Box sx={{ width: '100%', typography: 'body1' }}>
         <TabContext value={value}>
           <TabList onChange={handleChange} aria-label="Student tabs">
-            <Tab label="STUDENT INFORMATION" value="1" />
-            <Tab label="GUARDIAN CONTACT" value="2" />
+            <StyledTab label="STUDENT INFORMATION" value="1" />
+            <StyledTab label="GUARDIAN CONTACT" value="2" />
           </TabList>
 
           {/* Student Information Tab */}
