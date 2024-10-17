@@ -7,6 +7,7 @@ import { Box, Typography, Button, Card } from '@mui/material';
 
 // Icons
 import email from '../../assets/icon/email.png';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 function VerifyResetPassword() {
   const navigate = useNavigate();
@@ -46,14 +47,14 @@ function VerifyResetPassword() {
           </Box>
         </Box>
 
-        <Button
+        <StyledButton
           fullWidth
           variant="contained"
           sx={{ padding: { xs: 1, md: 2 } }}
           onClick={handleNavigateToResetPassword}
         >
-          GO TO RESET PASSWORD
-        </Button>
+          Go Reset Password
+        </StyledButton>
       </Card>
     </Box>
   );

@@ -28,6 +28,7 @@ import { shadow } from '../../../styles/global';
 import FormComponent from '../../../components/common/FormComponent';
 import emptyClassesImage from '../../../assets/images/teacher-99.svg';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 const headerImages = [
   classHeaderImg1,
@@ -267,13 +268,13 @@ function TeacherScheduleClassPage() {
     if (isMobile) {
       return (
         <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
+          <StyledButton
             variant="outlined"
             startIcon={<ListFilter size={20} />}
             onClick={handleFilterClick}
           >
             {selectedDay === 'All' ? 'Filter by Day' : selectedDay}
-          </Button>
+          </StyledButton>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

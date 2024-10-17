@@ -63,7 +63,6 @@ const SubscriptionButton = ({
       variant="contained"
       disabled={isLoading || isProcessing}
       sx={{ width: '100%' }}
-      size="large"
     >
       {isLoading || isProcessing
         ? 'Processing...'

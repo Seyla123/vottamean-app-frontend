@@ -22,6 +22,7 @@ import {
 
 // User Profile Data formatting
 import { getUserProfileData } from '../../../../utils/formatData';
+import StyledButton from '../../../../components/common/StyledMuiButton';
 
 /**
  * AccountProfilePage component displays and manages user account information,
@@ -185,12 +186,12 @@ function AccountProfilePage() {
                     </Typography>
                   </Box>
                   <Link to="change-password" style={{ textDecoration: 'none' }}>
-                    <Button
+                    <StyledButton
                       variant="contained"
                       startIcon={<KeyRoundIcon size={20} />}
                     >
                       Change Password
-                    </Button>
+                    </StyledButton>
                   </Link>
                 </Stack>
 
@@ -228,14 +229,14 @@ function AccountProfilePage() {
                       Permanently delete your account from WaveTrack service
                     </Typography>
                   </Box>
-                  <Button
+                  <StyledButton
                     variant="contained"
                     color="error"
                     onClick={clickDeleteAccount}
                     startIcon={<Trash2 size={20} />}
                   >
                     Delete Account
-                  </Button>
+                  </StyledButton>
                 </Stack>
               </Stack>
             </CardComponent>

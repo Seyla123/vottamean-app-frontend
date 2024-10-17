@@ -16,7 +16,6 @@ const NotFoundPage = () => {
         to={'/'}
         variant="contained"
         color="primary"
-        size="large"
       >
         Go to Home
       </StyledButton>

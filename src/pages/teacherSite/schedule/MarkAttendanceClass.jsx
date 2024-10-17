@@ -174,7 +174,6 @@ function MarkAttendanceClass() {
 
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
-          size="large"
           variant="contained"
           color="primary"
           startIcon={

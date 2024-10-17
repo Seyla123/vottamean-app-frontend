@@ -81,7 +81,6 @@ const SomethingWentWrong = ({
               to={homeLink}
               variant="contained"
               color="primary"
-              size="large"
             >
               {buttonText}
             </StyledButton>
@@ -89,7 +88,6 @@ const SomethingWentWrong = ({
               onClick={() => window.location.reload()}
               variant="contained"
               color="primary"
-              size="large"
             >
               Refresh Page
             </StyledButton>

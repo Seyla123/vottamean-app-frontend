@@ -18,6 +18,7 @@ import { setSnackbar } from '../../../store/slices/uiSlice';
 
 // - Validator
 import { CompletedRegistrationValidator } from '../../../validators/validationSchemas';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 function TeacherRegistration() {
   const dispatch = useDispatch();
@@ -170,7 +171,7 @@ function TeacherRegistration() {
         </Box>
 
         {/* SUBMIT BUTTON */}
-        <Button
+        <StyledButton
           type="submit"
           variant="contained"
           color="primary"
@@ -179,7 +180,7 @@ function TeacherRegistration() {
           sx={{ mt: 2 }}
         >
           {isLoading ? <CircularProgress size={24} /> : 'Complete Registration'}
-        </Button>
+        </StyledButton>
       </Box>
     </form>
   );

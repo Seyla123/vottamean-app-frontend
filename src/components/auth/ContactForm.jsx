@@ -98,7 +98,6 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
             <StyledButton
               variant="outlined"
               color="primary"
-              size="large"
               fullWidth
               onClick={handleBack}
             >
@@ -109,7 +108,6 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
               type="submit"
               variant="contained"
               color="primary"
-              size="large"
               fullWidth
             >
               Continue

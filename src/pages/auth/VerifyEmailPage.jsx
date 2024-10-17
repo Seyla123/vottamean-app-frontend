@@ -7,6 +7,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import verifiedImage from '../../assets/images/authenticated-img.png';
 import failAuthenticatedImage from '../../assets/images/fail-authenticated-img.png';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 function VerifyEmailPage() {
   const { verificationToken } = useParams();
@@ -80,14 +81,13 @@ const SuccessState = ({ handleLoginRedirect }) => (
       Your email has been successfully verified. You can now log in to your
       account.
     </Typography>
-    <Button
+    <StyledButton
       variant="contained"
       color="primary"
-      size="large"
       onClick={handleLoginRedirect}
     >
       Go to Login
-    </Button>
+    </StyledButton>
   </Box>
 );
 
@@ -104,9 +104,9 @@ const ErrorState = () => (
     <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
       We couldn't verify your email. The link may have expired or is invalid.
     </Typography>
-    <Button variant="outlined" color="primary" size="large" href="/auth/signin">
+    <StyledButton variant="outlined" color="primary"  href="/auth/signin">
       Try again
-    </Button>
+    </StyledButton>
   </Box>
 );
 

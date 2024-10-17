@@ -11,6 +11,7 @@ import HeaderTitle from '../../components/auth/HeaderTitle';
 import BackgroundImage from '../../assets/images/verified-illustration-img.svg';
 import Logo from '../../assets/images/Logo.svg';
 import { ShieldCheck, ChevronLeft, Phone, ShieldX } from 'lucide-react';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 function VerifyTeacherEmailPage() {
   const { verificationToken } = useParams();
@@ -84,22 +85,22 @@ function VerifyTeacherEmailPage() {
                   <Box
                     sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
                   >
-                    <Button
+                    <StyledButton
                       variant="contained"
                       onClick={handleLoginRedirect}
                       disabled={isLoading}
                     >
                       Go to sign in
-                    </Button>
+                    </StyledButton>
                   </Box>
                 ) : (
-                  <Button
+                  <StyledButton
                     variant="contained"
                     onClick={handleLoginRedirect}
                     disabled={isLoading}
                   >
                     Try again
-                  </Button>
+                  </StyledButton>
                 )}
               </Box>
             </form>

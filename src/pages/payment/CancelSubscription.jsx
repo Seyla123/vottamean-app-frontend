@@ -22,7 +22,6 @@ function CancelSubscription({ adminId }) {
         variant="outlined"
         onClick={handleCancel}
         disabled={isLoading}
-        size="large"
       >
         {isLoading ? 'Cancelling...' : 'Cancel Subscription'}
       </StyledButton>

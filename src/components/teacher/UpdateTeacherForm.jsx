@@ -424,22 +424,22 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 }}
               >
                 {/* CANCEL BUTTON */}
-                <Button
+                <StyledButton
                   variant="outlined"
                   onClick={onClose}
                   sx={{ width: { xs: '100%', sm: '160px' } }}
                 >
                   Cancel
-                </Button>
+                </StyledButton>
                 {/* SAVE CHANGES BUTTON */}
-                <Button
+                <StyledButton
                   type="submit"
                   variant="contained"
                   sx={{ width: { xs: '100%', sm: '160px' } }}
                   disabled={isUpdateLoading}
                 >
                   {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                </Button>
+                </StyledButton>
               </Box>
             </Grid>
           </form>

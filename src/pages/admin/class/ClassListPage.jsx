@@ -227,7 +227,6 @@ const ClassListPage = () => {
     >
       <Stack direction="row" justifyContent="flex-end">
         <StyledButton
-          size="large"
           variant="contained"
           color="primary"
           startIcon={<PlusIcon size={18} />}

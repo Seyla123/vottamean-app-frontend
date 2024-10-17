@@ -7,6 +7,7 @@ import { Box, Typography, Button } from '@mui/material';
 
 // Image & Icons
 import resetPassIcon from '../../assets/icon/reset-password-icon.svg';
+import StyledButton from '../../components/common/StyledMuiButton';
 
 const VerifySuccessfullyPage = () => {
   const navigate = useNavigate();
@@ -31,14 +32,13 @@ const VerifySuccessfullyPage = () => {
           account.
         </Typography>
 
-        <Button
+        <StyledButton
           variant="contained"
-          size="large"
           onClick={handleNavigateToResetPassword}
           sx={{ mt: 4 }}
         >
           Go to Reset Password
-        </Button>
+        </StyledButton>
       </Box>
     </Box>
   );

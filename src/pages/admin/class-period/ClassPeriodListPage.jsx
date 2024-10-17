@@ -24,6 +24,7 @@ import {
 } from '../../../utils/formatHelper';
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
@@ -235,15 +236,14 @@ function ClassPeriodListPage() {
       subTitle={`Total Class Periods: ${totalRows}`}
     >
       <Stack direction="row" justifyContent="flex-end">
-        <Button
-          size="large"
+        <StyledButton
           variant="contained"
           color="primary"
           startIcon={<PlusIcon size={20} />}
           onClick={() => setCreateModalOpen(true)}
         >
-          ADD PERIOD
-        </Button>
+          Create Period
+        </StyledButton>
       </Stack>
 
       <DataTable
