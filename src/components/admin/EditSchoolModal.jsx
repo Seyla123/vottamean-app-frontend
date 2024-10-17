@@ -42,6 +42,7 @@ import { NotebookPen, Phone, X } from 'lucide-react';
 import StyledButton from '../common/StyledMuiButton';
 import InputField from '../common/InputField';
 import PhoneInputField from '../common/PhoneInputField';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const EditSchoolModal = ({ open, onClose }) => {
   // - State to store user data for the school
@@ -153,7 +154,7 @@ const EditSchoolModal = ({ open, onClose }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <BootstrapDialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Edit School Details</DialogTitle>
       <IconButton
         onClick={onClose}
@@ -217,7 +218,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 

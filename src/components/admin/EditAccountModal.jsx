@@ -54,6 +54,7 @@ import {
   X,
 } from 'lucide-react';
 import RandomAvatar from '../common/RandomAvatar';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const EditAccountModal = ({
   open,
@@ -209,7 +210,7 @@ const EditAccountModal = ({
   }
 
   return (
-    <Dialog
+    <BootstrapDialog
       open={open}
       onClose={onClose}
       aria-labelledby="edit-account-modal-title"
@@ -383,7 +384,7 @@ const EditAccountModal = ({
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 

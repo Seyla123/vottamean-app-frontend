@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { PlusIcon } from 'lucide-react';
+import {
+  Calendar,
+  ClockArrowDown,
+  ClockArrowUp,
+  FolderPen,
+  IdCard,
+  LetterText,
+  PlusIcon,
+  Timer,
+} from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -20,6 +29,7 @@ import {
 } from '../../../services/classPeriodApi';
 import {
   calculatePeriod,
+  formatDate,
   formatTimeTo12Hour,
 } from '../../../utils/formatHelper';
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
@@ -236,6 +246,27 @@ function ClassPeriodListPage() {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
 
+  console.log(selectedClassPeriod);
+  // Class period data details
+  const classPeriodDataDetails = [
+    {
+      'Start Time': selectedClassPeriod?.start_time,
+      icon: <ClockArrowUp size={18} />,
+    },
+    {
+      'End Time': selectedClassPeriod?.end_time,
+      icon: <ClockArrowDown size={18} />,
+    },
+    {
+      Period: selectedClassPeriod?.period,
+      icon: <Timer size={18} />,
+    },
+    {
+      'Create At': formatDate(selectedClassPeriod?.createdAt),
+      icon: <Calendar size={18} />,
+    },
+  ];
+
   return (
     <FormComponent>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -300,7 +331,7 @@ function ClassPeriodListPage() {
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Class Period Details"
-        data={selectedClassPeriod}
+        data={classPeriodDataDetails}
       />
 
       <DeleteConfirmationModal

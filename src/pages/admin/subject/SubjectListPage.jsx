@@ -316,7 +316,7 @@ function SubjectListPage() {
       />
 
       {/* EDIT SUBJECT MODAL */}
-      <EditModal
+    <EditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         title="Update Subject"

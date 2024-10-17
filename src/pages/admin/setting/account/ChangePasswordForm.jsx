@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Stack,
 } from '@mui/material';
 
 // - Lucid Icons
@@ -31,6 +32,7 @@ import { useChangePasswordMutation } from '../../../../services/authApi';
 
 // - Validator
 import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
+import { BootstrapDialog } from '../../../../components/common/BootstrapDialog';
 
 const ChangePasswordForm = ({ open, onClose }) => {
   const dispatch = useDispatch();
@@ -81,7 +83,7 @@ const ChangePasswordForm = ({ open, onClose }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <BootstrapDialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Change Password</DialogTitle>
       <IconButton
         onClick={onClose}
@@ -94,57 +96,55 @@ const ChangePasswordForm = ({ open, onClose }) => {
       >
         <X />
       </IconButton>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {/* CURRENT PASSWORD INPUT */}
-        <PasswordInput
-          name="currentPassword"
-          label="Current Password"
-          control={control}
-          showPassword={showPassword}
-          togglePasswordVisibility={() => setShowPassword(!showPassword)}
-          error={errors.currentPassword}
-          placeholder="Enter your current password."
-          icon={KeyRound}
-        />
-
-        {/* NEW PASSWORD INPUT */}
-        <PasswordInput
-          name="newPassword"
-          label="New Password"
-          control={control}
-          showPassword={showPassword}
-          togglePasswordVisibility={() => setShowPassword(!showPassword)}
-          error={errors.newPassword}
-          placeholder="Enter your new password."
-          icon={KeyRound}
-        />
-
-        {/* CONFIRM PASSWORD INPUT */}
-
-        <PasswordInput
-          name="newPasswordConfirm"
-          label="New Password"
-          control={control}
-          showPassword={showPassword}
-          togglePasswordVisibility={() => setShowPassword(!showPassword)}
-          error={errors.newPasswordConfirm}
-          placeholder="Confirm your new password."
-          icon={KeyRound}
-        />
-
-        {/* REQUIREMENT */}
-        <Box>
-          <Typography variant="body1" fontWeight="bold">
-            Password Requirements{' '}
-            <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-          </Typography>
-          <Typography variant="body2" component="ul" sx={{ pl: 2 }}>
-            <li>At least 8 characters.</li>
-            <li>Contain at least one number.</li>
-            <li>Contain at least one uppercase letter.</li>
-            <li>Contain at least one special character.</li>
-          </Typography>
-        </Box>
+      <DialogContent dividers>
+        <Stack direction="column" gap={2}>
+          {/* CURRENT PASSWORD INPUT */}
+          <PasswordInput
+            name="currentPassword"
+            label="Current Password"
+            control={control}
+            showPassword={showPassword}
+            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            error={errors.currentPassword}
+            placeholder="Enter your current password."
+            icon={KeyRound}
+          />
+          {/* NEW PASSWORD INPUT */}
+          <PasswordInput
+            name="newPassword"
+            label="New Password"
+            control={control}
+            showPassword={showPassword}
+            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            error={errors.newPassword}
+            placeholder="Enter your new password."
+            icon={KeyRound}
+          />
+          {/* CONFIRM PASSWORD INPUT */}
+          <PasswordInput
+            name="newPasswordConfirm"
+            label="New Password"
+            control={control}
+            showPassword={showPassword}
+            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            error={errors.newPasswordConfirm}
+            placeholder="Confirm your new password."
+            icon={KeyRound}
+          />
+          {/* REQUIREMENT */}
+          <Box>
+            <Typography variant="body1" fontWeight="bold">
+              Password Requirements{' '}
+              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+            </Typography>
+            <Typography variant="body2" component="ul" sx={{ pl: 2 }}>
+              <li>At least 8 characters.</li>
+              <li>Contain at least one number.</li>
+              <li>Contain at least one uppercase letter.</li>
+              <li>Contain at least one special character.</li>
+            </Typography>
+          </Box>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <StyledButton size="small" onClick={onClose}>
@@ -159,7 +159,7 @@ const ChangePasswordForm = ({ open, onClose }) => {
           {isLoading ? 'Saving...' : 'Save changes'}
         </StyledButton>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 

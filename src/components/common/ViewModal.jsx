@@ -2,92 +2,57 @@ import React from 'react';
 import {
   Typography,
   Grid,
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Divider,
-  styled,
   IconButton,
   Chip,
   Box,
+  Stack,
+  useTheme,
+  useMediaQuery,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
-import StyledButton from './StyledMuiButton';
-import { X } from 'lucide-react';
+import { Close as CloseIcon } from '@mui/icons-material';
+import Button from '@mui/material/Button';
+import { BootstrapDialog } from './BootstrapDialog';
 import viewImage from '../../assets/images/data-storage.svg';
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogTitle-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(2),
-  },
-}));
+import StyledButton from './StyledMuiButton';
 
 const ViewModal = ({ open, onClose, title, description, data }) => {
-  const handleClose = () => {
-    onClose();
-  };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderDataItems = () => {
-    if (Array.isArray(data)) {
-      return data.map((item, index) => {
-        const [key, value] = Object.entries(item)[0];
-        return (
-          <React.Fragment key={index}>
-            <Grid item xs={12} sm={4}>
-              <Chip
-                icon={item.icon}
-                label={key}
-                variant="outlined"
-                color="primary"
-                sx={{
-                  px: 1,
-                }}
-              />
+    return data?.map((item, index) => {
+      const [key, value] = Object.entries(item)[0];
+      return (
+        <List sx={style} key={index}>
+          <ListItem>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                  {item.icon}
+                  <ListItemText primary={key} />
+                </Stack>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <ListItemText
+                  primary={
+                    value !== null && value !== undefined
+                      ? value.toString()
+                      : 'N/A'
+                  }
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={8}>
-              <Typography
-                variant="body1"
-                sx={{
-                  fontSize: key === 'description' ? '1.25rem' : '1rem', textTransform:'capitalize'
-                }}
-              >
-                {value !== null && value !== undefined
-                  ? value.toString()
-                  : 'N/A'}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-          </React.Fragment>
-        );
-      });
-    } else if (typeof data === 'object' && data !== null) {
-      return Object.entries(data).map(([key, value]) => (
-        <React.Fragment key={key}>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="subtitle2" color="text.secondary">
-              {key.replace(/_/g, ' ').toUpperCase()}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <Typography variant="body1">
-              {value !== null && value !== undefined ? value.toString() : 'N/A'}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
-        </React.Fragment>
-      ));
-    }
-    return null;
+          </ListItem>
+        </List>
+      );
+    });
   };
 
   return (
@@ -96,53 +61,47 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      fullScreen={fullScreen}
       aria-labelledby="view-dialog-title"
     >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="edit-dialog-title">
-        {title}
-        <Typography variant="body1" color="text.secondary">
+      <DialogTitle id="view-dialog-title" sx={{ m: 0, p: 2, pr: 6 }}>
+        <Typography variant="h6" component="div">
+          {title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           {description}
         </Typography>
-      </DialogTitle>
-      <IconButton
-        onClick={handleClose}
-        sx={(theme) => ({
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      >
-        <X />
-      </IconButton>
-
-      <DialogContent>
-        <Box
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
           }}
         >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+
+      <DialogContent>
+        <Stack direction="column" alignItems="center" sx={{ mb: 2 }}>
           <Box
-            component={'img'}
+            component="img"
             src={viewImage}
             alt="View Image"
-            style={{
+            sx={{
               width: '240px',
+              height: 'auto',
               objectFit: 'contain',
             }}
           />
-        </Box>
+        </Stack>
 
-        <Grid
-          container
-          spacing={1}
-          sx={{ display: 'flex', alignItems: 'center' }}
-        >
-          {renderDataItems()}
-        </Grid>
+        {renderDataItems()}
       </DialogContent>
+
       <DialogActions>
         <StyledButton onClick={onClose} variant="contained" size="small">
           Close
@@ -150,6 +109,13 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
       </DialogActions>
     </BootstrapDialog>
   );
+};
+const style = {
+  py: 0,
+  width: '100%',
+  borderBottom: '1px solid',
+  borderColor: 'divider',
+  backgroundColor: 'background.paper',
 };
 
 export default ViewModal;
