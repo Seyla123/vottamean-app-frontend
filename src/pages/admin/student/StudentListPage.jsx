@@ -24,6 +24,7 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import { BookIcon } from 'lucide-react';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import CreateStudentModal from '../../../components/common/CreateStudentModal';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const columns = [
   { id: 'id', label: 'ID' },
@@ -245,74 +246,74 @@ const StudentListPage = () => {
   }
 
   return (
-    <Box>
-      <FormComponent
-        title={'Student Lists'}
-        subTitle={`Total Students : ${data.results} `}
+    <FormComponent>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems={'center'}
       >
-        <Stack direction="row" justifyContent="flex-end">
-          <StyledButton
-            variant="contained"
-            color="primary"
-            size="small"
-            startIcon={<PlusIcon size={18} />}
-            onClick={handleCreate}
-          >
-            Create Student
-          </StyledButton>
+        <TitleHeader title={'Student Lists'} />
+        <StyledButton
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<PlusIcon size={18} />}
+          onClick={handleCreate}
+        >
+          Create Student
+        </StyledButton>
+      </Stack>
+
+      <Box sx={inputBoxStyles}>
+        <Stack
+          direction="row"
+          justifyContent={'space-between'}
+          width={'100%'}
+          gap={2}
+        >
+          <FilterComponent
+            onChange={handleClassesChange}
+            placeholder="Class"
+            data={classes}
+            value={selectedClass}
+            customStyles={{ maxHeight: '50px', width: '150px' }}
+            icon={<BookIcon size={18} color="#B5B5B5" />}
+          />
+
+          <SearchComponent
+            sx={{ width: '100%', maxWidth: '700px' }}
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
         </Stack>
+      </Box>
+      <DataTable
+        rows={rows}
+        columns={columns}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onView={handleView}
+        onSelectedDelete={handleSelectedDelete}
+        isLoading={isFetching || isLoading}
+        emptyTitle={'No Student'}
+        emptySubTitle={'No Student Available'}
+        hideColumns={['address', 'Date of Birth']}
+        showNO={false}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
+      />
 
-        <Box sx={inputBoxStyles}>
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            width={'100%'}
-            gap={2}
-          >
-            <FilterComponent
-              onChange={handleClassesChange}
-              placeholder="Class"
-              data={classes}
-              value={selectedClass}
-              customStyles={{ maxHeight: '50px', width: '150px' }}
-              icon={<BookIcon size={18} color="#B5B5B5" />}
-            />
-
-            <SearchComponent
-              sx={{ width: '100%', maxWidth: '700px' }}
-              placeholder="Search"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </Stack>
-        </Box>
-        <DataTable
-          rows={rows}
-          columns={columns}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onView={handleView}
-          onSelectedDelete={handleSelectedDelete}
-          isLoading={isFetching || isLoading}
-          emptyTitle={'No Student'}
-          emptySubTitle={'No Student Available'}
-          hideColumns={['address', 'Date of Birth']}
-          showNO={false}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          setPage={handleChangePage}
-          setRowsPerPage={handleChangeRowsPerPage}
-          totalRows={totalRows}
-        />
-
-        <DeleteConfirmationModal
-          open={modal.open}
-          onClose={() => dispatch(setModal({ open: false }))}
-          onConfirm={handleDeleteConfirmed}
-          itemName={selectedStudent?.name}
-        />
-      </FormComponent>
-    </Box>
+      <DeleteConfirmationModal
+        open={modal.open}
+        onClose={() => dispatch(setModal({ open: false }))}
+        onConfirm={handleDeleteConfirmed}
+        itemName={selectedStudent?.name}
+      />
+    </FormComponent>
   );
 };
 
