@@ -224,6 +224,11 @@ const StudentListPage = () => {
     await deleteManyStudents(selectedIds).unwrap();
   };
 
+  // Handle create a new student
+  const handleCreate = () => {
+    navigate('/admin/students/create');
+  }
+
   // handle click view
   const handleView = (row) => {
     navigate(`/admin/students/${row.id}`);
@@ -250,7 +255,7 @@ const StudentListPage = () => {
             variant="contained"
             color="primary"
             startIcon={<PlusIcon size={20} />}
-            onClick={handleCreateModalOpen}
+            onClick={handleCreate}
           >
             Create Student
           </StyledButton>
@@ -297,11 +302,6 @@ const StudentListPage = () => {
           setPage={handleChangePage}
           setRowsPerPage={handleChangeRowsPerPage}
           totalRows={totalRows}
-        />
-
-        <CreateStudentModal
-          open={openCreateModal}
-          handleClose={handleCreateModalClose}
         />
 
         <DeleteConfirmationModal

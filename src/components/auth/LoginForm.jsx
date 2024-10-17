@@ -82,7 +82,7 @@ const LoginForm = () => {
         <InputField
           name="email"
           control={control}
-          label="Email Name"
+          label="Email"
           placeholder="Enter your email"
           errors={errors}
           icon={Mail}
