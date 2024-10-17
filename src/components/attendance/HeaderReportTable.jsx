@@ -11,7 +11,7 @@ function HeaderReportTable({ schoolInfo, classInfo }) {
                 LIST OF STUDENTS
             </Typography>
             <Typography variant="body2" align="center">
-                Weekly Attendance Report
+                Attendance Report
             </Typography>
             <Typography variant="body2" align="center">
                 Form {dateRange?.start_date} To {dateRange?.end_date}

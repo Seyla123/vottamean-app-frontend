@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import {
     Grid2 as Grid,
     Stack,
-    Typography,
     TableContainer,
     Table,
     TableRow,
@@ -12,9 +11,9 @@ import {
     Paper,
     Divider,
     Button,
+    TablePagination
 } from '@mui/material';
 import { styled } from '@mui/system';
-import { truncate } from '../../utils/truncate';
 import HeaderReportTable from './HeaderReportTable';
 import AttendanceKey from './AttendanceKey';
 import LoadingCircle from '../loading/LoadingCircle';
@@ -22,23 +21,25 @@ import AttendanceFilter from './AttendanceFilter';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import EmptyTable from '../common/EmptyTable';
 // Styled components for Table cells
-const StyledTableCell = styled(TableCell)(({ theme, fontSize }) => ({
+const StyledTableCell = styled(TableCell)(({ theme, fontSize, maxWidth, minWidth, width }) => ({
     border: '1px solid black',
     padding: '8px', // Increased padding for better readability
     fontWeight: 'bold',
     fontSize: fontSize || '12px', // Ensure readability in PDF
     color: 'black', // Set text color to black for visibility
     height: 'auto', // Allow for automatic height based on content
-    textTransform: "capitalize"
+    textTransform: "capitalize",
+    width: width || 'auto',
+    maxWidth,
+    minWidth
 }));
 
-const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAttendanceKey, isLoading }) => {
-    console.log('this data dates :', dates);
-    dates?.map((date, i) =>{
-        console.log('this data subject :', date.subject);
-    })
-    
+
+
+const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey, isLoading, emptyTitle, emptySubTitle }) => {
+
     const convertDayToShorthand = (day) => {
         const dayMap = {
             monday: 'MON',
@@ -80,12 +81,7 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
         }
     }
     const convertSubjectName = (subjectName) => {
-        const words = subjectName.split(' ');
-        const firstWord = words[0];
-        if (words.length > 1) {
-            return firstWord;
-        }
-        return truncate(firstWord, 10);
+        return subjectName.slice(0, 5);
     }
     const convertGender = (gender) => {
         switch (gender.toLowerCase()) {
@@ -107,15 +103,21 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
         ))
     }
 
-    const [previewOpen, setPreviewOpen] = useState(true);
     const pdfRef = useRef();
 
-    const openPreview = () => {
-        setPreviewOpen(true);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
     };
 
-    const closePreview = () => {
-        setPreviewOpen(false);
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleChange = (event, value) => {
+        setPage(value);
     };
 
     const exportToPDF = () => {
@@ -152,6 +154,8 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
 
 
 
+
+
     const exportTableToExcel = () => {
         const table = document.getElementById('my-table');
         if (!table) return;
@@ -163,76 +167,88 @@ const AttendanceTable = ({ subjects, dates, result, classData, school, toggleAtt
         XLSX.writeFile(wb, 'attendance_report.xlsx');
     };
 
-
-
     return (
         <>
             <AttendanceFilter pdfData={exportToPDF} />
             <Divider />
             <Button onClick={exportTableToExcel}>Export to Excel</Button>
-            {isLoading ? <LoadingCircle/>
-            :
-            <Paper
-                ref={pdfRef}
-               
-                sx={{
-                    backgroundColor: 'white',
-                    boxShadow: 'none', width: '100%', padding: 2, display: 'flex', flexDirection: 'column', gap: 2, borderRadius: '1px',
-                }}>
-                <HeaderReportTable schoolInfo={school} classInfo={classData} />
-                <TableContainer >
-                    <Table aria-label="simple table"  id="my-table" >
-                        <TableHead >
-                            <TableRow >
-                                <StyledTableCell rowSpan={3} align="center">No</StyledTableCell>
-                                <StyledTableCell rowSpan={3} align="center">ID</StyledTableCell>
-                                <StyledTableCell rowSpan={3} align="center">Full Name</StyledTableCell>
-                                <StyledTableCell align="center" >DATE</StyledTableCell>
-                                {dates?.map((item, index) => (
-                                    <StyledTableCell key={index} colSpan={item.subject.length} align="center">{item.date}</StyledTableCell>
-                                ))}
+            {isLoading ? <LoadingCircle />
+                :
+                dates?.length > 0 ?
+                    (<Paper
+                        ref={pdfRef}
+                        sx={{
+                            backgroundColor: 'white',
+                            boxShadow: 'none', width: '100%', padding: 2, display: 'flex', flexDirection: 'column', gap: 2, borderRadius: '1px',
+                        }}>
+                        <HeaderReportTable schoolInfo={school} classInfo={classData} />
+                        <TableContainer >
+                            <Table aria-label="simple table" id="my-table" >
+                                <TableHead >
+                                    <TableRow>
+                                        <StyledTableCell rowSpan={3} align="center">No</StyledTableCell>
+                                        <StyledTableCell rowSpan={3} align="center">ID</StyledTableCell>
+                                        <StyledTableCell rowSpan={3} align="center">Full Name</StyledTableCell>
+                                        <StyledTableCell align="center" >DATE</StyledTableCell>
+                                        {dates?.map((item, index) => (
+                                            <StyledTableCell key={index} colSpan={item.subject.length} align="center">{item.date}</StyledTableCell>
+                                        ))}
 
-                            </TableRow>
+                                    </TableRow>
 
-                            <TableRow>
-                                <StyledTableCell align="center" >DAY</StyledTableCell>
-                                {dates?.map((item, index) => (
-                                    <StyledTableCell colSpan={item.subject.length} key={index} align="center">
-                                        {convertDayToShorthand(item.day)}
-                                    </StyledTableCell>
-                                ))}
-                            </TableRow>
+                                    <TableRow>
+                                        <StyledTableCell align="center" >DAY</StyledTableCell>
+                                        {dates?.map((item, index) => (
+                                            <StyledTableCell colSpan={item.subject.length} key={index} align="center">
+                                                {convertDayToShorthand(item.day)}
+                                            </StyledTableCell>
+                                        ))}
+                                    </TableRow>
 
-                            <TableRow>
-                                <StyledTableCell align="center" >Subject</StyledTableCell>
-                                {dates?.map((item, index) => (
-                                    item.subject?.map((subject, subjectIndex) => (
-                                        <StyledTableCell key={`${index}-${subjectIndex}`} align="center" sx={{ textTransform: "capitalize" }} >
-                                            {subject}
-                                        </StyledTableCell>
-                                    ))
-                                ))}
+                                    <TableRow>
+                                        <StyledTableCell align="center" >Gender</StyledTableCell>
+                                        {dates?.map((item, index) => (
+                                            item.subject?.map((subject, subjectIndex) => (
+                                                <StyledTableCell key={`${index}-${subjectIndex}`} align="center" sx={{ textTransform: "capitalize" }}>
+                                                    {convertSubjectName(subject)}
+                                                </StyledTableCell>
+                                            ))
+                                        ))}
 
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {result?.map((student, index) => (
-                                <TableRow key={student.id}>
-                                    <StyledTableCell align="center">{index + 1}</StyledTableCell>
-                                    <StyledTableCell align="center">{student.id}</StyledTableCell>
-                                    <StyledTableCell align="center" >{student.fullName}</StyledTableCell>
-                                    <StyledTableCell align="center">{convertGender(student.gender)}</StyledTableCell>
-                                    {renderedStatusAttendance(student.attendance)}
-                                </TableRow>
-                            ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {result?.slice((page - 1 + 1) * rowsPerPage, (page + 1) * rowsPerPage).map((student, index) => (
+                                        <TableRow key={student.id}>
+                                            <StyledTableCell align="center" nowrap="true">{(page - 1 + 1) * rowsPerPage + index + 1}</StyledTableCell>
+                                            <StyledTableCell align="center" nowrap="true">{student.id}</StyledTableCell>
+                                            <StyledTableCell align="center" nowrap="true" >{student.fullName}</StyledTableCell>
+                                            <StyledTableCell align="center" nowrap="true" >{convertGender(student.gender)}</StyledTableCell>
+                                            {renderedStatusAttendance(student.attendance)}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        {toggleAttendanceKey && <AttendanceKey />}
+                    </Paper>)
+                    : 
+                    <Table>
+                        <TableBody >
+                            <EmptyTable columns={[]} emptyTitle={emptyTitle} emptySubTitle={emptySubTitle} />
                         </TableBody>
                     </Table>
-                </TableContainer>
-                {toggleAttendanceKey && <AttendanceKey />}
-
-
-            </Paper>
             }
+            <Divider />
+            <TablePagination
+                component="div"
+                rowsPerPageOptions={[5, 10,15,20]}
+                count={classData?.student_count?.total_students || 0}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </>
     );
 };
