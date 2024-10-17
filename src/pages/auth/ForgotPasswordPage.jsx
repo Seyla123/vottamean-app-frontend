@@ -138,7 +138,7 @@ const ForgotPasswordPage = () => {
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Mail size={20} />
+                          <Mail size={18} />
                         </InputAdornment>
                       ),
                     },
@@ -163,7 +163,7 @@ const ForgotPasswordPage = () => {
 
           {/* FOOTER */}
           <Link to={'/auth/signin'} style={styles.footer}>
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
             <Typography variant="body2">Back to sign in</Typography>
           </Link>
         </Box>

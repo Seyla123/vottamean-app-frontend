@@ -141,7 +141,7 @@ function SubjectUpdatePage() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Library size={20} />
+                        <Library size={18} />
                       </InputAdornment>
                     ),
                   }}
@@ -170,7 +170,7 @@ function SubjectUpdatePage() {
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <ScrollText size={20} />
+                          <ScrollText size={18} />
                         </InputAdornment>
                       ),
                     },

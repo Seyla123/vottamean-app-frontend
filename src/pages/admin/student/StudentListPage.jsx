@@ -227,7 +227,7 @@ const StudentListPage = () => {
   // Handle create a new student
   const handleCreate = () => {
     navigate('/admin/students/create');
-  }
+  };
 
   // handle click view
   const handleView = (row) => {
@@ -255,7 +255,7 @@ const StudentListPage = () => {
             variant="contained"
             color="primary"
             size="small"
-            startIcon={<PlusIcon size={20} />}
+            startIcon={<PlusIcon size={18} />}
             onClick={handleCreate}
           >
             Create Student

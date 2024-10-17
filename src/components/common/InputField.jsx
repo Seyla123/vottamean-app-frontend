@@ -43,7 +43,7 @@ const InputField = ({
             InputProps={{
               startAdornment: Icon ? (
                 <InputAdornment position="start">
-                  <Icon size={20} />
+                  <Icon size={18} />
                 </InputAdornment>
               ) : null,
             }}

@@ -56,7 +56,7 @@ const DOBPicker = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Calendar size={20} />
+                      <Calendar size={18} />
                     </InputAdornment>
                   ),
                 }}

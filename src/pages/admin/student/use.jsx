@@ -163,7 +163,7 @@ function StudentCreatePage() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <UserRoundPlus size={20} />
+                          <UserRoundPlus size={18} />
                         </InputAdornment>
                       ),
                     }}
@@ -189,7 +189,7 @@ function StudentCreatePage() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <UserRoundPlus size={20} />
+                          <UserRoundPlus size={18} />
                         </InputAdornment>
                       ),
                     }}

@@ -52,7 +52,7 @@ function ClassCreatePage() {
         setSnackbar({
           open: true,
           message: 'Creating...',
-          severity: 'info'
+          severity: 'info',
         }),
       );
     } else if (isUpdateError) {
@@ -106,12 +106,14 @@ function ClassCreatePage() {
                   placeholder="class's name"
                   {...field}
                   error={!!errors.class_name}
-                  helperText={ errors.class_name ? errors.class_name.message : '' }
+                  helperText={
+                    errors.class_name ? errors.class_name.message : ''
+                  }
                   slotProps={{
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <BookText size={20} />
+                          <BookText size={18} />
                         </InputAdornment>
                       ),
                     },
@@ -135,12 +137,14 @@ function ClassCreatePage() {
                   multiline
                   minRows={5}
                   placeholder="description"
-                  helperText={errors.description ? errors.description.message : ''}
+                  helperText={
+                    errors.description ? errors.description.message : ''
+                  }
                   slotProps={{
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <ScrollText size={20} />
+                          <ScrollText size={18} />
                         </InputAdornment>
                       ),
                     },

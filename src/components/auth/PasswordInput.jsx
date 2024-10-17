@@ -42,13 +42,13 @@ const PasswordInput = ({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Icon size={20} />
+                <Icon size={18} />
               </InputAdornment>
             ),
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton onClick={togglePasswordVisibility} size="small">
-                  {showPassword ? <EyeOff size={20} /> : <EyeIcon size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <EyeIcon size={18} />}
                 </IconButton>
               </InputAdornment>
             ),

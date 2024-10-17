@@ -40,18 +40,19 @@ function SessionListPage() {
   // viewModalOpen : The state of the view subject modal
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   // model : The state of the modal
   const { modal } = useSelector((state) => state.ui);
 
   // useGetSessionsQuery : a hook that returns a function to fetch all session records
-  const { data, isError, isLoading, isSuccess, isFetching } = useGetSessionsQuery({ page: page + 1, limit: rowsPerPage });
+  const { data, isError, isLoading, isSuccess, isFetching } =
+    useGetSessionsQuery({ page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySessionsMutation : returns a function to delete many sessions
   const [
@@ -118,12 +119,20 @@ function SessionListPage() {
         }),
       );
     }
-  }, [dispatch, isDeleteError, isDeleteSuccess, isDeleting, isDeleteManyError, isDeleteSuccess, isDeletingMany]);
+  }, [
+    dispatch,
+    isDeleteError,
+    isDeleteSuccess,
+    isDeleting,
+    isDeleteManyError,
+    isDeleteSuccess,
+    isDeletingMany,
+  ]);
 
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -149,8 +158,7 @@ function SessionListPage() {
   const handleView = (row) => {
     // navigate(`/admin/sessions/${row.id}`);
     setSelectSession(row);
-    setViewModalOpen(true)
-
+    setViewModalOpen(true);
   };
 
   // Handle selected delete action
@@ -167,7 +175,7 @@ function SessionListPage() {
 
   // if error
   if (isError) {
-    return <SomethingWentWrong description={error?.data?.message}/>
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   return (
@@ -183,7 +191,7 @@ function SessionListPage() {
             variant="contained"
             color="primary"
             size="small"
-            startIcon={<PlusIcon size={20} />}
+            startIcon={<PlusIcon size={18} />}
           >
             Create Session
           </StyledButton>

@@ -230,11 +230,7 @@ function TeacherScheduleClassPage() {
 
     // if error, render error page
     if (isError) {
-      return (
-        <SomethingWentWrong
-          customStyles={{ minHeight: "50vh" }}
-        />
-      );
+      return <SomethingWentWrong customStyles={{ minHeight: '50vh' }} />;
     }
 
     // if no classes, render empty list
@@ -245,7 +241,6 @@ function TeacherScheduleClassPage() {
           title="No classes scheduled"
           description={`You don't have any classes scheduled for ${selectedDay === 'All' ? 'any day' : selectedDay}.`}
         />
-        
       );
     }
 
@@ -271,7 +266,7 @@ function TeacherScheduleClassPage() {
           <StyledButton
             size="small"
             variant="outlined"
-            startIcon={<ListFilter size={20} />}
+            startIcon={<ListFilter size={18} />}
             onClick={handleFilterClick}
           >
             {selectedDay === 'All' ? 'Filter by Day' : selectedDay}
