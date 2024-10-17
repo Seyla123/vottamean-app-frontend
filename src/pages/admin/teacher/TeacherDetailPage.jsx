@@ -39,14 +39,13 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
 import { cardContainer } from '../../../styles/global';
-import { useTheme } from '@emotion/react';
 import StyledButton from '../../../components/common/StyledMuiButton';
 
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const theme = useTheme();
+
   const [isOpen, setIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [formattedTeacher, setFormattedTeacher] = useState([]);
@@ -77,7 +76,11 @@ function TeacherDetailPage() {
     setItemToDelete(id);
     setIsOpen(true);
   };
-console.log(formattedTeacher.address)
+
+  const hanldeBack = () => {
+    navigate('/admin/teachers');
+  };
+  console.log(formattedTeacher.address);
   // Confirm delete
   const confirmDelete = async () => {
     try {
@@ -113,64 +116,79 @@ console.log(formattedTeacher.address)
         subTitle="View Teacher Information"
       >
         <Card sx={{ ...cardContainer, bgcolor: 'white' }}>
-          <CardActionArea>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems="center"
+            alignContent="center"
+            justifyContent="start"
+            spacing={4}
+            sx={{ p: 2 }}
+          >
+            <Avatar
+              src={formattedTeacher.photo}
+              alt="Profile"
+              sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+            />
             <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              alignItems="center"
-              alignContent='center'
-              justifyContent="start"
-              spacing={4}
-              sx={{ p: 2 }}
+              direction="column"
+              alignItems={{ xs: 'center', sm: 'start' }}
             >
-              <Avatar
-                src={formattedTeacher.photo}
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-              />
-              <Stack direction="column" alignItems={{ xs: 'center', sm: 'start' }}>
-                <Typography gutterBottom variant="h5" fontWeight={'bold'} component="div">
-                  {formattedTeacher.fullName}
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="body2"
-                  component="div"
-                  color="text.secondary"
-                >
-                  Detail personal information below
-                </Typography>
-              </Stack>
+              <Typography
+                gutterBottom
+                variant="h5"
+                fontWeight={'bold'}
+                component="div"
+              >
+                {formattedTeacher.fullName}
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body2"
+                component="div"
+                color="text.secondary"
+              >
+                Detail personal information below
+              </Typography>
             </Stack>
-            <CardContent>
-                <GridDetail
-                  icon={User2Icon}
-                  label="Gender"
-                  value={formattedTeacher.gender}
-                />
-                <GridDetail
-                  icon={CalendarFold}
-                  label="Date of Birth"
-                  value={formattedTeacher.dateOfBirth}
-                />
+          </Stack>
+          <CardContent>
+            <GridDetail
+              icon={User2Icon}
+              label="Gender"
+              value={formattedTeacher.gender}
+            />
+            <GridDetail
+              icon={CalendarFold}
+              label="Date of Birth"
+              value={formattedTeacher.dateOfBirth}
+            />
 
-                <GridDetail
-                  icon={Mails}
-                  label="Email"
-                  value={formattedTeacher.email}
-                />
-                <GridDetail
-                  icon={Phone}
-                  label="Contact Number"
-                  value={formattedTeacher.phoneNumber}
-                />
-                <GridDetail
-                  icon={Home}
-                  label="Street Address"
-                  value={formattedTeacher.address}
-                />
-            </CardContent>
+            <GridDetail
+              icon={Mails}
+              label="Email"
+              value={formattedTeacher.email}
+            />
+            <GridDetail
+              icon={Phone}
+              label="Contact Number"
+              value={formattedTeacher.phoneNumber}
+            />
+            <GridDetail
+              icon={Home}
+              label="Street Address"
+              value={formattedTeacher.address}
+            />
+          </CardContent>
 
-          </CardActionArea>
+          <Stack direction="row" alignSelf={'flex-end'}>
+            <StyledButton
+              variant="contained"
+              size={'small'}
+              onClick={hanldeBack}
+            >
+              Back
+            </StyledButton>
+          </Stack>
         </Card>
       </FormComponent>
       {/* Delete confirmation modal */}
@@ -192,8 +210,6 @@ console.log(formattedTeacher.address)
 
 // Grid Detais
 const GridDetail = ({ icon: IconComponent, label, value }) => {
-  // Determine if the screen size is small
-  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   return (
     <Grid
       container
@@ -202,7 +218,7 @@ const GridDetail = ({ icon: IconComponent, label, value }) => {
     >
       <Grid item xs={12} sm={4}>
         <Chip
-          label={!isSmallScreen ? label : ''}
+          label={label}
           icon={<IconComponent size={18} />}
           variant="outlined"
           color="primary"
@@ -221,7 +237,9 @@ const GridDetail = ({ icon: IconComponent, label, value }) => {
             wordBreak: 'break-word',
           }}
         >
-          {value !== null && value !== undefined && value !== "" ? value.toString() : 'N/A'}
+          {value !== null && value !== undefined && value !== ''
+            ? value.toString()
+            : 'N/A'}
         </Typography>
       </Grid>
       <Grid item xs={12}>
