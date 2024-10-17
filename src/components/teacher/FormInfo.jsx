@@ -23,6 +23,8 @@ import {
   UsersRound,
   FolderDown,
   Settings,
+  WandSparkles,
+  FileText
 } from 'lucide-react';
 
 // Redux Slice
@@ -172,7 +174,7 @@ function FormInfo() {
             </TabList>
           </Box>
           {/* Tab Contents */}
-          <TabPanel sx={{ flexGrow: 1 , padding:2}} value="1">
+          <TabPanel sx={{ flexGrow: 1, padding: 2 }} value="1">
             <TeacherInfo
               defaultValues={teacherData}
               handleNextClick={handleNextClick}
@@ -190,7 +192,7 @@ function FormInfo() {
               height: {
                 sm: '60vh',
               },
-              padding:2
+              padding: 2,
             }}
             value="2"
           >
@@ -206,22 +208,22 @@ function FormInfo() {
       </Card>
       {/* Info Box */}
       <Box sx={infoBox}>
-        <Box>
+        <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
             By setting up teacher accounts, Teachers will be able to:
           </Typography>
           <Grid container spacing={2}>
-            <GridInfo
-              icon={<FolderDown color={theme.palette.primary.main} />}
-              text="Export attendance reports"
-            />
             <GridInfo
               icon={<CalendarRange color={theme.palette.primary.main} />}
               text="Gain access to class schedules"
             />
             <GridInfo
               icon={<UsersRound color={theme.palette.primary.main} />}
-              text="Administrators enable teachers to efficiently monitor student attendance"
+              text="Mark students attendance"
+            />
+            <GridInfo
+              icon={<WandSparkles color={theme.palette.primary.main} />}
+              text="Enhanced Teacher Efficiency"
             />
           </Grid>
         </Box>
@@ -232,10 +234,12 @@ function FormInfo() {
               Gain better teacher experiences with our streamlined system
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary">
-            This streamlined process allows educators to focus on delivering
-            quality instruction while ensuring that administrative tasks are
-            handled smoothly and effectively.
+          <Typography variant="body2" color="text.secondary" whiteSpace={'pre-line'}>
+            This streamlined teacher account system aims to enhance efficiency
+            and communication within the educational environment. By automating
+            key administrative tasks, teachers can dedicate more time to
+            delivering quality instruction. Additionally, real-time attendance
+            notifications to guardians ensure transparency and accountability.
           </Typography>
         </Box>
       </Box>
