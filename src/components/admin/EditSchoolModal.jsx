@@ -204,11 +204,11 @@ const EditSchoolModal = ({ open, onClose }) => {
       </DialogContent>
       <DialogActions>
         {/* CANCEL BUTTON */}
-        <StyledButton variant="outlined" onClick={onClose}>
+        <StyledButton size="small" variant="outlined" onClick={onClose}>
           Cancel
         </StyledButton>
         {/* SAVE CHANGES BUTTON */}
-        <StyledButton type="submit" variant="contained">
+        <StyledButton size="small" type="submit" variant="contained">
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>

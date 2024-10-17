@@ -46,7 +46,6 @@ function ClassPeriodListPage() {
   // - selectedClassPeriod: the selected class period that currently selected
   const [selectedClassPeriod, setSelectedClassPeriod] = useState(null);
 
-
   // - createModalOpen: the state of the create class period modal
   // - editModalOpen: the state of the edit class period modal
   // - viewModalOpen: the state of the view class period modal
@@ -54,18 +53,19 @@ function ClassPeriodListPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
   //useGetClassPeriodQuery : a hook that return a function to fetch all class periods
-  const { data, isLoading, isSuccess, isError, isFetching, error } = useGetClassPeriodQuery({ page: page + 1, limit: rowsPerPage });
+  const { data, isLoading, isSuccess, isError, isFetching, error } =
+    useGetClassPeriodQuery({ page: page + 1, limit: rowsPerPage });
 
   // useDeleteManyClassPeriodsMutation : returns a function to delete many class periods
   const [
@@ -88,7 +88,15 @@ function ClassPeriodListPage() {
       error: deleteError,
     },
   ] = useDeleteClassPeriodMutation();
-  const [createClassPeriod, { isLoading: isCreating, isSuccess: isCreateSuccess, isError: isCreateError, error: createError }] = useCreateClassPeriodMutation();
+  const [
+    createClassPeriod,
+    {
+      isLoading: isCreating,
+      isSuccess: isCreateSuccess,
+      isError: isCreateError,
+      error: createError,
+    },
+  ] = useCreateClassPeriodMutation();
 
   // when the class periods records are fetched successfully, set the rows state
   useEffect(() => {
@@ -102,10 +110,7 @@ function ClassPeriodListPage() {
       setRows(formattedData);
       setTotalRows(data.results);
     }
-  }, [
-    data,
-    isSuccess,
-  ]);
+  }, [data, isSuccess]);
 
   // when delete is in progress, show a snackbar with a message "Deleting..."
   // when delete is failed, show a snackbar with an error message
@@ -149,7 +154,7 @@ function ClassPeriodListPage() {
     isDeletingMany,
     isDeleteManyError,
     isDeleteManySuccess,
-    deleteManyError
+    deleteManyError,
   ]);
 
   // when create is successful, show a snackbar with a success message
@@ -168,7 +173,8 @@ function ClassPeriodListPage() {
       dispatch(
         setSnackbar({
           open: true,
-          message: createError?.data?.message || 'Failed to create class period',
+          message:
+            createError?.data?.message || 'Failed to create class period',
           severity: 'error',
         }),
       );
@@ -179,7 +185,7 @@ function ClassPeriodListPage() {
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -219,7 +225,6 @@ function ClassPeriodListPage() {
     setEditModalOpen(true);
   };
 
-
   // if data is loading
   if (isLoading) {
     return <LoadingCircle />;
@@ -227,7 +232,7 @@ function ClassPeriodListPage() {
 
   // if there is an error
   if (isError) {
-    return <SomethingWentWrong description={error?.data?.message} />
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   return (
@@ -239,7 +244,8 @@ function ClassPeriodListPage() {
         <StyledButton
           variant="contained"
           color="primary"
-          startIcon={<PlusIcon size={20} />}
+          startIcon={<PlusIcon size={18} />}
+          size="small"
           onClick={() => setCreateModalOpen(true)}
         >
           Create Period

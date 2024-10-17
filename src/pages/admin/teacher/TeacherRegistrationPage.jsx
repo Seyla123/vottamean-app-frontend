@@ -175,6 +175,7 @@ function TeacherRegistration() {
           type="submit"
           variant="contained"
           color="primary"
+          size="small"
           fullWidth
           disabled={isLoading}
           sx={{ mt: 2 }}

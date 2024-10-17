@@ -137,6 +137,7 @@ function PasswordChangePage() {
           variant="contained"
           onClick={handleSubmit(handlePasswordChange)}
           disabled={isLoading}
+          size="small"
           sx={{ width: '100%', height: { xs: '42px', md: '56px' } }}
         >
           {isLoading ? 'Saving...' : 'Save changes'}

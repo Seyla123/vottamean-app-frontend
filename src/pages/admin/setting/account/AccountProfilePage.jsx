@@ -188,7 +188,8 @@ function AccountProfilePage() {
                   <Link to="change-password" style={{ textDecoration: 'none' }}>
                     <StyledButton
                       variant="contained"
-                      startIcon={<KeyRoundIcon size={20} />}
+                      size="small"
+                      startIcon={<KeyRoundIcon size={18} />}
                     >
                       Change Password
                     </StyledButton>
@@ -233,7 +234,8 @@ function AccountProfilePage() {
                     variant="contained"
                     color="error"
                     onClick={clickDeleteAccount}
-                    startIcon={<Trash2 size={20} />}
+                    startIcon={<Trash2 size={18} />}
+                    size="small"
                   >
                     Delete Account
                   </StyledButton>

@@ -221,13 +221,11 @@ const ClassListPage = () => {
   ]
 
   return (
-    <FormComponent
-      title="Class List"
-      subTitle={`Total Classes: ${totalRows}`}
-    >
+    <FormComponent title="Class List" subTitle={`Total Classes: ${totalRows}`}>
       <Stack direction="row" justifyContent="flex-end">
         <StyledButton
           variant="contained"
+          size="small"
           color="primary"
           startIcon={<PlusIcon size={18} />}
           onClick={() => setCreateModalOpen(true)}

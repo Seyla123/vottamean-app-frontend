@@ -14,12 +14,12 @@ const UnauthorizedPage = () => {
     >
       <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
         <Link to="/">
-          <StyledButton variant="contained" color="primary">
+          <StyledButton variant="contained" color="primary" size="small">
             Go Back
           </StyledButton>
         </Link>
         <Link to="/auth/signin">
-          <StyledButton variant="contained" color="primary">
+          <StyledButton variant="contained" color="primary" size="small">
             Sign In
           </StyledButton>
         </Link>

@@ -395,11 +395,21 @@ const EditAccountModal = ({
                   }}
                 >
                   {/* CANCEL BUTTON */}
-                  <StyledButton variant="outlined" fullWidth onClick={onClose}>
+                  <StyledButton
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    onClick={onClose}
+                  >
                     Cancel
                   </StyledButton>
                   {/* SAVE CHANGES BUTTON */}
-                  <StyledButton type="submit" variant="contained" fullWidth>
+                  <StyledButton
+                    size="small"
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                  >
                     {isUpdateLoading ? 'Saving...' : 'Save Changes'}
                   </StyledButton>
                 </Box>

@@ -41,7 +41,7 @@ const SomethingWentWrong = ({
           gap: 3,
           minHeight: '80vh',
           textAlign: 'center',
-          ...customStyles
+          ...customStyles,
         }}
       >
         <Box
@@ -51,7 +51,8 @@ const SomethingWentWrong = ({
             height: '300px',
           }}
         >
-          <Box component={'img'}
+          <Box
+            component={'img'}
             src={imageUrl}
             alt="500 Internal Server Error"
             style={{
@@ -75,12 +76,16 @@ const SomethingWentWrong = ({
           </Typography>
         </Box>
         {defaultBtn && (
-          <Stack flexDirection={{ xs: 'column', sm: 'row' }} gap={{ xs: 1, sm: 2 }}>
+          <Stack
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            gap={{ xs: 1, sm: 2 }}
+          >
             <StyledButton
               component={Link}
               to={homeLink}
               variant="contained"
               color="primary"
+              size="small"
             >
               {buttonText}
             </StyledButton>
@@ -88,13 +93,13 @@ const SomethingWentWrong = ({
               onClick={() => window.location.reload()}
               variant="contained"
               color="primary"
+              size="small"
             >
               Refresh Page
             </StyledButton>
           </Stack>
         )}
         {children}
-
       </Box>
     </Container>
   );

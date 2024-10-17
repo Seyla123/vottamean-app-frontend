@@ -319,10 +319,16 @@ const TeacherInfo = ({
               variant="outlined"
               color="inherit"
               onClick={handleCancel}
+              size="small"
             >
               Cancel
             </StyledButton>
-            <StyledButton fullWidth variant="contained" type="submit">
+            <StyledButton
+              fullWidth
+              variant="contained"
+              type="submit"
+              size="small"
+            >
               Submit
             </StyledButton>
           </Stack>

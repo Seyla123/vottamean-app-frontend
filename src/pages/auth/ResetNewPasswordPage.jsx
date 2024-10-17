@@ -199,6 +199,7 @@ const ResetNewPasswordPage = () => {
               <StyledButton
                 variant="contained"
                 type="submit"
+                size="small"
                 disabled={isLoading}
               >
                 {isLoading ? 'Resetting...' : 'Reset Password'}

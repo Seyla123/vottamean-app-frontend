@@ -59,7 +59,7 @@ const SimpleForm = () => {
           />
         </Box>
         {/* Submit Button */}
-        <StyledButton type="submit" variant="contained">
+        <StyledButton type="submit" variant="contained" size="small">
           Submit
         </StyledButton>
       </form>

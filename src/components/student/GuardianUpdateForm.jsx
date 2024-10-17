@@ -211,12 +211,14 @@ const GuardianUpdateForm = ({ onClose, handleNext }) => {
               <StyledButton
                 variant="outlined"
                 color="inherit"
+                size="small"
                 onClick={onClose}
               >
                 Cancel
               </StyledButton>
               <StyledButton
                 type="submit"
+                size="small"
                 variant="contained"
                 color="primary"
               >

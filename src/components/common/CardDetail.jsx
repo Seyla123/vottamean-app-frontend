@@ -122,87 +122,109 @@ function TeacherListPage() {
     ];
 
     return (
-        <Box>
-            <Header header="TEACHER LIST" subheader="There are 24 teachers" />
-            <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', mb: 2 }}>
-                <StyledButton variant="contained" sx={{ width: { xs: '130px', sm: '170px' } }}>
-                    ADD TEACHER
-                </StyledButton>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', gap: 2, mb: 3 }}>
-                <TextField
-                    id="search"
-                    placeholder="Search"
-                    variant="outlined"
-                    sx={{
-                        flexGrow: 1,
-                        maxWidth: { xs: '100%', sm: '510px' },
-                        '& .MuiInputBase-root': {
-                            height: '40px',
-                        },
-                        '& .MuiInputBase-input': {
-                            padding: '8px 14px',
-                            fontSize: '14px',
-                        },
-                    }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <StyledButton
-                    variant="contained"
-                    sx={{
-                        height: '40px',
-                        fontSize: '14px',
-                        bgcolor: '#2196F3',
-                        width: '88px',
-                    }}
-                >
-                    Search
-                </StyledButton>
-            </Box>
-            <Box sx={{ width: '100%', mx: 'auto' }}>
-                <Paper>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        initialState={{ pagination: { paginationModel: { page: 0, pageSize: 5 } } }}
-                        pageSizeOptions={[5, 10]}
-                        checkboxSelection
-                        onSelectionModelChange={setSelectionModel}
-                        sx={{
-                            border: 0.5,
-                            borderColor: '#E0E0E0',
-                            '& .MuiDataGrid-columnHeaders': {
-                                backgroundColor: '#f0f4f8', // Ensure this is the desired color
-                            },
-                            '& .MuiDataGrid-columnHeaderTitle': {
-                                textAlign: 'center', // Center align the header title
-                            },
-                        }}
-                    />
-                </Paper>
-            </Box>
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-                PaperProps={{ sx: { width: '150px' } }}
-            >
-                <MenuItem onClick={handleEdit}>
-                    <MoreVertIcon sx={{ mr: 1 }} />
-                    Edit
-                </MenuItem>
-                <MenuItem onClick={handleDeleteSingle} sx={{ color: 'red' }}>
-                    <DeleteForeverIcon sx={{ mr: 1 }} />
-                    Delete
-                </MenuItem>
-            </Menu>
+      <Box>
+        <Header header="TEACHER LIST" subheader="There are 24 teachers" />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'end',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          <StyledButton
+            size="small"
+            variant="contained"
+            sx={{ width: { xs: '130px', sm: '170px' } }}
+          >
+            ADD TEACHER
+          </StyledButton>
         </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'end',
+            alignItems: 'center',
+            gap: 2,
+            mb: 3,
+          }}
+        >
+          <TextField
+            id="search"
+            placeholder="Search"
+            variant="outlined"
+            sx={{
+              flexGrow: 1,
+              maxWidth: { xs: '100%', sm: '510px' },
+              '& .MuiInputBase-root': {
+                height: '40px',
+              },
+              '& .MuiInputBase-input': {
+                padding: '8px 14px',
+                fontSize: '14px',
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <StyledButton
+            variant="contained"
+            size="small"
+            sx={{
+              height: '40px',
+              fontSize: '14px',
+              bgcolor: '#2196F3',
+              width: '88px',
+            }}
+          >
+            Search
+          </StyledButton>
+        </Box>
+        <Box sx={{ width: '100%', mx: 'auto' }}>
+          <Paper>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: { paginationModel: { page: 0, pageSize: 5 } },
+              }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+              onSelectionModelChange={setSelectionModel}
+              sx={{
+                border: 0.5,
+                borderColor: '#E0E0E0',
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: '#f0f4f8', // Ensure this is the desired color
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  textAlign: 'center', // Center align the header title
+                },
+              }}
+            />
+          </Paper>
+        </Box>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          PaperProps={{ sx: { width: '150px' } }}
+        >
+          <MenuItem onClick={handleEdit}>
+            <MoreVertIcon sx={{ mr: 1 }} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={handleDeleteSingle} sx={{ color: 'red' }}>
+            <DeleteForeverIcon sx={{ mr: 1 }} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </Box>
     );
 }
 

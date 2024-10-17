@@ -273,6 +273,7 @@ function SubjectListPage() {
         <StyledButton
           variant="contained"
           color="primary"
+          size="small"
           startIcon={<PlusIcon size={18} />}
           onClick={() => setCreateModalOpen(true)}
         >

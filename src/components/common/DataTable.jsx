@@ -224,10 +224,10 @@ const DataTable = ({
             {selected.length > 0 ? (
               <TableCell align="right" sx={{ maxWidth: '50px' }}>
                 <StyledButton
+                  size="small"
                   onClick={handleSelectedDelete}
                   color="error"
-                  startIcon={<Trash2 size={18} />
-                }
+                  startIcon={<Trash2 size={18} />}
                 />
               </TableCell>
             ) : (
@@ -237,7 +237,7 @@ const DataTable = ({
         </TableHead>
         <TableBody sx={{ position: 'relative' }}>
           {isLoading ? (
-            <LoadingTable columns={columns} height={height}/>
+            <LoadingTable columns={columns} height={height} />
           ) : rows.length > 0 ? (
             rows.map((row, index) => {
               const isItemSelected = isSelected(row[idField]);

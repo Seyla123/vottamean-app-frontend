@@ -428,12 +428,14 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   variant="outlined"
                   onClick={onClose}
                   sx={{ width: { xs: '100%', sm: '160px' } }}
+                  size="small"
                 >
                   Cancel
                 </StyledButton>
                 {/* SAVE CHANGES BUTTON */}
                 <StyledButton
                   type="submit"
+                  size="small"
                   variant="contained"
                   sx={{ width: { xs: '100%', sm: '160px' } }}
                   disabled={isUpdateLoading}

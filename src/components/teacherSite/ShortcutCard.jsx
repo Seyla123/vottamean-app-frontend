@@ -31,7 +31,7 @@ const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
             {description}
           </Typography>
           <Link to={href}>
-            <StyledButton variant={'contained'} sx={{ mt: 3 }}>
+            <StyledButton variant={'contained'} sx={{ mt: 3 }} size="small">
               {buttonText}
             </StyledButton>
           </Link>

@@ -212,7 +212,12 @@ function SchoolUpdatePage() {
           />
 
           {/* Submit button */}
-          <StyledButton type="submit" variant="contained" fullWidth>
+          <StyledButton
+            size="small"
+            type="submit"
+            variant="contained"
+            fullWidth
+          >
             Update School Info
           </StyledButton>
 
@@ -220,6 +225,7 @@ function SchoolUpdatePage() {
           <StyledButton
             type="button"
             variant="outlined"
+            size="small"
             fullWidth
             onClick={() => navigate('/admin/settings/account')}
           >

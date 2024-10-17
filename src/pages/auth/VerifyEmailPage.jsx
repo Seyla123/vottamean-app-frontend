@@ -84,6 +84,7 @@ const SuccessState = ({ handleLoginRedirect }) => (
     <StyledButton
       variant="contained"
       color="primary"
+      size="small"
       onClick={handleLoginRedirect}
     >
       Go to Login
@@ -104,7 +105,12 @@ const ErrorState = () => (
     <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
       We couldn't verify your email. The link may have expired or is invalid.
     </Typography>
-    <StyledButton variant="outlined" color="primary"  href="/auth/signin">
+    <StyledButton
+      size="small"
+      variant="outlined"
+      color="primary"
+      href="/auth/signin"
+    >
       Try again
     </StyledButton>
   </Box>

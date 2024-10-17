@@ -136,6 +136,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             <StyledButton
               variant="outlined"
               color="primary"
+              size="small"
               fullWidth
               onClick={handleBack}
             >
@@ -145,6 +146,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               type="submit"
               variant="contained"
               color="primary"
+              size="small"
               fullWidth
             >
               Continue

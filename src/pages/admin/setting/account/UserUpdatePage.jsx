@@ -245,7 +245,12 @@ function UserUpdatePage() {
             onChange={handleFileChange}
           />
           <label htmlFor="photo-upload">
-            <StyledButton variant="contained" component="span" fullWidth>
+            <StyledButton
+              variant="contained"
+              component="span"
+              fullWidth
+              size="small"
+            >
               Upload Photo
             </StyledButton>
           </label>
@@ -254,6 +259,7 @@ function UserUpdatePage() {
           {selectedFile && (
             <StyledButton
               variant="outlined"
+              size="small"
               fullWidth
               onClick={() => {
                 setSelectedFile(null);
@@ -362,7 +368,12 @@ function UserUpdatePage() {
           />
 
           {/* Submit button */}
-          <StyledButton type="submit" variant="contained" fullWidth>
+          <StyledButton
+            type="submit"
+            variant="contained"
+            fullWidth
+            size="small"
+          >
             Update
           </StyledButton>
 
@@ -371,6 +382,7 @@ function UserUpdatePage() {
             type="button"
             variant="outlined"
             fullWidth
+            size="small"
             onClick={() => navigate('/admin/settings/account')}
           >
             Cancel

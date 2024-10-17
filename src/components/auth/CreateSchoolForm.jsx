@@ -139,6 +139,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
             <StyledButton
               variant="outlined"
               color="primary"
+              size="small"
               fullWidth
               onClick={handleBack}
             >
@@ -148,6 +149,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
             <StyledButton
               variant="contained"
               type="submit"
+              size="small"
               fullWidth
               disabled={isLoading}
             >
