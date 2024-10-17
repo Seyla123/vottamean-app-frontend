@@ -166,7 +166,7 @@ const profileBox = {
   width: '100%',
   bgcolor: '#ffffff',
   gap: {
-    xs: '12px',
+    xs: 2,
     sm: 3,
   },
   display: 'flex',
