@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 // MUI Components
 import {
-  Modal,
+  Dialog,
   Box,
   TextField,
   Avatar,
@@ -15,6 +15,10 @@ import {
   Grid,
   MenuItem,
   Divider,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  DialogActions,
 } from '@mui/material';
 
 // - Custom Components
@@ -203,51 +207,20 @@ const EditAccountModal = ({
   }
 
   return (
-    <Modal
+    <Dialog
       open={open}
       onClose={onClose}
       aria-labelledby="edit-account-modal-title"
       aria-describedby="edit-account-modal-description"
-      sx={{ m: 2 }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          maxWidth: '800px',
-          width: '100%',
-          transform: 'translate(-50%, -50%)',
-          maxHeight: { xs: '100%', sm: '100%' },
-          overflowY: 'auto',
-          bgcolor: 'background.paper',
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
-        {/* HEADER */}
-        <Typography
-          variant="h5"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
-          mb={4}
-        >
-          Edit Account
-        </Typography>
+      <DialogTitle>Edit Account</DialogTitle>
 
+      <DialogContent>
         {/* FORM CONTAINER */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-            }}
-          >
+          <Stack direction="column" gap={2}>
             {/* PROFILE CONTAINER */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Stack direction={'row'} gap={2} alignItems={'center'}>
               {/* PROFILE IMAGE */}
               {!removePhoto && (previewUrl || profilePhoto) ? (
                 <Avatar
@@ -273,7 +246,7 @@ const EditAccountModal = ({
               />
 
               {/* PROFILE BUTTONS */}
-              <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+              <Stack direction={'column'} gap={2}>
                 <label htmlFor="photo-upload">
                   <StyledButton
                     variant="contained"
@@ -299,13 +272,13 @@ const EditAccountModal = ({
                 >
                   Remove
                 </StyledButton>
-              </Box>
-            </Box>
+              </Stack>
+            </Stack>
 
             <Divider />
 
             {/* INPUTS CONTAINER */}
-            <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2 }}>
+            <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
               <Grid item xs={12} sm={6}>
                 {/* FIRST NAME INPUT */}
                 <InputField
@@ -383,42 +356,22 @@ const EditAccountModal = ({
                   }
                 />
               </Grid>
-
-              <Grid item xs={6}></Grid>
-              <Grid item xs={6}>
-                <Box
-                  component={'div'}
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    gap: 2,
-                  }}
-                >
-                  {/* CANCEL BUTTON */}
-                  <StyledButton
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    onClick={onClose}
-                  >
-                    Cancel
-                  </StyledButton>
-                  {/* SAVE CHANGES BUTTON */}
-                  <StyledButton
-                    size="small"
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                  >
-                    {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                  </StyledButton>
-                </Box>
-              </Grid>
             </Grid>
-          </Box>
+          </Stack>
         </form>
-      </Box>
-    </Modal>
+      </DialogContent>
+
+      <DialogActions>
+        {/* CANCEL BUTTON */}
+        <StyledButton size="small" onClick={onClose}>
+          Cancel
+        </StyledButton>
+        {/* SAVE CHANGES BUTTON */}
+        <StyledButton size="small" type="submit" variant="contained">
+          {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+        </StyledButton>
+      </DialogActions>
+    </Dialog>
   );
 };
 
