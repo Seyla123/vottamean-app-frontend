@@ -22,12 +22,31 @@ import { formatTeacherDetail } from '../../../utils/formatData';
 import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 // Delete Modal
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+import {
+  Chip,
+  Typography,
+  Grid,
+  Box,
+  Divider,
+  Avatar,
+  Stack,
+  useMediaQuery,
+} from '@mui/material';
+import { X, User2Icon, CalendarFold, Mails, Phone, Home } from 'lucide-react';
+import viewImage from '../../../assets/images/data-storage.svg';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import CardActionArea from '@mui/material/CardActionArea';
+import { cardContainer } from '../../../styles/global';
+import { useTheme } from '@emotion/react';
+import StyledButton from '../../../components/common/StyledMuiButton';
 
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [formattedTeacher, setFormattedTeacher] = useState([]);
@@ -58,7 +77,7 @@ function TeacherDetailPage() {
     setItemToDelete(id);
     setIsOpen(true);
   };
-
+console.log(formattedTeacher.address)
   // Confirm delete
   const confirmDelete = async () => {
     try {
@@ -89,22 +108,70 @@ function TeacherDetailPage() {
 
   return (
     <>
-      {/* Header */}
       <FormComponent
-        title="Teacher Detail"
-        subTitle="These are the teacher's detailed information"
+        title="Teacher Details"
+        subTitle="View Teacher Information"
       >
-        {/* Card Component */}
-        <CardComponent
-          title="Teacher Information"
-          handleEdit={handleEdit}
-          handleDelete={handleDelete}
-          data={teacherData.data}
-          imgUrl={teacherData.data.Info.photo}
-        >
-          {/* Card Data */}
-          <CardInformation data={formattedTeacher} />
-        </CardComponent>
+        <Card sx={{ ...cardContainer, bgcolor: 'white' }}>
+          <CardActionArea>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              alignItems="center"
+              alignContent='center'
+              justifyContent="start"
+              spacing={4}
+              sx={{ p: 2 }}
+            >
+              <Avatar
+                src={formattedTeacher.photo}
+                alt="Profile"
+                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+              />
+              <Stack direction="column" alignItems={{ xs: 'center', sm: 'start' }}>
+                <Typography gutterBottom variant="h5" fontWeight={'bold'} component="div">
+                  {formattedTeacher.fullName}
+                </Typography>
+                <Typography
+                  gutterBottom
+                  variant="body2"
+                  component="div"
+                  color="text.secondary"
+                >
+                  Detail personal information below
+                </Typography>
+              </Stack>
+            </Stack>
+            <CardContent>
+                <GridDetail
+                  icon={User2Icon}
+                  label="Gender"
+                  value={formattedTeacher.gender}
+                />
+                <GridDetail
+                  icon={CalendarFold}
+                  label="Date of Birth"
+                  value={formattedTeacher.dateOfBirth}
+                />
+
+                <GridDetail
+                  icon={Mails}
+                  label="Email"
+                  value={formattedTeacher.email}
+                />
+                <GridDetail
+                  icon={Phone}
+                  label="Contact Number"
+                  value={formattedTeacher.phoneNumber}
+                />
+                <GridDetail
+                  icon={Home}
+                  label="Street Address"
+                  value={formattedTeacher.address}
+                />
+            </CardContent>
+
+          </CardActionArea>
+        </Card>
       </FormComponent>
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
@@ -123,4 +190,44 @@ function TeacherDetailPage() {
   );
 }
 
+// Grid Detais
+const GridDetail = ({ icon: IconComponent, label, value }) => {
+  // Determine if the screen size is small
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  return (
+    <Grid
+      container
+      spacing={1}
+      sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, sm: 1 } }}
+    >
+      <Grid item xs={12} sm={4}>
+        <Chip
+          label={!isSmallScreen ? label : ''}
+          icon={<IconComponent size={18} />}
+          variant="outlined"
+          color="primary"
+          sx={{
+            px: 1,
+          }}
+        />
+      </Grid>
+      <Grid item xs={12} sm={8}>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: '1rem',
+            textTransform: 'capitalize',
+            elipsis: 'true',
+            wordBreak: 'break-word',
+          }}
+        >
+          {value !== null && value !== undefined && value !== "" ? value.toString() : 'N/A'}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+    </Grid>
+  );
+};
 export default TeacherDetailPage;
