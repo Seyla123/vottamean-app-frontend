@@ -111,6 +111,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
             sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}
           >
             <StyledButton
+              size="small"
               onClick={onClose}
               variant="text"
               fullWidth
@@ -120,6 +121,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
             <StyledButton
               onClick={onConfirm}
               color="error"
+              size="small"
               variant="contained"
               fullWidth
               autoFocus

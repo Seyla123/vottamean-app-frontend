@@ -61,6 +61,7 @@ const SubscriptionButton = ({
     <StyledButton
       onClick={handleCheckout}
       variant="contained"
+      size="small"
       disabled={isLoading || isProcessing}
       sx={{ width: '100%' }}
     >

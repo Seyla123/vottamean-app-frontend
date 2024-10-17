@@ -50,6 +50,7 @@ function VerifyResetPassword() {
         <StyledButton
           fullWidth
           variant="contained"
+          size="small"
           sx={{ padding: { xs: 1, md: 2 } }}
           onClick={handleNavigateToResetPassword}
         >

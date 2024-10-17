@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Box, Grid } from '@mui/material';
+import { Typography, Box, Grid, Card } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import ChangePasswordForm from '../../pages/admin/setting/account/ChangePasswordForm';
@@ -9,6 +9,7 @@ import { Info } from 'lucide-react';
 import { Lock, Trash2 } from 'lucide-react';
 import AlertCard from './AlertCard';
 import SectionTitle from './SectionTitle';
+import { shadow } from '../../styles/global';
 
 const SecurityView = ({ handleDeleteAccount }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -21,14 +22,16 @@ const SecurityView = ({ handleDeleteAccount }) => {
   };
 
   return (
-    <Box
+    <Card
       component={'section'}
       sx={{
         margin: 'auto',
         display: 'flex',
         flexDirection: 'column',
         gap: 3,
+        p: { xs: 2, sm: 3 },
         height: '100%',
+        boxShadow: shadow,
       }}
     >
       <SectionTitle
@@ -124,7 +127,7 @@ const SecurityView = ({ handleDeleteAccount }) => {
         open={isChangePasswordModalOpen}
         onClose={() => setIsChangePasswordModalOpen(false)}
       />
-    </Box>
+    </Card>
   );
 };
 

@@ -269,6 +269,7 @@ function TeacherScheduleClassPage() {
       return (
         <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
           <StyledButton
+            size="small"
             variant="outlined"
             startIcon={<ListFilter size={20} />}
             onClick={handleFilterClick}

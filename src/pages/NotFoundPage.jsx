@@ -7,7 +7,7 @@ const NotFoundPage = () => {
   return (
     <SomethingWentWrong
       imageUrl={notFoundImage}
-      title='404: Page Not Found'
+      title="404: Page Not Found"
       description="Oops! Why you're here? We're sorry, but the page you're looking for doesn't exist."
       defaultBtn={false}
     >
@@ -16,11 +16,12 @@ const NotFoundPage = () => {
         to={'/'}
         variant="contained"
         color="primary"
+        size="small"
       >
         Go to Home
       </StyledButton>
     </SomethingWentWrong>
-  )
+  );
 };
 
 export default NotFoundPage;

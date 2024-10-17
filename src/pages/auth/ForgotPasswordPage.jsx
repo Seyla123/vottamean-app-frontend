@@ -148,6 +148,7 @@ const ForgotPasswordPage = () => {
               <StyledButton
                 variant="contained"
                 fullWidth
+                size="small"
                 disabled={isLoading}
                 onClick={handleSubmit(handleForgotPassword)}
               >

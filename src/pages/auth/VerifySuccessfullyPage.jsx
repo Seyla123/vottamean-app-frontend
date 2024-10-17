@@ -34,6 +34,7 @@ const VerifySuccessfullyPage = () => {
 
         <StyledButton
           variant="contained"
+          size="small"
           onClick={handleNavigateToResetPassword}
           sx={{ mt: 4 }}
         >

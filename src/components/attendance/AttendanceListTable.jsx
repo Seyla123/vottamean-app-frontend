@@ -166,17 +166,23 @@ const AttendanceListTable = ({
                 />
               </TableCell>
               {visibleColumns.map((column) => (
-                <TableCell key={column.id} sx={{ width: column.id === 'id' ? '' : 'auto' }}>
+                <TableCell
+                  key={column.id}
+                  sx={{ width: column.id === 'id' ? '' : 'auto' }}
+                >
                   {column.label}
                 </TableCell>
               ))}
               {selected.length > 0 ? (
-                <TableCell align="right" sx={{ maxWidth: '50px', paddingY: '0px' }}>
+                <TableCell
+                  align="right"
+                  sx={{ maxWidth: '50px', paddingY: '0px' }}
+                >
                   <StyledButton
                     onClick={handleSelectedDelete}
                     color="error"
+                    size="small"
                     startIcon={<Trash2 size={18} />}
-
                   />
                 </TableCell>
               ) : (
@@ -185,50 +191,80 @@ const AttendanceListTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (<LoadingTable columns={visibleColumns} height={height} />
+            {loading ? (
+              <LoadingTable columns={visibleColumns} height={height} />
             ) : rows.length > 0 ? (
               rows.map((row, index) => {
                 const isItemSelected = isSelected(row[idField]);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
-                return <TableRow
-                  hover
-                  onClick={(event) => handleCheckboxClick(event, row[idField])}
-                  role="checkbox"
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={index}>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isItemSelected}
-                      inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                  </TableCell>
-                  {visibleColumns.map((column) => (
-                    <TableCell key={column.id}>
-                      {column.id === 'name' ? (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <Avatar src={row.img} alt={`Avatar ${row.name}`} sx={{ width: 32, height: 32, marginRight: '8px', objectFit: 'cover' }} />
-                          {row[column.id]}
-                        </Box>
-                      ) : column.id === 'id' ? (
-                        row[column.id]
-                      ) : (
-                        truncate(row[column.id], 30)
-                      )}
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) =>
+                      handleCheckboxClick(event, row[idField])
+                    }
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={index}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={isItemSelected}
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
                     </TableCell>
-                  ))}
-                  <TableCell sx={{ width: 'auto' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                      <StatusChip statusId={row.statusId} />
-                      <IconButton size="small" onClick={(e) => handleClick(e, row)}>
-                        <MoreVertIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-
-              })) : <EmptyTable columns={visibleColumns} emptyTitle={'No Attendance Record'} emptySubTitle={'No Attendance Records Available'}></EmptyTable>}
+                    {visibleColumns.map((column) => (
+                      <TableCell key={column.id}>
+                        {column.id === 'name' ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar
+                              src={row.img}
+                              alt={`Avatar ${row.name}`}
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                marginRight: '8px',
+                                objectFit: 'cover',
+                              }}
+                            />
+                            {row[column.id]}
+                          </Box>
+                        ) : column.id === 'id' ? (
+                          row[column.id]
+                        ) : (
+                          truncate(row[column.id], 30)
+                        )}
+                      </TableCell>
+                    ))}
+                    <TableCell sx={{ width: 'auto' }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-end',
+                        }}
+                      >
+                        <StatusChip statusId={row.statusId} />
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleClick(e, row)}
+                        >
+                          <MoreVertIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            ) : (
+              <EmptyTable
+                columns={visibleColumns}
+                emptyTitle={'No Attendance Record'}
+                emptySubTitle={'No Attendance Records Available'}
+              ></EmptyTable>
+            )}
           </TableBody>
         </Table>
         <DeleteConfirmationModal
@@ -249,11 +285,7 @@ const AttendanceListTable = ({
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <Menu
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-      >
+      <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleClose}>
         <MenuItem onClick={handleEdit}>
           <ListItemIcon>
             <Pencil size={18} />

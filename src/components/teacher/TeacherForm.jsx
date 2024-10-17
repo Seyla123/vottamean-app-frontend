@@ -163,21 +163,20 @@ function TeacherForm(handleNext, handleCancel, mode = 'create') {
           </Box>
           {/* date of birth */}
           <Box sx={textFieldGap}>
-          <Typography>Date of Birth</Typography>
-          <Controller
-            name="dob"
-            control={control}
-            render={({ field }) => (
-              <DatePickerComponent 
-                control={control}
-                name="dob"
-              />
+            <Typography>Date of Birth</Typography>
+            <Controller
+              name="dob"
+              control={control}
+              render={({ field }) => (
+                <DatePickerComponent control={control} name="dob" />
+              )}
+            />
+            {errors.dob && (
+              <FormHelperText color="error">
+                {errors.dob.message}
+              </FormHelperText>
             )}
-          />
-          {errors.dob && (
-            <FormHelperText color="error">{errors.dob.message}</FormHelperText>
-          )}
-        </Box>
+          </Box>
           {/* phone number */}
           <Box sx={textFieldGap}>
             <Typography>Phone Number</Typography>
@@ -298,11 +297,17 @@ function TeacherForm(handleNext, handleCancel, mode = 'create') {
             <StyledButton
               variant="outlined"
               sx={{ borderColor: 'inherit', color: 'inherit' }}
+              size="small"
               fullWidth
             >
               Back
             </StyledButton>
-            <StyledButton fullWidth variant="contained" type="submit">
+            <StyledButton
+              fullWidth
+              variant="contained"
+              type="submit"
+              size="small"
+            >
               Add Teacher
             </StyledButton>
           </Box>

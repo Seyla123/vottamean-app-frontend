@@ -181,10 +181,10 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
 
           {/* Action Buttons */}
           <Stack direction="row" justifyContent="flex-end" gap={1}>
-            <StyledButton onClick={handleBack} variant="outlined">
+            <StyledButton onClick={handleBack} variant="outlined" size="small">
               Back
             </StyledButton>
-            <StyledButton variant="contained" type="submit">
+            <StyledButton variant="contained" type="submit" size="small">
               Add Student
             </StyledButton>
           </Stack>

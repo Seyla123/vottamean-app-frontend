@@ -182,6 +182,7 @@ function SessionListPage() {
           <StyledButton
             variant="contained"
             color="primary"
+            size="small"
             startIcon={<PlusIcon size={20} />}
           >
             Create Session

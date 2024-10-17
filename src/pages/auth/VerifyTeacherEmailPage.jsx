@@ -86,6 +86,7 @@ function VerifyTeacherEmailPage() {
                     sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
                   >
                     <StyledButton
+                      size="small"
                       variant="contained"
                       onClick={handleLoginRedirect}
                       disabled={isLoading}
@@ -95,6 +96,7 @@ function VerifyTeacherEmailPage() {
                   </Box>
                 ) : (
                   <StyledButton
+                    size="small"
                     variant="contained"
                     onClick={handleLoginRedirect}
                     disabled={isLoading}

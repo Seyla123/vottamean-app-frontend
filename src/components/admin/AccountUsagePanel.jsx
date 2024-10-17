@@ -71,7 +71,7 @@ const AccountUsagePanel = ({
               </CardContent>
               <CardActions sx={{ justifyContent: 'flex-end' }}>
                 <Link to="contact">
-                  <StyledButton>Contact Our Support</StyledButton>
+                  <StyledButton size="small">Contact Our Support</StyledButton>
                 </Link>
               </CardActions>
             </Card>
@@ -161,7 +161,11 @@ const UsageCard = ({ activePlan, setValue }) => {
         </Stack>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <StyledButton variant="outlined" onClick={() => setValue('2')}>
+        <StyledButton
+          size="small"
+          variant="outlined"
+          onClick={() => setValue('2')}
+        >
           Upgrade your plan
         </StyledButton>
       </CardActions>

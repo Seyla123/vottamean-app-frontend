@@ -23,6 +23,7 @@ import {
 // User Profile Data formatting
 import { getUserProfileData } from '../../../../utils/formatData';
 import StyledButton from '../../../../components/common/StyledMuiButton';
+import { StyledTab } from '../../../../components/common/StyledTabs';
 
 /**
  * AccountProfilePage component displays and manages user account information,
@@ -117,13 +118,13 @@ function AccountProfilePage() {
       <Box sx={{ width: '100%', typography: 'body1' }}>
         <TabContext value={value}>
           <TabList onChange={handleChange} aria-label="Account tabs">
-            <Tab
+            <StyledTab
               label="General"
               value="1"
               icon={<User size={18} />}
               iconPosition="start"
             />
-            <Tab
+            <StyledTab
               label="Advanced"
               value="2"
               icon={<KeyRound size={18} />}
@@ -188,7 +189,8 @@ function AccountProfilePage() {
                   <Link to="change-password" style={{ textDecoration: 'none' }}>
                     <StyledButton
                       variant="contained"
-                      startIcon={<KeyRoundIcon size={20} />}
+                      size="small"
+                      startIcon={<KeyRoundIcon size={18} />}
                     >
                       Change Password
                     </StyledButton>
@@ -233,7 +235,8 @@ function AccountProfilePage() {
                     variant="contained"
                     color="error"
                     onClick={clickDeleteAccount}
-                    startIcon={<Trash2 size={20} />}
+                    startIcon={<Trash2 size={18} />}
+                    size="small"
                   >
                     Delete Account
                   </StyledButton>

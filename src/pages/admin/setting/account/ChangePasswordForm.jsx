@@ -136,9 +136,12 @@ const ChangePasswordForm = ({ open, onClose }) => {
         </Box>
       </DialogContent>
       <DialogActions>
-        <StyledButton onClick={onClose}>Cancel</StyledButton>
+        <StyledButton size="small" onClick={onClose}>
+          Cancel
+        </StyledButton>
         <StyledButton
           variant="contained"
+          size="small"
           onClick={handleSubmit(handlePasswordChange)}
           disabled={isLoading}
         >

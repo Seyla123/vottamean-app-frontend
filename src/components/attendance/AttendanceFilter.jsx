@@ -173,6 +173,7 @@ function AttendanceFilter({ pdfData }) {
           <StyledButton
             variant="contained"
             color="primary"
+            size="small"
             endIcon={
               isExporting ? (
                 <CircularProgress size={16} color="inherit" />
@@ -188,6 +189,7 @@ function AttendanceFilter({ pdfData }) {
           </StyledButton>
         ) : (
           <StyledButton
+            size="small"
             variant="contained"
             endIcon={
               isExporting ? (

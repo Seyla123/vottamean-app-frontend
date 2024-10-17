@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Card, Grid } from '@mui/material';
 import ProfileSection from './ProfileSection';
 import InformationSection from './InformationSection';
 import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
 import SectionTitle from './SectionTitle';
+import { shadow } from '../../styles/global';
 
 const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
   const [openModal, setOpenModal] = useState(null);
@@ -19,9 +20,11 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
   const checkUserRole = userData?.userRole;
 
   return (
-    <Box
+    <Card
       component={'section'}
       sx={{
+        boxShadow: shadow,
+        p: { xs: 2, sm: 3 },
         margin: 'auto',
         height: '100%',
       }}
@@ -71,7 +74,7 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
       {openModal === 'school' && schoolProfileData && (
         <EditSchoolModal open={true} onClose={handleCloseModal} />
       )}
-    </Box>
+    </Card>
   );
 };
 

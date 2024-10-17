@@ -177,8 +177,7 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
 
 
   return (
-    <
-    >
+    <>
       <Box
         sx={{
           width: '800px',
@@ -306,12 +305,16 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
               <StyledButton
                 variant="outlined"
                 color="inherit"
+                size="small"
                 onClick={onClose}
-                handleBack={() => {'admin/student'}}
+                handleBack={() => {
+                  'admin/student';
+                }}
               >
                 Cancel
               </StyledButton>
               <StyledButton
+                size="small"
                 type="submit"
                 variant="contained"
                 color="primary"

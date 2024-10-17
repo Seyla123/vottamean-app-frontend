@@ -254,6 +254,7 @@ const StudentListPage = () => {
           <StyledButton
             variant="contained"
             color="primary"
+            size="small"
             startIcon={<PlusIcon size={20} />}
             onClick={handleCreate}
           >

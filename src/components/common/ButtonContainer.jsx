@@ -31,25 +31,46 @@ function ButtonContainer({ rightBtn, leftBtn, rightBtnTitle, leftBtnTitle, isSub
         navigate(-1)
     }
     return (
-        <>
-            {/* Button Container  */}
-            <Stack direction={'row'} alignSelf={'flex-end'} width={{ xs: '100%', sm: '340px' }} gap={{ xs: 1, sm: 2 }}>
-                <StyledButton fullWidth variant="outlined" color="white" onClick={leftBtn ? leftBtn : goBackHistory}>
-                    {leftBtnTitle}
-                </StyledButton>
-                <StyledButton fullWidth variant="contained" onClick={rightBtn}>
-                    {isSubmit ? <> <Box display="flex" alignItems="center">
-                        <CircularProgress size={24} color="inherit" />
-                        <Typography variant="body2" style={{ marginLeft: '8px' }}>
-                            {isSubmittingTitle}
-                        </Typography>
-                    </Box>
-                    </> : rightBtnTitle}
-                </StyledButton>
-
-            </Stack>
-        </>
-    )
+      <>
+        {/* Button Container  */}
+        <Stack
+          direction={'row'}
+          alignSelf={'flex-end'}
+          width={{ xs: '100%', sm: '340px' }}
+          gap={{ xs: 1, sm: 2 }}
+        >
+          <StyledButton
+            fullWidth
+            variant="outlined"
+            color="white"
+            size="small"
+            onClick={leftBtn ? leftBtn : goBackHistory}
+          >
+            {leftBtnTitle}
+          </StyledButton>
+          <StyledButton
+            size="small"
+            fullWidth
+            variant="contained"
+            onClick={rightBtn}
+          >
+            {isSubmit ? (
+              <>
+                {' '}
+                <Box display="flex" alignItems="center">
+                  <CircularProgress size={24} color="inherit" />
+                  <Typography variant="body2" style={{ marginLeft: '8px' }}>
+                    {isSubmittingTitle}
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              rightBtnTitle
+            )}
+          </StyledButton>
+        </Stack>
+      </>
+    );
 }
 
 export default ButtonContainer

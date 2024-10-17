@@ -19,6 +19,7 @@ function CancelSubscription({ adminId }) {
   return (
     <Box sx={{ textAlign: 'center', mt: 4 }}>
       <StyledButton
+        size="small"
         variant="outlined"
         onClick={handleCancel}
         disabled={isLoading}

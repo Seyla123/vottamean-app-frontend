@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tab, Typography, Card, Tabs, Box } from '@mui/material';
+import { Tab, Typography, Card, Tabs, Box, styled } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 
@@ -26,6 +26,7 @@ import {
 import { getUserProfileData } from '../../../../utils/formatData';
 import { shadow } from '../../../../styles/global';
 import LoadingPage from '../../../LoadingPage';
+import { StyledTab } from '../../../../components/common/StyledTabs';
 
 const AccountSettingsPage = () => {
   // - Initialize dispatch and navigate hooks
@@ -83,74 +84,54 @@ const AccountSettingsPage = () => {
     return <Typography>Error loading user data</Typography>;
   }
 
-  console.log(userData);
-
   return (
     <FormComponent
       title={'Account Settings'}
       subTitle={'Manage your account settings'}
     >
-      <Card sx={shadow}>
+      <TabContext value={value}>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
+            borderRight: isMobile ? 'none' : 1,
+            borderColor: 'divider',
           }}
         >
-          <TabContext value={value}>
-            <Box
-              sx={{
-                borderRight: isMobile ? 'none' : 1,
-                borderColor: 'divider',
-              }}
-            >
-              <TabList
-                orientation={'horizontal'}
-                variant="scrollable"
-                onChange={handleChange}
-                aria-label="Vertical tabs"
-                sx={{ width: '100%' }}
-              >
-                <Tab
-                  label="Profile"
-                  value="1"
-                  icon={<UserRound size={18} />}
-                  iconPosition="start"
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'start',
-                  }}
-                />
-                <Tab
-                  label="Account"
-                  value="2"
-                  icon={<Settings size={18} />}
-                  iconPosition="start"
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'start',
-                  }}
-                />
-              </TabList>
-            </Box>
-
-            <TabPanel sx={{ flexGrow: 1 }} value="1">
-              {/* MY PROFILE VIEW */}
-              <MyProfileView
-                profilePhoto={userData?.photo}
-                userData={userData?.userProfile}
-                schoolProfileData={userData.schoolProfile}
-              />
-            </TabPanel>
-
-            <TabPanel sx={{ flexGrow: 1 }} value="2">
-              {/* SECURITY VIEW */}
-              <SecurityView handleDeleteAccount={handleDeleteAccount} />
-            </TabPanel>
-          </TabContext>
+          <TabList
+            orientation={'horizontal'}
+            variant="scrollable"
+            onChange={handleChange}
+            aria-label="Vertical tabs"
+            sx={{ width: '100%' }}
+          >
+            <StyledTab
+              label="Profile Information"
+              value="1"
+              // icon={<UserRound size={14} />}
+              iconPosition="start"
+            />
+            <StyledTab
+              label="Account Security"
+              value="2"
+              // icon={<Settings size={14} />}
+              iconPosition="start"
+            />
+          </TabList>
         </Box>
-      </Card>
+
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
+          {/* MY PROFILE VIEW */}
+          <MyProfileView
+            profilePhoto={userData?.photo}
+            userData={userData?.userProfile}
+            schoolProfileData={userData.schoolProfile}
+          />
+        </TabPanel>
+
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="2">
+          {/* SECURITY VIEW */}
+          <SecurityView handleDeleteAccount={handleDeleteAccount} />
+        </TabPanel>
+      </TabContext>
     </FormComponent>
   );
 };

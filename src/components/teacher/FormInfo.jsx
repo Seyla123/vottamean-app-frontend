@@ -35,6 +35,7 @@ import { useSignUpTeacherMutation } from '../../services/teacherApi';
 import TeacherInfo from './TeacherInfo';
 import AccountInfo from './AccountInfo';
 import { shadow } from '../../styles/global';
+import { StyledTab } from '../common/StyledTabs';
 
 function FormInfo() {
   const dispatch = useDispatch();
@@ -155,13 +156,13 @@ function FormInfo() {
                 pb: { xs: 0, sm: 4 },
               }}
             >
-              <Tab
+              <StyledTab
                 label="Personal"
                 icon={<User size={18} />}
                 value="1"
                 sx={tabStyle}
               />
-              <Tab
+              <StyledTab
                 label="Account"
                 disabled={!isTeacherInfoValid}
                 icon={<Settings size={18} />}
