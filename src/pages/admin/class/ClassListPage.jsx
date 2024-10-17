@@ -24,6 +24,7 @@ import {
 import { ClassValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 // Define table columns title
 const columns = [
@@ -31,8 +32,6 @@ const columns = [
   { id: 'class_name', label: 'Class Name' },
   { id: 'description', label: 'Description' },
 ];
-
-
 
 const ClassListPage = () => {
   const dispatch = useDispatch();
@@ -55,15 +54,17 @@ const ClassListPage = () => {
   // open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
-  const { data, isLoading, isSuccess, isError, error } = useGetClassesDataQuery({ search: search, limit: rowsPerPage, page: page + 1 });
+  const { data, isLoading, isSuccess, isError, error } = useGetClassesDataQuery(
+    { search: search, limit: rowsPerPage, page: page + 1 },
+  );
 
   //useDeleteManyClassesMutation :  a hook that returns a function to delete many class record
   const [
@@ -72,7 +73,7 @@ const ClassListPage = () => {
       isLoading: isDeletingMany,
       isSuccess: isDeleteManySuccess,
       isError: isDeleteManyError,
-      erorr: deleteManyError
+      erorr: deleteManyError,
     },
   ] = useDeleteManyClassesMutation();
 
@@ -88,13 +89,21 @@ const ClassListPage = () => {
   ] = useDeleteClassesDataMutation();
 
   //usePostClassesDataMutation :  a hook that returns a function to create an class record
-  const [postClassesData, { isLoading: isCreating, isSuccess: isCreatedSuccess, isError: isCreateError, erorr: createError }] = usePostClassesDataMutation();
+  const [
+    postClassesData,
+    {
+      isLoading: isCreating,
+      isSuccess: isCreatedSuccess,
+      isError: isCreateError,
+      erorr: createError,
+    },
+  ] = usePostClassesDataMutation();
 
   //  when the class records are fetched successfully, set the rows state
   useEffect(() => {
     if (data && isSuccess) {
       setRows(data.data);
-      setTotalRows(data.results)
+      setTotalRows(data.results);
     }
   }, [data, isSuccess]);
 
@@ -144,7 +153,7 @@ const ClassListPage = () => {
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -152,14 +161,25 @@ const ClassListPage = () => {
 
   useEffect(() => {
     if (isCreatedSuccess) {
-      dispatch(setSnackbar({ open: true, message: 'Class created successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class created successfully',
+          severity: 'success',
+        }),
+      );
       setCreateModalOpen(false);
     } else if (isError) {
-      dispatch(setSnackbar({ open: true, message: createError.data.message || 'Failed to create class', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: createError.data.message || 'Failed to create class',
+          severity: 'error',
+        }),
+      );
       setCreateModalOpen(false);
     }
   }, [isCreateError, isCreatedSuccess, createError, dispatch]);
-
 
   // CREATE FUNCTION
   const handleCreate = async (formData) => {
@@ -201,7 +221,7 @@ const ClassListPage = () => {
   }
 
   if (isError) {
-    return <SomethingWentWrong description={error?.data?.message} />
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   const classField = [
@@ -218,11 +238,12 @@ const ClassListPage = () => {
       multiline: true,
       icon: '',
     },
-  ]
+  ];
 
   return (
     <FormComponent title="Class List" subTitle={`Total Classes: ${totalRows}`}>
-      <Stack direction="row" justifyContent="flex-end">
+      <Stack direction="row" justifyContent="space-between" alignItems={'center'}>
+        <TitleHeader title={'Class List'} />
         <StyledButton
           variant="contained"
           size="small"

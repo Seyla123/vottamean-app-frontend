@@ -243,21 +243,3 @@ const boxContainer = {
     sm: 3,
   },
 };
-// Styles
-const profileBox = {
-  width: '100%',
-  bgcolor: '#ffffff',
-  padding: {
-    xs: 2,
-    sm: 3,
-  },
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  position: 'relative',
-};
