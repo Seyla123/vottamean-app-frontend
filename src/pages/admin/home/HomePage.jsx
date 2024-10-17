@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 
 // - Material UI Components
-import { Typography, Box, CardContent, Chip, Grid } from '@mui/material';
-import { GraduationCap, UsersIcon } from 'lucide-react';
+import { Typography, Box, CardContent, Chip, Grid, Stack } from '@mui/material';
+import { Crown, GraduationCap, UsersIcon } from 'lucide-react';
 
 // - Custom Components
 import FormComponent from '../../../components/common/FormComponent';
@@ -28,6 +28,9 @@ import createStudent from '../../../assets/images/create-student.svg';
 import createSubject from '../../../assets/images/create-subject.svg';
 import createSession from '../../../assets/images/create-session.svg';
 import SectionTitle from '../../../components/common/SectionTitle';
+import TitleHeader from '../../../components/common/TitleHeader';
+import StyledButton from '../../../components/common/StyledMuiButton';
+import { Link } from 'react-router-dom';
 
 const teacherArr = [
   {
@@ -63,24 +66,6 @@ const teacherArr = [
 const teacherColumnArr = [
   { id: 'name', label: 'Full Name' },
   { id: 'email', label: 'Email' },
-];
-
-const studentArr = [
-  {
-    id: 1,
-    name: 'Sokunthea Chhorn',
-    email: 'sokunthea.chhorn@example.com',
-  },
-  {
-    id: 2,
-    name: 'Sokha Sorn',
-    email: 'sokha.sorn@example.com',
-  },
-  {
-    id: 3,
-    name: 'Sovannarith Seng',
-    email: 'sovannarith.seng@example.com',
-  },
 ];
 
 const statusCard = [
@@ -213,10 +198,25 @@ function HomePage() {
   };
 
   return (
-    <FormComponent
-      title="Dashboard Overview"
-      subTitle="Monitor Student and Teacher Attendance in Real-Time"
-    >
+    <FormComponent>
+      <Stack
+        direction={'row'}
+        gap={2}
+        justifyContent={'space-between'}
+        alignItems={'center'}
+      >
+        <TitleHeader title={'Dashboard'} />
+        <Link to={'/admin/payment'}>
+          <StyledButton
+            variant={'outlined'}
+            color={'primary'}
+            size={'small'}
+            startIcon={<Crown size={18} />}
+          >
+            Upgrade to Pro
+          </StyledButton>
+        </Link>
+      </Stack>
       <Grid container spacing={2}>
         <Grid item xs={12} lg={8}>
           <GreetingCard />

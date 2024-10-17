@@ -252,7 +252,7 @@ const StudentListPage = () => {
         justifyContent="space-between"
         alignItems={'center'}
       >
-        <TitleHeader title={'Student Lists'} />
+        <TitleHeader title={'Student'} />
         <StyledButton
           variant="contained"
           color="primary"

@@ -27,6 +27,7 @@ import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 // Icon from lucide
 import { PlusIcon } from 'lucide-react';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 // Table columns
 const columns = [
@@ -203,17 +204,10 @@ const TeacherListPage = () => {
   }
 
   return (
-    <FormComponent
-      title="Teacher List"
-      subTitle={`Total Teachers : ${totalRows}`}
-    >
+    <FormComponent>
       {/* Add Teacher Button */}
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        mb={2}
-      >
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <TitleHeader title={'Teacher'} />
         <Link to="/admin/teachers/create">
           <StyledButton
             variant="contained"

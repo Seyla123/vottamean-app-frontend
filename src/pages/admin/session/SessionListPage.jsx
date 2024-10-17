@@ -18,6 +18,7 @@ import { setModal, setSnackbar } from '../../../store/slices/uiSlice';
 import ViewModal from '../../../components/common/ViewModal';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const columns = [
   { id: 'teacher', label: 'Teacher' },
@@ -179,12 +180,14 @@ function SessionListPage() {
   }
 
   return (
-    <FormComponent
-      title={'Session List'}
-      subTitle={`Total Sessions : ${totalRows}`}
-    >
+    <FormComponent>
       {/* button add session container */}
-      <Stack direction="row" justifyContent="flex-end">
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems={'center'}
+      >
+        <TitleHeader title={'Session'} />
         {/* add session button */}
         <Link to="/admin/sessions/create">
           <StyledButton

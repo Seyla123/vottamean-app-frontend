@@ -241,9 +241,13 @@ const ClassListPage = () => {
   ];
 
   return (
-    <FormComponent title="Class List" subTitle={`Total Classes: ${totalRows}`}>
-      <Stack direction="row" justifyContent="space-between" alignItems={'center'}>
-        <TitleHeader title={'Class List'} />
+    <FormComponent>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems={'center'}
+      >
+        <TitleHeader title={'Class'} />
         <StyledButton
           variant="contained"
           size="small"

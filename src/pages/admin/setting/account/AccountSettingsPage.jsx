@@ -27,6 +27,7 @@ import { getUserProfileData } from '../../../../utils/formatData';
 import { shadow } from '../../../../styles/global';
 import LoadingPage from '../../../LoadingPage';
 import { StyledTab } from '../../../../components/common/StyledTabs';
+import TitleHeader from '../../../../components/common/TitleHeader';
 
 const AccountSettingsPage = () => {
   // - Initialize dispatch and navigate hooks
@@ -85,10 +86,8 @@ const AccountSettingsPage = () => {
   }
 
   return (
-    <FormComponent
-      title={'Account Settings'}
-      subTitle={'Manage your account settings'}
-    >
+    <FormComponent>
+      <TitleHeader title={'Account Settings'} />
       <TabContext value={value}>
         <Box
           sx={{

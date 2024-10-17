@@ -11,6 +11,7 @@ import PricingPlanCard from '../../components/admin/PricingPlanCard';
 import AccountUsagePanel from '../../components/admin/AccountUsagePanel';
 import PlanComparison from '../../components/admin/PlanComparison';
 import { StyledTab } from '../../components/common/StyledTabs';
+import TitleHeader from '../../components/common/TitleHeader';
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -50,7 +51,7 @@ const StyledTabPricing = styled((props) => <Tab disableRipple {...props} />)(
 );
 
 const SubscriptionPlansPage = () => {
-  const [value, setValue] = React.useState('1');
+  const [value, setValue] = React.useState('2');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -131,10 +132,8 @@ const SubscriptionPlansPage = () => {
   ];
 
   return (
-    <FormComponent
-      title={'My Subscription'}
-      subTitle={'Upgrade your Marketing Platform'}
-    >
+    <FormComponent>
+      <TitleHeader title={'Usage and plan'} />
       <TabContext value={value}>
         <Box
           sx={{

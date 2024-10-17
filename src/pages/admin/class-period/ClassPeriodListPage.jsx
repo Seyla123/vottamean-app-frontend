@@ -25,6 +25,7 @@ import {
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
@@ -236,11 +237,9 @@ function ClassPeriodListPage() {
   }
 
   return (
-    <FormComponent
-      title="Class Period List"
-      subTitle={`Total Class Periods: ${totalRows}`}
-    >
-      <Stack direction="row" justifyContent="flex-end">
+    <FormComponent>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <TitleHeader title={'Class Period'} />
         <StyledButton
           variant="contained"
           color="primary"

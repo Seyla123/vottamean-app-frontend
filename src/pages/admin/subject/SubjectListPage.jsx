@@ -20,10 +20,9 @@ import {
 } from '../../../services/subjectApi';
 import { SubjectValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
-import {
-  formatDate,
-} from '../../../utils/formatHelper';
+import { formatDate } from '../../../utils/formatHelper';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const columns = [
   { id: 'subject_id', label: 'Subject ID' },
@@ -47,18 +46,19 @@ function SubjectListPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   // open: the state of the modal
   const { modal } = useSelector((state) => state.ui);
 
   // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
-  const { data, isLoading, isSuccess, isError, error, isFetching } = useGetSubjectsQuery({page:page + 1, limit: rowsPerPage});
+  const { data, isLoading, isSuccess, isError, error, isFetching } =
+    useGetSubjectsQuery({ page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
   const [
@@ -177,11 +177,11 @@ function SubjectListPage() {
       );
     }
   }, [isCreateError, isCreateSuccess, isCreating, dispatch]);
-  
+
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -265,11 +265,13 @@ function SubjectListPage() {
   }
 
   return (
-    <FormComponent
-      title="Subject List"
-      subTitle={`Total Subjects: ${totalRows}`}
-    >
-      <Stack direction="row" justifyContent="flex-end">
+    <FormComponent>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems={'center'}
+      >
+        <TitleHeader title={'Subject'} />
         <StyledButton
           variant="contained"
           color="primary"
