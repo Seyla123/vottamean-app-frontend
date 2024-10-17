@@ -30,7 +30,7 @@ const TitleHeader = ({ title, subTitle }) => (
       {title}
     </Typography>
     <Typography variant="body1" color="text.secondary">
-      {subTitle}
+      {/* {subTitle} */}
     </Typography>
   </Stack>
 );

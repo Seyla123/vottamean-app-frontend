@@ -19,53 +19,53 @@ const navigation = [
   {
     segment: 'admin/home',
     title: 'Home',
-    icon: <HomeIcon />,
+    icon: <HomeIcon size={18} />,
   },
   {
     segment: 'admin/class-periods',
     title: 'Class Period',
-    icon: <ClassPeriodIcon />,
+    icon: <ClassPeriodIcon size={18} />,
   },
   {
     segment: 'admin/subjects',
     title: 'Subject',
-    icon: <SubjectIcon size={20} />,
+    icon: <SubjectIcon size={18} />,
   },
   {
     segment: 'admin/classes',
     title: 'Class',
-    icon: <ClassIcon />,
+    icon: <ClassIcon size={18} />,
   },
   {
     segment: 'admin/students',
     title: 'Student',
-    icon: <StudentIcon size={20} />,
+    icon: <StudentIcon size={18} />,
   },
   {
     segment: 'admin/teachers',
     title: 'Teacher',
-    icon: <TeacherIcon size={20} />,
+    icon: <TeacherIcon size={18} />,
   },
   {
     segment: 'admin/sessions',
     title: 'Session',
-    icon: <CalendarMonthIcon />,
+    icon: <CalendarMonthIcon size={18} />,
   },
   {
     segment: 'admin/attendance',
     title: 'Attendance',
-    icon: <ChecklistIcon />,
+    icon: <ChecklistIcon size={18} />,
   },
 
   {
     segment: 'admin/reports',
     title: 'Report',
-    icon: <ReportGmailerrorredIcon size={20} />,
+    icon: <ReportGmailerrorredIcon size={18} />,
     children: [
       {
         segment: 'attendance',
         title: 'Attendance',
-        icon: <ChecklistIcon size={20} />,
+        icon: <ChecklistIcon size={18} />,
       },
     ],
   },
@@ -76,17 +76,17 @@ const navigation = [
   {
     segment: 'admin/payment',
     title: 'Usage and plan',
-    icon: <Zap size={20} />,
+    icon: <Zap size={18} />,
   },
   {
     segment: 'admin/settings',
     title: 'Settings',
-    icon: <SettingsIcon size={20} />,
+    icon: <SettingsIcon size={18} />,
     children: [
       {
         segment: 'account',
         title: 'Account',
-        icon: <Person size={20} />,
+        icon: <Person size={18} />,
       },
     ],
   },
@@ -102,7 +102,7 @@ const teacherSiteNavigation = [
   {
     segment: 'teacher/schedule',
     title: 'Schedule',
-    icon: <CalendarMonthIcon size={20} />,
+    icon: <CalendarMonthIcon size={18} />,
   },
 
   { kind: 'divider' },
@@ -112,12 +112,12 @@ const teacherSiteNavigation = [
   {
     segment: 'teacher/settings',
     title: 'Settings',
-    icon: <SettingsIcon size={20} />,
+    icon: <SettingsIcon size={18} />,
     children: [
       {
         segment: 'account',
         title: 'Account',
-        icon: <Person size={20} />,
+        icon: <Person size={18} />,
       },
     ],
   },
