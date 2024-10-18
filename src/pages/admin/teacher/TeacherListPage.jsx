@@ -27,6 +27,7 @@ import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
 // Icon from lucide
 import { PlusIcon } from 'lucide-react';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 // Table columns
 const columns = [
@@ -39,6 +40,7 @@ const columns = [
 const TeacherListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // - rows: the teacher records that are currently being displayed on the page
   // - searchTerm: the search term that is currently being used to filter the table
@@ -69,6 +71,7 @@ const TeacherListPage = () => {
     isSuccess,
     isError,
     error,
+    isFetching,
   } = useGetAllTeachersQuery({
     search: searchTerm,
     limit: rowsPerPage,
@@ -149,6 +152,12 @@ const TeacherListPage = () => {
     isDeleteManySuccess,
   ]);
 
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -193,7 +202,7 @@ const TeacherListPage = () => {
   };
 
   // Loading and error state
-  if (isLoading) {
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
@@ -203,32 +212,29 @@ const TeacherListPage = () => {
   }
 
   return (
-    <FormComponent
-      title="Teacher List"
-      subTitle={`Total Teachers : ${totalRows}`}
-    >
+    <FormComponent>
       {/* Add Teacher Button */}
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        mb={2}
-      >
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <TitleHeader title={'Teacher'} />
         <Link to="/admin/teachers/create">
           <StyledButton
             variant="contained"
             color="primary"
             size="small"
-            startIcon={<PlusIcon size={20} />}
+            startIcon={<PlusIcon size={18} />}
           >
             Create Teacher
           </StyledButton>
         </Link>
       </Stack>
       {/* Search bar */}
-      <Stack direction="row" justifyContent={'flex-end'} width={'100%'} gap={2}>
+      <Stack
+        direction="row"
+        justifyContent={'flex-start'}
+        width={'100%'}
+        gap={2}
+      >
         <SearchComponent
-          sx={{ width: '100%', maxWidth: '700px' }}
           placeholder="Search"
           value={searchTerm}
           onChange={handleSearchChange}
@@ -250,6 +256,7 @@ const TeacherListPage = () => {
         setPage={handleChangePage}
         setRowsPerPage={handleChangeRowsPerPage}
         totalRows={totalRows}
+        isLoading={isFetching || isLoading}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal

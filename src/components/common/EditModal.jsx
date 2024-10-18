@@ -24,18 +24,7 @@ import dayjs from 'dayjs';
 import { X } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogTitle-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(2),
-  },
-}));
+import { BootstrapDialog } from './BootstrapDialog';
 
 const EditModal = ({
   open,
@@ -48,7 +37,6 @@ const EditModal = ({
   getDataQuery,
   useUpdateDataMutation,
 }) => {
-
   // data: data from Redux store of the record to be edited
   // isLoading: boolean indicating if the data is still being fetched
   const { data, isLoading } = getDataQuery(id, { skip: !id });
@@ -121,13 +109,7 @@ const EditModal = ({
       );
       onClose();
     }
-  }, [
-    isUpdating,
-    isUpdateError,
-    isUpdatedSuccess,
-    updateError,
-    dispatch,
-  ]);
+  }, [isUpdating, isUpdateError, isUpdatedSuccess, updateError, dispatch]);
 
   const renderField = (field) => {
     switch (field.type) {
@@ -242,19 +224,8 @@ const EditModal = ({
   };
 
   return (
-    <BootstrapDialog
-      open={open}
-      onClose={handleClose}
-      maxWidth="xs"
-      fullWidth
-      aria-labelledby="edit-dialog-title"
-    >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="edit-dialog-title">
-        {title}
-        <Typography variant="body1" color="text.secondary">
-          {description}
-        </Typography>
-      </DialogTitle>
+    <BootstrapDialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+      <DialogTitle>{title}</DialogTitle>
       <IconButton
         onClick={handleClose}
         sx={(theme) => ({

@@ -118,7 +118,7 @@ const Layout = ({ teacherSite, adminSite }) => {
       }}
     >
       {teacherSite || adminSite ? (
-        <Box paddingTop={2}>
+        <Box>
           <DashboardLayout>
             <Container maxWidth="xl" sx={{ paddingBottom: 10 }}>
               <Outlet />

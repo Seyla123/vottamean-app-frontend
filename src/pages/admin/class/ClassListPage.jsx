@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { PlusIcon } from 'lucide-react';
+import {
+  BookMarked,
+  Calendar,
+  CircleDashed,
+  LetterText,
+  PlusIcon,
+} from 'lucide-react';
 // import components
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -24,6 +30,8 @@ import {
 import { ClassValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import TitleHeader from '../../../components/common/TitleHeader';
+import { formatDate } from '../../../utils/formatHelper';
 
 // Define table columns title
 const columns = [
@@ -32,10 +40,9 @@ const columns = [
   { id: 'description', label: 'Description' },
 ];
 
-
-
 const ClassListPage = () => {
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // - rows: the teacher records that are currently being displayed on the page
   // - search: the search term that is currently being used to filter the table
@@ -55,15 +62,20 @@ const ClassListPage = () => {
   // open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
-  // - rowsPerPage: the number of rows per page 
+  // - rowsPerPage: the number of rows per page
   // - page: the current page number that is being displayed
-  // - totalRows: the total number of rows that are available 
+  // - totalRows: the total number of rows that are available
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  const [totalRows, setTotalRows] = useState(0)
+  const [totalRows, setTotalRows] = useState(0);
 
   //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
-  const { data, isLoading, isSuccess, isError, error } = useGetClassesDataQuery({ search: search, limit: rowsPerPage, page: page + 1 });
+  const { data, isLoading, isSuccess, isError, error, isFetching } =
+    useGetClassesDataQuery({
+      search: search,
+      limit: rowsPerPage,
+      page: page + 1,
+    });
 
   //useDeleteManyClassesMutation :  a hook that returns a function to delete many class record
   const [
@@ -72,7 +84,7 @@ const ClassListPage = () => {
       isLoading: isDeletingMany,
       isSuccess: isDeleteManySuccess,
       isError: isDeleteManyError,
-      erorr: deleteManyError
+      erorr: deleteManyError,
     },
   ] = useDeleteManyClassesMutation();
 
@@ -88,13 +100,21 @@ const ClassListPage = () => {
   ] = useDeleteClassesDataMutation();
 
   //usePostClassesDataMutation :  a hook that returns a function to create an class record
-  const [postClassesData, { isLoading: isCreating, isSuccess: isCreatedSuccess, isError: isCreateError, erorr: createError }] = usePostClassesDataMutation();
+  const [
+    postClassesData,
+    {
+      isLoading: isCreating,
+      isSuccess: isCreatedSuccess,
+      isError: isCreateError,
+      erorr: createError,
+    },
+  ] = usePostClassesDataMutation();
 
   //  when the class records are fetched successfully, set the rows state
   useEffect(() => {
     if (data && isSuccess) {
       setRows(data.data);
-      setTotalRows(data.results)
+      setTotalRows(data.results);
     }
   }, [data, isSuccess]);
 
@@ -144,7 +164,7 @@ const ClassListPage = () => {
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
-  }
+  };
   // Handle row per page change
   const handleChangeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -152,14 +172,25 @@ const ClassListPage = () => {
 
   useEffect(() => {
     if (isCreatedSuccess) {
-      dispatch(setSnackbar({ open: true, message: 'Class created successfully', severity: 'success' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Class created successfully',
+          severity: 'success',
+        }),
+      );
       setCreateModalOpen(false);
     } else if (isError) {
-      dispatch(setSnackbar({ open: true, message: createError.data.message || 'Failed to create class', severity: 'error' }));
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: createError.data.message || 'Failed to create class',
+          severity: 'error',
+        }),
+      );
       setCreateModalOpen(false);
     }
   }, [isCreateError, isCreatedSuccess, createError, dispatch]);
-
 
   // CREATE FUNCTION
   const handleCreate = async (formData) => {
@@ -196,12 +227,18 @@ const ClassListPage = () => {
     await deleteManyClasses(selectedIds).unwrap();
   };
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
   if (isError) {
-    return <SomethingWentWrong description={error?.data?.message} />
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   const classField = [
@@ -218,11 +255,26 @@ const ClassListPage = () => {
       multiline: true,
       icon: '',
     },
-  ]
+  ];
+
+  const dataToView = [
+    { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },
+    { Description: selectedClass?.description, icon: <LetterText size={18} /> },
+    { Status: selectedClass?.active, icon: <CircleDashed size={18} /> },
+    {
+      'Created at': formatDate(selectedClass?.createdAt),
+      icon: <Calendar size={18} />,
+    },
+  ];
 
   return (
-    <FormComponent title="Class List" subTitle={`Total Classes: ${totalRows}`}>
-      <Stack direction="row" justifyContent="flex-end">
+    <FormComponent>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems={'center'}
+      >
+        <TitleHeader title={'Class'} />
         <StyledButton
           variant="contained"
           size="small"
@@ -236,12 +288,11 @@ const ClassListPage = () => {
       <Box>
         <Stack
           direction="row"
-          justifyContent={'flex-end'}
+          justifyContent={'flex-start'}
           width={'100%'}
           gap={2}
         >
           <SearchComponent
-            sx={{ width: '100%', maxWidth: '700px' }}
             placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -296,9 +347,7 @@ const ClassListPage = () => {
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Class Details"
-        description={`These are Subject's information`}
-        data={selectedClass}
-        icons={''}
+        data={dataToView}
       />
 
       <DeleteConfirmationModal

@@ -21,6 +21,7 @@ import { useCreateStudentMutation } from '../../services/studentApi';
 import StudentForm from '../student/StudentForm';
 import GuardianForm from '../student/GuardianForm';
 import { ColorlibConnector, ColorlibStepIcon } from './StepperComponent';
+import { BootstrapDialog } from './BootstrapDialog';
 
 const CreateStudentModal = ({ open, handleClose }) => {
   const theme = useTheme();
@@ -73,7 +74,7 @@ const CreateStudentModal = ({ open, handleClose }) => {
   ];
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <BootstrapDialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Create New Student</DialogTitle>
       <DialogContent dividers sx={{ height: '700px' }}>
         <Stepper
@@ -104,7 +105,7 @@ const CreateStudentModal = ({ open, handleClose }) => {
           />
         )}
       </DialogContent>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 

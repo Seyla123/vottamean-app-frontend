@@ -15,6 +15,7 @@ import {
 import StyledButton from './StyledMuiButton';
 import DeleteIcon from '../../assets/icon/delete-icon.png';
 import { X } from 'lucide-react';
+import { BootstrapDialog } from './BootstrapDialog';
 
 /**
  * DeleteConfirmationModal - A reusable Material-UI based modal for confirming delete actions.
@@ -50,18 +51,6 @@ import { X } from 'lucide-react';
  * @param {string} itemName - Name of the item to be deleted
  */
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogTitle-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(2),
-  },
-}));
-
 const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
   return (
     <BootstrapDialog
@@ -71,7 +60,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
       maxWidth="xs"
       aria-labelledby="delete-dialog-title"
     >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="delete-dialog-title">
+      <DialogTitle id="delete-dialog-title">
         <Box
           sx={{
             display: 'flex',
@@ -80,7 +69,6 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
             flexDirection: { xs: 'column', sm: 'row' },
           }}
         >
-          <img src={DeleteIcon} alt="delete icon" style={{ width: '60px' }} />
           Delete Permenantly?
         </Box>
       </DialogTitle>
@@ -95,11 +83,9 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm, itemName }) => {
       >
         <X />
       </IconButton>
-      <DialogContent>
-        <Typography variant="body1" color="text.secondary">
-          Do you really want to delete this <b>{itemName}</b>? <br />
-          This action cannot be undone.
-        </Typography>
+      <DialogContent dividers>
+        Do you really want to delete this <b>{itemName}</b>? <br />
+        <span style={{ color: '#F95454' }}>This action cannot be undone.</span>
       </DialogContent>
       <DialogActions>
         <Grid container spacing={2}>

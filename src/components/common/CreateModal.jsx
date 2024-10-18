@@ -21,18 +21,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogTitle-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(2),
-  },
-}));
+import { BootstrapDialog } from './BootstrapDialog';
 
 const CreateModal = ({
   open,
@@ -44,7 +33,7 @@ const CreateModal = ({
   validationSchema,
   submitText,
   isLoading,
-  loadingSubmitText = 'Creating...'
+  loadingSubmitText = 'Creating...',
 }) => {
   const {
     control,
@@ -163,12 +152,7 @@ const CreateModal = ({
       fullWidth
       aria-labelledby="create-dialog-title"
     >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="create-dialog-title">
-        {title}
-        <Typography variant="body1" color="text.secondary">
-          {description}
-        </Typography>
-      </DialogTitle>
+      <DialogTitle id="create-dialog-title">{title}</DialogTitle>
       <IconButton
         onClick={handleClose}
         sx={(theme) => ({

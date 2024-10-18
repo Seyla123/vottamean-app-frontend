@@ -34,29 +34,29 @@
  * @returns {JSX.Element} The rendered CardHeader component.
  */
 
-import { Stack, Typography, Divider, IconButton } from "@mui/material";
-import { PencilLineIcon, Trash2 } from "lucide-react";
+import { Stack, Typography, Divider, IconButton } from '@mui/material';
+import { PencilLineIcon, Trash2 } from 'lucide-react';
 function CardHeader({ title, handleEdit, handleDelete }) {
-    return (
-        <Stack component={"div"} direction="column" gap={1}>
-            <Stack direction={"row"} justifyContent={"space-between"}>
-                <Typography variant="formTitle">{title}</Typography>
-                <Stack direction="row" gap={1}>
-                    {handleEdit && (
-                        <IconButton onClick={handleEdit} color="primary">
-                            <PencilLineIcon size={20} />
-                        </IconButton>
-                    )}
-                    {handleDelete && (
-                        <IconButton onClick={handleDelete} color="error">
-                            <Trash2 size={20} />
-                        </IconButton>
-                    )}
-                </Stack>
-            </Stack>
-            <Divider sx={{ borderWidth: 1, borderColor: "text.secondary" }} />
+  return (
+    <Stack component={'div'} direction="column" gap={1}>
+      <Stack direction={'row'} justifyContent={'space-between'}>
+        <Typography variant="formTitle">{title}</Typography>
+        <Stack direction="row" gap={1}>
+          {handleEdit && (
+            <IconButton onClick={handleEdit} color="primary">
+              <PencilLineIcon size={18} />
+            </IconButton>
+          )}
+          {handleDelete && (
+            <IconButton onClick={handleDelete} color="error">
+              <Trash2 size={18} />
+            </IconButton>
+          )}
         </Stack>
-    );
+      </Stack>
+      <Divider sx={{ borderWidth: 1, borderColor: 'text.secondary' }} />
+    </Stack>
+  );
 }
 
 export default CardHeader;

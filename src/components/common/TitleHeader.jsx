@@ -18,12 +18,10 @@
 import { Stack, Typography } from '@mui/material';
 
 const TitleHeader = ({ title, subTitle }) => (
-  <Stack direction="column" gap={1} pt={4} pb={2}>
+  <Stack direction="column">
     <Typography
-      variant="h4"
-      m={0}
+      variant="h5"
       component="h1"
-      gutterBottom
       fontWeight="bold"
       textTransform="capitalize"
     >

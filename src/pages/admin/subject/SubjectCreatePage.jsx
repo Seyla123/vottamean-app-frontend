@@ -111,7 +111,7 @@ function SubjectCreatePage() {
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Library size={20} />
+                          <Library size={18} />
                         </InputAdornment>
                       ),
                     },
@@ -135,12 +135,14 @@ function SubjectCreatePage() {
                   multiline
                   minRows={5}
                   placeholder="description"
-                  helperText={ errors.description ? errors.description.message : ''}
+                  helperText={
+                    errors.description ? errors.description.message : ''
+                  }
                   slotProps={{
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <ScrollText size={20} />
+                          <ScrollText size={18} />
                         </InputAdornment>
                       ),
                     },

@@ -234,7 +234,7 @@ const AttendanceListPage = () => {
   ];
 
   return (
-    <FormComponent title={'Attendance List'}>
+    <FormComponent>
       <ReportHeader data={rows} title={filter.filterLabel} />
       <Stack sx={tableShadow}>
         <AttendanceFilter />

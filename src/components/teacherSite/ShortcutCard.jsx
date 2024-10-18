@@ -13,7 +13,7 @@ const ShortcutCard = ({ title, description, icon, href, buttonText }) => {
           <img
             src={icon}
             alt="icon"
-            style={{ width: '200px', objectFit: 'cover' }}
+            style={{ width: '160px', objectFit: 'cover' }}
           />
         </Box>
         {/* Title and Description */}

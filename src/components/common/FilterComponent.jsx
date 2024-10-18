@@ -1,38 +1,69 @@
 import React from 'react';
-import { Select, MenuItem, Box, useMediaQuery,useTheme, Typography } from '@mui/material';
-import { longText } from '../../styles/global';
+import {
+  Select,
+  MenuItem,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Typography,
+  InputAdornment,
+  Stack,
+  InputLabel,
+} from '@mui/material';
+import { ChevronDown } from 'lucide-react';
 import { truncate } from '../../utils/truncate';
 
+const FilterComponent = ({
+  data,
+  placeholder,
+  value,
+  onChange,
+  customStyles,
+  icon,
+}) => {
+  const selectedLabel =
+    data.find((item) => item.value === value)?.label || placeholder;
 
-const FilterComponent = ({ data, placeholder, value, onChange, customStyles, icon }) => {
-  // get the label of the selected value
-  const selectedLabel = data.find(item => item.value === value)?.label || placeholder;
-  
-  // get the theme and check if the screen size is mobile
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
-  
-  // set the truncate length depending on the screen size
-  const trucateLong = isMobile ? 7 : 10;
-  
-  // render the component
+
+  const truncateLength = isMobile ? 7 : 10;
+
   return (
-      <Select
+    <Select
       value={value}
       onChange={onChange}
+      size="small"
       displayEmpty
-      sx={{ ...longText, ...customStyles }}
+      // IconComponent={() => <ChevronDown size={18} color="#757575" />}
+      sx={{
+        width: '100%',
+        maxWidth: { xs: '100%', sm: '200px' },
+        height: '42px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e0e0e0',
+        borderRadius: 2,
+        '& .MuiOutlinedInput-notchedOutline': {
+          border: 'none',
+        },
+        ...customStyles,
+      }}
       renderValue={(selected) => (
-        <Box component="p" variant="body2" sx={{ color: value ? 'inherit' : '#B5B5B5', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {icon ? icon : null}
-          {truncate(selectedLabel, trucateLong)}
-        </Box>
+        <Stack direction={'row'} gap={1} alignItems={'center'}>
+          {/* {icon && <InputAdornment position="start">{icon}</InputAdornment>} */}
+          <InputLabel> {truncate(selectedLabel, truncateLength)}</InputLabel>
+        </Stack>
       )}
-      
+      MenuProps={{
+        PaperProps: {
+          sx: {
+            '& .MuiMenuItem-root': {
+              padding: '8px 16px !important',
+            },
+          },
+        },
+      }}
     >
-      <MenuItem value="" disabled>
-        {placeholder}
-      </MenuItem>
       {data.map((item) => (
         <MenuItem key={item.value} value={item.value}>
           {item.label}

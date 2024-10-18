@@ -160,15 +160,3 @@ const cardContainer = {
   overflow: 'hidden',
   ...shadow,
 };
-
-const tabStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  gap: 1,
-  borderRadius: 1,
-  '&.Mui-disabled': {
-    color: 'text.disabled',
-  },
-};

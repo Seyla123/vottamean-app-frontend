@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { PlusIcon } from 'lucide-react';
+import {
+  Calendar,
+  ClockArrowDown,
+  ClockArrowUp,
+  FolderPen,
+  IdCard,
+  LetterText,
+  PlusIcon,
+  Timer,
+  CircleDashed,
+} from 'lucide-react';
+import { Chip } from '@mui/material';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -20,11 +31,14 @@ import {
 } from '../../../services/classPeriodApi';
 import {
   calculatePeriod,
+  formatDate,
   formatTimeTo12Hour,
 } from '../../../utils/formatHelper';
 import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import TitleHeader from '../../../components/common/TitleHeader';
+import EditClassPeriodModal from '../../../components/common/EditClassPeriodModal';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
@@ -39,6 +53,7 @@ const fields = [
 
 function ClassPeriodListPage() {
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // - rows: the class periods that are currently being displayed on the page
   const [rows, setRows] = useState([]);
@@ -225,22 +240,43 @@ function ClassPeriodListPage() {
     setEditModalOpen(true);
   };
 
-  // if data is loading
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
-  // if there is an error
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
+  // Class period data details
+  const classPeriodDataDetails = [
+    {
+      'Start time': selectedClassPeriod?.start_time,
+      icon: <ClockArrowUp size={18} />,
+    },
+    {
+      'End time': selectedClassPeriod?.end_time,
+      icon: <ClockArrowDown size={18} />,
+    },
+    {
+      Period: selectedClassPeriod?.period,
+      icon: <Timer size={18} />,
+    },
+    {
+      'Created at': formatDate(selectedClassPeriod?.createdAt),
+      icon: <Calendar size={18} />,
+    },
+  ];
 
   return (
-    <FormComponent
-      title="Class Period List"
-      subTitle={`Total Class Periods: ${totalRows}`}
-    >
-      <Stack direction="row" justifyContent="flex-end">
+    <FormComponent>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <TitleHeader title={'Class Period'} />
         <StyledButton
           variant="contained"
           color="primary"
@@ -284,24 +320,17 @@ function ClassPeriodListPage() {
         isLoading={isCreating}
       />
 
-      <EditModal
+      <EditClassPeriodModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        title="Edit Class Period"
-        description="Update the details for this class period"
-        fields={fields}
-        initialData={selectedClassPeriod}
-        validationSchema={ClassPeriodListPage}
         id={selectedClassPeriod?.period_id}
-        getDataQuery={useGetClassPeriodByIdQuery}
-        useUpdateDataMutation={useUpdateClassPeriodMutation}
       />
 
       <ViewModal
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Class Period Details"
-        data={selectedClassPeriod}
+        data={classPeriodDataDetails}
       />
 
       <DeleteConfirmationModal

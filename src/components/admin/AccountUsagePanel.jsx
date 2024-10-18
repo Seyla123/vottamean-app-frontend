@@ -127,9 +127,9 @@ const UsageCard = ({ activePlan, setValue }) => {
               onClick={() => setShowAllFeatures(!showAllFeatures)}
               endIcon={
                 showAllFeatures ? (
-                  <ChevronUp size={20} />
+                  <ChevronUp size={18} />
                 ) : (
-                  <ChevronDown size={20} />
+                  <ChevronDown size={18} />
                 )
               }
             >

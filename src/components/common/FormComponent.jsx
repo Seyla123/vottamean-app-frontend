@@ -26,8 +26,8 @@ import TitleHeader from './TitleHeader';
 import { Stack } from '@mui/material';
 function FormComponent({ title, subTitle, children }) {
   return (
-    <Stack component={'div'} direction="column" gap={3} mt={4}>
-      <TitleHeader title={title} subTitle={subTitle} />
+    <Stack component={'div'} direction="column" gap={2} mt={4}>
+      {/* <TitleHeader title={title} subTitle={subTitle} /> */}
       {children}
     </Stack>
   );

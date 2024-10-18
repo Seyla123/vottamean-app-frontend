@@ -4,9 +4,11 @@ import { styled } from '@mui/material/styles';
 
 const StyledMuiButton = styled(Button)(({ theme, variant }) => ({
   textTransform: 'capitalize',
-  padding: '10px 20px',
-  borderRadius: 4,
+  padding: '10px 16px',
+  borderRadius: 6,
   boxShadow: 'none',
+  transition: 'all ease-in-out 0.3s', // Slightly longer transition for smoother effect
+
   '&:hover': {
     boxShadow: 'none',
   },

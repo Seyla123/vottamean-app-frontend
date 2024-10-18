@@ -32,15 +32,17 @@ import {
   DialogContent,
   Dialog,
   DialogActions,
+  IconButton,
 } from '@mui/material';
 
 // - Lucid Icons
-import { NotebookPen, Phone } from 'lucide-react';
+import { NotebookPen, Phone, X } from 'lucide-react';
 
 // - Custom Components
 import StyledButton from '../common/StyledMuiButton';
 import InputField from '../common/InputField';
 import PhoneInputField from '../common/PhoneInputField';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const EditSchoolModal = ({ open, onClose }) => {
   // - State to store user data for the school
@@ -152,16 +154,20 @@ const EditSchoolModal = ({ open, onClose }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        Edit School Details
-        <Typography variant="body1">
-          Please update the necessary fields to modify the school’s details.
-          Ensure all required information is filled correctly before saving.
-        </Typography>
-      </DialogTitle>
-
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <BootstrapDialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Edit School Details</DialogTitle>
+      <IconButton
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
+      <DialogContent dividers>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2 }}>
             <Grid item xs={12} sm={6}>
@@ -204,7 +210,7 @@ const EditSchoolModal = ({ open, onClose }) => {
       </DialogContent>
       <DialogActions>
         {/* CANCEL BUTTON */}
-        <StyledButton size="small" variant="outlined" onClick={onClose}>
+        <StyledButton size="small" onClick={onClose}>
           Cancel
         </StyledButton>
         {/* SAVE CHANGES BUTTON */}
@@ -212,7 +218,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>
-    </Dialog>
+    </BootstrapDialog>
   );
 };
 

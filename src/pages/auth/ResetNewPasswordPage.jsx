@@ -207,7 +207,7 @@ const ResetNewPasswordPage = () => {
             </Box>
           </form>
           <Link to={'/auth/signin'} style={styles.footer}>
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
             <Typography variant="body2">Back to sign in</Typography>
           </Link>
         </Box>
