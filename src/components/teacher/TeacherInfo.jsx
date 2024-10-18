@@ -39,10 +39,11 @@ const TeacherInfo = ({
   setPhotoFile,
   photoPreview,
   setPhotoPreview,
+  photoPreviewRef
 }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
-
+  // const photoPreviewRef = useRef(null);
   // React hook form
   const {
     control,
@@ -160,6 +161,7 @@ const TeacherInfo = ({
               id="photo-upload"
               type="file"
               accept="image/*"
+              ref={photoPreviewRef}
               hidden
               onChange={handlePhotoChange}
             />

@@ -1,5 +1,5 @@
 // React and third-party libraries
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -43,6 +43,7 @@ import { StyledTab } from '../common/StyledTabs';
 function FormInfo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const photoPreviewRef= useRef(null);
   const theme = useTheme();
 
   // Responsive Mobile size
@@ -58,7 +59,7 @@ function FormInfo() {
   // useSignUpTeacherMutation : a hook return function for sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
-
+ 
   // Show Loading effect when signing up the teacher
   // If the sign up was not successful, show an error message
   // Check if the signup was successful and if so, navigate to teachers list page
@@ -104,13 +105,18 @@ function FormInfo() {
     }
   };
 
+
+
   // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
+    event.preventDefault();
     const file = event.target.files[0];
     if (file) {
       setPhotoFile(file);
       const newPreviewUrl = URL.createObjectURL(file);
-      setPhotoPreview(newPreviewUrl);
+      photoPreviewRef.current.src = newPreviewUrl;
+      // setPhotoPreview(newPreviewUrl);
+      console.log(file);
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
@@ -191,6 +197,7 @@ function FormInfo() {
               photoFile={photoFile}
               setPhotoFile={setPhotoFile}
               photoPreview={photoPreview}
+              photoPreviewRef={photoPreviewRef}
               setPhotoPreview={setPhotoPreview}
               handleSubmitForm={handleSubmitForm}
             />
