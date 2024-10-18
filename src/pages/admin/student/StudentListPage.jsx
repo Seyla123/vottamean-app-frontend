@@ -276,19 +276,18 @@ const StudentListPage = () => {
           width={'100%'}
           gap={2}
         >
+          <SearchComponent
+            sx={{ width: '100%', maxWidth: '100%' }}
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
           <FilterComponent
             onChange={handleClassesChange}
             placeholder="Class"
             data={classes}
             value={selectedClass}
             icon={<BookIcon size={18} color="#B5B5B5" />}
-          />
-
-          <SearchComponent
-            sx={{ width: '100%', maxWidth: '700px' }}
-            placeholder="Search"
-            value={searchTerm}
-            onChange={handleSearchChange}
           />
         </Stack>
       </Box>
