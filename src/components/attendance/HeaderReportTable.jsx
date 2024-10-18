@@ -1,6 +1,6 @@
 import { Grid2 as Grid, Typography } from '@mui/material';
 
-function HeaderReportTable({ schoolInfo, classInfo }) {
+function HeaderReportTable({ schoolInfo, classInfo, startDate, endDate }) {
     const dateRange = classInfo?.date_range;
     const studentCount = classInfo?.student_count;
     console.log('this total students : ', classInfo);
@@ -11,10 +11,10 @@ function HeaderReportTable({ schoolInfo, classInfo }) {
                 LIST OF STUDENTS
             </Typography>
             <Typography variant="body2" align="center">
-                Weekly Attendance Report
+                Attendance Report
             </Typography>
             <Typography variant="body2" align="center">
-                Form {dateRange?.start_date} To {dateRange?.end_date}
+                Form {startDate ? startDate : dateRange?.start_date} To {endDate ? endDate :dateRange?.end_date}
             </Typography>
         </Grid>
 

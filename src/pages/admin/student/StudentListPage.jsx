@@ -27,10 +27,10 @@ import TitleHeader from '../../../components/common/TitleHeader';
 
 const columns = [
   { id: 'id', label: 'ID' },
-  { id: 'name', label: 'Name' },
+  { id: 'name', label: 'Full Name' },
   { id: 'gender', label: 'Gender' },
+  { id: 'class', label: 'Class' },
   { id: 'Date of Birth', label: 'Date Of Birth' },
-  { id: 'class', label: 'Class Name' },
   { id: 'address', label: 'Address' },
 ];
 const StudentListPage = () => {
@@ -301,7 +301,7 @@ const StudentListPage = () => {
         isLoading={isFetching || isLoading}
         emptyTitle={'No Student'}
         emptySubTitle={'No Student Available'}
-        hideColumns={['address', 'Date of Birth']}
+        hideColumns={['address', 'Date of Birth', 'id']}
         showNO={false}
         page={page}
         rowsPerPage={rowsPerPage}

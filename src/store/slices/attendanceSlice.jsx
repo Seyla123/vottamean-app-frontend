@@ -7,7 +7,9 @@ const attendanceSlice = createSlice({
         subject:"",
         class:"",
         filter:"",
-        filterLabel:"All"
+        filterLabel:"All",
+        startDate:null,
+        endDate:null,
     }
   },
   reducers: {

@@ -15,7 +15,7 @@ export const transformAttendanceData = (apiResponse) =>
   apiResponse.map((item) => ({
     attendanceId: item.attendance_id,
     studentId: item.student_id,
-    class: item.Student.Class.class_name,
+    className: item.Student.Class.class_name,
     name: getFullName(item.Student.Info),
     time: `${formatTimeTo12Hour(item.Sessions.Period.start_time)} - ${formatTimeTo12Hour(item.Sessions.Period.end_time)}`,
     subjectId: item.Sessions.Subject.subject_id,

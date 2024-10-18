@@ -17,15 +17,16 @@ import DeleteConfirmationModal from '../../../../components/common/DeleteConfirm
 import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
 import EditModal from '../../../../components/common/EditModal';
 import ViewModal from '../../../../components/common/ViewModal';
-import { Box, Stack, Divider } from '@mui/material';
-import { tableShadow, shadow } from './../../../../styles/global';
+import ExportMenu from '../../../../components/attendance/ExportMenu';
+import { Stack, Divider } from '@mui/material';
+import { tableShadow } from './../../../../styles/global';
 import { FolderPen, IdCard, Timer, MapPinHouse, School } from 'lucide-react';
 
 const columns = [
   { id: 'name', label: 'Full Name' },
   { id: 'time', label: 'Time' },
   { id: 'subject', label: 'Subject' },
-  { id: 'class', label: 'Class' },
+  { id: 'className', label: 'Class' },
   { id: 'address', label: 'Address' },
 ];
 
@@ -51,6 +52,9 @@ const AttendanceListPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [totalRows, setTotalRows] = useState(0);
+
+  // - isExporting: the state of the export CSV
+  const [isExporting, setIsExporting] = useState(false);
 
   // editModalOpen : The state of the edit subject modal
   // - viewModalOpen: the state of the view class period modal
@@ -157,15 +161,15 @@ const AttendanceListPage = () => {
     setEditModalOpen(true);
   };
   // handle delete action
-  const onDelete = (id) => {
-    setSelectedAttendance(id);
+  const onDelete = (row) => {
+    setSelectedAttendance(row);
     dispatch(setModal({ open: true }));
   };
 
   // confirm delete action
   const confirmDelete = async () => {
     dispatch(setModal({ open: false }));
-    await deleteAttendance({ id: selectedAttendance }).unwrap();
+    await deleteAttendance({ id: selectedAttendance.attendanceId }).unwrap();
   };
   // handle delete multiple subjects
   const handleSelectedDelete = async (selectedIds) => {
@@ -179,6 +183,48 @@ const AttendanceListPage = () => {
     setViewModalOpen(true);
   };
 
+  // handle export csv
+  const handleExportsCsv = async () => {
+    setIsExporting(true); // Set exporting status to true
+    try {
+        // Create URL parameters from the filter state
+        const params = new URLSearchParams({
+            subject_id: filter.subject,
+            class_id: filter.class,
+            filter: filter.filter,
+        });
+
+        // Fetch the CSV file from the server
+        const blob = await fetch(
+            `/api/v1/attendance/export-attendance?${params.toString()}`,
+            { credentials: 'include' },
+        ).then((res) => res.blob());
+
+        // Generate a URL for the fetched CSV blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary link element to trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'attendance_data.csv'); // Set the download file name
+        document.body.appendChild(link);
+        link.click(); // Programmatically click the link to start download
+        document.body.removeChild(link); // Clean up the link element
+    } catch (error) {
+        // Log the error and show a snackbar with a failure message
+        console.error('Failed to download CSV:', error);
+        dispatch(
+            setSnackbar({
+                open: true,
+                message: 'Failed to download CSV',
+                severity: 'error',
+            }),
+        );
+    } finally {
+        setIsExporting(false); // Reset exporting status after process is complete
+    }
+};
+
   if (isLoading) {
     return <LoadingCircle />;
   }
@@ -186,18 +232,7 @@ const AttendanceListPage = () => {
 
   console.log('this selected attendance : ', selectedAttendance);
 
-  const {
-    class: className,
-    studentId,
-    subject,
-    time,
-    date,
-    name,
-    teacherName,
-    day,
-    status,
-    address,
-  } = selectedAttendance;
+  const { className, studentId, subject, time, date, name, teacherName, day, status, address } = selectedAttendance;
   const attendanceDetail = [
     {
       'Student ID': studentId,
@@ -237,12 +272,17 @@ const AttendanceListPage = () => {
     <FormComponent>
       <ReportHeader data={rows} title={filter.filterLabel} />
       <Stack sx={tableShadow}>
-        <AttendanceFilter />
+        <AttendanceFilter>
+          <ExportMenu
+            isExporting={isExporting}
+            handleExportsCsv={handleExportsCsv}
+          />
+        </AttendanceFilter>
         <Divider />
         <AttendanceTable
           rows={rows}
           columns={columns}
-          hideColumns={['id', 'subject', 'class', 'address']}
+          hideColumns={['id', 'subject', 'className', 'address']}
           handleDelete={onDelete}
           onEdit={handleEditOpen}
           handleView={onView}

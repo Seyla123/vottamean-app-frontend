@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -27,7 +27,6 @@ import { truncate } from '../../utils/truncate';
 import EmptyDataImage from '../../assets/images/empty-image.svg';
 import StyledButton from './../common/StyledMuiButton';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
-
 import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
 
 
@@ -57,6 +56,21 @@ const AttendanceListTable = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
+  const handleChangePage = (event, newPage) => {
+    if (newPage > 0) {
+      setPage(newPage)
+    } else {
+      setPage(0)
+    }
+  };
+    // Adjust the page if the current page becomes empty after deleting rows
+  useEffect(() => {
+    if (rows.length === 0 && page > 0) {
+      handleChangePage(prevPage => prevPage - 1);
+    } else if (rows.length === 0 && page === 0) {
+      handleChangePage(0);
+    }
+  }, [rows]);
 
   const handleSelectedDelete = () => {
     if (selected.length > 0) {
@@ -125,7 +139,7 @@ const AttendanceListTable = ({
 
   const handleMenuAction = (action) => {
     if (selectedRow) {
-      action === 'view' ? handleView(selectedRow) : handleDelete(selectedRow.attendance_id);
+      action === 'view' ? handleView(selectedRow) : handleDelete(selectedRow);
       handleClose();
     }
   };
@@ -142,7 +156,7 @@ const AttendanceListTable = ({
     isMobile ? !hideColumns.includes(col.id) : true
   );
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
+
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -276,7 +290,7 @@ const AttendanceListTable = ({
       </TableContainer>
 
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
         component="div"
         count={totalRows}
         rowsPerPage={rowsPerPage}
@@ -320,7 +334,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
           verticalAlign: 'middle',
         }}
       >
-        <div
+        <Box component={'div'}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -344,7 +358,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
             {emptyTitle}
           </Typography>
           <Typography variant="body2">{emptySubTitle}</Typography>
-        </div>
+        </Box>
       </TableCell>
     </TableRow>
   );

@@ -298,7 +298,7 @@ function ClassPeriodListPage() {
         hideColumns={['period_id']}
         emptyTitle="No Class Periods"
         emptySubTitle="No class periods available"
-        isLoading={isFetching || isLoading}
+        isLoading={isLoading}
         showNO={false}
         idField="period_id"
         page={page}

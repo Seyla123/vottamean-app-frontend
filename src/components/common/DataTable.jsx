@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -27,6 +27,7 @@ import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
 
 import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
 import { shadow } from '../../styles/global';
+import { truncate } from '../../utils/truncate';
 
 /**
  * DataTable Component
@@ -97,9 +98,23 @@ const DataTable = ({
   const [menuRow, setMenuRow] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
   const isMobile = useMediaQuery('(max-width:600px)');
+
+  const handleChangePage = (event, newPage) => {
+    if (newPage > 0) {
+      setPage(newPage)
+    } else {
+      setPage(0)
+    }
+  };
+  // Adjust the page if the current page becomes empty after deleting rows
+  useEffect(() => {
+    if (rows.length === 0 && page > 0) {
+      handleChangePage(prevPage => prevPage - 1);
+    } else if (rows.length === 0 && page === 0) {
+      handleChangePage(0);
+    }
+  }, [rows]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -111,6 +126,7 @@ const DataTable = ({
       console.log('All rows deselected');
     }
   };
+
 
   const handleCheckboxClick = (event, id) => {
     event.stopPropagation();
@@ -170,10 +186,8 @@ const DataTable = ({
       console.log('No rows selected for deletion');
     }
   };
-
   const handleConfirmDelete = () => {
     if (onSelectedDelete) {
-      console.log('Deleting selected rows:', selected);
       onSelectedDelete(selected);
       setSelected([]);
     }
@@ -182,10 +196,6 @@ const DataTable = ({
 
   const handleCancelDelete = () => {
     setIsDeleteModalOpen(false);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -261,7 +271,7 @@ const DataTable = ({
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
                       <TableCell key={column.id} align={column.align || 'left'}>
-                        {row[column.id]}
+                        {truncate(`${row[column.id]}`, isMobile ? 10 : 15)}
                       </TableCell>
                     ) : null,
                   )}
@@ -282,9 +292,9 @@ const DataTable = ({
           )}
         </TableBody>
       </Table>
-      {!isLoading && rows.length > 0 && (
+    
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
           component="div"
           count={totalRows}
           rowsPerPage={rowsPerPage}
@@ -292,7 +302,7 @@ const DataTable = ({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      )}
+    
       <Menu
         id="basic-menu"
         open={Boolean(anchorEl)}
