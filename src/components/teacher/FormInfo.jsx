@@ -54,10 +54,13 @@ function FormInfo() {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  // Sign up teacher api
+  // useSignUpTeacherMutation : a hook return function for sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
 
+  // Show Loading effect when signing up the teacher
+  // If the sign up was not successful, show an error message
+  // Check if the signup was successful and if so, navigate to teachers list page
   useEffect(() => {
     if (isLoading) {
       dispatch(
