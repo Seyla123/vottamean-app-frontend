@@ -228,9 +228,13 @@ const TeacherListPage = () => {
         </Link>
       </Stack>
       {/* Search bar */}
-      <Stack direction="row" justifyContent={'flex-end'} width={'100%'} gap={2}>
+      <Stack
+        direction="row"
+        justifyContent={'flex-start'}
+        width={'100%'}
+        gap={2}
+      >
         <SearchComponent
-          sx={{ width: '100%', maxWidth: '700px' }}
           placeholder="Search"
           value={searchTerm}
           onChange={handleSearchChange}

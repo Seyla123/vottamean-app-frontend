@@ -288,7 +288,7 @@ const ClassListPage = () => {
       <Box>
         <Stack
           direction="row"
-          justifyContent={'flex-end'}
+          justifyContent={'flex-start'}
           width={'100%'}
           gap={2}
         >

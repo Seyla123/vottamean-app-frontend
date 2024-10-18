@@ -51,6 +51,7 @@ const SearchComponent = ({ sx, placeholder, value, onChange, onSearch }) => {
         }}
         sx={{
           '& .MuiOutlinedInput-root': {
+            height: '42px',
             borderRadius: 2,
             backgroundColor: '#ffffff',
             transition: 'all 0.3s ease',

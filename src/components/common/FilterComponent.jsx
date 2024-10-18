@@ -38,7 +38,8 @@ const FilterComponent = ({
       // IconComponent={() => <ChevronDown size={18} color="#757575" />}
       sx={{
         width: '100%',
-        maxWidth: '200px',
+        maxWidth: { xs: '100%', sm: '200px' },
+        height: '42px',
         backgroundColor: '#ffffff',
         border: '1px solid #e0e0e0',
         borderRadius: 2,

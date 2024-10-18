@@ -271,7 +271,7 @@ const StudentListPage = () => {
 
       <Box sx={inputBoxStyles}>
         <Stack
-          direction="row"
+          direction={{ xs: 'column', sm: 'row' }}
           justifyContent={'space-between'}
           width={'100%'}
           gap={2}

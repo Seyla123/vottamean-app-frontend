@@ -196,7 +196,7 @@ const DataTable = ({
   const height = rowsPerPage === 5 ? '300px' : '500px';
 
   return (
-    <TableContainer component={Paper} sx={shadow}>
+    <TableContainer component={Paper} sx={{ boxShadow: shadow }}>
       <Table className="min-w-full" aria-label="reusable table" size="small">
         <TableHead sx={{ height: '60px' }}>
           <TableRow>
@@ -243,7 +243,6 @@ const DataTable = ({
               return (
                 <TableRow
                   hover
-                  onClick={(event) => handleCheckboxClick(event, row[idField])}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -253,6 +252,9 @@ const DataTable = ({
                     <Checkbox
                       checked={isItemSelected}
                       inputProps={{ 'aria-labelledby': labelId }}
+                      onClick={(event) =>
+                        handleCheckboxClick(event, row[idField])
+                      }
                     />
                   </TableCell>
                   {showNO && <TableCell>{index + 1}</TableCell>}
