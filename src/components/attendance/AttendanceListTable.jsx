@@ -27,7 +27,6 @@ import { truncate } from '../../utils/truncate';
 import EmptyDataImage from '../../assets/images/empty-image.svg';
 import StyledButton from './../common/StyledMuiButton';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
-
 import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
 
 
@@ -335,7 +334,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
           verticalAlign: 'middle',
         }}
       >
-        <div
+        <Box component={'div'}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -359,7 +358,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
             {emptyTitle}
           </Typography>
           <Typography variant="body2">{emptySubTitle}</Typography>
-        </div>
+        </Box>
       </TableCell>
     </TableRow>
   );
