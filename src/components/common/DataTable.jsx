@@ -27,6 +27,7 @@ import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
 
 import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
 import { shadow } from '../../styles/global';
+import { truncate } from '../../utils/truncate';
 
 /**
  * DataTable Component
@@ -193,9 +194,6 @@ const DataTable = ({
     setIsDeleteModalOpen(false);
   };
 
-
-
-
   const handleCancelDelete = () => {
     setIsDeleteModalOpen(false);
   };
@@ -274,7 +272,7 @@ const DataTable = ({
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
                       <TableCell key={column.id} align={column.align || 'left'}>
-                        {row[column.id]}
+                        {truncate(`${row[column.id]}`, isMobile ? 10 : 15)}
                       </TableCell>
                     ) : null,
                   )}
