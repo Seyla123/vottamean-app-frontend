@@ -1,34 +1,80 @@
 import React from 'react';
-import { Select, MenuItem, Box, useMediaQuery,useTheme, Typography } from '@mui/material';
-import { longText } from '../../styles/global';
+import { Select, MenuItem, Box, useMediaQuery, useTheme, Typography, InputAdornment } from '@mui/material';
+import { ChevronDown } from 'lucide-react';
 import { truncate } from '../../utils/truncate';
 
-
 const FilterComponent = ({ data, placeholder, value, onChange, customStyles, icon }) => {
-  // get the label of the selected value
   const selectedLabel = data.find(item => item.value === value)?.label || placeholder;
   
-  // get the theme and check if the screen size is mobile
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   
-  // set the truncate length depending on the screen size
-  const trucateLong = isMobile ? 7 : 10;
+  const truncateLength = isMobile ? 7 : 10;
   
-  // render the component
   return (
-      <Select
+    <Select
       value={value}
       onChange={onChange}
       displayEmpty
-      sx={{ ...longText, ...customStyles }}
+      IconComponent={() => <ChevronDown size={18} color="#757575" />}
+      sx={{
+        width: '100%',
+        maxWidth: '200px',
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 2,
+          backgroundColor: '#ffffff',
+          transition: 'all 0.3s ease',
+          border: '1px solid #e0e0e0',
+          '&:hover': {
+            borderColor: '#b0b0b0',
+          },
+          '&.Mui-focused': {
+            boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
+            borderColor: theme.palette.primary.main,
+          },
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+          border: 'none',
+        },
+        ...customStyles
+      }}
       renderValue={(selected) => (
-        <Box component="p" variant="body2" sx={{ color: value ? 'inherit' : '#B5B5B5', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {icon ? icon : null}
-          {truncate(selectedLabel, trucateLong)}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {icon && (
+            <InputAdornment position="start">
+              {icon}
+            </InputAdornment>
+          )}
+          <Typography
+            variant="body2"
+            sx={{
+              color: value ? 'inherit' : '#757575',
+              fontWeight: value ? 500 : 400,
+            }}
+          >
+            {truncate(selectedLabel, truncateLength)}
+          </Typography>
         </Box>
       )}
-      
+      MenuProps={{
+        PaperProps: {
+          sx: {
+            maxHeight: 300,
+            '& .MuiMenuItem-root': {
+              padding: '8px 16px',
+              '&:hover': {
+                backgroundColor: '#f5f5f5',
+              },
+              '&.Mui-selected': {
+                backgroundColor: '#e3f2fd',
+                '&:hover': {
+                  backgroundColor: '#bbdefb',
+                },
+              },
+            },
+          },
+        },
+      }}
     >
       <MenuItem value="" disabled>
         {placeholder}

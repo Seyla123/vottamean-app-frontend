@@ -281,7 +281,6 @@ const StudentListPage = () => {
             placeholder="Class"
             data={classes}
             value={selectedClass}
-            customStyles={{ maxHeight: '50px', width: '150px' }}
             icon={<BookIcon size={18} color="#B5B5B5" />}
           />
 
