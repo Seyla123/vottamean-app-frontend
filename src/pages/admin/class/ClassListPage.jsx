@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { PlusIcon } from 'lucide-react';
+import { BookMarked, Calendar, LetterText, PlusIcon } from 'lucide-react';
 // import components
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -25,6 +25,7 @@ import { ClassValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import TitleHeader from '../../../components/common/TitleHeader';
+import { formatDate } from '../../../utils/formatHelper';
 
 // Define table columns title
 const columns = [
@@ -240,6 +241,15 @@ const ClassListPage = () => {
     },
   ];
 
+  const dataToView = [
+    { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },
+    { Description: selectedClass?.description, icon: <LetterText size={18} /> },
+    {
+      'Created at': formatDate(selectedClass?.createdAt),
+      icon: <Calendar size={18} />,
+    },
+  ];
+
   return (
     <FormComponent>
       <Stack
@@ -321,9 +331,7 @@ const ClassListPage = () => {
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Class Details"
-        description={`These are Subject's information`}
-        data={selectedClass}
-        icons={''}
+        data={dataToView}
       />
 
       <DeleteConfirmationModal

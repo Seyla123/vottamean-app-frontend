@@ -229,7 +229,7 @@ function SubjectListPage() {
     await deleteManySubjects(selectedIds).unwrap();
   };
   // Get the selected subject details
-  const { subject_id, subject_name, description, updatedAt, createdAt } = selectedSubject;
+  const { subject_name, description, createdAt } = selectedSubject;
 
   // subject data details
   const subjectDataDetails = [
@@ -336,7 +336,6 @@ function SubjectListPage() {
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Subject Details"
-        description={`These are Subject's information`}
         data={subjectDataDetails}
       />
 
