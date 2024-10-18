@@ -64,16 +64,7 @@ function FormInfo() {
   // If the sign up was not successful, show an error message
   // Check if the signup was successful and if so, navigate to teachers list page
   useEffect(() => {
-    if (isLoading) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Signing up Teacher account...',
-          severity: 'info',
-          autoHideDuration: 6000,
-        }),
-      );
-    } else if (isError) {
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -94,7 +85,7 @@ function FormInfo() {
       );
       navigate('/admin/teachers');
     }
-  }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
+  }, [dispatch, isError, error, isSuccess, navigate]);
 
   // Handle Submit form
   const handleSubmitForm = async (formData) => {
