@@ -271,13 +271,12 @@ const AttendanceListPage = () => {
   return (
     <FormComponent>
       <ReportHeader data={rows} title={filter.filterLabel} />
-      <Stack sx={tableShadow}>
-        <AttendanceFilter>
-          <ExportMenu
+      <ExportMenu
             isExporting={isExporting}
             handleExportsCsv={handleExportsCsv}
           />
-        </AttendanceFilter>
+      <Stack sx={tableShadow}>
+        <AttendanceFilter/>
         <Divider />
         <AttendanceTable
           rows={rows}

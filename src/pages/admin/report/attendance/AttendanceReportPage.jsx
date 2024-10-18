@@ -3,9 +3,8 @@ import FormComponent from "../../../../components/common/FormComponent";
 import { useGetReportAttendanceByClassQuery } from "../../../../services/attendanceApi";
 import AttendanceTable from "../../../../components/attendance/AttendanceTable";
 import { useSelector } from "react-redux";
-import { Stack } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 import { shadow } from "../../../../styles/global";
-import React from 'react';
 const AttendanceReportPage = () => {
   const [reportData, setReportData] = useState({});
   const [toggleAttendanceKey, setToggleAttendanceKey] = useState(false);

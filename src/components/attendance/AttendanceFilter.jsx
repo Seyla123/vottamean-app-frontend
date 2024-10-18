@@ -19,15 +19,11 @@ import DateRangePicker from './DateRangePicker';
 
 function AttendanceFilter({ reportAttendance, children }) {
     const filterOptions = [
-        { value: 'all', label: 'All' },
         { value: 'custom', label: 'Custom' },
         { value: 'today', label: 'Today' },
         { value: 'weekly', label: 'This Week' },
         { value: 'monthly', label: 'This Month' },
-        { value: 'yearly', label: 'This Year' },
-        { value: 'lastWeek', label: 'Last Week' },
-        { value: 'lastMonth', label: 'Last Month' },
-        { value: 'lastYear', label: 'Last Year' },
+        { value: 'yearly', label: 'This Year' }
     ];
     // Get the dispatch function and the current filter state from the store
     const dispatch = useDispatch();
@@ -42,12 +38,10 @@ function AttendanceFilter({ reportAttendance, children }) {
     ];
     // - subjects: the state of the subjects
     // - classes: the state of the classes
-    // - isExporting: the state of the export modal
+    // - filterPeriod: the seletor of the date periods
     const [subjects, setSubjects] = useState(allSelector);
     const [classes, setClasses] = useState(allSelector);
-
-
-
+    const filterPeriod = reportAttendance ? filterOptions : [...allSelector, ...filterOptions]
 
     // Get the data from the subject and class api
     const { data: subjectData, isSuccess: isSubjectSuccess } =
@@ -98,7 +92,7 @@ function AttendanceFilter({ reportAttendance, children }) {
             dispatch(setFilter({ ...filter, filter: '' }));
         } else {
             const selectedLabel =
-                filterOptions.find((item) => item.value === event.target.value)
+                filterPeriod.find((item) => item.value === event.target.value)
                     ?.label || 'All';
             dispatch(
                 setFilter({
@@ -121,7 +115,6 @@ function AttendanceFilter({ reportAttendance, children }) {
 
     return (
         <Box sx={filterBoxStyle}>
-            {children}
             <Stack
                 sx={{
                     flexDirection: { sm: 'row', xs: 'column' },
@@ -164,7 +157,7 @@ function AttendanceFilter({ reportAttendance, children }) {
                     />
                     <FilterComponent
                         value={filter.filter}
-                        data={filterOptions}
+                        data={filterPeriod}
                         onChange={handleFilterChange}
                         placeholder={'Date range'}
                         customStyles={{
@@ -173,6 +166,12 @@ function AttendanceFilter({ reportAttendance, children }) {
                         }}
                         icon={<Filter size={18} color="#B5B5B5" />}
                     />
+                    {filter.filter == 'custom' && (
+                        <DateRangePicker
+                            onEndDateChange={handleEndDateChange}
+                            onStartDateChange={handleStartDateChange}
+                        />
+                    )}
                 </Stack>
                 <Stack
                     sx={{
@@ -183,12 +182,7 @@ function AttendanceFilter({ reportAttendance, children }) {
                         flexWrap: 'wrap',
                     }}
                 >
-                    {filter.filter == 'custom' && (
-                        <DateRangePicker
-                            onEndDateChange={handleEndDateChange}
-                            onStartDateChange={handleStartDateChange}
-                        />
-                    )}
+                    {children}
                 </Stack>
             </Stack>
         </Box>
