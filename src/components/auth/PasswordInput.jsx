@@ -5,9 +5,32 @@ import {
   IconButton,
   Typography,
   Box,
+  styled,
 } from '@mui/material';
 import { Controller } from 'react-hook-form';
-import { LockKeyholeOpen, EyeIcon, EyeOff } from 'lucide-react';
+import { LockKeyhole, EyeIcon, EyeOff } from 'lucide-react';
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 8,
+    backgroundColor: theme.palette.background.paper,
+    '& fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#e0e0e0' : '#424242',
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#b0b0b0' : '#616161',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
+  '& .MuiInputAdornment-root': {
+    marginRight: 0,
+  },
+}));
 
 const PasswordInput = ({
   name,
@@ -17,7 +40,7 @@ const PasswordInput = ({
   togglePasswordVisibility,
   error,
   placeholder,
-  icon: Icon = LockKeyholeOpen,
+  icon: Icon = LockKeyhole,
   showError = true,
 }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -30,7 +53,7 @@ const PasswordInput = ({
       control={control}
       defaultValue=""
       render={({ field }) => (
-        <TextField
+        <StyledTextField
           {...field}
           id={name}
           variant="outlined"

@@ -12,7 +12,6 @@ import FormFooter from '../../components/auth/FormFooter';
 import SigninImageCarousel from '../../components/auth/SigninImageCarousel';
 import HeaderTitle from '../../components/auth/HeaderTitle';
 
-import { useDispatch } from 'react-redux';
 
 const SigninPage = () => {
   return (

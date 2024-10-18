@@ -6,7 +6,13 @@ import { Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // - MUI Components
-import { Box, Typography, CircularProgress, Checkbox } from '@mui/material';
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Checkbox,
+  Stack,
+} from '@mui/material';
 
 // - Custom Components
 import StyledMuiButton from '../common/StyledMuiButton';
@@ -77,7 +83,7 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box sx={styles.formContainer}>
+      <Stack direction="column" gap={3}>
         {/* EMAIL INPUT */}
         <InputField
           name="email"
@@ -122,7 +128,7 @@ const LoginForm = () => {
             'sign in'
           )}
         </StyledMuiButton>
-      </Box>
+      </Stack>
     </form>
   );
 };
@@ -130,11 +136,6 @@ const LoginForm = () => {
 export default LoginForm;
 
 const styles = {
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: { xs: 2, md: 3 },
-  },
   fieldContainer: {
     display: 'flex',
     flexDirection: 'column',

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Material UI components
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Stack } from '@mui/material';
 import { School } from 'lucide-react';
 
 // Custom components
@@ -98,13 +98,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
       />
 
       <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: 2, md: 3 },
-          }}
-        >
+        <Stack direction={'column'} gap={3}>
           {/* SCHOOL NAME INPUT */}
           <InputField
             name="school_name"
@@ -162,7 +156,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
           </Box>
 
           <FormFooter href={'/auth/signin'} />
-        </Box>
+        </Stack>
       </form>
     </Box>
   );

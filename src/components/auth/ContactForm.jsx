@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Material UI components
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import StyledButton from '../common/StyledMuiButton';
 
 // Custom components
@@ -67,13 +67,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
       />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: 2, md: 3 },
-          }}
-        >
+        <Stack direction={'column'} gap={3}>
           {/* CONTACT NUMBER INPUT WITH COUNTRY CODE */}
           <PhoneInputField
             name="phone_number"
@@ -118,7 +112,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
 
           {/* FORM FOOTER */}
           <FormFooter href={'/auth/signin'} />
-        </Box>
+        </Stack>
       </form>
     </Box>
   );

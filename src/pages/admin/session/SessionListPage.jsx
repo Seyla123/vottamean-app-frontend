@@ -4,7 +4,16 @@ import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { PlusIcon } from 'lucide-react';
+import {
+  Calendar,
+  PlusIcon,
+  GraduationCap,
+  BookOpen,
+  Clock,
+  Timer,
+  User,
+} from 'lucide-react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useGetSessionsQuery,
@@ -179,6 +188,35 @@ function SessionListPage() {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
 
+  console.log(selectSession);
+
+  const dataToView = [
+    {
+      'Class Name': selectSession?.class,
+      icon: <GraduationCap size={18} />,
+    },
+    {
+      Subject: selectSession?.subject,
+      icon: <BookOpen size={18} />,
+    },
+    {
+      Day: selectSession?.day,
+      icon: <Calendar size={18} />,
+    },
+    {
+      Time: selectSession?.time,
+      icon: <Clock size={18} />,
+    },
+    {
+      Duration: selectSession?.day,
+      icon: <Timer size={18} />,
+    },
+    {
+      Teacher: selectSession?.teacher,
+      icon: <User size={18} />,
+    },
+  ];
+
   return (
     <FormComponent>
       {/* button add session container */}
@@ -227,7 +265,7 @@ function SessionListPage() {
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Session Details"
-        data={selectSession}
+        data={dataToView}
       />
     </FormComponent>
   );

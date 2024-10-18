@@ -3,9 +3,31 @@ import { Controller } from 'react-hook-form';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Typography, InputAdornment } from '@mui/material';
+import { Box, Typography, InputAdornment, styled } from '@mui/material';
 import { Calendar } from 'lucide-react';
 import dayjs from 'dayjs';
+
+const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 8,
+    backgroundColor: theme.palette.background.paper,
+    '& fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#e0e0e0' : '#424242',
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#b0b0b0' : '#616161',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
+  '& .MuiInputAdornment-root': {
+    marginRight: 0,
+  },
+}));
 
 const DOBPicker = ({
   control,
@@ -37,7 +59,7 @@ const DOBPicker = ({
             control={control}
             defaultValue={initialDob}
             render={({ field }) => (
-              <DatePicker
+              <StyledDatePicker
                 disabled={disabled}
                 {...field}
                 value={initialDob}

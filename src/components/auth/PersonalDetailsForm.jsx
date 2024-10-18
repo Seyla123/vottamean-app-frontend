@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
 
 // Material UI Components
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 
 // Lucid Icons
 import { UserRoundPlus, Calendar } from 'lucide-react';
@@ -75,13 +75,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
       />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: 2, md: 3 },
-          }}
-        >
+        <Stack direction={'column'} gap={3}>
           <Box
             sx={{
               display: 'flex',
@@ -153,7 +147,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             </StyledButton>
           </Box>
           <FormFooter href={'/auth/signin'} />
-        </Box>
+        </Stack>
       </form>
     </Box>
   );

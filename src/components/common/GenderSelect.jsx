@@ -7,12 +7,35 @@ import {
   Stack,
   InputAdornment,
   useTheme,
+  styled,
 } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import GroupIcon from '@mui/icons-material/Group';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 8,
+    backgroundColor: theme.palette.background.paper,
+    '& fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#e0e0e0' : '#424242',
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#b0b0b0' : '#616161',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
+  '& .MuiInputAdornment-root': {
+    marginRight: 0,
+  },
+}));
 
 const GenderSelect = ({
   control,
@@ -48,7 +71,7 @@ const GenderSelect = ({
         control={control}
         defaultValue={defaultValue || ''}
         render={({ field }) => (
-          <TextField
+          <StyledTextField
             select
             fullWidth
             {...field}
@@ -80,7 +103,7 @@ const GenderSelect = ({
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
             <MenuItem value="Other">Other</MenuItem>
-          </TextField>
+          </StyledTextField>
         )}
       />
     </Stack>

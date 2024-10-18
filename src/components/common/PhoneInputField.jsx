@@ -1,8 +1,29 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { MuiTelInput } from 'mui-tel-input';
 
+const StyledMuiTelInput = styled(MuiTelInput)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 8,
+    backgroundColor: theme.palette.background.paper,
+    '& fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#e0e0e0' : '#424242',
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.mode === 'light' ? '#b0b0b0' : '#616161',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
+  '& .MuiInputAdornment-root': {
+    marginRight: 0,
+  },
+}));
 const PhoneInputField = ({
   name,
   control,
@@ -21,7 +42,7 @@ const PhoneInputField = ({
         name={name}
         control={control}
         render={({ field }) => (
-          <MuiTelInput
+          <StyledMuiTelInput
             defaultCountry="KH"
             value={field.value}
             onChange={(phone) => {

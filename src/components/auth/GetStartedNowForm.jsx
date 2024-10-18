@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // - Material UI components
-import { Box, Typography, Checkbox, Link } from '@mui/material';
+import { Box, Typography, Checkbox, Link, Stack } from '@mui/material';
 
 // - Lucid Icons
 import { Mail } from 'lucide-react';
@@ -20,9 +21,12 @@ import InputField from '../common/InputField';
 
 // - Validator
 import { getStartSignupValidator } from '../../validators/validationSchemas';
+import { setSnackbar } from '../../store/slices/uiSlice';
 
 const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const [agree, setAgree] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState({
     length: false,
     number: false,
@@ -44,6 +48,9 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
   });
 
   const password = watch('password');
+  const hanleAgree = () => {
+    setAgree(!agree);
+  };
 
   useEffect(() => {
     if (formData) {
@@ -78,8 +85,18 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
   };
 
   const onSubmit = (data) => {
-    handleFormChange(data);
-    handleNext();
+    if (!agree) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Please agree with the terms and conditions',
+          severity: 'error',
+        }),
+      );
+    } else {
+      handleFormChange(data);
+      handleNext();
+    }
   };
 
   return (
@@ -101,18 +118,12 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
       />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: 2, md: 3 },
-          }}
-        >
+        <Stack direction={'column'} gap={3}>
           {/* EMAIL INPUT */}
           <InputField
             name="email"
             control={control}
-            label="Email Name"
+            label="Email"
             placeholder="Enter your email"
             errors={errors}
             icon={Mail}
@@ -166,7 +177,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
 
           {/* AGREE WITH TERMS */}
           <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
-            <Checkbox />
+            <Checkbox onClick={hanleAgree} required />
             <Typography variant="body2" component={'span'}>
               I agree with the
               <Link
@@ -184,7 +195,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           {/* SUBMIT BUTTON */}
           <StyledButton
             variant="contained"
-            type="submit"
+            type={'submit'}
             size="small"
             fullWidth
           >
@@ -193,7 +204,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
 
           {/* FORM FOOTER */}
           <FormFooter href={'/auth/signin'} />
-        </Box>
+        </Stack>
       </form>
     </Box>
   );
