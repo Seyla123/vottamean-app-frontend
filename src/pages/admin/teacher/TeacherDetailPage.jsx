@@ -74,7 +74,7 @@ function TeacherDetailPage() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [formattedTeacher, setFormattedTeacher] = useState([]);
 
-  // Get teacher information through API
+  // useGetTeacherQueryby id : a hook return function for get teacher data by id
   const {
     data: teacherData,
     isLoading,
@@ -82,20 +82,27 @@ function TeacherDetailPage() {
     error,
   } = useGetTeacherQuery(id);
 
-  // Delete teacher information through API
-  const [deleteTeacher, { isLoading: isDeleting }] = useDeleteTeacherMutation();
+  // useDeleteTeacherMutation : a hook return function for delete teacher data by id
+  const [deleteTeacher] = useDeleteTeacherMutation();
 
+  // States
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  // Menu for edit and delete state
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+
+  // Hanlde click for open menu 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  // Hanlde click for close menu 
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
   // Format teacher data and set it in the state
   useEffect(() => {
     if (teacherData) {
@@ -142,8 +149,7 @@ function TeacherDetailPage() {
       );
     }
   };
-  console.log('teacherData : ', teacherData);
-  console.log('formattedTeacher : ', formattedTeacher);
+
   // loading and error states
   if (isLoading) return <LoadingCircle />;
   if (isError) return <SomethingWentWrong description={error?.data?.message} />;
@@ -163,6 +169,7 @@ function TeacherDetailPage() {
               alignItems={'center'}
               justifyContent={'space-between'}
             >
+              {/* Back Button */}
               <StyledButton
                 variant="text"
                 size={'small'}
@@ -171,6 +178,7 @@ function TeacherDetailPage() {
               >
                 Back
               </StyledButton>
+              {/* Menu for edit and delete */}
               <IconButton
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}
@@ -189,12 +197,14 @@ function TeacherDetailPage() {
                   'aria-labelledby': 'basic-button',
                 }}
               >
+                {/* Edit */}
                 <MenuItem onClick={handleEdit}>
                   <ListItemIcon>
                     <Pencil size={18} color="#1976d2" />
                   </ListItemIcon>
                   <ListItemText>Edit</ListItemText>
                 </MenuItem>
+                {/* Delete */}
                 <MenuItem onClick={handleDelete}>
                   <ListItemIcon>
                     <Trash2 size={18} color="#d32f2f" />
@@ -204,6 +214,7 @@ function TeacherDetailPage() {
               </Menu>
             </Stack>
             <Box>
+              {/* Profile */}
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
                 alignItems="center"
@@ -212,11 +223,6 @@ function TeacherDetailPage() {
                 spacing={4}
                 sx={{ py: 4 }}
               >
-                {/* <Avatar
-                  src={formattedTeacher.photo}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-                /> */}
                 {formattedTeacher.photo ? (
                   <Avatar
                     src={formattedTeacher.photo}
@@ -224,16 +230,14 @@ function TeacherDetailPage() {
                     sx={{ width: 140, height: 140, bgcolor: '#eee' }}
                   />
                 ) : (
-                  <RandomAvatar
-                    // username={`${getValues('firstName')} ${getValues('lastName')}`}
-                    // gender={getValues('gender')}
-                    size={140}
-                  />
+                  <RandomAvatar size={140} />
                 )}
+               
                 <Stack
                   direction="column"
                   alignItems={{ xs: 'center', sm: 'start' }}
-                >
+                > 
+                {/* Name */}
                   <Typography
                     gutterBottom
                     variant="h5"
@@ -242,7 +246,7 @@ function TeacherDetailPage() {
                   >
                     {formattedTeacher.fullName}
                   </Typography>
-
+                  {/* Email */}
                   <Stack direction={'row'} alignItems={'center'} spacing={1}>
                     <Mails size={16} color="#797979" />
                     <Typography
@@ -255,6 +259,7 @@ function TeacherDetailPage() {
                   </Stack>
                 </Stack>
               </Stack>
+              {/* Personal Details */}
               <Box>
                 <GridDetail
                   icon={<User2Icon size={18} color={'#6c63ff'} />}
@@ -274,14 +279,9 @@ function TeacherDetailPage() {
                 <GridDetail
                   icon={<Home size={18} color={'#6c63ff'} />}
                   label="Street Address"
-                  value={
-                    formattedTeacher.address !== null &&
-                    formattedTeacher.address !== undefined
-                      ? formattedTeacher.address.toString()
-                      : 'N/A'
-                  }
+                  value={formattedTeacher.address}
                 />
-
+                {/* Email Verification Status */}
                 <GridDetail
                   icon={<CircleDashed size={18} color={'#6c63ff'} />}
                   label="Status"
@@ -303,24 +303,12 @@ function TeacherDetailPage() {
                         label="Verified"
                       />
                     ) : (
-                      // <Chip
-                      //   size="small"
-                      //   sx={{ backgroundColor: '#f7f7f7', color:"#7d7d7d" }}
-                      //   icon={
-                      //     <Box
-                      //       sx={{
-                      //         width: 10,
-                      //         height: 10,
-                      //         borderRadius: '50%',
-                      //         bgcolor: '#7d7d7d',
-                      //       }}
-                      //     />
-                      //   }
-                      //   label="Not Verified"
-                      // />
                       <Chip
                         size="small"
-                        sx={{ backgroundColor: '#fffbeb', color: '#edbb00',textTransform: 'capitalize',}}
+                        sx={{
+                          backgroundColor: '#fffbeb',
+                          color: '#edbb00',
+                        }}
                         icon={
                           <Box
                             sx={{
@@ -339,6 +327,7 @@ function TeacherDetailPage() {
               </Box>
             </Box>
           </Card>
+          {/* Insights Card Information */}
           <Box>
             <Stack
               spacing={2}
@@ -361,7 +350,6 @@ function TeacherDetailPage() {
                   into personal information of school instructors.
                 </Typography>
               </Stack>
-
               <Stack spacing={2} mt={'auto'}>
                 <GridInfo
                   icon={<Pencil size={18} color={'#6c63ff'} />}
@@ -384,6 +372,12 @@ function TeacherDetailPage() {
           </Box>
         </Stack>
       </FormComponent>
+      {/* Update teacher form */}
+      <UpdateTeacherForm
+        isOpen={isUpdateOpen}
+        onClose={() => setIsUpdateOpen(false)}
+        teacherId={selectedTeacherId}
+      />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
         open={isOpen}
@@ -391,24 +385,19 @@ function TeacherDetailPage() {
         onConfirm={confirmDelete}
         itemName="Teacher"
       />
-      {/* Update teacher form */}
-      <UpdateTeacherForm
-        isOpen={isUpdateOpen}
-        onClose={() => setIsUpdateOpen(false)}
-        teacherId={selectedTeacherId}
-      />
     </>
   );
 }
-
+// Insight information grid function
 const GridInfo = ({ icon, text }) => (
   <Grid
     item
     xs={8}
     sm={12}
-    bgcolor={'transparent'}
     boxShadow={tableShadow}
     sx={{
+      bgcolor: 'transparent',
+      borderRadius: 2,
       borderRight: '2px solid #6c63ff',
     }}
   >
@@ -423,7 +412,7 @@ const GridInfo = ({ icon, text }) => (
     </Stack>
   </Grid>
 );
-// Grid Detais
+// Personal detail grid function
 const GridDetail = ({ icon, label, value }) => {
   return (
     <Grid
