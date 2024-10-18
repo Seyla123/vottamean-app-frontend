@@ -10,7 +10,9 @@ import {
   LetterText,
   PlusIcon,
   Timer,
+  CircleDashed,
 } from 'lucide-react';
+import { Chip } from '@mui/material';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -260,6 +262,10 @@ function ClassPeriodListPage() {
     {
       Period: selectedClassPeriod?.period,
       icon: <Timer size={18} />,
+    },
+    {
+      Status: selectedClassPeriod?.active,
+      icon: <CircleDashed size={18} />,
     },
     {
       'Created at': formatDate(selectedClassPeriod?.createdAt),

@@ -17,7 +17,6 @@ import {
   ListItemText,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import Button from '@mui/material/Button';
 import { BootstrapDialog } from './BootstrapDialog';
 import viewImage from '../../assets/images/data-storage.svg';
 import StyledButton from './StyledMuiButton';
@@ -42,9 +41,45 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
               <Grid item xs={12} sm={6}>
                 <ListItemText
                   primary={
-                    value !== null && value !== undefined
-                      ? value.toString()
-                      : 'N/A'
+                    key === 'Status' ? (
+                      value ? (
+                        <Chip
+                          size="small"
+                          sx={{ backgroundColor: '#E0FBE2' }}
+                          icon={
+                            <Box
+                              sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: '50%',
+                                bgcolor: '#06D001',
+                              }}
+                            />
+                          }
+                          label="Active"
+                        />
+                      ) : (
+                        <Chip
+                          size="small"
+                          sx={{ backgroundColor: '#FFF2F2' }}
+                          icon={
+                            <Box
+                              sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: '50%',
+                                bgcolor: '#F95454',
+                              }}
+                            />
+                          }
+                          label="Active"
+                        />
+                      )
+                    ) : value !== null && value !== undefined ? (
+                      value.toString()
+                    ) : (
+                      'N/A'
+                    )
                   }
                 />
               </Grid>
