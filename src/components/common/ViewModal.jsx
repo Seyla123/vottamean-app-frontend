@@ -45,14 +45,14 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
                       value ? (
                         <Chip
                           size="small"
-                          sx={{ backgroundColor: '#E0FBE2' }}
+                          sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
                           icon={
                             <Box
                               sx={{
                                 width: 10,
                                 height: 10,
                                 borderRadius: '50%',
-                                bgcolor: '#06D001',
+                                bgcolor: '#059212',
                               }}
                             />
                           }
