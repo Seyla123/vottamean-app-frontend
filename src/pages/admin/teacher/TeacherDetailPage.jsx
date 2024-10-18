@@ -65,6 +65,7 @@ import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import verifyBadge from '../../../assets/icon/verify_badge.svg';
 import RandomAvatar from '../../../components/common/RandomAvatar';
+import {formatDate} from '../../../utils/formatHelper'
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();

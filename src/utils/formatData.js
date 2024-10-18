@@ -133,10 +133,10 @@ export const formatSessionDetail = (sessionData) => {
 export function teacherData(teachers) {
   return teachers.map((teacher) => ({
     id: teacher.teacher_id,
-    name: `${teacher.Info.first_name} ${teacher.Info.last_name}`,
+    name: capitalize(`${teacher.Info.first_name} ${teacher.Info.last_name}`),
     gender: teacher.Info.gender,
     email: teacher.User.email,
-    phoneNumber: teacher.Info.phone_number,
+    phoneNumber: formatPhoneNumber(teacher.Info.phone_number),
   }));
 }
 
@@ -157,10 +157,10 @@ export function formatTeacherDetail(teacherData) {
     } = teacherData.data.Info;
 
   return {
-    fullName: `${first_name} ${last_name}`,
+    fullName: capitalize(`${first_name} ${last_name}`),
     email: email,
-    phoneNumber: phone_number,
-    dateOfBirth: dob,
+    phoneNumber: formatPhoneNumber(phone_number),
+    dateOfBirth:formatDate(dob),
     gender: gender,
     address: address,
     photo: photo,
