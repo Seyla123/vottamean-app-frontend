@@ -50,7 +50,6 @@ const StyledMenu = styled((props) => (
 const ExportMenu = ({
     handleExportsCsv,
     isExporting,
-    exportCSV,
     handleExportPDF,
     handleExportXLSX,
 }) => {
@@ -72,7 +71,7 @@ const ExportMenu = ({
     }
     return (
         <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
-            {exportCSV ? (
+            {handleExportsCsv ? (
                 <Button
                     variant="contained"
                     size="small"
