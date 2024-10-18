@@ -70,9 +70,12 @@ const ClassListPage = () => {
   const [totalRows, setTotalRows] = useState(0);
 
   //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
-  const { data, isLoading, isSuccess, isError, error, isFetching } = useGetClassesDataQuery(
-    { search: search, limit: rowsPerPage, page: page + 1 },
-  );
+  const { data, isLoading, isSuccess, isError, error, isFetching } =
+    useGetClassesDataQuery({
+      search: search,
+      limit: rowsPerPage,
+      page: page + 1,
+    });
 
   //useDeleteManyClassesMutation :  a hook that returns a function to delete many class record
   const [
@@ -290,7 +293,6 @@ const ClassListPage = () => {
           gap={2}
         >
           <SearchComponent
-            sx={{ width: '100%', maxWidth: '700px' }}
             placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

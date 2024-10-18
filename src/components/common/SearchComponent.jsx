@@ -1,53 +1,70 @@
 import React from 'react';
-import { TextField, InputAdornment } from '@mui/material';
-import { Search } from 'lucide-react';
+import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
+import { Search, X } from 'lucide-react';
 
-const SearchComponent = ({ sx, placeholder, value, onChange, onClickIcon }) => {
+const SearchComponent = ({ sx, placeholder, value, onChange, onSearch }) => {
+  const handleClear = () => {
+    onChange({ target: { value: '' } });
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      onSearch && onSearch(value);
+    }
+  };
+
   return (
-    <TextField
+    <Box
       sx={{
-        maxWidth: '700px',
-        height: '50px',
-        '& .MuiOutlinedInput-root': {
-          height: '100%',
-          borderRadius: '25px', // Rounded corners
-          backgroundColor: '#f5f5f5', // Light gray background
-          '&:hover': {
-            backgroundColor: '#e0e0e0', // Slightly darker on hover
-          },
-          '& fieldset': {
-            borderColor: 'transparent', // Remove default border
-          },
-          '&:hover fieldset': {
-            borderColor: 'transparent', // Remove hover border
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: 'primary.main', // Add border color when focused
-          },
-        },
-        '& .MuiInputBase-input': {
-          height: '100%',
-          padding: '10px 14px',
-        },
+        position: 'relative',
+        width: '100%',
+        maxWidth: '500px',
         ...sx,
       }}
-      placeholder={placeholder}
-      size="medium"
-      variant="outlined"
-      value={value}
-      onChange={onChange}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment
-            position="end"
-            onClick={onClickIcon}
-            sx={{ cursor: 'pointer' }}
-          >
-            <Search size={20} color="#757575" />
-          </InputAdornment>
-        ),
-      }}
-    />
+    >
+      <TextField
+        fullWidth
+        placeholder={placeholder}
+        size="small"
+        variant="outlined"
+        value={value}
+        onChange={onChange}
+        onKeyPress={handleKeyPress}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search size={18} color="#757575" />
+            </InputAdornment>
+          ),
+          endAdornment: value && (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="clear search"
+                onClick={handleClear}
+                edge="end"
+                size="small"
+              >
+                <X size={16} />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 2,
+            backgroundColor: '#ffffff',
+            transition: 'all 0.3s ease',
+            border: '1px solid #e0e0e0',
+            '&.Mui-focused': {
+              boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px',
+            },
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+          },
+        }}
+      />
+    </Box>
   );
 };
 
