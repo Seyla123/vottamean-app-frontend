@@ -40,6 +40,7 @@ const columns = [
 
 function SubjectListPage() {
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // rows : The data to be displayed in the table
   const [rows, setRows] = useState([]);
@@ -258,12 +259,17 @@ function SubjectListPage() {
       icon: '',
     },
   ];
-  // if data is loading, show a loading circle
-  if (isLoading) {
+
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
-  // if there is an error
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }

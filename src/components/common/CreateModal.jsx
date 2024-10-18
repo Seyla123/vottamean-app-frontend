@@ -148,7 +148,7 @@ const CreateModal = ({
     <BootstrapDialog
       open={open}
       onClose={handleClose}
-      maxWidth="sm"
+      maxWidth="xs"
       fullWidth
       aria-labelledby="create-dialog-title"
     >
