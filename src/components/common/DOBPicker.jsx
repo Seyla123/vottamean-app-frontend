@@ -67,6 +67,7 @@ const DOBPicker = ({
                   setDob(newValue);
                   field.onChange(newValue ? newValue.format('YYYY-MM-DD') : '');
                 }}
+                maxDate={dayjs()}
                 slotProps={{
                   textField: {
                     fullWidth: true,
