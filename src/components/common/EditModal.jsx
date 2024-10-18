@@ -224,7 +224,7 @@ const EditModal = ({
   };
 
   return (
-    <BootstrapDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <BootstrapDialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
       <DialogTitle>{title}</DialogTitle>
       <IconButton
         onClick={handleClose}

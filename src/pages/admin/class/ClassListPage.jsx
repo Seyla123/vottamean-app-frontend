@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { BookMarked, Calendar, LetterText, PlusIcon } from 'lucide-react';
+import {
+  BookMarked,
+  Calendar,
+  CircleDashed,
+  LetterText,
+  PlusIcon,
+} from 'lucide-react';
 // import components
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -244,6 +250,7 @@ const ClassListPage = () => {
   const dataToView = [
     { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },
     { Description: selectedClass?.description, icon: <LetterText size={18} /> },
+    { Status: selectedClass?.active, icon: <CircleDashed size={18} /> },
     {
       'Created at': formatDate(selectedClass?.createdAt),
       icon: <Calendar size={18} />,

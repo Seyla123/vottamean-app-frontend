@@ -38,6 +38,7 @@ import { ClassPeriodValidator } from '../../../validators/validationSchemas';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import TitleHeader from '../../../components/common/TitleHeader';
+import EditClassPeriodModal from '../../../components/common/EditClassPeriodModal';
 
 const tableTitles = [
   { id: 'period_id', label: 'ID' },
@@ -248,7 +249,6 @@ function ClassPeriodListPage() {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
 
-  console.log(selectedClassPeriod);
   // Class period data details
   const classPeriodDataDetails = [
     {
@@ -262,10 +262,6 @@ function ClassPeriodListPage() {
     {
       Period: selectedClassPeriod?.period,
       icon: <Timer size={18} />,
-    },
-    {
-      Status: selectedClassPeriod?.active,
-      icon: <CircleDashed size={18} />,
     },
     {
       'Created at': formatDate(selectedClassPeriod?.createdAt),
@@ -320,17 +316,10 @@ function ClassPeriodListPage() {
         isLoading={isCreating}
       />
 
-      <EditModal
+      <EditClassPeriodModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        title="Edit Class Period"
-        description="Update the details for this class period"
-        fields={fields}
-        initialData={selectedClassPeriod}
-        validationSchema={ClassPeriodListPage}
         id={selectedClassPeriod?.period_id}
-        getDataQuery={useGetClassPeriodByIdQuery}
-        useUpdateDataMutation={useUpdateClassPeriodMutation}
       />
 
       <ViewModal
