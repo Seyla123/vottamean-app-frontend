@@ -40,6 +40,7 @@ const columns = [
 const TeacherListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // - rows: the teacher records that are currently being displayed on the page
   // - searchTerm: the search term that is currently being used to filter the table
@@ -70,6 +71,7 @@ const TeacherListPage = () => {
     isSuccess,
     isError,
     error,
+    isFetching,
   } = useGetAllTeachersQuery({
     search: searchTerm,
     limit: rowsPerPage,
@@ -150,6 +152,12 @@ const TeacherListPage = () => {
     isDeleteManySuccess,
   ]);
 
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
   // Handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -194,7 +202,7 @@ const TeacherListPage = () => {
   };
 
   // Loading and error state
-  if (isLoading) {
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
@@ -244,6 +252,7 @@ const TeacherListPage = () => {
         setPage={handleChangePage}
         setRowsPerPage={handleChangeRowsPerPage}
         totalRows={totalRows}
+        isLoading={isFetching || isLoading}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal

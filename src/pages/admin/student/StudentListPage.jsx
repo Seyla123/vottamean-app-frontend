@@ -6,7 +6,7 @@ import StyledButton from '../../../components/common/StyledMuiButton';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, BookIcon } from 'lucide-react';
 import {
   useDeleteStudentMutation,
   useGetAllStudentsQuery,
@@ -21,7 +21,6 @@ import {
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
-import { BookIcon } from 'lucide-react';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import CreateStudentModal from '../../../components/common/CreateStudentModal';
 import TitleHeader from '../../../components/common/TitleHeader';
@@ -37,6 +36,8 @@ const columns = [
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   const [open, setOpen] = useState(false);
 
@@ -235,12 +236,16 @@ const StudentListPage = () => {
     navigate(`/admin/students/${row.id}`);
   };
 
-  //Loading Data
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && !isFetching && isClassesSuccess) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching, isClassesSuccess]);
+
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
-  //If error occurs
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }

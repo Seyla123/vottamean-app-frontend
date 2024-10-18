@@ -42,6 +42,7 @@ const columns = [
 
 const ClassListPage = () => {
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // - rows: the teacher records that are currently being displayed on the page
   // - search: the search term that is currently being used to filter the table
@@ -69,7 +70,7 @@ const ClassListPage = () => {
   const [totalRows, setTotalRows] = useState(0);
 
   //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
-  const { data, isLoading, isSuccess, isError, error } = useGetClassesDataQuery(
+  const { data, isLoading, isSuccess, isError, error, isFetching } = useGetClassesDataQuery(
     { search: search, limit: rowsPerPage, page: page + 1 },
   );
 
@@ -223,7 +224,13 @@ const ClassListPage = () => {
     await deleteManyClasses(selectedIds).unwrap();
   };
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
