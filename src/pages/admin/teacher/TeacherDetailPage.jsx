@@ -345,6 +345,7 @@ function TeacherDetailPage() {
               bgcolor={'background.paper'}
               sx={{
                 ...cardContainer,
+                height: '100%',
                 display: { xs: 'none', sm: 'block' },
                 maxWidth: {
                   sm: '100%',
@@ -352,7 +353,7 @@ function TeacherDetailPage() {
                 },
               }}
             >
-              <Stack>
+              <Stack mb={'auto'}>
                 <Typography gutterBottom variant="h5" fontWeight="medium">
                   Gain detailed insights
                 </Typography>
