@@ -12,18 +12,15 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
+  IconButton,
+  CircularProgress,
 } from '@mui/material';
 import { containerInput, timeInput } from '../../styles/classPeriod';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-// import components
 import LoadingCircle from '../../components/loading/LoadingCircle';
-import CardComponent from '../../components/common/CardComponent';
-import FormComponent from '../../components/common/FormComponent';
-import ButtonContainer from '../../components/common/ButtonContainer';
-// import validator, uiSlice and  api
 import { ClassPeriodValidator } from '../../validators/validationSchemas';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import {
@@ -32,23 +29,19 @@ import {
 } from '../../services/classPeriodApi';
 import StyledButton from './StyledMuiButton';
 import { BootstrapDialog } from './BootstrapDialog';
+import { X } from 'lucide-react';
 
 function EditClassPeriodModal({ open, onClose, id }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Fetch calss period details
   const { data, isLoading } = useGetClassPeriodByIdQuery(id);
-
-  // Mutation for updating subject
   const [updateClassPeriod, { isUpdating, isUpdateError, isSuccess, error }] =
     useUpdateClassPeriodMutation();
 
-  // State for time picker
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
-  // Initialize useForm with yup validation schema
   const {
     handleSubmit,
     formState: { errors },
@@ -58,7 +51,6 @@ function EditClassPeriodModal({ open, onClose, id }) {
     resolver: yupResolver(ClassPeriodValidator),
   });
 
-  // Use useEffect to update state when data is available
   useEffect(() => {
     if (data) {
       const formattedStartTime = dayjs(data.data.start_time, 'HH:mm:ss');
@@ -66,7 +58,6 @@ function EditClassPeriodModal({ open, onClose, id }) {
       setStartTime(formattedStartTime);
       setEndTime(formattedEndTime);
 
-      // Ensure form values are set when data is loaded
       setValue('start_time', formattedStartTime.format('HH:mm'), {
         shouldValidate: true,
         shouldDirty: true,
@@ -116,84 +107,109 @@ function EditClassPeriodModal({ open, onClose, id }) {
         start_time: formattedStartTime,
         end_time: formattedEndTime,
       });
+      onClose();
     } catch (error) {
       console.log('Failed to update class period:', error);
     }
   };
 
-  // Handle stages
-  if (isLoading) return <LoadingCircle />;
-
   return (
     <BootstrapDialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>Edit Class Period</DialogTitle>
-      <DialogContent dividers>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer
-            components={['TimePicker', 'TimePicker', 'TimePicker']}
-          >
-            <Stack spacing={2}>
-              <Box>
-                <Typography variant="body2" fontWeight="bold">
-                  Start time
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <TimePicker
-                  sx={timeInput}
-                  value={startTime}
-                  onChange={(newValue) => {
-                    setStartTime(newValue);
-                    setValue(
-                      'start_time',
-                      newValue ? newValue.format('HH:mm') : '',
-                    );
-                  }}
-                  slotProps={{
-                    textField: {
-                      helperText: errors.start_time
-                        ? errors.start_time.message
-                        : '',
-                      error: !!errors.start_time,
-                    },
-                  }}
-                />
-              </Box>
+      <IconButton
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <X />
+      </IconButton>
 
-              <Box>
-                <Typography variant="body2" fontWeight="bold">
-                  End time
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <TimePicker
-                  sx={timeInput}
-                  value={endTime}
-                  onChange={(newValue) => {
-                    setEndTime(newValue);
-                    setValue(
-                      'end_time',
-                      newValue ? newValue.format('HH:mm') : '',
-                    );
-                    if (newValue) {
-                      clearErrors('end_time');
-                    }
-                  }}
-                  slotProps={{
-                    textField: {
-                      helperText: errors.end_time
-                        ? errors.end_time.message
-                        : '',
-                      error: !!errors.end_time,
-                    },
-                  }}
-                />
-              </Box>
-            </Stack>
-          </DemoContainer>
-        </LocalizationProvider>
+      <DialogContent dividers>
+        {isLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer
+              components={['TimePicker', 'TimePicker', 'TimePicker']}
+            >
+              <Stack spacing={2}>
+                <Box>
+                  <Typography variant="body2" fontWeight="bold">
+                    Start time
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                  </Typography>
+                  <TimePicker
+                    sx={timeInput}
+                    value={startTime}
+                    onChange={(newValue) => {
+                      setStartTime(newValue);
+                      setValue(
+                        'start_time',
+                        newValue ? newValue.format('HH:mm') : '',
+                      );
+                    }}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.start_time
+                          ? errors.start_time.message
+                          : '',
+                        error: !!errors.start_time,
+                      },
+                    }}
+                  />
+                </Box>
+
+                <Box>
+                  <Typography variant="body2" fontWeight="bold">
+                    End time
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                  </Typography>
+                  <TimePicker
+                    sx={timeInput}
+                    value={endTime}
+                    onChange={(newValue) => {
+                      setEndTime(newValue);
+                      setValue(
+                        'end_time',
+                        newValue ? newValue.format('HH:mm') : '',
+                      );
+                      if (newValue) {
+                        clearErrors('end_time');
+                      }
+                    }}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.end_time
+                          ? errors.end_time.message
+                          : '',
+                        error: !!errors.end_time,
+                      },
+                    }}
+                  />
+                </Box>
+              </Stack>
+            </DemoContainer>
+          </LocalizationProvider>
+        )}
       </DialogContent>
       <DialogActions>
         <StyledButton onClick={onClose}>Cancel</StyledButton>
-        <StyledButton variant={'contained'} onClick={handleSubmit(onClickNext)}>
+        <StyledButton
+          variant={'contained'}
+          onClick={handleSubmit(onClickNext)}
+          disabled={isLoading}
+        >
           Update
         </StyledButton>
       </DialogActions>
