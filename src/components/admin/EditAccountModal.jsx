@@ -228,9 +228,9 @@ const EditAccountModal = ({
       >
         <X />
       </IconButton>
-      <DialogContent dividers>
-        {/* FORM CONTAINER */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent dividers>
+          {/* FORM CONTAINER */}
           <Stack direction="column" gap={2}>
             {/* PROFILE CONTAINER */}
             <Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -371,19 +371,19 @@ const EditAccountModal = ({
               </Grid>
             </Grid>
           </Stack>
-        </form>
-      </DialogContent>
+        </DialogContent>
 
-      <DialogActions>
-        {/* CANCEL BUTTON */}
-        <StyledButton size="small" onClick={onClose}>
-          Cancel
-        </StyledButton>
-        {/* SAVE CHANGES BUTTON */}
-        <StyledButton size="small" type="submit" variant="contained">
-          {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-        </StyledButton>
-      </DialogActions>
+        <DialogActions>
+          {/* CANCEL BUTTON */}
+          <StyledButton size="small" onClick={onClose}>
+            Cancel
+          </StyledButton>
+          {/* SAVE CHANGES BUTTON */}
+          <StyledButton size="small" type="submit" variant="contained">
+            {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+          </StyledButton>
+        </DialogActions>
+      </form>
     </BootstrapDialog>
   );
 };
