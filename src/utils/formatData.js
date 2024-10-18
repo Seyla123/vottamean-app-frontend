@@ -145,7 +145,7 @@ export function formatTeacherDetail(teacherData) {
   if (!teacherData || !teacherData.data || !teacherData.data.Info) {
     return []
   }
-  const { email } = teacherData.data.User;
+  const { email,emailVerified } = teacherData.data.User;
   const { 
     first_name,
     last_name, 
@@ -164,6 +164,7 @@ export function formatTeacherDetail(teacherData) {
     gender: gender,
     address: address,
     photo: photo,
+    emailVerified: emailVerified
   };
 }
 
