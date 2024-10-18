@@ -14,6 +14,7 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
+  Stack,
 } from '@mui/material';
 
 // Icons from lucide
@@ -24,7 +25,7 @@ import {
   FolderDown,
   Settings,
   WandSparkles,
-  FileText
+  FileText,
 } from 'lucide-react';
 
 // Redux Slice
@@ -142,7 +143,12 @@ function FormInfo() {
         gap: { xs: 2, sm: 3 },
       }}
     >
-      <Card sx={cardContainer}>
+      <Stack
+        boxShadow={shadow}
+        bgcolor={'background.paper'}
+        direction={{ xs: 'column', sm: 'row' }}
+        width={'100%'}
+      >
         <TabContext value={value}>
           <Box
             sx={{
@@ -208,9 +214,22 @@ function FormInfo() {
             />
           </TabPanel>
         </TabContext>
-      </Card>
+      </Stack>
       {/* Info Box */}
-      <Box sx={infoBox}>
+      <Stack
+        direction={'column'}
+        spacing={2}
+        bgcolor={'background.paper'}
+        boxShadow={shadow}
+        p={2}
+        justifyContent={'space-between'}
+        maxWidth={{
+          xs: '100%',
+          sm: '100%',
+          md: '240px',
+          lg: '300px',
+        }}
+      >
         <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
             By setting up teacher accounts, Teachers will be able to:
@@ -230,26 +249,29 @@ function FormInfo() {
             />
           </Grid>
         </Box>
-        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Stack sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Settings color={'#6c63ff'} />
             <Typography variant="body2" fontWeight="medium">
               Gain better teacher experiences with our streamlined system
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary" whiteSpace={'pre-line'}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            whiteSpace={'pre-line'}
+          >
             This streamlined teacher account system aims to enhance efficiency
             and communication within the educational environment. By automating
             key administrative tasks, teachers can dedicate more time to
             delivering quality instruction. Additionally, real-time attendance
             notifications to guardians ensure transparency and accountability.
           </Typography>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
     </Box>
   );
 }
-
 
 export default FormInfo;
 // Grid Info Box
@@ -262,15 +284,6 @@ const GridInfo = ({ icon, text }) => (
   </Grid>
 );
 // Styles
-const cardContainer = {
-  display: 'flex',
-  flexDirection: { xs: 'column', sm: 'row' },
-  width: '100%',
-  height: '100%',
-  borderRadius: 1,
-  overflow: 'hidden',
-  ...shadow,
-};
 const tabStyle = {
   display: 'flex',
   flexDirection: 'row',
@@ -281,27 +294,6 @@ const tabStyle = {
   '&.Mui-disabled': {
     color: 'text.disabled',
   },
-};
-const infoBox = {
-  display: 'flex',
-  maxWidth: {
-    xs: '100%',
-    sm: '100%',
-    md: '240px',
-    lg: '300px',
-  },
-  width: '100%',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: {
-    xs: 2,
-    sm: 3,
-  },
-  bgcolor: '#ffffff',
-  p: 2,
-  borderRadius: 1,
-  ...shadow,
 };
 const gridBox = {
   display: 'flex',
