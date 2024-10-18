@@ -51,6 +51,7 @@ import {
   File,
   Folder,
   Contact,
+  CircleDashed
 } from 'lucide-react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -62,7 +63,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import { cardContainer, shadow, tableShadow } from '../../../styles/global';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
-
+import verifyBadge from '../../../assets/icon/verify_badge.svg';
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -79,6 +80,7 @@ function TeacherDetailPage() {
     isError,
     error,
   } = useGetTeacherQuery(id);
+
   // Delete teacher information through API
   const [deleteTeacher, { isLoading: isDeleting }] = useDeleteTeacherMutation();
 
@@ -87,7 +89,6 @@ function TeacherDetailPage() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-  
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -140,7 +141,8 @@ function TeacherDetailPage() {
       );
     }
   };
-
+  console.log('teacherData : ', teacherData);
+  console.log('formattedTeacher : ', formattedTeacher);
   // loading and error states
   if (isLoading || isDeleting) return <LoadingCircle />;
   if (isError) return <SomethingWentWrong description={error?.data?.message} />;
@@ -214,13 +216,20 @@ function TeacherDetailPage() {
                   alt="Profile"
                   sx={{ width: 140, height: 140, bgcolor: '#eee' }}
                 />
+
                 <Stack
                   direction="column"
                   alignItems={{ xs: 'center', sm: 'start' }}
                 >
-                  <Typography gutterBottom variant="h5" fontWeight={'bold'}>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    fontWeight={'bold'}
+                    sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                  >
                     {formattedTeacher.fullName}
                   </Typography>
+
                   <Stack direction={'row'} alignItems={'center'} spacing={1}>
                     <Mails size={16} color="#797979" />
                     <Typography
@@ -252,7 +261,67 @@ function TeacherDetailPage() {
                 <GridDetail
                   icon={<Home size={18} color={'#6c63ff'} />}
                   label="Street Address"
-                  value={formattedTeacher.address}
+                  value={
+                    formattedTeacher.address !== null &&
+                    formattedTeacher.address !== undefined
+                      ? formattedTeacher.address.toString()
+                      : 'N/A'
+                  }
+                />
+
+                <GridDetail
+                  icon={<CircleDashed size={18} color={'#6c63ff'} />}
+                  label="Status"
+                  value={
+                    formattedTeacher.emailVerified ? (
+                      <Chip
+                        size="small"
+                        sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
+                        icon={
+                          <Box
+                            sx={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: '50%',
+                              bgcolor: '#059212',
+                            }}
+                          />
+                        }
+                        label="Verified"
+                      />
+                    ) : (
+                      // <Chip
+                      //   size="small"
+                      //   sx={{ backgroundColor: '#f7f7f7', color:"#7d7d7d" }}
+                      //   icon={
+                      //     <Box
+                      //       sx={{
+                      //         width: 10,
+                      //         height: 10,
+                      //         borderRadius: '50%',
+                      //         bgcolor: '#7d7d7d',
+                      //       }}
+                      //     />
+                      //   }
+                      //   label="Not Verified"
+                      // />
+                      <Chip
+                        size="small"
+                        sx={{ backgroundColor: '#fffae9', color:"#D9B325" }}
+                        icon={
+                          <Box
+                            sx={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: '50%',
+                              bgcolor: '#ffd126',
+                            }}
+                          />
+                        }
+                        label="Not Verified"
+                      />
+                    )
+                  }
                 />
               </Box>
             </Box>
@@ -364,12 +433,11 @@ const GridDetail = ({ icon, label, value }) => {
           variant="body2"
           sx={{
             textTransform: 'capitalize',
-            elipsis: 'true',
             wordBreak: 'break-word',
           }}
         >
           {value !== null && value !== undefined && value !== ''
-            ? value.toString()
+            ? value
             : 'N/A'}
         </Typography>
       </Grid>
@@ -379,4 +447,5 @@ const GridDetail = ({ icon, label, value }) => {
     </Grid>
   );
 };
+
 export default TeacherDetailPage;
