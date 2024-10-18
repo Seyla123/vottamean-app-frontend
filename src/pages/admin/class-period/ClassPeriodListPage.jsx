@@ -53,6 +53,7 @@ const fields = [
 
 function ClassPeriodListPage() {
   const dispatch = useDispatch();
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // - rows: the class periods that are currently being displayed on the page
   const [rows, setRows] = useState([]);
@@ -239,16 +240,19 @@ function ClassPeriodListPage() {
     setEditModalOpen(true);
   };
 
-  // if data is loading
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setIsPageLoading(false);
+    }
+  }, [isLoading, isFetching]);
+
+  if (isPageLoading) {
     return <LoadingCircle />;
   }
 
-  // if there is an error
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
-
   // Class period data details
   const classPeriodDataDetails = [
     {
