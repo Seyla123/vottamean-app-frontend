@@ -51,7 +51,7 @@ import {
   File,
   Folder,
   Contact,
-  CircleDashed
+  CircleDashed,
 } from 'lucide-react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -64,6 +64,7 @@ import { cardContainer, shadow, tableShadow } from '../../../styles/global';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import verifyBadge from '../../../assets/icon/verify_badge.svg';
+import RandomAvatar from '../../../components/common/RandomAvatar';
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -144,7 +145,7 @@ function TeacherDetailPage() {
   console.log('teacherData : ', teacherData);
   console.log('formattedTeacher : ', formattedTeacher);
   // loading and error states
-  if (isLoading || isDeleting) return <LoadingCircle />;
+  if (isLoading) return <LoadingCircle />;
   if (isError) return <SomethingWentWrong description={error?.data?.message} />;
 
   return (
@@ -211,12 +212,24 @@ function TeacherDetailPage() {
                 spacing={4}
                 sx={{ py: 4 }}
               >
-                <Avatar
+                {/* <Avatar
                   src={formattedTeacher.photo}
                   alt="Profile"
                   sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-                />
-
+                /> */}
+                {formattedTeacher.photo ? (
+                  <Avatar
+                    src={formattedTeacher.photo}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                  />
+                ) : (
+                  <RandomAvatar
+                    // username={`${getValues('firstName')} ${getValues('lastName')}`}
+                    // gender={getValues('gender')}
+                    size={140}
+                  />
+                )}
                 <Stack
                   direction="column"
                   alignItems={{ xs: 'center', sm: 'start' }}
@@ -307,14 +320,14 @@ function TeacherDetailPage() {
                       // />
                       <Chip
                         size="small"
-                        sx={{ backgroundColor: '#fffae9', color:"#D9B325" }}
+                        sx={{ backgroundColor: '#fffbeb', color: '#edbb00',textTransform: 'capitalize',}}
                         icon={
                           <Box
                             sx={{
                               width: 10,
                               height: 10,
                               borderRadius: '50%',
-                              bgcolor: '#ffd126',
+                              bgcolor: '#edbb00',
                             }}
                           />
                         }
@@ -422,7 +435,6 @@ const GridDetail = ({ icon, label, value }) => {
           label={label}
           icon={icon}
           sx={{
-            px: 0,
             fontWeight: 'medium',
             bgcolor: 'transparent',
           }}
