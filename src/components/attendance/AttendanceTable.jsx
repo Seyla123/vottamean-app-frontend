@@ -44,6 +44,11 @@ const StyledTableCell = styled(TableCell)(({ theme, fontSize, maxWidth, minWidth
 
 
 const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey, isLoading, emptyTitle, emptySubTitle }) => {
+    const pdfRef = useRef();
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
     const convertDayToShorthand = (day) => {
         const dayMap = {
             monday: 'MON',
@@ -107,10 +112,6 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
     }
 
 
-    const pdfRef = useRef();
-
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -119,9 +120,6 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-
-
 
     const exportTableToXLSX = () => {
         const table = document.getElementById('my-table');
@@ -132,30 +130,13 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
         // Generate Excel file and trigger download
         XLSX.writeFile(wb, 'attendance_report.xlsx');
     };
-    const [rowsPrint, setRowsPrint] = useState(10);
 
-    const chunkArray = (array, size) => {
-        const result = [];
-        for (let i = 0; i < array?.length; i += size) {
-            result.push(array.slice(i, i + size));
-        }
-        return result;
-    };
-    console.log('this is result :', result);
-    console.log('this is dates :', dates);
-    const studentChunks = chunkArray(result, 10); // 25 students per chunk
-    const dateChunks = chunkArray(dates, 7); // 7 dates per chunk
-    console.log('this is studentChunks:', studentChunks);
-    console.log('this is dateChunks:', dateChunks);
-
-    const exportPdfById = (id) => {
+    const exportPdfById = () => {
         const pdf = new jsPDF('p', 'mm', 'a4'); // Initialize jsPDF for A4 Portrait format
         const pageWidth = 210; // A4 page width in mm
-        const pageHeight = 297; // A4 page height in mm
 
         const canvasPromises = []; // To capture the rendered table for each page
-        console.log('this is export id ');
-        const getAll = document.querySelectorAll("#pdf-page-testing");
+        const getAll = document.querySelectorAll("#pdf-page-export");
         getAll.forEach((element) => {
             canvasPromises.push(
                 html2canvas(element, {
@@ -164,10 +145,6 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
                 })
             );
         })
-        // Render the hidden table and capture it
-        console.log('this is export id canvasPromises ', canvasPromises);
-
-
         Promise.all(canvasPromises).then((canvases) => {
             canvases.forEach((canvas, canvasIndex) => {
                 const imgData = canvas.toDataURL('image/jpeg', 2.0); // Get the image data from the canvas
@@ -186,46 +163,28 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
             pdf.save(`loop_attendance_reports.pdf`);
         });
     };
-    const exportToPDF = (students, dates) => {
-        // Chunk the students and dates as per the given requirements
-        const studentChunks = chunkArray(students, 25); // 25 students per chunk
-        const dateChunks = chunkArray(dates, 7); // 7 dates per chunk
-
-        const pdf = new jsPDF('p', 'mm', 'a4'); // Initialize jsPDF for A4 Portrait format
-        const pageWidth = 210; // A4 page width in mm
-        const pageHeight = 297; // A4 page height in mm
-        console.log('--------------------------------')
-        let positionY = 10; // Start with 10mm margin
-        dateChunks.forEach((dateChunk, dateIndex) => {
-
-            studentChunks.forEach((studentChunk, studentIndex) => {
-
-                console.log('this page id  in export :', `pdf-page-${studentIndex}-${dateIndex}`);
-                exportPdfById('pdf-page-testing')
-            })
-        });
-
-    };
-
-
-
-    // Component for generating the hidden content to be exported as PDF
-    const PdfDownloadContent = ({ students, dates }) => {
+    const PdfDownloadContent = ({ students, dates, school,classData }) => {
+        const chunkArray = (array, size) => {
+            const result = [];
+            for (let i = 0; i < array?.length; i += size) {
+                result.push(array.slice(i, i + size));
+            }
+            return result;
+        };
         const fontSizeCell = '0.5rem'; // Set a smaller font size for cells
-
         // Split the students and dates into chunks
         const studentChunks = chunkArray(students, 25);
         const dateChunks = chunkArray(dates, 7);
-
+    
         const renderedLoopStatusAttendance = (attendance, dates) => {
             return dates.map((date, index) => (
                 date.subject?.map((subject, i) => (
                     <StyledTableCell align="center" key={index + subject + i} fontSize={fontSizeCell} sx={{ color: attendanceStatusColor(attendance[date.date] ? attendance[date.date][subject] : '-') }}>{convertAttendanceStatus(attendance[date.date] ? attendance[date.date][subject] : '-')}</StyledTableCell>
-
+    
                 ))
             ))
         }
-
+    
         return (
             <Box >
                 {
@@ -234,13 +193,13 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
                         return studentChunks.map((studentChunk, studentIndex) => {
                             return (
                                 <Paper
-                                    id={`pdf-page-testing`}
+                                    id={`pdf-page-export`}
                                     key={`${studentIndex}-${dateIndex}`}
                                     sx={{
                                         backgroundColor: 'white',
                                         boxShadow: 'none', width: '100%', maxWidth: '900px', mx: 'auto', padding: 2, flexDirection: 'column', gap: 2, borderRadius: '1px',
                                     }}>
-                                    {studentIndex == 0 &&<Stack paddingBottom={1}> <HeaderReportTable schoolInfo={school} classInfo={classData} /></Stack>}
+                                    {studentIndex == 0 && <Stack paddingBottom={1}> <HeaderReportTable schoolInfo={school} classInfo={classData} /></Stack>}
                                     <TableContainer>
                                         <Table aria-label="simple table" id="my-table">
                                             <TableHead>
@@ -265,7 +224,7 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
                                                         ))
                                                     }
                                                 </TableRow>
-
+    
                                                 <TableRow>
                                                     <StyledTableCell align="center" fontSize={fontSizeCell}>Gender</StyledTableCell>
                                                     {dateChunk?.map((item, index) => (
@@ -285,7 +244,7 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
                                                             <StyledTableCell align="center" fontSize={fontSizeCell} nowrap="true">{student.id}</StyledTableCell>
                                                             <StyledTableCell align="center" fontSize={fontSizeCell} nowrap="true">{student.fullName}</StyledTableCell>
                                                             {renderedLoopStatusAttendance(student.attendance, dateChunk)}
-
+    
                                                             <StyledTableCell align="center" fontSize={fontSizeCell} nowrap="true">{convertGender(student.gender)}</StyledTableCell>
                                                         </TableRow>
                                                     )
@@ -301,22 +260,20 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
             </Box>
         );
     };
-
     return (
         <>
 
             <AttendanceFilter reportAttendance>
                 {/* <ExportMenu handleExportPDF={exportToPDF} handleExportXLSX={exportTableToXLSX} /> */}
-                <Button onClick={() =>exportPdfById('pdf-page-testing')}>Export by ID</Button>
+                <ExportMenu handleExportPDF={exportPdfById} handleExportXLSX={exportTableToXLSX} />
             </AttendanceFilter>
-
-            <PdfDownloadContent students={result} dates={dates} />
+            <PdfDownloadContent students={result} dates={dates} school={school} classData={classData}/>
             <Divider />
             {isLoading ? <LoadingCircle />
                 :
                 dates?.length > 0 ?
                     (<Paper
-                        
+
                         sx={{
                             backgroundColor: 'white',
                             boxShadow: 'none', width: '100%', mx: 'auto', padding: 2, display: 'flex', flexDirection: 'column', gap: 2, borderRadius: '1px',
@@ -393,5 +350,7 @@ const AttendanceTable = ({ dates, result, classData, school, toggleAttendanceKey
         </>
     );
 };
+
 export default AttendanceTable;
 
+// Component for generating the hidden content to be exported as PDF
