@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Stack } from '@mui/material';
-import { FolderPen, IdCard, LetterText, PlusIcon, Timer } from 'lucide-react';
+import {
+  Book,
+  Calendar,
+  FolderPen,
+  IdCard,
+  LetterText,
+  PlusIcon,
+  Timer,
+} from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -221,23 +229,19 @@ function SubjectListPage() {
     await deleteManySubjects(selectedIds).unwrap();
   };
   // Get the selected subject details
-  const { subject_id, subject_name, description, updatedAt } = selectedSubject;
+  const { subject_id, subject_name, description, updatedAt, createdAt } = selectedSubject;
 
   // subject data details
   const subjectDataDetails = [
     {
-      'Subject ID': subject_id,
-      icon: <IdCard size={18} />,
-    },
-    {
-      'Subject Name': subject_name,
-      icon: <FolderPen size={18} />,
+      'Subject name': subject_name,
+      icon: <Book size={18} />,
     },
     {
       Description: description,
       icon: <LetterText size={18} />,
     },
-    { 'Updated At': formatDate(updatedAt), icon: <Timer size={18} /> },
+    { 'Created at': formatDate(createdAt), icon: <Calendar size={18} /> },
   ];
   const subjectFields = [
     {
@@ -316,7 +320,7 @@ function SubjectListPage() {
       />
 
       {/* EDIT SUBJECT MODAL */}
-    <EditModal
+      <EditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         title="Update Subject"

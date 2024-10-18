@@ -250,11 +250,11 @@ function ClassPeriodListPage() {
   // Class period data details
   const classPeriodDataDetails = [
     {
-      'Start Time': selectedClassPeriod?.start_time,
+      'Start time': selectedClassPeriod?.start_time,
       icon: <ClockArrowUp size={18} />,
     },
     {
-      'End Time': selectedClassPeriod?.end_time,
+      'End time': selectedClassPeriod?.end_time,
       icon: <ClockArrowDown size={18} />,
     },
     {
@@ -262,7 +262,7 @@ function ClassPeriodListPage() {
       icon: <Timer size={18} />,
     },
     {
-      'Create At': formatDate(selectedClassPeriod?.createdAt),
+      'Created at': formatDate(selectedClassPeriod?.createdAt),
       icon: <Calendar size={18} />,
     },
   ];
