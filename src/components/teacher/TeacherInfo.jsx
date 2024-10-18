@@ -27,7 +27,7 @@ import StyledButton from '../common/StyledMuiButton';
 import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
-
+import DOBPicker from '../common/DOBPicker';
 // icons from luicide react
 import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
 
@@ -233,7 +233,6 @@ const TeacherInfo = ({
               name="gender"
               control={control}
               defaultValue=""
-              rules={{ required: 'Gender is required' }}
               render={({ field }) => (
                 <GenderSelect
                   control={control}
@@ -248,41 +247,19 @@ const TeacherInfo = ({
           </Box>
           {/* Date of Birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Date of Birth{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
             <Controller
               name="dob"
               control={control}
-              rules={{
-                required: 'Date of birth is required',
-                validate: (value) => {
-                  if (!value) {
-                    return 'Date of birth is required';
-                  }
-                  if (dayjs(value).isAfter(dayjs())) {
-                    return 'Date of birth cannot be in the future';
-                  }
-                  return true;
-                },
-              }}
+              defaultValue=''
+              maxDate={dayjs()}
               render={({ field, fieldState: { error } }) => (
-                <DatePicker
-                  inputFormat="MM/DD/YYYY"
-                  value={dob}
-                  onChange={(newValue) => {
-                    setDob(newValue);
-                    field.onChange(newValue);
-                  }}
-                  maxDate={dayjs()}
-                  slotProps={{
-                    textField: {
-                      error: !!error,
-                      helperText: errors.dob?.message,
-                      fullWidth: true,
-                    },
-                  }}
+                <DOBPicker
+                name={field.name}
+                control={control}
+                label="Date of Birth"
+                value={dob}
+                setDob={setDob}
+                errors={errors}
                 />
               )}
             />

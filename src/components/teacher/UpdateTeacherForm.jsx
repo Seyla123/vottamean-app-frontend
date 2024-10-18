@@ -44,6 +44,7 @@ import GenderSelect from '../common/GenderSelect';
 import PhoneInputField from '../common/PhoneInputField';
 import RandomAvatar from '../common/RandomAvatar';
 import StyledButton from '../common/StyledMuiButton';
+import DOBPicker from '../common/DOBPicker';
 
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const navigate = useNavigate();
@@ -124,28 +125,26 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   // Check if the update was successful and if so, close the modal and navigate to teachers page
   // If the update was not successful, show an error message
   useEffect(() => {
-      if (isUpdateSuccess) {
-        dispatch(
-          setSnackbar({
-            open: true,
-            message: 'Teacher information updated successfully!',
-            severity: 'success',
-          }),
-        );
-        onClose();
-        navigate('/admin/teachers');
-      } else if (isUpdateError) {
-        dispatch(
-          setSnackbar({
-            open: true,
-            message:
-              'Update failed: ' + (updateError.message || 'Unknown error'),
-            severity: 'error',
-          }),
-        );
-      }
-    },
-    [isUpdateError, isUpdateSuccess, dispatch, updateError]);
+    if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Teacher information updated successfully!',
+          severity: 'success',
+        }),
+      );
+      onClose();
+      navigate('/admin/teachers');
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Update failed: ' + (updateError.message || 'Unknown error'),
+          severity: 'error',
+        }),
+      );
+    }
+  }, [isUpdateError, isUpdateSuccess, dispatch, updateError]);
 
   // Handle form submission
   const onSubmit = async (data) => {
@@ -408,31 +407,29 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               />
             </Box>
             {/* Date of Birth */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <Typography variant="body2" fontWeight="bold">
-                Date of Birth{' '}
-                <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-              </Typography>
+            <Box
+              sx={{
+                ...textFieldGap,
+                width: '100%',
+                gap: {
+                  xs: '12px',
+                  sm: 3,
+                },
+              }}
+            >
               <Controller
                 name="dob"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
-                  <DatePicker
-                    inputFormat="MM/DD/YYYY"
+                  <DOBPicker
+                    control={control}
+                    name={field.name}
+                    label="Date of Birth"
+                    defaultValue={field.value}
                     value={dob || null} // Ensure dob is defined
-                    onChange={(newValue) => {
-                      setDob(newValue);
-                      field.onChange(newValue);
-                    }}
-                    maxDate={dayjs()}
-                    slotProps={{
-                      textField: {
-                        error: !!errors.dob,
-                        helperText: errors.dob?.message,
-                        fullWidth: true,
-                      },
-                    }}
+                    errors={errors}
+                    setDob={setDob}
                   />
                 )}
               />
