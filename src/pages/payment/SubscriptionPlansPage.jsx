@@ -147,8 +147,8 @@ const SubscriptionPlansPage = () => {
             aria-label="Vertical tabs"
             sx={{ width: '100%' }}
           >
-            <StyledTab label="Account usage" value="1" />
             <StyledTab label="Upgrade Plan" value="2" />
+            <StyledTab label="Account usage" value="1" />
             <StyledTab label="Plan Comparison" value="3" />
           </TabList>
         </Box>
