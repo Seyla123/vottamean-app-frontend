@@ -27,7 +27,7 @@ import StyledButton from '../common/StyledMuiButton';
 import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
-
+import DOBPicker from '../common/DOBPicker';
 // icons from luicide react
 import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
 
@@ -39,10 +39,11 @@ const TeacherInfo = ({
   setPhotoFile,
   photoPreview,
   setPhotoPreview,
+  photoPreviewRef
 }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
-
+  // const photoPreviewRef = useRef(null);
   // React hook form
   const {
     control,
@@ -126,16 +127,21 @@ const TeacherInfo = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
+          {/* Header */}
+          <Box alignSelf={'start'} sx={{ width: '100%' }}>
+            <Typography
+              alignSelf={'start'}
+              variant="h6"
+              component="h2"
+              fontWeight={'bold'}
+              gutterBottom
+            >
+              Teacher Information
+            </Typography>
+            {/* <Divider /> */}
+          </Box>
           <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              gap: 2,
-              pb: { xs: 2, sm: 4 },
-              pt: { xs: 0, sm: 4 },
-            }}
+            sx={profileContainer}
           >
             {/* Profile */}
             {photoPreview || photoFile ? (
@@ -155,6 +161,7 @@ const TeacherInfo = ({
               id="photo-upload"
               type="file"
               accept="image/*"
+              ref={photoPreviewRef}
               hidden
               onChange={handlePhotoChange}
             />
@@ -189,20 +196,16 @@ const TeacherInfo = ({
               </StyledButton>
             </Box>
           </Box>
-          {/* Sub Header */}
-          <Box alignSelf={'start'} sx={{ width: '100%' }}>
-            <Typography
-              alignSelf={'start'}
-              variant="h6"
-              fontWeight={'bold'}
-              gutterBottom
-            >
-             Personal Information
-            </Typography>
-            <Divider />
-          </Box>
           {/* Name */}
-          <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+          <Stack
+            direction={{
+              xs: 'column',
+              md: 'row',
+            }}
+            width={'100%'}
+            spacing={2}
+            sx={textFieldGap}
+          >
             <Box sx={{ flex: 1, width: '100%' }}>
               <InputField
                 name="firstName"
@@ -223,14 +226,13 @@ const TeacherInfo = ({
                 errors={errors}
               />
             </Box>
-          </Box>
+          </Stack>
           {/* Gender */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <Controller
               name="gender"
               control={control}
               defaultValue=""
-              rules={{ required: 'Gender is required' }}
               render={({ field }) => (
                 <GenderSelect
                   control={control}
@@ -245,41 +247,19 @@ const TeacherInfo = ({
           </Box>
           {/* Date of Birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Typography variant="body2" fontWeight="bold">
-              Date of Birth{' '}
-              <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-            </Typography>
             <Controller
               name="dob"
               control={control}
-              rules={{
-                required: 'Date of birth is required',
-                validate: (value) => {
-                  if (!value) {
-                    return 'Date of birth is required';
-                  }
-                  if (dayjs(value).isAfter(dayjs())) {
-                    return 'Date of birth cannot be in the future';
-                  }
-                  return true;
-                },
-              }}
+              defaultValue=''
+              maxDate={dayjs()}
               render={({ field, fieldState: { error } }) => (
-                <DatePicker
-                  inputFormat="MM/DD/YYYY"
-                  value={dob}
-                  onChange={(newValue) => {
-                    setDob(newValue);
-                    field.onChange(newValue);
-                  }}
-                  maxDate={dayjs()}
-                  slotProps={{
-                    textField: {
-                      error: !!error,
-                      helperText: errors.dob?.message,
-                      fullWidth: true,
-                    },
-                  }}
+                <DOBPicker
+                name={field.name}
+                control={control}
+                label="Date of Birth"
+                value={dob}
+                setDob={setDob}
+                errors={errors}
                 />
               )}
             />
@@ -342,17 +322,20 @@ const TeacherInfo = ({
 export default TeacherInfo;
 
 // Styles
-const boxContainer = {
+const profileContainer = {
   width: '100%',
-  marginTop: '16px',
-  padding: '0px',
-  gap: { xs: '12px', sm: 3 },
-};
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  gap: 2,
+  pb: { xs: 2, sm: 4 },
+  pt: { xs: 0, sm: 4 },
+}
 const profileBox = {
   width: '100%',
   margin: 'auto',
   bgcolor: '#ffffff',
-  gap: { xs: '12px', sm: 3 },
+  gap: { xs: 2, sm: 3 },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

@@ -81,15 +81,16 @@ const AccountInfo = ({
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
+          {/* Header */}
           <Typography
             alignSelf={'start'}
             variant="h6"
+            component="h2"
             fontWeight={'bold'}
             gutterBottom
           >
             Account Information
           </Typography>
-
           {/* Email */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <InputField
@@ -166,7 +167,7 @@ const profileBox = {
   width: '100%',
   bgcolor: '#ffffff',
   gap: {
-    xs: '12px',
+    xs: 2,
     sm: 3,
   },
   display: 'flex',

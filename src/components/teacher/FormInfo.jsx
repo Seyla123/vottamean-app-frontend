@@ -1,5 +1,5 @@
 // React and third-party libraries
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -14,6 +14,7 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
+  Stack,
 } from '@mui/material';
 
 // Icons from lucide
@@ -23,6 +24,8 @@ import {
   UsersRound,
   FolderDown,
   Settings,
+  WandSparkles,
+  FileText,
 } from 'lucide-react';
 
 // Redux Slice
@@ -40,6 +43,7 @@ import { StyledTab } from '../common/StyledTabs';
 function FormInfo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const photoPreviewRef= useRef(null);
   const theme = useTheme();
 
   // Responsive Mobile size
@@ -52,21 +56,15 @@ function FormInfo() {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  // Sign up teacher api
+  // useSignUpTeacherMutation : a hook return function for sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
-
+ 
+  // Show Loading effect when signing up the teacher
+  // If the sign up was not successful, show an error message
+  // Check if the signup was successful and if so, navigate to teachers list page
   useEffect(() => {
-    if (isLoading) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Signing up Teacher account...',
-          severity: 'info',
-          autoHideDuration: 6000,
-        }),
-      );
-    } else if (isError) {
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -87,7 +85,7 @@ function FormInfo() {
       );
       navigate('/admin/teachers');
     }
-  }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
+  }, [dispatch, isError, error, isSuccess, navigate]);
 
   // Handle Submit form
   const handleSubmitForm = async (formData) => {
@@ -98,13 +96,18 @@ function FormInfo() {
     }
   };
 
+
+
   // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
+    event.preventDefault();
     const file = event.target.files[0];
     if (file) {
       setPhotoFile(file);
       const newPreviewUrl = URL.createObjectURL(file);
-      setPhotoPreview(newPreviewUrl);
+      photoPreviewRef.current.src = newPreviewUrl;
+      // setPhotoPreview(newPreviewUrl);
+      console.log(file);
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
@@ -137,7 +140,12 @@ function FormInfo() {
         gap: { xs: 2, sm: 3 },
       }}
     >
-      <Card sx={cardContainer}>
+      <Stack
+        boxShadow={shadow}
+        bgcolor={'background.paper'}
+        direction={{ xs: 'column', sm: 'row' }}
+        width={'100%'}
+      >
         <TabContext value={value}>
           <Box
             sx={{
@@ -172,7 +180,7 @@ function FormInfo() {
             </TabList>
           </Box>
           {/* Tab Contents */}
-          <TabPanel sx={{ flexGrow: 1 }} value="1">
+          <TabPanel sx={{ flexGrow: 1, padding: 2 }} value="1">
             <TeacherInfo
               defaultValues={teacherData}
               handleNextClick={handleNextClick}
@@ -180,6 +188,7 @@ function FormInfo() {
               photoFile={photoFile}
               setPhotoFile={setPhotoFile}
               photoPreview={photoPreview}
+              photoPreviewRef={photoPreviewRef}
               setPhotoPreview={setPhotoPreview}
               handleSubmitForm={handleSubmitForm}
             />
@@ -190,6 +199,7 @@ function FormInfo() {
               height: {
                 sm: '60vh',
               },
+              padding: 2,
             }}
             value="2"
           >
@@ -202,46 +212,66 @@ function FormInfo() {
             />
           </TabPanel>
         </TabContext>
-      </Card>
+      </Stack>
       {/* Info Box */}
-      <Box sx={infoBox}>
-        <Box>
+      <Stack
+        direction={'column'}
+        spacing={2}
+        bgcolor={'background.paper'}
+        boxShadow={shadow}
+        p={2}
+        justifyContent={'space-between'}
+        maxWidth={{
+          xs: '100%',
+          sm: '100%',
+          md: '240px',
+          lg: '300px',
+        }}
+      >
+        <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
             By setting up teacher accounts, Teachers will be able to:
           </Typography>
           <Grid container spacing={2}>
             <GridInfo
-              icon={<FolderDown color={theme.palette.primary.main} />}
-              text="Export attendance reports"
-            />
-            <GridInfo
-              icon={<CalendarRange color={theme.palette.primary.main} />}
+              icon={<CalendarRange color={'#6c63ff'} />}
               text="Gain access to class schedules"
             />
             <GridInfo
-              icon={<UsersRound color={theme.palette.primary.main} />}
-              text="Administrators enable teachers to efficiently monitor student attendance"
+              icon={<UsersRound color={'#6c63ff'} />}
+              text="Mark students attendance"
+            />
+            <GridInfo
+              icon={<WandSparkles color={'#6c63ff'} />}
+              text="Enhanced Teacher Efficiency"
             />
           </Grid>
         </Box>
-        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Stack sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Settings color={theme.palette.primary.main} />
+            <Settings color={'#6c63ff'} />
             <Typography variant="body2" fontWeight="medium">
               Gain better teacher experiences with our streamlined system
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary">
-            This streamlined process allows educators to focus on delivering
-            quality instruction while ensuring that administrative tasks are
-            handled smoothly and effectively.
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            whiteSpace={'pre-line'}
+          >
+            This streamlined teacher account system aims to enhance efficiency
+            and communication within the educational environment. By automating
+            key administrative tasks, teachers can dedicate more time to
+            delivering quality instruction. Additionally, real-time attendance
+            notifications to guardians ensure transparency and accountability.
           </Typography>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
     </Box>
   );
 }
 
+export default FormInfo;
 // Grid Info Box
 const GridInfo = ({ icon, text }) => (
   <Grid item xs={12}>
@@ -251,18 +281,7 @@ const GridInfo = ({ icon, text }) => (
     </Box>
   </Grid>
 );
-export default FormInfo;
-
 // Styles
-const cardContainer = {
-  display: 'flex',
-  flexDirection: { xs: 'column', sm: 'row' },
-  width: '100%',
-  height: '100%',
-  borderRadius: 1,
-  overflow: 'hidden',
-  ...shadow,
-};
 const tabStyle = {
   display: 'flex',
   flexDirection: 'row',
@@ -273,27 +292,6 @@ const tabStyle = {
   '&.Mui-disabled': {
     color: 'text.disabled',
   },
-};
-const infoBox = {
-  display: 'flex',
-  maxWidth: {
-    xs: '100%',
-    sm: '100%',
-    md: '240px',
-    lg: '300px',
-  },
-  width: '100%',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: {
-    xs: 2,
-    sm: 3,
-  },
-  bgcolor: '#ffffff',
-  p: 2,
-  borderRadius: 1,
-  ...shadow,
 };
 const gridBox = {
   display: 'flex',
