@@ -78,7 +78,7 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
   useEffect(() => {
     if (studentData && classData && isClassSuccess) {
       const formattedData = formatStudentFormData(studentData);
-      const formattedClassData = ensureOptionInList(classData.data, studentData?.data?.Class, 'class_name', 'class_id');
+      const formattedClassData = ensureOptionInList(classData.data, studentData?.data?.Class,  'class_id', 'class_name');
 
         const studentInfo = {
           ...formattedData,

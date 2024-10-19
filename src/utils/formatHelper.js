@@ -132,24 +132,26 @@ export const transformedForSelector = (data, dataId, dataName) => {
 
 
 /**
- * Ensures the given option is present in the options list.
- * Adds the option if it is not already included.
- * @param {array} options - List of existing options.
- * @param {object} option - The option to ensure in the list.
- * @param {string} labelKey - Key for the label in the option object.
- * @param {string} valueKey - Key for the value in the option object.
- * @returns {array} - Updated list of options with the ensured option.
- * @example
- * const updatedOptions = ensureOptionInList(classes, selectedClass, 'class_name', 'class_id');
+ * Ensures an option is included in the list of options.
+ * If the option is not present, it is added to the list.
+ * 
+ * @param {array} options - Array of current options.
+ * @param {object} option - Option to be ensured in the list.
+ * @param {string} valueKey - Key representing the option's value.
+ * @param {string} labelKey - Key representing the option's label.
+ * @returns {array} - New array of options with the ensured option.
+ * 
+ * Usage:
+ * const resultOptions = ensureOptionInList(existingOptions, newOption, 'id', 'name');
  */
-export const ensureOptionInList = (options, option, valueKey,labelKey) => {
+export const ensureOptionInList = (options, option, valueKey, labelKey) => {
     const formattedOptions = transformedForSelector(options, valueKey, labelKey);
     const formattedOption = transformedForSelector(option, valueKey, labelKey);
     
     const existingOption = formattedOptions.find((item) => item.value === formattedOption[0]?.value);
     
     if (!existingOption) {
-        return [...formattedOption , ...formattedOptions];
+        return [...formattedOption, ...formattedOptions];
     }
     return formattedOptions;
 };

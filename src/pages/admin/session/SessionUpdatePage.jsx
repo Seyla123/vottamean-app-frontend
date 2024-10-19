@@ -27,22 +27,30 @@ import {
 // Validation Schema
 import { SessionValidator } from '../../../validators/validationSchemas';
 
+import { ensureOptionInList, transformedForSelector } from '../../../utils/formatHelper';
+
 const SessionUpdatePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
+
+  // selector options for session
+  const [periods, setPeriods] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [days, setDays] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   const [originData, setOriginData] = useState(null); // originData ,
 
   const { data: session } = useGetSessionByIdQuery(id);
   const [updateSession, { isLoading, isError, isSuccess, error }] =
     useUpdateSessionMutation();
-
-  const { data: periodData } = useGetClassPeriodQuery();
-  const { data: classData } = useGetClassesDataQuery();
-  const { data: teacherData } = useGetAllTeachersQuery();
-  const { data: dayData } = useGetDayQuery();
-  const { data: subjectData } = useGetSubjectsQuery();
+  const { data: periodData, isSuccess: isPeriodSuccess } = useGetClassPeriodQuery();
+  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery();
+  const { data: teacherData, isSuccess: isTeacherSuccess } = useGetAllTeachersQuery();
+  const { data: dayData, isSuccess: isDaySuccess } = useGetDayQuery();
+  const { data: subjectData, isSuccess: isSubjectSuccess } = useGetSubjectsQuery();
 
   const {
     control,
@@ -61,76 +69,41 @@ const SessionUpdatePage = () => {
       day_id: '',
     },
   });
-console.log('this data session : ', session);
+  console.log('this data session : ', session);
   useEffect(() => {
-    if (session) {
+    if (session && isPeriodSuccess && isClassSuccess && isTeacherSuccess && isDaySuccess && isSubjectSuccess) {
       const dataSession = {
-        teacher_id: session.data.Teacher.teacher_id,
-        period_id: session.data.Period.period_id,
-        class_id: session.data.Class.class_id,
-        subject_id: session.data.Subject.subject_id,
-        day_id: session.data.DayOfWeek.day_id,
+        teacher_id: session?.data?.Teacher?.teacher_id,
+        period_id: session?.data?.Period?.period_id,
+        class_id: session?.data?.Class?.class_id,
+        subject_id: session?.data?.Subject?.subject_id,
+        day_id: session?.data?.DayOfWeek?.day_id,
       };
+      
+      const formattedSelectedTeacher = ensureOptionInList(teacherData?.data, session?.data?.Teacher, 'teacher_id', ['Info.first_name', 'Info.last_name'])
+      const formattedSelectedClass = ensureOptionInList(classData?.data, session?.data?.Class, 'class_id', 'class_name')
+      const formattedSelectedSubject = ensureOptionInList(subjectData?.data, session?.data?.Subject, 'subject_id', 'subject_name')
+      const formattedSelectedPeriod = ensureOptionInList(periodData?.data, session?.data?.Period, 'period_id', ['start_time', 'end_time']);
+      const formattedSelectedDay= transformedForSelector(dayData?.data, 'day_id', 'day');
+
       reset(dataSession)
       setOriginData(dataSession);
-    }
-  }, [session, setValue]);
-
-  const [periods, setPeriods] = useState([]);
-  const [classes, setClasses] = useState([]);
-  const [teachers, setTeachers] = useState([]);
-  const [days, setDays] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-
-  useEffect(() => {
-    if (periodData) {
-      const transformedPeriods = periodData.data.map((item) => ({
-        value: item.period_id,
-        label: `${item.start_time} - ${item.end_time}`,
-      }));
-      setPeriods(transformedPeriods);
+      setPeriods(formattedSelectedPeriod)
+      setClasses(formattedSelectedClass)
+      setTeachers(formattedSelectedTeacher)
+      setDays(formattedSelectedDay)
+      setSubjects(formattedSelectedSubject)
     }
 
-    if (classData) {
-      const classFormat = classData.data.map((item) => ({
-        value: item.class_id,
-        label: item.class_name,
-      }));
-      setClasses(classFormat);
-    }
-
-    if (teacherData) {
-      const teacherFormat = teacherData.data.map((item) => ({
-        value: item.teacher_id,
-        label: `${item.Info.first_name} ${item.Info.last_name}`,
-      }));
-      setTeachers(teacherFormat);
-    }
-
-    if (dayData) {
-      const dayFormat = dayData.data.map((item) => ({
-        value: item.day_id,
-        label: item.day,
-      }));
-      setDays(dayFormat);
-    }
-
-    if (subjectData) {
-      const subjectFormat = subjectData.data.map((item) => ({
-        value: item.subject_id,
-        label: item.subject_name,
-      }));
-      setSubjects(subjectFormat);
-    }
-  }, [periodData, classData, teacherData, dayData, subjectData]);
+  }, [session, isPeriodSuccess, isClassSuccess, isTeacherSuccess, isDaySuccess, isSubjectSuccess, setValue]);
 
   const onSubmit = async (formData) => {
     const sessionData = {
-      teacher_id: formData.teacher_id*1,
-      period_id: formData.period_id*1,
-      class_id: formData.class_id*1,
-      subject_id: formData.subject_id*1,
-      day_id: formData.day_id*1,
+      teacher_id: formData.teacher_id * 1,
+      period_id: formData.period_id * 1,
+      class_id: formData.class_id * 1,
+      subject_id: formData.subject_id * 1,
+      day_id: formData.day_id * 1,
     };
     console.log('Form Data:', formData);
     const noChange = JSON.stringify(sessionData) == JSON.stringify(originData);
@@ -191,68 +164,68 @@ console.log('this data session : ', session);
 
   return (
     <FormComponent
-    title="Add session"
-    subTitle="Please Fill session information"
-  >
-    <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
-      <Box sx={containerStyle}>
-        <Box sx={selectedStyle}>
-          <Box>
-            <RenderSelect
-              name="teacher_id"
-              label="Teacher"
-              options={teachers}
-              control={control}
-              errors={errors}
-            />
+      title="Add session"
+      subTitle="Please Fill session information"
+    >
+      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
+        <Box sx={containerStyle}>
+          <Box sx={selectedStyle}>
+            <Box>
+              <RenderSelect
+                name="teacher_id"
+                label="Teacher"
+                options={teachers}
+                control={control}
+                errors={errors}
+              />
+            </Box>
+            <Box>
+              <RenderSelect
+                name="period_id"
+                label="Class Period"
+                options={periods}
+                control={control}
+                errors={errors}
+              />
+            </Box>
+          </Box>
+          <Box sx={selectedStyle}>
+            <Box>
+              <RenderSelect
+                name="class_id"
+                label="Class"
+                options={classes}
+                control={control}
+                errors={errors}
+              />
+            </Box>
+            <Box>
+              <RenderSelect
+                name="subject_id"
+                label="Subject"
+                options={subjects}
+                control={control}
+                errors={errors}
+              />
+            </Box>
           </Box>
           <Box>
             <RenderSelect
-              name="period_id"
-              label="Class Period"
-              options={periods}
+              name="day_id"
+              label="Day of Week"
+              options={days}
               control={control}
               errors={errors}
             />
           </Box>
         </Box>
-        <Box sx={selectedStyle}>
-          <Box>
-            <RenderSelect
-              name="class_id"
-              label="Class"
-              options={classes}
-              control={control}
-              errors={errors}
-            />
-          </Box>
-          <Box>
-            <RenderSelect
-              name="subject_id"
-              label="Subject"
-              options={subjects}
-              control={control}
-              errors={errors}
-            />
-          </Box>
-        </Box>
-        <Box>
-          <RenderSelect
-            name="day_id"
-            label="Day of Week"
-            options={days}
-            control={control}
-            errors={errors}
-          />
-        </Box>
-      </Box>
-      <ButtonContainer
-        leftBtnTitle="Cancel"
-        rightBtnTitle="Add Session"
-        rightBtn={handleSubmit(onSubmit)}
-      />
-    </CardComponent>
-  </FormComponent>
+        <ButtonContainer
+          leftBtnTitle="Cancel"
+          rightBtnTitle="Add Session"
+          rightBtn={handleSubmit(onSubmit)}
+        />
+      </CardComponent>
+    </FormComponent>
   );
 };
 
