@@ -66,23 +66,70 @@ export const formatTimeToHHMM = (time) => {
   return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
 };
 
+
 /**
- * This function takes an array of objects and transforms it into an array of objects with a value and label key.
- * It is used to format data for the FilterComponent.
- * @param {array} data - an array of objects.
- * @param {string} dataId - the key of the value in the array of objects.
- * @param {string} dataName - the key of the label in the array of objects.
- * @returns {array} - an array of objects with the value and label key.
+ * Transforms data into a format suitable for the Select component.
+ * @param {array} data - List of data to be transformed.
+ * @param {string} dataId - Key for the value in the data object.
+ * @param {string|array} dataName - Key(s) for the label in the data object. Can be a string,
+ *   an array of strings, or an array of strings with nested keys.
+ *   If dataName is a string, it is used as the key for the label.
+ *   If dataName is an array of strings, the values of the corresponding keys are joined
+ *     with a ' - ' separator.
+ *   If dataName is an array of strings with nested keys, the values of the corresponding
+ *     nested keys are used as the label. For example, ['Info.first_name', 'Info.last_name']
+ *     would result in a label like 'John Doe'.
+ * @returns {array} - Transformed list of options.
  * @example
- *const formattedDataSubjects = transformedForSelector(subjectData.data, 'subject_id', 'subject_name');
- *const formatDataClasses = transformedForSelector(dataClass.data, 'class_id', 'class_name');
+ * const data = [
+ *   { id: 1, name: 'John', age: 25 },
+ *   { id: 2, name: 'Jane', age: 30 },
+ * ];
+ * const options = transformedForSelector(data, 'id', 'name');
+ * // options is now [{ value: 1, label: 'John' }, { value: 2, label: 'Jane' }]
  */
 export const transformedForSelector = (data, dataId, dataName) => {
-  return data.map((item) => ({
-    value: item[dataId],
-    label: item[dataName],
-  }));
+    if (!Array.isArray(data)) {
+        data = [data];
+    }
+
+    return data.map((item) => {
+        if (typeof dataName === 'string' && dataName.includes('.')) {
+            const nestedKeys = dataName.split('.');
+            let nestedValue = item;
+            for (const key of nestedKeys) {
+                nestedValue = nestedValue[key];
+            }
+            return {
+                value: item[dataId],
+                label: nestedValue,
+            };
+        } else if (Array.isArray(dataName)) {
+            if (dataName.includes('start_time') && dataName.includes('end_time')) {
+                return {
+                    value: item[dataId],
+                    label: `${formatTimeTo12Hour(item.start_time)} - ${formatTimeTo12Hour(item.end_time)}`,
+                };
+            } else if (dataName.includes('Info.first_name') && dataName.includes('Info.last_name')) {
+                return {
+                    value: item[dataId],
+                    label: `${item.Info.first_name} ${item.Info.last_name}`,
+                };
+            } else {
+                return {
+                    value: item[dataId],
+                    label: dataName.map(key => item[key]).join(' - '),
+                };
+            }
+        } else {
+            return {
+                value: item[dataId],
+                label: item[dataName],
+            };
+        }
+    });
 };
+
 
 /**
  * Ensures the given option is present in the options list.
@@ -95,13 +142,14 @@ export const transformedForSelector = (data, dataId, dataName) => {
  * @example
  * const updatedOptions = ensureOptionInList(classes, selectedClass, 'class_name', 'class_id');
  */
-export const ensureOptionInList = (options, option, labelKey, valueKey) => {
+export const ensureOptionInList = (options, option, valueKey,labelKey) => {
     const formattedOptions = transformedForSelector(options, valueKey, labelKey);
-    const existingOption = formattedOptions.find((item) => item.value === option[valueKey]);
-    console.log('this option ,', existingOption);
+    const formattedOption = transformedForSelector(option, valueKey, labelKey);
+    
+    const existingOption = formattedOptions.find((item) => item.value === formattedOption[0]?.value);
     
     if (!existingOption) {
-        return [{ value: option[valueKey], label: option[labelKey] }, ...formattedOptions];
+        return [...formattedOption , ...formattedOptions];
     }
     return formattedOptions;
 };
