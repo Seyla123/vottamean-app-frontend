@@ -1,12 +1,12 @@
 // StudentUpdateForm.js
 import React, { useEffect, useState } from 'react';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Box, MenuItem, Stack, TextField, Typography, Modal } from '@mui/material';
+import { Box, MenuItem,Select, Stack, TextField, Typography } from '@mui/material';
 import { UserRoundPen } from 'lucide-react';
 import dayjs from 'dayjs';
 
@@ -27,11 +27,12 @@ import {
 
 import { StudentValidator } from '../../validators/validationSchemas';
 import SubHeader from '../teacher/SubHeader';
-import {formatStudentFormData} from'../../utils/formatData'
-import { DatePicker } from '@mui/x-date-pickers';
+import { formatStudentFormData } from '../../utils/formatData';
+import { ensureOptionInList } from '../../utils/formatHelper';
 
-const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
-  const {id} =useParams();
+
+const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
+  const { id } = useParams();
   const dispatch = useDispatch();
 
   // Fetch student data when the modal is open an is available
@@ -43,12 +44,12 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
 
 
   // Fetch classes data
-  const { data: classData } = useGetClassesDataQuery();
+  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery();
 
   // Local State
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
-  const [rows, setRows] = useState([]);
+  const [classes, setClasses] = useState([]);
 
   // Update Student Mutation
   const [updateStudent] = useUpdateStudentMutation();
@@ -62,7 +63,7 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
   } = useForm({
     resolver: yupResolver(StudentValidator),
     defaultValues: {
-      photo:'',
+      photo: '',
       first_name: '',
       last_name: '',
       phone_number: '',
@@ -73,34 +74,23 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
     },
   });
 
-  // Load class options
-  useEffect(() => {
-    if (classData && Array.isArray(classData.data)) {
-      setRows(
-        classData.data.map((classItem) => ({
-          value: String(classItem.class_id),
-          label: classItem.class_name,
-        })),
-      );
-    }
-  }, [classData]);
-
   // Populate form with fetched student data
   useEffect(() => {
-    if (studentData && studentData.data) {
+    if (studentData && classData && isClassSuccess) {
       const formattedData = formatStudentFormData(studentData);
-      if (formattedData) {
+      const formattedClassData = ensureOptionInList(classData.data, studentData?.data?.Class, 'class_name', 'class_id');
+
         const studentInfo = {
           ...formattedData,
-          dob: formattedData.dob ? dayjs(formattedData.dob).format('YYYY-MM-DD') : null,  
-        };
+          dob: formattedData.dob ? dayjs(formattedData.dob).format('YYYY-MM-DD') : null,
+        }; 
+        setClasses(formattedClassData);
         reset(studentInfo);
         setDob(studentInfo.dob);
         setOriginalData(studentInfo);
-      }
     }
-  }, [studentData, reset]);
-  
+  }, [studentData, reset, classData, isClassSuccess]);
+
   // Handle form submission
   const onSubmit = async (data) => {
     const submittedData = {
@@ -108,8 +98,8 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
       last_name: data.last_name,
       phone_number: data.phone_number,
       gender: data.gender,
-       dob: data.dob && dayjs(data.dob).isValid() 
-        ? dayjs(data.dob).format('YYYY-MM-DD') 
+      dob: data.dob && dayjs(data.dob).isValid()
+        ? dayjs(data.dob).format('YYYY-MM-DD')
         : null,
       address: data.address,
       class_id: data.class_id,
@@ -131,7 +121,7 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
         }),
       );
       handleNext();
- 
+
       return;
     }
     // Update the student information with the new data
@@ -254,25 +244,32 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
 
             {/* Class Selection */}
             <Controller
-              name="class_id"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  select
-                  label="Class"
-                  {...field}
-                  fullWidth
-                  error={!!errors.class_id}
-                  helperText={errors.class_id?.message}
-                >
-                  {rows.map((row) => (
-                    <MenuItem key={row.value} value={row.value}>
-                      {row.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
+                name="class_id"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <>
+                    <Select
+                      {...field}
+                      value={field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      displayEmpty
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Class
+                      </MenuItem>
+                      {
+                        classes.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))
+                      }
+                    </Select>
+                  </>
+                )}
+              />
 
             {/* Phone Number */}
             <PhoneInputField
@@ -307,9 +304,6 @@ const StudentUpdateForm = ({  onClose ,handleNext,handleBack}) => {
                 color="inherit"
                 size="small"
                 onClick={onClose}
-                handleBack={() => {
-                  'admin/student';
-                }}
               >
                 Cancel
               </StyledButton>

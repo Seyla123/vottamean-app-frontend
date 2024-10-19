@@ -65,3 +65,44 @@ export const formatTimeToHHMM = (time) => {
   const [hours, minutes] = time.split(':');
   return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
 };
+
+/**
+ * This function takes an array of objects and transforms it into an array of objects with a value and label key.
+ * It is used to format data for the FilterComponent.
+ * @param {array} data - an array of objects.
+ * @param {string} dataId - the key of the value in the array of objects.
+ * @param {string} dataName - the key of the label in the array of objects.
+ * @returns {array} - an array of objects with the value and label key.
+ * @example
+ *const formattedDataSubjects = transformedForSelector(subjectData.data, 'subject_id', 'subject_name');
+ *const formatDataClasses = transformedForSelector(dataClass.data, 'class_id', 'class_name');
+ */
+export const transformedForSelector = (data, dataId, dataName) => {
+  return data.map((item) => ({
+    value: item[dataId],
+    label: item[dataName],
+  }));
+};
+
+/**
+ * Ensures the given option is present in the options list.
+ * Adds the option if it is not already included.
+ * @param {array} options - List of existing options.
+ * @param {object} option - The option to ensure in the list.
+ * @param {string} labelKey - Key for the label in the option object.
+ * @param {string} valueKey - Key for the value in the option object.
+ * @returns {array} - Updated list of options with the ensured option.
+ * @example
+ * const updatedOptions = ensureOptionInList(classes, selectedClass, 'class_name', 'class_id');
+ */
+export const ensureOptionInList = (options, option, labelKey, valueKey) => {
+    const formattedOptions = transformedForSelector(options, valueKey, labelKey);
+    const existingOption = formattedOptions.find((item) => item.value === option[valueKey]);
+    console.log('this option ,', existingOption);
+    
+    if (!existingOption) {
+        return [{ value: option[valueKey], label: option[labelKey] }, ...formattedOptions];
+    }
+    return formattedOptions;
+};
+
