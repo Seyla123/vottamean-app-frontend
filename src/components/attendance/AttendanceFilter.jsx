@@ -9,9 +9,8 @@ import {
 import FilterComponent from '../common/FilterComponent';
 import { useEffect, useState } from 'react';
 import {
-    transformedFilterSubjects,
-    transformedFilterClasses,
-} from '../../utils/formatData';
+    transformedForSelector
+} from '../../utils/formatHelper';
 import { Filter, BookIcon, LibraryIcon } from 'lucide-react';
 
 import DateRangePicker from './DateRangePicker';
@@ -53,8 +52,8 @@ function AttendanceFilter({ reportAttendance, children }) {
     useEffect(() => {
         if (isSubjectSuccess && isClassSuccess) {
             // Format the data to be used in the FilterComponent
-            const formattedDataSubjects = transformedFilterSubjects(subjectData.data);
-            const formatDataClasses = transformedFilterClasses(dataClass.data);
+            const formattedDataSubjects = transformedForSelector(subjectData.data, 'subject_id', 'subject_name');
+            const formatDataClasses = transformedForSelector(dataClass.data, 'class_id', 'class_name');
             // Set the state with the formatted data
             setSubjects([...allSelector, ...formattedDataSubjects]);
 
