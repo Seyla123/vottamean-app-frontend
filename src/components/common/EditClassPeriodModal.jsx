@@ -7,7 +7,6 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import {
   Typography,
   Box,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -15,12 +14,11 @@ import {
   IconButton,
   CircularProgress,
 } from '@mui/material';
-import { containerInput, timeInput } from '../../styles/classPeriod';
+import { timeInput } from '../../styles/classPeriod';
 import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import LoadingCircle from '../../components/loading/LoadingCircle';
 import { ClassPeriodValidator } from '../../validators/validationSchemas';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import {
@@ -35,22 +33,34 @@ function EditClassPeriodModal({ open, onClose, id }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useGetClassPeriodByIdQuery(id);
-  const [updateClassPeriod, { isUpdating, isUpdateError, isSuccess, error }] =
+  // useGetClassPeriodByIdQuery: a hook that returns a function to fetch a class period by ID
+  // skip: if the id is not provided, skip the query
+  const { data, isLoading } = useGetClassPeriodByIdQuery(id, { skip: !id });
+
+  // useUpdateClassPeriodMutation: a hook that returns a function to update a class period
+  const [updateClassPeriod, { isLoading: isUpdating, isError: isUpdateError, isSuccess, error }] =
     useUpdateClassPeriodMutation();
 
+  // startTime and endTime: the current values of the time fields
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+
+  // initialData: the initial values of the form fields
+  // it is used to check if there are any changes made to the form
+  const [initialData, setInitialData] = useState(null);
 
   const {
     handleSubmit,
     formState: { errors },
     setValue,
     clearErrors,
+    getValues
   } = useForm({
     resolver: yupResolver(ClassPeriodValidator),
   });
 
+  // When the data is received, format the start and end times
+  // and set the initial values of the form fields
   useEffect(() => {
     if (data) {
       const formattedStartTime = dayjs(data.data.start_time, 'HH:mm:ss');
@@ -66,19 +76,14 @@ function EditClassPeriodModal({ open, onClose, id }) {
         shouldValidate: true,
         shouldDirty: true,
       });
+      setInitialData(getValues())
     }
   }, [data, setValue]);
 
+  // when update is failed, show a snackbar with an error message
+  // when update is successful, show a snackbar with a success message
   useEffect(() => {
-    if (isUpdating) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Updating...',
-          severity: 'info',
-        }),
-      );
-    } else if (isUpdateError) {
+    if (isUpdateError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -94,28 +99,40 @@ function EditClassPeriodModal({ open, onClose, id }) {
           severity: 'success',
         }),
       );
-      navigate('/admin/class-periods');
     }
   }, [isUpdating, isUpdateError, isSuccess, dispatch, error, navigate]);
 
-  const onClickNext = async () => {
+  const onSubmit = async () => {
     const formattedStartTime = startTime.format('HH:mm:ss');
     const formattedEndTime = endTime.format('HH:mm:ss');
-    try {
-      await updateClassPeriod({
-        id,
-        start_time: formattedStartTime,
-        end_time: formattedEndTime,
-      });
-      onClose();
-    } catch (error) {
-      console.log('Failed to update class period:', error);
+    // Check if any of the form data has changed
+    const formData = getValues();
+    const hasChanges = Object.keys(formData).some(
+      (key) => formData[key] !== initialData[key],
+    );
+
+    // If no changes were made, show a message and exit
+    if (!hasChanges) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'No changes made.',
+          severity: 'info',
+        }),
+      );
+      return;
     }
+    await updateClassPeriod({
+      id,
+      start_time: formattedStartTime,
+      end_time: formattedEndTime,
+    });
+    onClose();
   };
 
   return (
     <BootstrapDialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      <DialogTitle>Edit Class Period</DialogTitle>
+      <DialogTitle>Update Class Period</DialogTitle>
       <IconButton
         onClick={onClose}
         sx={(theme) => ({
@@ -143,6 +160,7 @@ function EditClassPeriodModal({ open, onClose, id }) {
             <DemoContainer
               components={['TimePicker', 'TimePicker', 'TimePicker']}
             >
+
               <Stack spacing={2}>
                 <Box>
                   <Typography variant="body2" fontWeight="bold">
@@ -207,10 +225,10 @@ function EditClassPeriodModal({ open, onClose, id }) {
         <StyledButton onClick={onClose}>Cancel</StyledButton>
         <StyledButton
           variant={'contained'}
-          onClick={handleSubmit(onClickNext)}
-          disabled={isLoading}
+          onClick={handleSubmit(onSubmit)}
+          disabled={isUpdating || isLoading}
         >
-          Update
+          {isUpdating ? 'Updating...' : 'Update'}
         </StyledButton>
       </DialogActions>
     </BootstrapDialog>

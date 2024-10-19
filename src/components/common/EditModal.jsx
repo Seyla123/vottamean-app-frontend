@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -30,7 +29,6 @@ const EditModal = ({
   open,
   onClose,
   title,
-  description,
   fields,
   validationSchema,
   id,
@@ -39,6 +37,7 @@ const EditModal = ({
 }) => {
   // data: data from Redux store of the record to be edited
   // isLoading: boolean indicating if the data is still being fetched
+  // skip: if the id is not provided, skip the query
   const { data, isLoading } = getDataQuery(id, { skip: !id });
 
   // initialData: the initial values of the form fields
@@ -240,9 +239,14 @@ const EditModal = ({
 
       <DialogContent dividers>
         {isLoading ? (
-          <Stack spacing={2} alignItems="center" justifyContent="center">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
             <CircularProgress />
-          </Stack>
+          </Box>
         ) : (
           <Stack spacing={2}>
             {fields.map((field) => (
@@ -271,7 +275,7 @@ const EditModal = ({
           variant="contained"
           color="primary"
           size="small"
-          disabled={isUpdating}
+          disabled={isUpdating || isLoading}
         >
           {isUpdating ? 'Updating...' : 'Update'}
         </StyledButton>
