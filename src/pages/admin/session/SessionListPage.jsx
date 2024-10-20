@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import { useNavigate } from 'react-router-dom';
@@ -176,7 +176,6 @@ function SessionListPage() {
     deleteManySessions(selectedIds).unwrap();
   };
 
-  // const {}
 
   // if loading, show loading circle
   if (isLoading) {
@@ -187,8 +186,6 @@ function SessionListPage() {
   if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
-
-  console.log(selectSession);
 
   const dataToView = [
     {
@@ -208,7 +205,7 @@ function SessionListPage() {
       icon: <Clock size={18} />,
     },
     {
-      Duration: selectSession?.day,
+      Duration: selectSession?.duration,
       icon: <Timer size={18} />,
     },
     {

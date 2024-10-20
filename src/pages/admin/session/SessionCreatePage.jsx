@@ -87,6 +87,8 @@ const SessionCreatePage = () => {
     await createSession(sessionData).unwrap();
   };
 
+  // when create is failed, show a snackbar with an error message
+  // when create is successful, show a snackbar with a success message and close the create modal
   useEffect(() => {
     if (isError) {
       dispatch(
@@ -106,7 +108,7 @@ const SessionCreatePage = () => {
       );
       navigate('/admin/sessions');
     }
-  }, [isLoading, isError, isSuccess, dispatch, error, navigate]);
+  }, [isError, isSuccess, dispatch, error, navigate]);
 
   return (
     <FormComponent
@@ -174,7 +176,7 @@ const SessionCreatePage = () => {
           marginTop={{ xs: 2, sm: 0 }}
         >
           <StyledButton
-            onClick={()=>navigate('/admin/sessions')}
+            onClick={() => navigate('/admin/sessions')}
             fullWidth
             variant="outlined"
             color="inherit"
