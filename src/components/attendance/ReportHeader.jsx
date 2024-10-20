@@ -1,10 +1,9 @@
 import React from "react";
-import { Box, Typography, Avatar } from "@mui/material";
+import { Box} from "@mui/material";
 import StatusGrid from "./StatusGrid"; 
-import CalendarImage from "../../assets/icon/calendar.png"; 
-import { tableShadow } from "../../styles/global"; 
+import { shadow } from "../../styles/global"; 
 
-const ReportHeader = ({ title,data }) => {
+const ReportHeader = ({ data }) => {
 
   const dataCount = data.reduce((acc, { status, total }) => {
     acc[status.charAt(0).toUpperCase() + status.slice(1)] = total; // Capitalizes the first letter
@@ -29,6 +28,7 @@ const cardGrid = {
   alignItems: "center",
   width: "100%",
   backgroundColor: "white",
+  ...shadow
 };
 
 const boxGrid = {
