@@ -13,6 +13,11 @@ build-backend:
   variables:
     DOCKER_DRIVER: overlay2
   script:
+    # Install Docker
+    # Display cicd vairables for testing
+    - echo "CICD variables:"
+    - if [ -z "$MY_VARIABLE" ]; then echo "MY_VARIABLE is not set"; else echo "MY_VARIABLE is set to $MY_VARIABLE"; fi
+
     # Log into Docker registry
     - echo "Logging in to Docker registry..."
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
@@ -36,13 +41,17 @@ deploy-backend:
     - apt-get update && apt-get install -y rsync openssh-client
 
   script:
+    # Display cicd vairables for testing
+    - echo "CICD variables:"
+    - if [ -z "$MY_VARIABLE" ]; then echo "MY_VARIABLE is not set"; else echo "MY_VARIABLE is set to $MY_VARIABLE"; fi
+
     # Set up SSH
     - echo "Setting up SSH..."
+    - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H ec2-44-206-226-251.compute-1.amazonaws.com >> ~/.ssh/known_hosts
-    - eval $(ssh-agent -s)
 
     # Deploy the application on the EC2 instance using rsync
     - echo "Deploying backend using rsync..."
