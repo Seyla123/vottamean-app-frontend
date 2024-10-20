@@ -12,10 +12,12 @@ export const studentApi = baseApi.injectEndpoints({
           limit: data.limit,
           class_id: data.class_id,
           search: data.search,
+          active:1
         } : {
           page: data.page,
           limit: data.limit,
           search: data.search,
+          active:1
         },
         credentials: 'include',
       }),
