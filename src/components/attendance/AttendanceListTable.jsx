@@ -156,8 +156,6 @@ const AttendanceListTable = ({
     isMobile ? !hideColumns.includes(col.id) : true
   );
 
-
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -233,16 +231,6 @@ const AttendanceListTable = ({
                       <TableCell key={column.id}>
                         {column.id === 'name' ? (
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Avatar
-                              src={row.img}
-                              alt={`Avatar ${row.name}`}
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                marginRight: '8px',
-                                objectFit: 'cover',
-                              }}
-                            />
                             {row[column.id]}
                           </Box>
                         ) : column.id === 'id' ? (
