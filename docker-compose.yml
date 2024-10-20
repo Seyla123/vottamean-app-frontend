@@ -2,10 +2,16 @@ version: '3'
 services:
   client:
     build:
-      context: . # The current directory where the DockerFile is located
+      context: . # The current directory where the Dockerfile is located
       dockerfile: DockerFile
     image: 'git.clp.kr:5050/anbschool/2nd/hexcode/team-projects/wavetrack-client:latest'
     container_name: client
     restart: always
     ports:
       - '5173:80'
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    driver: bridge 
