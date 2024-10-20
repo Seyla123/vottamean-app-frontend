@@ -67,7 +67,7 @@ function SubjectListPage() {
 
   // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
   const { data, isLoading, isSuccess, isError, error, isFetching } =
-    useGetSubjectsQuery({ active:1 , page: page + 1, limit: rowsPerPage });
+    useGetSubjectsQuery({ active: 1, page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
   const [
@@ -154,20 +154,10 @@ function SubjectListPage() {
     dispatch,
   ]);
 
-  // when create is in progress, show a snackbar with a message "Creating..."
   // when create is failed, show a snackbar with an error message
   // when create is successful, show a snackbar with a success message and close the create modal
   useEffect(() => {
-    if (isCreating) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Creating...',
-          severity: 'info',
-        }),
-      );
-      setCreateModalOpen(false);
-    } else if (isCreateSuccess) {
+    if (isCreateSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -185,7 +175,7 @@ function SubjectListPage() {
         }),
       );
     }
-  }, [isCreateError, isCreateSuccess, isCreating, dispatch]);
+  }, [isCreateError, isCreateSuccess, dispatch]);
 
   // Handle page change
   const handleChangePage = (newPage) => {
@@ -230,7 +220,7 @@ function SubjectListPage() {
     await deleteManySubjects(selectedIds).unwrap();
   };
   // Get the selected subject details
-  const { subject_name, description, createdAt } = selectedSubject;
+  const { subject_name, description, createdAt, updatedAt } = selectedSubject;
 
   // subject data details
   const subjectDataDetails = [
@@ -239,7 +229,7 @@ function SubjectListPage() {
       icon: <Book size={18} />,
     },
     {
-      Description: description,
+      Description: description || 'N/A',
       icon: <LetterText size={18} />,
     },
     { 'Created at': formatDate(createdAt), icon: <Calendar size={18} /> },
@@ -323,6 +313,7 @@ function SubjectListPage() {
         onSubmit={handleCreate}
         validationSchema={SubjectValidator}
         submitText={'Create Subject'}
+        isLoading={isCreating}
       />
 
       {/* EDIT SUBJECT MODAL */}
