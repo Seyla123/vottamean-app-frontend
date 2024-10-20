@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 // - Material UI Components
-import { Typography, Box, CardContent, Chip, Grid, Stack } from '@mui/material';
+import { Typography, Box, CardContent, Chip, Grid, Stack, CircularProgress } from '@mui/material';
 import { Crown, GraduationCap, UsersIcon } from 'lucide-react';
 
 // - Custom Components
@@ -14,12 +14,14 @@ import StaticTable from '../../../components/common/StaticTable';
 
 // - Redux APIs
 import { useGetUserProfileQuery } from '../../../services/userApi';
+import { useGetAllStudentsQuery } from '../../../services/studentApi';
+import { useGetAllTeachersQuery } from '../../../services/teacherApi';
 
 // - User Data Formatted
 import { getUserProfileDataLayout } from '../../../utils/formatData';
 import DateCalendarCard from '../../../components/common/DateCalendarCard';
 import ShortcutCard from '../../../components/teacherSite/ShortcutCard';
-
+import { teacherData } from '../../../utils/formatData';
 // Image
 import createTeacherImage from '../../../assets/images/create-teacher.svg';
 import createClassPeriodImage from '../../../assets/images/create-class-period.svg';
@@ -31,6 +33,7 @@ import SectionTitle from '../../../components/common/SectionTitle';
 import TitleHeader from '../../../components/common/TitleHeader';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import { Link } from 'react-router-dom';
+
 
 const teacherArr = [
   {
@@ -62,43 +65,89 @@ const teacherArr = [
     phonenumber: '098 123 456',
   },
 ];
+const shortcutCards = [
+  {
+    title: "Add Teachers",
+    description: "Create teacher accounts to unlock dashboard access, enabling efficient management of attendance, grades, and classroom activities.",
+    icon: createTeacherImage,
+    href: "/admin/teachers",
+    buttonText: "Add Teacher",
+  },
+  {
+    title: "Set Class Times",
+    description: "Define class periods to optimize the school day, balance subjects, and create a productive learning environment for students and teachers.",
+    icon: createClassPeriodImage,
+    href: "/admin/class-periods",
+    buttonText: "Set Periods",
+  },
+  {
+    title: "Create Classrooms",
+    description: "Set up virtual or physical classrooms to organize students, allocate resources, and create focused environments for specific subjects or age groups.",
+    icon: createClass,
+    href: "/admin/classes",
+    buttonText: "Create Class",
+  },
+  {
+    title: "Add Students",
+    description: "Add comprehensive student profiles to track academic progress, personalize learning experiences, and facilitate communication with parents.",
+    icon: createStudent,
+    href: "/admin/students",
+    buttonText: "Enroll Student",
+  },
+  {
+    title: "Add Subjects",
+    description: "Develop a rich academic offering by adding subjects like 'C++ Programming', ensuring a well-rounded and future-ready education for your students.",
+    icon: createSubject,
+    href: "/admin/subjects",
+    buttonText: "Add Subject",
+  },
+  {
+    title: "Schedule Classes",
+    description: "Create teaching sessions by combining teachers, classes, subjects, and schedules, ensuring smooth operations and optimal resource allocation.",
+    icon: createSession,
+    href: "/admin/sessions",
+    buttonText: "Schedule Session",
+  },
+];
 
 const teacherColumnArr = [
   { id: 'name', label: 'Full Name' },
   { id: 'email', label: 'Email' },
 ];
 
-const statusCard = [
-  {
-    id: 1,
-    title: 'Total Teachers',
-    amount: '1,248',
-    icon: <UsersIcon />,
-  },
-  {
-    id: 2,
-    title: 'Total Students',
-    amount: '2,500',
-    icon: <GraduationCap />,
-  },
-];
 
 function HomePage() {
   const [userData, setUserData] = useState({
     username: 'Username',
   });
+  const [totalStudent, setTotalStudent] = useState(0);
+  const [totalTeacher, setTotalTeacher] = useState(0);
+  const [shortListTeacher, setShortListTeacher] = useState([]);
+
+  const [getUserFirstName, setUserFirstName] = useState('');
 
   const { data: userDataProfile, isSuccess } = useGetUserProfileQuery();
 
-  const getUserFirstName = userDataProfile?.data?.adminProfile?.Info.first_name;
+  const { data: getAllStudent, isSuccess: isStudentSuccess, isLoading: isStudentLoading } = useGetAllStudentsQuery({ active: 1, page:1, limit: 5 });
+  const { data: getAllTeacher, isSuccess: isTeacherSuccess, isLoading: isTeacherLoading } = useGetAllTeachersQuery({ active: 1, page:1, limit: 5  });
+
 
   // - Fetch user data
   useEffect(() => {
-    if (isSuccess && userDataProfile) {
+    if (isSuccess && userDataProfile && isTeacherSuccess && isStudentSuccess) {
       const transformedData = getUserProfileDataLayout(userDataProfile);
       setUserData(transformedData);
+      setTotalStudent(getAllStudent.results);
+      setTotalTeacher(getAllTeacher.results);
+      setShortListTeacher(teacherData(getAllTeacher.data));
+      setUserFirstName(userDataProfile?.data?.adminProfile?.Info.first_name);
     }
-  }, [isSuccess, userDataProfile]);
+  }, [isSuccess, userDataProfile, isStudentSuccess, isTeacherSuccess]);
+  console.log('this is totalStudent ',getAllStudent );
+  console.log('this is totalTeacher ',totalTeacher );
+  console.log('this is shortListTeacher ',shortListTeacher );
+
+
 
   // Get the current hour to determine the appropriate greeting
   const currentHour = new Date().getHours();
@@ -110,7 +159,20 @@ function HomePage() {
   } else if (currentHour < 18) {
     greeting = 'Good afternoon';
   }
-
+  const statusCard = [
+    {
+      id: 1,
+      title: 'Total Teachers',
+      amount: totalTeacher,
+      icon: <UsersIcon />,
+    },
+    {
+      id: 2,
+      title: 'Total Students',
+      amount: totalStudent,
+      icon: <GraduationCap />,
+    },
+  ];
   const GreetingCard = () => {
     return (
       <Box
@@ -133,7 +195,7 @@ function HomePage() {
             {greeting}, {getUserFirstName} 👋
           </Typography>
           <Typography variant="subtitle1">
-            Welcome to your admin dashboard
+            Welcome to your admin's home
           </Typography>
         </Box>
 
@@ -165,7 +227,12 @@ function HomePage() {
           background: '#FFFFFF',
         }}
       >
-        {statusCard?.map((item) => (
+        {isStudentLoading || isTeacherLoading ?  
+        <Box  sx={{ display: 'flex',width: '100%', height:'100%', justifyContent: 'center', alignItems: 'center' }}>
+          <CircularProgress/>
+        </Box>
+        :
+        statusCard?.map((item) => (
           <Grid container key={item.id}>
             <Grid item>
               <Box
@@ -205,7 +272,7 @@ function HomePage() {
         justifyContent={'space-between'}
         alignItems={'center'}
       >
-        <TitleHeader title={'Dashboard'} />
+        <TitleHeader title={'Home'} />
         <Link to={'/admin/payment'}>
           <StyledButton
             variant={'outlined'}
@@ -234,48 +301,16 @@ function HomePage() {
             }
           />
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <ShortcutCard
-              title="Add Teachers"
-              description="Create teacher accounts to unlock dashboard access, enabling efficient management of attendance, grades, and classroom activities."
-              icon={createTeacherImage}
-              href="/admin/teachers"
-              buttonText="Add Teacher"
-            />
-            <ShortcutCard
-              title="Set Class Times"
-              description="Define class periods to optimize the school day, balance subjects, and create a productive learning environment for students and teachers."
-              icon={createClassPeriodImage}
-              href="/admin/class-periods"
-              buttonText="Set Periods"
-            />
-            <ShortcutCard
-              title="Create Classrooms"
-              description="Set up virtual or physical classrooms to organize students, allocate resources, and create focused environments for specific subjects or age groups."
-              icon={createClass}
-              href="/admin/classes"
-              buttonText="Create Class"
-            />
-            <ShortcutCard
-              title="Add Students"
-              description="Add comprehensive student profiles to track academic progress, personalize learning experiences, and facilitate communication with parents."
-              icon={createStudent}
-              href="/admin/students"
-              buttonText="Enroll Student"
-            />
-            <ShortcutCard
-              title="Add Subjects"
-              description="Develop a rich academic offering by adding subjects like 'C++ Programming', ensuring a well-rounded and future-ready education for your students."
-              icon={createSubject}
-              href="/admin/subjects"
-              buttonText="Add Subject"
-            />
-            <ShortcutCard
-              title="Schedule Classes"
-              description="Create teaching sessions by combining teachers, classes, subjects, and schedules, ensuring smooth operations and optimal resource allocation."
-              icon={createSession}
-              href="/admin/sessions"
-              buttonText="Schedule Session"
-            />
+            {shortcutCards.map((card, index) => (
+              <ShortcutCard
+                key={index}
+                title={card.title}
+                description={card.description}
+                icon={card.icon}
+                href={card.href}
+                buttonText={card.buttonText}
+              />
+            ))}
           </Box>
         </Grid>
         <Grid item xs={12} lg={4}>
@@ -284,7 +319,7 @@ function HomePage() {
             subtitle={"View and manage your school's teaching staff"}
           />
           <StaticTable
-            rows={teacherArr}
+            rows={shortListTeacher}
             columns={teacherColumnArr}
             hideColumns={['name']}
           />
