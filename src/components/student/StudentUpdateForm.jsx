@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Box, MenuItem,Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, MenuItem,Select, Stack, Typography } from '@mui/material';
 import { UserRoundPen } from 'lucide-react';
 import dayjs from 'dayjs';
 
@@ -44,7 +44,7 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
 
 
   // Fetch classes data
-  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery();
+  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery({ active: 1 });
 
   // Local State
   const [dob, setDob] = useState(null);
