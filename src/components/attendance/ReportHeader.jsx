@@ -31,22 +31,3 @@ const cardGrid = {
   ...shadow
 };
 
-const boxGrid = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-  p: 2,
-};
-
-const avatar = {
-  width: {
-    xs: "80px",
-    sm: "100px",
-  },
-  height: {
-    xs: "80px",
-    sm: "100px",
-  },
-  objectFit: "cover",
-};
