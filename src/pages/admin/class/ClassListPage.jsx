@@ -258,10 +258,12 @@ const ClassListPage = () => {
     },
   ];
 
+  console.log(selectedClass);
+  
   const dataToView = [
     { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },
-    { Description: selectedClass?.description, icon: <LetterText size={18} /> },
-    { Status: selectedClass?.active, icon: <CircleDashed size={18} /> },
+    { Description: selectedClass?.description || 'N/A', icon: <LetterText size={18} /> },
+    // { Status: selectedClass?.active, icon: <CircleDashed size={18} /> },
     {
       'Created at': formatDate(selectedClass?.createdAt),
       icon: <Calendar size={18} />,
