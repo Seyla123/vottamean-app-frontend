@@ -20,6 +20,8 @@ import { Close as CloseIcon } from '@mui/icons-material';
 import { BootstrapDialog } from './BootstrapDialog';
 import viewImage from '../../assets/images/data-storage.svg';
 import StyledButton from './StyledMuiButton';
+import StatusChip from './StatusChip';
+import { boolean } from 'yup';
 
 const ViewModal = ({ open, onClose, title, description, data }) => {
   const theme = useTheme();
@@ -43,21 +45,7 @@ const ViewModal = ({ open, onClose, title, description, data }) => {
                   primary={
                     key === 'Status' ? (
                       value ? (
-                        <Chip
-                          size="small"
-                          sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
-                          icon={
-                            <Box
-                              sx={{
-                                width: 10,
-                                height: 10,
-                                borderRadius: '50%',
-                                bgcolor: '#059212',
-                              }}
-                            />
-                          }
-                          label="Active"
-                        />
+                          <StatusChip statusId={value} />
                       ) : (
                         <Chip
                           size="small"

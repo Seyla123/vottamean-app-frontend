@@ -243,7 +243,7 @@ const AttendanceListPage = () => {
 
   console.log('this selected attendance : ', selectedAttendance);
 
-  const { className, studentId, subject, time, date, name, teacherName, day, status, address } = selectedAttendance;
+  const { className, studentId, subject, time, date, name, teacherName, day, status, address, statusId } = selectedAttendance;
   const attendanceDetail = [
     {
       'Student ID': studentId,
@@ -258,7 +258,7 @@ const AttendanceListPage = () => {
       icon: <MapPinHouse size={18} />,
     },
     {
-      Status: status,
+      Status: statusId,
       icon: <FolderPen size={18} />,
     },
     {

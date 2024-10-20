@@ -40,7 +40,6 @@ const columns = [
 
 function SubjectListPage() {
   const dispatch = useDispatch();
-  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // rows : The data to be displayed in the table
   const [rows, setRows] = useState([]);
@@ -165,7 +164,7 @@ function SubjectListPage() {
           severity: 'success',
         }),
       );
-      setEditModalOpen(false);
+      setCreateModalOpen(false);
     } else if (isCreateError) {
       dispatch(
         setSnackbar({
@@ -220,7 +219,7 @@ function SubjectListPage() {
     await deleteManySubjects(selectedIds).unwrap();
   };
   // Get the selected subject details
-  const { subject_name, description, createdAt, updatedAt } = selectedSubject;
+  const { subject_name, description, createdAt } = selectedSubject;
 
   // subject data details
   const subjectDataDetails = [
@@ -250,13 +249,7 @@ function SubjectListPage() {
     },
   ];
 
-  useEffect(() => {
-    if (!isLoading && !isFetching) {
-      setIsPageLoading(false);
-    }
-  }, [isLoading, isFetching]);
-
-  if (isPageLoading) {
+  if (isLoading) {
     return <LoadingCircle />;
   }
 
