@@ -41,12 +41,12 @@ deploy-backend:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H ec2-44-203-85-14.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+    - ssh-keyscan -H ec2-44-206-226-251.compute-1.amazonaws.com >> ~/.ssh/known_hosts
     - eval $(ssh-agent -s)
 
     # Deploy the application on the EC2 instance using rsync
     - echo "Deploying backend using rsync..."
-    - rsync -avz --delete --exclude='.git' --exclude='node_modules' ./ ubuntu@ec2-44-203-85-14.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client/
+    - rsync -avz --delete --exclude='.git' --exclude='node_modules' ./ ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client/
 
     # SSH into EC2, log in to the Docker registry, and restart the application
     - echo "Logging in to Docker registry and restarting application on EC2..."
