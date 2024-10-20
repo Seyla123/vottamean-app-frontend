@@ -62,7 +62,7 @@ function SessionListPage() {
 
   // useGetSessionsQuery : a hook that returns a function to fetch all session records
   const { data, isError, isLoading, isSuccess, isFetching } =
-    useGetSessionsQuery({ page: page + 1, limit: rowsPerPage });
+    useGetSessionsQuery({ active:1, page: page + 1, limit: rowsPerPage});
 
   // useDeleteManySessionsMutation : returns a function to delete many sessions
   const [

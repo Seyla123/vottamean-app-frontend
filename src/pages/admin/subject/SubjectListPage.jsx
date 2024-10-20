@@ -67,7 +67,7 @@ function SubjectListPage() {
 
   // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
   const { data, isLoading, isSuccess, isError, error, isFetching } =
-    useGetSubjectsQuery({ page: page + 1, limit: rowsPerPage });
+    useGetSubjectsQuery({ active:1 , page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
   const [

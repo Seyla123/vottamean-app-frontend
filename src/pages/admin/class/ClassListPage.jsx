@@ -72,6 +72,7 @@ const ClassListPage = () => {
   //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
   const { data, isLoading, isSuccess, isError, error, isFetching } =
     useGetClassesDataQuery({
+      active:1,
       search: search,
       limit: rowsPerPage,
       page: page + 1,
