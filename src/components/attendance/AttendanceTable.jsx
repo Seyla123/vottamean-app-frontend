@@ -53,6 +53,8 @@ const AttendanceTable = ({
     isLoading,
     emptyTitle,
     emptySubTitle,
+    selectedClasses,
+    selectedSubjects
 }) => {
     const pdfRef = useRef();
 
@@ -404,7 +406,7 @@ const AttendanceTable = ({
                     icon={<Info size={18} />}
                 />
             </Box>
-            <AttendanceFilter reportAttendance />
+            <AttendanceFilter reportAttendance  selectedClasses={ selectedClasses} selectedSubjects={selectedSubjects} />
 
             <PdfDownloadContent
                 students={result}

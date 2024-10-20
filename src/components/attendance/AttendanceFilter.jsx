@@ -8,15 +8,12 @@ import {
 } from '@mui/material';
 import FilterComponent from '../common/FilterComponent';
 import { useEffect, useState } from 'react';
-import {
-    transformedForSelector
-} from '../../utils/formatHelper';
 import { Filter, BookIcon, LibraryIcon } from 'lucide-react';
 
 import DateRangePicker from './DateRangePicker';
+import { ensureOptionInList } from '../../utils/formatHelper';
 
-
-function AttendanceFilter({ reportAttendance, children }) {
+function AttendanceFilter({ reportAttendance, children , selectedSubjects, selectedClasses }) {
     const filterOptions = [
         { value: 'custom', label: 'Custom' },
         { value: 'today', label: 'Today' },
@@ -35,6 +32,7 @@ function AttendanceFilter({ reportAttendance, children }) {
             label: 'All',
         },
     ];
+
     // - subjects: the state of the subjects
     // - classes: the state of the classes
     // - filterPeriod: the seletor of the date periods
@@ -44,16 +42,17 @@ function AttendanceFilter({ reportAttendance, children }) {
 
     // Get the data from the subject and class api
     const { data: subjectData, isSuccess: isSubjectSuccess } =
-        useGetSubjectsQuery();
+        useGetSubjectsQuery({active:1});
     const { data: dataClass, isSuccess: isClassSuccess } =
-        useGetClassesDataQuery();
+        useGetClassesDataQuery({active:1});
 
     // When the data is loaded, format the data and set the state
     useEffect(() => {
         if (isSubjectSuccess && isClassSuccess) {
+            
             // Format the data to be used in the FilterComponent
-            const formattedDataSubjects = transformedForSelector(subjectData.data, 'subject_id', 'subject_name');
-            const formatDataClasses = transformedForSelector(dataClass.data, 'class_id', 'class_name');
+            const formattedDataSubjects = ensureOptionInList(subjectData?.data,selectedSubjects, 'subject_id', 'subject_name');
+            const formatDataClasses = ensureOptionInList(dataClass?.data,selectedClasses ,'class_id', 'class_name');
             // Set the state with the formatted data
             setSubjects([...allSelector, ...formattedDataSubjects]);
 

@@ -5,18 +5,12 @@ import CalendarImage from "../../assets/icon/calendar.png";
 import { tableShadow } from "../../styles/global"; 
 
 const ReportHeader = ({ title,data }) => {
-      // Calculate status counts
-  const dataCount = data.reduce((counts, row) => {
-    if (row.status) {
-      counts[row.status] = (counts[row.status] || 0) + 1;
-    }
-    return counts;
-  }, {
-    Present: 0,
-    Late: 0,
-    Permission: 0,
-    Absent: 0,
-  });
+
+  const dataCount = data.reduce((acc, { status, total }) => {
+    acc[status.charAt(0).toUpperCase() + status.slice(1)] = total; // Capitalizes the first letter
+    return acc;
+}, { Present: 0, Late: 0, Permission: 0, Absent: 0 });
+  
   return (
     <Box sx={cardGrid}>
 
