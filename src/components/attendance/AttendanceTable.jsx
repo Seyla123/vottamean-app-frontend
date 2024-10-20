@@ -27,6 +27,7 @@ import EmptyTable from '../common/EmptyTable';
 import ExportMenu from './ExportMenu';
 import { Info } from 'lucide-react'
 import AlertCard from '../common/AlertCard';
+import { shadow } from '../../styles/global';
 // Styled components for Table cells
 const StyledTableCell = styled(TableCell)(
     ({ theme, fontSize, maxWidth, minWidth, width }) => ({
@@ -396,18 +397,8 @@ const AttendanceTable = ({
                 handleExportPDF={exportPdfById}
                 handleExportXLSX={exportTableToXLSX}
             />
-            <Box sx={{ p: 2, maxWidth: '800px' }}>
-                <AlertCard
-                    title={'PDF Export Limitation'}
-                    description={
-                        `Please note: The PDF export is limited to 7 days and 25 records per page. Larger reports will be split across multiple pages.`
-                    }
-                    severity="info"
-                    icon={<Info size={18} />}
-                />
-            </Box>
+                <Stack bgcolor={'white'} borderRadius={'8px'} sx={shadow}>
             <AttendanceFilter reportAttendance  selectedClasses={ selectedClasses} selectedSubjects={selectedSubjects} />
-
             <PdfDownloadContent
                 students={result}
                 dates={dates}
@@ -553,6 +544,7 @@ const AttendanceTable = ({
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 labelRowsPerPage="Student per page"
             />
+                    </Stack>
         </>
     );
 };

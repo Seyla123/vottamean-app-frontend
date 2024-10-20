@@ -30,11 +30,11 @@ const SessionCreatePage = () => {
 
   const [createSession, { isLoading, isError, isSuccess, error }] =
     useCreateSessionMutation();
-  const { data: periodData } = useGetClassPeriodQuery();
-  const { data: classData } = useGetClassesDataQuery();
-  const { data: teacherData } = useGetAllTeachersQuery();
+  const { data: periodData } = useGetClassPeriodQuery({active: 1});
+  const { data: classData } = useGetClassesDataQuery({active: 1});
+  const { data: teacherData } = useGetAllTeachersQuery({active: 1});
   const { data: dayData } = useGetDayQuery();
-  const { data: subjectData } = useGetSubjectsQuery();
+  const { data: subjectData } = useGetSubjectsQuery({active: 1});
 
   const [periods, setPeriods] = useState([]);
   const [classes, setClasses] = useState([]);

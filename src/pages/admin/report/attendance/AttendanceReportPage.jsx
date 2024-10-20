@@ -40,7 +40,6 @@ const AttendanceReportPage = () => {
   return (
     <FormComponent title={"Attendance Report"}>
       <ReportHeader data={totalStatusSummary} />
-      <Stack bgcolor={'white'} borderRadius={'8px'} sx={shadow}>
         <AttendanceTable
           dates={dates}
           result={result}
@@ -53,8 +52,6 @@ const AttendanceReportPage = () => {
           selectedClasses={selectorClasses} 
           selectedSubjects={selectorSubjects}
         />
-
-      </Stack>
     </FormComponent>
   );
 };
