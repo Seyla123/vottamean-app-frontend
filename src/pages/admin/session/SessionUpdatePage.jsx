@@ -69,7 +69,7 @@ const SessionUpdatePage = () => {
       day_id: '',
     },
   });
-  console.log('this data session : ', session);
+
   useEffect(() => {
     if (session && isPeriodSuccess && isClassSuccess && isTeacherSuccess && isDaySuccess && isSubjectSuccess) {
       const dataSession = {
