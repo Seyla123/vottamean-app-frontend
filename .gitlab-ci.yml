@@ -3,59 +3,59 @@ stages:
   - build
   - deploy
 
-# Cache node_modules to speed up subsequent builds
-cache:
-  paths:
-    - node_modules/
-
-# Build job
-build-frontend:
+# Build Docker image job
+build-backend:
   stage: build
-  image: node:20
+  image: docker:latest
+  services:
+    - name: docker:dind
+      command: ['--insecure-registry=git.clp.kr:5050']
+  variables:
+    DOCKER_DRIVER: overlay2
   script:
-    - echo "Installing frontend dependencies..."
-    - npm install
-    - export NODE_OPTIONS="--max-old-space-size=4096"
-    - echo "Building frontend..."
-    - npm run build
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 1 week
+    # Log into Docker registry
+    - echo "Logging in to Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+
+    # Build and push Docker image
+    - echo "Building Docker image..."
+    - docker build -t "$CI_REGISTRY_IMAGE/frontend:latest" -f ./DockerFile .
+    - echo "Pushing Docker image to the registry..."
+    - docker push "$CI_REGISTRY_IMAGE/frontend:latest"
+
   only:
     - main
     - develop
 
-# Deploy job
-deploy-frontend:
+# Deploy job using rsync
+deploy-backend:
   stage: deploy
-  image: docker:24.0.5
-  services:
-    - name: docker:dind
-      command: ["--host=tcp://0.0.0.0:2375"]
-  variables:
-    DOCKER_HOST: tcp://docker:2375 # Use the alias and port to connect to the dind service.
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: "" # Disabling TLS for Docker communication.
+  image: ubuntu:20.04
   before_script:
-    - echo "Waiting for Docker to initialize..."
-    - sleep 20 # Adjust this based on how long it takes for Docker to start.
-    - docker info # Check if Docker is running
+    # Install rsync and SSH client
+    - apt-get update && apt-get install -y rsync openssh-client
+
   script:
-    - echo "Deploying frontend to EC2..."
-      # Docker login
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    # Set up SSH
+    - echo "Setting up SSH..."
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H ec2-44-203-85-14.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
 
-      # Build and push Docker image
-    - docker build -t $CI_REGISTRY_IMAGE/frontend:latest .
-    - docker push $CI_REGISTRY_IMAGE/frontend:latest
+    # Deploy the application on the EC2 instance using rsync
+    - echo "Deploying backend using rsync..."
+    - rsync -avz --delete --exclude='.git' --exclude='node_modules' ./ ubuntu@ec2-44-203-85-14.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client/
 
-    # SSH to EC2 and deploy the updated backend
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-34-207-85-212.compute-1.amazonaws.com "
+    # SSH into EC2, log in to the Docker registry, and restart the application
+    - echo "Logging in to Docker registry and restarting application on EC2..."
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@ec2-44-203-85-14.compute-1.amazonaws.com "
+      echo '$CI_REGISTRY_PASSWORD' | docker login -u '$CI_REGISTRY_USER' --password-stdin $CI_REGISTRY &&
       cd /home/ubuntu/wavetrack-client &&
-      git pull origin develop &&
       docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
-      docker-compose -f /home/ubuntu/wavetrack-client/docker-compose.yml up -d"
+      docker-compose -f /home/ubuntu/wavetrack-client/docker-compose.yml up -d --build
+      "
 
   environment:
     name: production
@@ -63,5 +63,3 @@ deploy-frontend:
   only:
     - main
     - develop
-  retry:
-    max: 2
