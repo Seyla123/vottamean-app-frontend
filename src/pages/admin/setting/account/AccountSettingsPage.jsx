@@ -24,7 +24,6 @@ import {
 
 // User Profile Data formatting
 import { getUserProfileData } from '../../../../utils/formatData';
-import { shadow } from '../../../../styles/global';
 import LoadingPage from '../../../LoadingPage';
 import { StyledTab } from '../../../../components/common/StyledTabs';
 import TitleHeader from '../../../../components/common/TitleHeader';
@@ -90,33 +89,26 @@ const AccountSettingsPage = () => {
     <FormComponent>
       <TitleHeader title={'Account Settings'} />
       <TabContext value={value}>
-        <Box
-          sx={{
-            borderRight: isMobile ? 'none' : 1,
-            borderColor: 'divider',
-          }}
+        <TabList
+          orientation={'horizontal'}
+          variant="scrollable"
+          onChange={handleChange}
+          aria-label="Vertical tabs"
+          sx={{ width: '100%' }}
         >
-          <TabList
-            orientation={'horizontal'}
-            variant="scrollable"
-            onChange={handleChange}
-            aria-label="Vertical tabs"
-            sx={{ width: '100%' }}
-          >
-            <StyledTab
-              label="Profile Information"
-              value="1"
-              // icon={<UserRound size={14} />}
-              iconPosition="start"
-            />
-            <StyledTab
-              label="Account Security"
-              value="2"
-              // icon={<Settings size={14} />}
-              iconPosition="start"
-            />
-          </TabList>
-        </Box>
+          <StyledTab
+            label="Profile Information"
+            value="1"
+            // icon={<UserRound size={14} />}
+            iconPosition="start"
+          />
+          <StyledTab
+            label="Account Security"
+            value="2"
+            // icon={<Settings size={14} />}
+            iconPosition="start"
+          />
+        </TabList>
 
         <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
           {/* MY PROFILE VIEW */}
