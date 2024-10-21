@@ -21,8 +21,9 @@ import {
   IconButton,
   Stack,
   capitalize,
+  InputAdornment,
 } from '@mui/material';
-import { UserRoundPen, Upload, Trash2 } from 'lucide-react';
+import { UserRoundPen, Upload, Trash2, ImagePlus, School } from 'lucide-react';
 
 // - Custom Components
 import DOBPicker from '../common/DOBPicker';
@@ -39,6 +40,8 @@ import { validationSchema } from '../teacher/TeacherInfo';
 import { useNavigate } from 'react-router-dom';
 // Redux Slice
 import { setSnackbar } from '../../store/slices/uiSlice';
+import RandomAvatar from '../common/RandomAvatar';
+import { useTheme } from '@emotion/react';
 
 const StudentForm = ({
   handleNext,
@@ -52,6 +55,7 @@ const StudentForm = ({
 }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
+  const theme = useTheme();
   const {
     data: classesData,
     isLoading,
@@ -68,6 +72,8 @@ const StudentForm = ({
           severity: 'error',
         }),
       );
+    } else {
+      console.log('Classes Data:', classesData); // Ensure the data is fetched correctly
     }
   }, [classesData, error]);
 
@@ -75,6 +81,7 @@ const StudentForm = ({
     control,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
     reset,
   } = useForm({
@@ -86,44 +93,57 @@ const StudentForm = ({
       gender: defaultValues.gender || '',
       dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
       address: defaultValues.address || '',
-      class_id: defaultValues.class_id || '',
+      class_id: defaultValues.class_id ? String(defaultValues.class_id) : null,
       photo: defaultValues.photo || '',
-      guardian_first_name: defaultValues.guardian_first_name || '',
-      guardian_last_name: defaultValues.guardian_last_name || '',
-      guardian_email: defaultValues.guardian_email || '',
-      guardian_phone_number: defaultValues.guardian_phone_number || '',
-      guardian_relationship: defaultValues.guardian_relationship || '',
+      guardianFirstName: defaultValues.guardian_first_name || '',
+      guardianLastName: defaultValues.guardian_last_name || '',
+      guardianEmail: defaultValues.guardian_email || '',
+      guardianPhoneNumber: defaultValues.guardian_phone_number || '',
+      guardianRelationship: defaultValues.guardian_relationship || '',
     },
   });
 
+  // Reset form and photo states when defaultValues change
   useEffect(() => {
     if (defaultValues) {
       reset({
         ...defaultValues,
+        class_id: defaultValues.class_id
+          ? String(defaultValues.class_id)
+          : null,
         dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
       });
       setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
 
+      // Clear old photo URL if it exists
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+
+      // Set new photo preview if exists
       if (defaultValues.photo) {
         const photoUrl =
           typeof defaultValues.photo === 'string'
             ? defaultValues.photo
             : URL.createObjectURL(defaultValues.photo);
         setPhotoPreview(photoUrl);
+        setPhotoFile(defaultValues.photo);
       }
     }
 
+    // Cleanup function
     return () => {
       if (photoPreview && typeof photoPreview !== 'string') {
         URL.revokeObjectURL(photoPreview);
       }
     };
-  }, [defaultValues, reset, photoPreview, setPhotoPreview]);
+  }, [defaultValues]);
 
   const onSubmit = (data) => {
+    console.log('data being submit form Student Form:', data);
     handleNext(true, {
       ...data,
-      gender: data.gender || '',
+      class_id: data.class_id ? Number(data.class_id) : null, // Converting to number
       dob: data.dob ? dob.toISOString() : null,
       photo: photoFile || photoPreview || null,
     });
@@ -135,7 +155,12 @@ const StudentForm = ({
     }
     setPhotoFile(null);
     setPhotoPreview(null);
-    setValue('photo', '');
+    setValue('photo', null);
+
+    // Reset file input 
+    if (photoPreviewRef.current) {
+      photoPreviewRef.current.value = '';
+    }
   };
 
   const handleCancel = () => {
@@ -148,29 +173,43 @@ const StudentForm = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction="column" gap={2}>
+        <Typography
+          mt={2}
+          alignSelf={'start'}
+          variant="h6"
+          component="h2"
+          fontWeight={'bold'}
+          gutterBottom
+        >
+          Student Information
+        </Typography>
         <Stack direction="row" gap={2} alignItems="center">
-          <Avatar
-            src={photoSrc}
-            alt="Profile"
-            ref={photoPreviewRef}
-            sx={{ width: '120px', height: '120px' }}
-          />
+          {photoPreview || photoFile ? (
+            <Avatar
+              src={photoSrc}
+              alt="Profile"
+              sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+            />
+          ) : (
+            <RandomAvatar size={140} />
+          )}
           <Stack direction="column" gap={2}>
             <input
               accept="image/*"
               type="file"
               id="photo-upload"
+              ref={photoPreviewRef}
               hidden
               onChange={handlePhotoChange}
             />
             <label htmlFor="photo-upload">
               <StyledButton
                 component="span"
-                startIcon={<Upload size={18} />}
+                startIcon={<ImagePlus size={18} />}
                 variant="contained"
                 size="small"
               >
-                Upload Photo
+                Upload
               </StyledButton>
             </label>
             <StyledButton
@@ -180,7 +219,7 @@ const StudentForm = ({
               startIcon={<Trash2 size={18} />}
               onClick={handleRemovePhoto}
             >
-              Delete
+              Remove
             </StyledButton>
           </Stack>
         </Stack>
@@ -239,7 +278,7 @@ const StudentForm = ({
               name="class_id"
               control={control}
               defaultValue={defaultValues.class_id || ''}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <>
                   <StyledTextField
                     {...field}
@@ -249,31 +288,53 @@ const StudentForm = ({
                     fullWidth
                     placeholder="Select Class"
                     disabled={isLoading}
-                    >
+                    error={Boolean(fieldState?.error)} // Use the fieldState.error to set the error state
+                    helperText={
+                      fieldState?.error ? fieldState.error.message : ''
+                    } // Show error message if available
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <School size={20} /> {/* Icon */}
+                        </InputAdornment>
+                      ),
+                    }}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (selected) => {
+                        if (!selected) {
+                          return (
+                            <span style={{ color: theme.palette.grey[400] }}>
+                              Class
+                            </span>
+                          );
+                        }
+
+                        // Find the class name from the classesData based on selected class_id
+                        const selectedClass = classesData?.data?.find(
+                          (classItem) =>
+                            classItem.class_id === Number(selected),
+                        );
+                        return selectedClass ? selectedClass.class_name : '';
+                      },
+                    }}
+                  >
                     <MenuItem value="" disabled>
                       {isLoading ? 'Loading classes...' : 'Select a class'}
                     </MenuItem>
-                    {/* Check if classesData is an array before mapping */}
-
-                    {classesData?.data?.map((classItem) => (
-                      <MenuItem
-                        key={classItem.class_id}
-                        value={classItem.class_id}
-                      >
-                        {classItem.class_name}
-                      </MenuItem>
-                    ))}
+                    {classesData?.data?.length ? (
+                      classesData.data.map((classItem) => (
+                        <MenuItem
+                          key={classItem.class_id}
+                          value={classItem.class_id}
+                        >
+                          {classItem.class_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>No classes available</MenuItem>
+                    )}
                   </StyledTextField>
-                  {errors.class_id && (
-                    <Typography variant="caption" color="error">
-                      {errors.class_id.message}
-                    </Typography>
-                  )}
-                  {error && (
-                    <Typography variant="caption" color="error">
-                      Failed to load classes
-                    </Typography>
-                  )}
                 </>
               )}
             />
@@ -386,9 +447,7 @@ export const studentValidationSchema = yup.object({
       ['Male', 'Female', 'Other'],
       'Gender must be either Male, Female, or Other',
     ),
-  class_id: yup
-    .string()
-    .required('Class is required'),
+  class_id: yup.number().required('Class is required'),
   dob: yup
     .string()
     .required('Date of birth is required')
