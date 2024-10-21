@@ -76,6 +76,7 @@ const TeacherListPage = () => {
     search: searchTerm,
     limit: rowsPerPage,
     page: page + 1,
+    active:1
   });
 
   // useDeleteTeacherMutation : a hook return function for Delete teacher
