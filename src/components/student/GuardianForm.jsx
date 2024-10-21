@@ -1,5 +1,5 @@
 // - React and third-party libraries
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,109 +21,82 @@ import { GuardianValidator } from '../../validators/validationSchemas';
 
 // - Redux Slices
 import { setSnackbar } from '../../store/slices/uiSlice';
-import { resetFormData } from '../../store/slices/studentSlice';
+// import { resetFormData } from '../../store/slices/studentSlice';
 
 // - Student API
 import { useCreateStudentMutation } from '../../services/studentApi';
 import StyledButton from '../common/StyledMuiButton';
+import dayjs from 'dayjs';
 
-const GuardianForm = ({ handleBack, handleFormChange }) => {
+const GuardianForm = ({
+  handleFormChange,
+  handleBack,
+  handleSubmitForm,
+  studentData,
+}) => {
   // - Dispatch actions
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const studentData = useSelector((state) => state.student);
+  // const studentData = useSelector((state) => state.student);
 
   // - Create Student API
   const [createStudent, { isLoading, isError, error, isSuccess }] =
     useCreateStudentMutation();
+  const [showPassword, setShowPassword] = useState(false);
 
-  // - Form control using react-hook-form and yup validation
+  // yup validation from account information schema
   const {
+    register,
     control,
     handleSubmit,
-    setValue,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(GuardianValidator),
     defaultValues: {
-      guardian_first_name: '',
-      guardian_last_name: '',
-      guardian_email: '',
-      guardian_relationship: '',
-      guardian_phone_number: '',
+      guardianFirstName: '',
+      guardianLastName: '',
+      guardianRelationship: '',
+      guardianEmail: '',
+      guardianPhoneNumber: '',
     },
   });
 
-  // - Load existing student data if available
-  useEffect(() => {
-    if (studentData) {
-      setValue('guardian_first_name', studentData.guardian_first_name || '');
-      setValue('guardian_last_name', studentData.guardian_last_name || '');
-      setValue('guardian_email', studentData.guardian_email || '');
-      setValue(
-        'guardian_relationship',
-        studentData.guardian_relationship || '',
-      );
-      setValue(
-        'guardian_phone_number',
-        studentData.guardian_phone_number || '',
-      );
-    }
-  }, [studentData, setValue]);
-
-  // - Form submission handler
+  // Form submit function
   const onSubmit = async (data) => {
-    const combinedData = { ...studentData, ...data };
-    handleFormChange(combinedData);
+    console.log('on submit on guardian:',data);
+    const formData = new FormData();
 
+    // Create an object with the form data
+    const formFields = {
+      guardianFirstName: data.guardianFirstName,  
+      guardianLastName: data.guardianLastName,    
+      guardianRelationship: data.guardianRelationship,
+      guardianPhoneNumber: data.guardianPhoneNumber,
+      guardianEmail: data.guardianEmail,
+      class_id: studentData.classId,
+      first_name: studentData.firstName,
+      last_name: studentData.lastName,
+      dob: dayjs(studentData.dob).format('YYYY-MM-DD'),
+      gender: studentData.gender,
+      phone_number: studentData.phoneNumber,
+      address: studentData.address || '',
+    };
+
+    // Append fields to FormData
+    Object.entries(formFields).forEach(([key, value]) =>
+      formData.append(key, value),
+    );
+
+    // Append the photo if it exists
+    if (studentData.photo) {
+      formData.append('photo', studentData.photo);
+    }
     try {
-      await createStudent(combinedData).unwrap();
-
-      // - Reset the form and Redux form data after successful submission
-      reset();
-      dispatch(resetFormData());
-    } catch (err) {
-      console.error('Failed to create student:', err);
+      await handleSubmitForm(formData);
+    } catch (error) {
+      console.error('Failed to sign up teacher:', error.message);
     }
   };
-
-  // - Snackbar notifications based on API status
-  useEffect(() => {
-    if (isLoading) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Creating new student....',
-          severity: 'info',
-          autoHideDuration: 6000,
-        }),
-      );
-    } else if (isError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error?.data?.message || 'An error occurred during signup',
-          severity: 'error',
-          autoHideDuration: 6000,
-        }),
-      );
-    } else if (isSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Created Successfully',
-          severity: 'success',
-          autoHideDuration: 6000,
-        }),
-      );
-      navigate('/admin/students');
-    }
-  }, [dispatch, isLoading, isError, error, isSuccess, navigate]);
-
-  // - Display loading state
-  if (isLoading) return <LoadingCircle />;
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -132,7 +105,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <InputField
-                name="guardian_first_name"
+                name="guardianFirstName"
                 control={control}
                 label="Guardian First Name"
                 placeholder="Guardian First Name"
@@ -142,7 +115,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <InputField
-                name="guardian_last_name"
+                name="guardianLastName"
                 control={control}
                 label="Guardian Last Name"
                 placeholder="Guardian Last Name"
@@ -154,14 +127,14 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
           {/* GUARDIAN CONTACT INFORMATION */}
           {/* Guardian Phone Number */}
           <PhoneInputField
-            name="guardian_phone_number"
+            name="guardianPhoneNumber"
             control={control}
             label="Contact Number"
             errors={errors}
           />
           {/* Guardian Email */}
           <InputField
-            name="guardian_email"
+            name="guardianEmail"
             control={control}
             label="Email"
             placeholder="Enter guardian email"
@@ -170,7 +143,7 @@ const GuardianForm = ({ handleBack, handleFormChange }) => {
           />
           {/* Guardian Relationship */}
           <InputField
-            name="guardian_relationship"
+            name="guardianRelationship"
             control={control}
             label="Relationship"
             placeholder="Relationship"
