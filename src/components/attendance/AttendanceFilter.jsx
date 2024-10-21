@@ -144,7 +144,7 @@ function AttendanceFilter({ reportAttendance, children , selectedSubjects, selec
                     />
                     <FilterComponent
                         value={filter.class}
-                        data={classes}
+                        data={reportAttendance && classes.length==0 ? ([{value: 'all', label: 'No class'}]) : classes}
                         onChange={handleClassChange}
                         placeholder={'Class'}
                         customStyles={{

@@ -19,7 +19,7 @@ const AttendanceReportPage = () => {
   const [totalStatusSummary, setTotalStatusSummary] = useState([]);
 
   const filter = useSelector((state) => state.attendance.filter);
-  const { data, isLoading, isError, isSuccess } = useGetReportAttendanceByClassQuery(filter);
+  const { data, isLoading, isError, isSuccess } = useGetReportAttendanceByClassQuery(filter, { skip: !filter.class });
 
   useEffect(() => {
     if (isSuccess) {

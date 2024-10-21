@@ -398,7 +398,7 @@ const AttendanceTable = ({
                 handleExportXLSX={exportTableToXLSX}
             />
                 <Stack bgcolor={'white'} borderRadius={'8px'} sx={shadow}>
-            <AttendanceFilter reportAttendance  selectedClasses={ selectedClasses} selectedSubjects={selectedSubjects} />
+            <AttendanceFilter reportAttendance  selectedClasses={selectedClasses} selectedSubjects={selectedSubjects} />
             <PdfDownloadContent
                 students={result}
                 dates={dates}
