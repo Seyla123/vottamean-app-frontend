@@ -20,7 +20,6 @@ import {
   CircularProgress,
   Box,
 } from '@mui/material';
-import StyledButton from './StyledMuiButton';
 import { useMediaQuery } from '@mui/material';
 import EmptyDataImage from '../../assets/images/empty-image.svg';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
@@ -238,7 +237,7 @@ const DataTable = ({
                 </IconButton>
               </TableCell>
             ) : (
-              <TableCell align="right"></TableCell>
+              <TableCell align="right" sx={{ maxWidth: '50px' }} >Action</TableCell>
             )}
           </TableRow>
         </TableHead>
@@ -271,7 +270,7 @@ const DataTable = ({
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
                       <TableCell key={column.id} align={column.align || 'left'}>
-                        {truncate(`${row[column.id]}`, isMobile ? 10 : 15) || 'N/A'}
+                        {truncate(`${row[column.id]}`, isMobile ? 10 : 35) || 'N/A'}
                       </TableCell>
                     ) : null,
                   )}
