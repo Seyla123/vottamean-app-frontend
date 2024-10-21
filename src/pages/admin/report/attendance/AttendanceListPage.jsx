@@ -321,8 +321,6 @@ const AttendanceListPage = () => {
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         id={selectedAttendance.attendanceId}
-        getDataQuery={useGetAttendanceQuery}
-        useUpdateDataMutation={useUpdateAttendanceMutation}
       />
     </FormComponent>
   );
