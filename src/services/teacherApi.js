@@ -67,6 +67,7 @@ export const teacherApi = baseApi.injectEndpoints({
         method: 'GET',
         params: {
           filter: data?.filter || '',
+          active : 1
         },
       }),
       providesTags: ['Teachers'],

@@ -3,9 +3,9 @@ import FormComponent from "../../../../components/common/FormComponent";
 import { useGetReportAttendanceByClassQuery } from "../../../../services/attendanceApi";
 import AttendanceTable from "../../../../components/attendance/AttendanceTable";
 import { useSelector } from "react-redux";
-import { Stack, Box } from "@mui/material";
-import { shadow } from "../../../../styles/global";
 import ReportHeader from "../../../../components/attendance/ReportHeader";
+import TitleHeader from '../../../../components/common/TitleHeader';
+
 const AttendanceReportPage = () => {
   const [reportData, setReportData] = useState({});
   const [toggleAttendanceKey, setToggleAttendanceKey] = useState(false);
@@ -38,7 +38,8 @@ const AttendanceReportPage = () => {
   };
 
   return (
-    <FormComponent title={"Attendance Report"}>
+    <FormComponent>
+      <TitleHeader title={'Attendance Report'} />
       <ReportHeader data={totalStatusSummary} />
         <AttendanceTable
           dates={dates}
