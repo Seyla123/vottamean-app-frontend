@@ -9,10 +9,14 @@ import {
     Paper,
     useMediaQuery,
     Typography,
-    Button
+    Button,
+    Box,
+    CircularProgress
 
 } from "@mui/material";
 import { shadow } from "../../styles/global";
+import EmptyDataImage from '../../assets/images/empty-image.svg';
+
 import { Link } from "react-router-dom";
 
 /**
@@ -43,7 +47,7 @@ import { Link } from "react-router-dom";
  * <StaticTable columns={columns} rows={rows} hideColumns={['email']} />
  */
 
-const StaticTable = ({ columns, rows, hideColumns = [] }) => {
+const StaticTable = ({ columns, rows, hideColumns = [], isLoading=false }) => {
 
 
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -79,7 +83,8 @@ const StaticTable = ({ columns, rows, hideColumns = [] }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {displayedRows.map((row, index) => (
+                    {isLoading ? <LoadingTable columns={columns} height={350}/> : 
+                    (displayedRows.length > 0 ? displayedRows.map((row, index) => (
                         <TableRow key={index}>
                             {columns.map((column) =>
                                 !hideColumns.includes(column.id) ||
@@ -90,12 +95,12 @@ const StaticTable = ({ columns, rows, hideColumns = [] }) => {
                                 ) : null
                             )}
                         </TableRow>
-                    ))}
+                    )) : <EmptyTable columns={columns} emptyTitle="No Teachers Found" emptySubTitle="No Teachers Available" />)}
                 </TableBody>
             </Table>
-            <Link to="/admin/students" >
+            <Link to="/admin/teachers" >
                 <Button sx={{ display: "flex", justifyContent: "center", width: "100%", paddingY: 1.5, color: 'primary.main', textTransform: "none" }}>
-                    View All Teachers
+                   {displayedRows.length > 0 ? "View All Teachers" : "Go to Teachers Page"}
                 </Button>
             </Link>
         </TableContainer>
@@ -103,3 +108,59 @@ const StaticTable = ({ columns, rows, hideColumns = [] }) => {
 };
 
 export default StaticTable;
+const LoadingTable = ({ columns, height }) => {
+    return (
+      <TableRow>
+        <TableCell
+          colSpan={columns.length + 2}
+          sx={{
+            height: height,
+            textAlign: 'center',
+            verticalAlign: 'middle',
+          }}
+        >
+          <CircularProgress />
+        </TableCell>
+      </TableRow>
+    );
+  };
+  const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
+    return (
+      <TableRow>
+        <TableCell
+          colSpan={columns.length + 2}
+          sx={{
+            height: '350px',
+            textAlign: 'center',
+            verticalAlign: 'middle',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <Box sx={{ width: '100%', height: '200px' }}>
+              <img
+                src={EmptyDataImage}
+                alt="empty"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+              />
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              {emptyTitle}
+            </Typography>
+            <Typography variant="body2">{emptySubTitle}</Typography>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
