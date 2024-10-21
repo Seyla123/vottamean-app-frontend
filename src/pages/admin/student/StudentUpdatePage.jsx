@@ -21,7 +21,7 @@ import GuardianUpdateForm from '../../../components/student/GuardianUpdateForm';
 import { KeyRound, User } from 'lucide-react';
 import { useTheme } from '@emotion/react';
 
-import { updateFormData } from '../../../store/slices/studentSlice';
+// import { updateFormData } from '../../../store/slices/studentSlice';
 import { useNavigate } from 'react-router-dom';
 
 
