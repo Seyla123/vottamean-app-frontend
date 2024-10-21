@@ -19,7 +19,7 @@ build-frontend:
 
     # Build and push Docker image
     - echo "Building Docker image..."
-    - docker build --no-cache -t "$CI_REGISTRY_IMAGE/frontend:latest" -f ./Dockerfile .
+    - docker build --no-cache -t "$CI_REGISTRY_IMAGE/frontend:latest" -f ./DockerFile .
     - echo "Pushing Docker image to the registry..."
     - docker push "$CI_REGISTRY_IMAGE/frontend:latest"
 
