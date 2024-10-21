@@ -65,47 +65,59 @@ const GuardianForm = ({
   });
 
   // Form submit function
+
   const onSubmit = async (data) => {
-  const formData = {
-    class_id: Number(studentData.class_id),
-    first_name: studentData.firstName,
-    last_name: studentData.lastName,
-    dob: dayjs(studentData.dob).format('YYYY-MM-DD'),
-    gender: studentData.gender,
-    phone_number: studentData.phoneNumber,
-    address: studentData.address || '',
-    guardian_first_name: data.guardianFirstName,
-    guardian_last_name: data.guardianLastName, 
-    guardian_relationship: data.guardianRelationship,
-    guardian_phone_number: data.guardianPhoneNumber,
-    guardian_email: data.guardianEmail
+   const formData = new FormData(); // Use `let` to allow modification
+    // Logging the student data
+    console.log('Student Data:', studentData);
+    // Create an object with the form data
+    const formFields = {
+      guardian_first_name: data.guardianFirstName,
+      guardian_last_name: data.guardianLastName,
+      guardian_relationship: data.guardianRelationship,
+      guardian_phone_number: data.guardianPhoneNumber,
+      guardian_email: data.guardianEmail,
+      class_id: Number(studentData.class_id),
+      first_name: studentData.firstName,
+      last_name: studentData.lastName,
+      dob: dayjs(studentData.dob).format('YYYY-MM-DD'),
+      gender: studentData.gender,
+      phone_number: studentData.phoneNumber,
+      address: studentData.address || '',
+    };
+  
+    // Append fields to FormData
+    Object.entries(formFields).forEach(([key, value]) =>
+      formData.append(key, value)
+    );
+  
+    // Append the photo if it exists
+    if (studentData.photo) {
+      console.log('Appending photo:', studentData.photo);
+      formData.append('photo', studentData.photo);
+    }
+  
+    try {
+      await handleSubmitForm(formData);
+    } catch (error) {
+      console.error('Error creating student:', error);
+    }
   };
-  console.log('formData:', formData);
-
-  if (studentData.photo) {
-    formData.photo = studentData.photo;
-  }
-
-  try {
-    await handleSubmitForm(formData);
-  } catch (error) {
-    console.error('Error creating student:', error);
-  }
-};
+  
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Guardian Name Inputs */}
         <Stack direction={'column'} gap={2}>
-        <Typography
-              alignSelf={'start'}
-              variant="h6"
-              component="h2"
-              fontWeight={'bold'}
-              gutterBottom
-            >
-              Guardian Information
-            </Typography>
+          <Typography
+            alignSelf={'start'}
+            variant="h6"
+            component="h2"
+            fontWeight={'bold'}
+            gutterBottom
+          >
+            Guardian Information
+          </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <InputField
