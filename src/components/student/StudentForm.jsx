@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
 import SomethingWentWrong from '../common/SomethingWentWrong';
 import LoadingCircle from '../loading/LoadingCircle';
+import * as yup from 'yup';
 
 // - Material UI Components
 import {
@@ -19,6 +20,7 @@ import {
   Avatar,
   IconButton,
   Stack,
+  capitalize,
 } from '@mui/material';
 import { UserRoundPen, Upload, Trash2 } from 'lucide-react';
 
@@ -29,331 +31,373 @@ import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import StyledButton from '../common/StyledMuiButton';
 import SubHeader from '../teacher/SubHeader';
-
+import { StyledTextField } from '../common/GenderSelect';
 // - Redux Slices and APIs
 import { useGetClassesDataQuery } from '../../services/classApi';
-import { updateFormData } from '../../store/slices/studentSlice';
-
-// - Validation
-import { StudentValidator } from '../../validators/validationSchemas';
-
+// import { updateFormData } from '../../store/slices/studentSlice';
+import { validationSchema } from '../teacher/TeacherInfo';
 import { useNavigate } from 'react-router-dom';
+// Redux Slice
+import { setSnackbar } from '../../store/slices/uiSlice';
 
-const StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
-  // - Dispatch actions
-  const dispatch = useDispatch();
+const StudentForm = ({
+  handleNext,
+  defaultValues = {},
+  handlePhotoChange,
+  photoFile,
+  setPhotoFile,
+  photoPreview,
+  setPhotoPreview,
+  photoPreviewRef,
+}) => {
   const navigate = useNavigate();
-
-  const studentData = useSelector((state) => state.student);
-
-  // - API Class
+  const [dob, setDob] = useState(null);
   const {
-    data: classData,
-    isLoading: isClassDataLoading,
-    error: classDataError,
-  } = useGetClassesDataQuery({ active: 1 });
+    data: classesData,
+    isLoading,
+    error,
+    isError,
+  } = useGetClassesDataQuery();
 
-  // - Local State
-  const [dob, setDob] = useState(
-    studentData.dob ? dayjs(studentData.dob) : null,
-  );
-
-  // - Class Rows State
-  const [rows, setRows] = useState([]);
-  const [isRowsLoading, setIsRowsLoading] = useState(true);
-
-  // - Image Upload States
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
-  // - Loading Class IDs
   useEffect(() => {
-    if (classData && Array.isArray(classData.data)) {
-      setRows(
-        classData.data.map((classItem) => ({
-          value: String(classItem.class_id),
-          label: classItem.class_name,
-        })),
-      );
-      setIsRowsLoading(false);
-    }
-  }, [classData]);
-
-  // - Form Handlers
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    reset,
-  } = useForm({
-    resolver: yupResolver(StudentValidator),
-    defaultValues: {
-      photo: studentData.photo || '',
-      first_name: studentData.first_name || '',
-      last_name: studentData.last_name || '',
-      gender: studentData.gender || '',
-      class_id: studentData.class_id ? String(studentData.class_id) : '',
-      phone_number: studentData.phone_number || '',
-      address: studentData.address || '',
-      dob: studentData.dob || '',
-    },
-  });
-
-  // - Image Upload Handlers
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (
-      file &&
-      file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
-    ) {
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    } else {
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Invalid image file',
+          message: 'Error fetching classes data',
           severity: 'error',
         }),
       );
     }
-  };
+  }, [classesData, error]);
 
-  // - Form Data Handlers tracking input changes
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(studentValidationSchema),
+    defaultValues: {
+      firstName: defaultValues.first_name || '',
+      lastName: defaultValues.last_name || '',
+      phoneNumber: defaultValues.phone_number || '',
+      gender: defaultValues.gender || '',
+      dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
+      address: defaultValues.address || '',
+      class_id: defaultValues.class_id || '',
+      photo: defaultValues.photo || '',
+      guardian_first_name: defaultValues.guardian_first_name || '',
+      guardian_last_name: defaultValues.guardian_last_name || '',
+      guardian_email: defaultValues.guardian_email || '',
+      guardian_phone_number: defaultValues.guardian_phone_number || '',
+      guardian_relationship: defaultValues.guardian_relationship || '',
+    },
+  });
+
   useEffect(() => {
-    if (studentData) {
-      setValue('photo', studentData.photo || '');
-      setValue('first_name', studentData.first_name || '');
-      setValue('last_name', studentData.last_name || '');
-      setValue('gender', studentData.gender || '');
-      const classId = String(studentData.class_id);
-      const isClassIdValid = rows.some((row) => row.value === classId);
-      setValue('class_id', isClassIdValid ? classId : '');
-      setValue('phone_number', studentData.phone_number || '');
-      setValue('address', studentData.address || '');
-      setDob(studentData.dob ? dayjs(studentData.dob) : null);
-    }
-  }, [studentData, setValue, rows]);
+    if (defaultValues) {
+      reset({
+        ...defaultValues,
+        dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
+      });
+      setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
 
-  // - Handle form submission
-  const onSubmit = (data) => {
-    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : null;
-
-    // - Create form data for submission
-    const formData = new FormData();
-
-    // - Append all fields from the data object to formData
-    Object.entries({ ...data, dob: formattedDob }).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    // - Append the file separately if selected
-    if (selectedFile) {
-      formData.append('photo', selectedFile);
+      if (defaultValues.photo) {
+        const photoUrl =
+          typeof defaultValues.photo === 'string'
+            ? defaultValues.photo
+            : URL.createObjectURL(defaultValues.photo);
+        setPhotoPreview(photoUrl);
+      }
     }
 
-    // - Dispatch only serializable data to Redux
-    const updatedData = {
-      ...data,
-      dob: formattedDob,
-      photoUrl: previewUrl,
+    return () => {
+      if (photoPreview && typeof photoPreview !== 'string') {
+        URL.revokeObjectURL(photoPreview);
+      }
     };
+  }, [defaultValues, reset, photoPreview, setPhotoPreview]);
 
-    // - Update the form data in Redux
-    dispatch(updateFormData(updatedData));
-    handleFormChange(updatedData);
-
-    // - Reset form
-    reset();
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    handleNext();
+  const onSubmit = (data) => {
+    handleNext(true, {
+      ...data,
+      gender: data.gender || '',
+      dob: data.dob ? dob.toISOString() : null,
+      photo: photoFile || photoPreview || null,
+    });
   };
 
-  // - Show loading circle while fetching class data
-  if (isClassDataLoading || isRowsLoading) {
-    return <LoadingCircle />;
-  }
+  const handleRemovePhoto = () => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setValue('photo', '');
+  };
 
-  // if there is an error fetching class data
-  if (classDataError) {
-    return <SomethingWentWrong customStyles={{ minHeight: '70vh' }} />;
-  }
+  const handleCancel = () => {
+    navigate('/admin/students');
+  };
+
+  const photoSrc =
+    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack direction={'column'} gap={2}>
-          {/* STUDENT PROFILE IMAGE UPLOAD */}
-          <Stack direction={'row'} gap={2} alignItems={'center'}>
-            <Avatar
-              src={previewUrl || studentData.photo}
-              alt="Profile"
-              sx={{ width: '120px', height: '120px' }}
-            />
-            <Stack direction={'column'} gap={2}>
-              <input
-                accept="image/*"
-                type="file"
-                id="photo-upload"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-              />
-              <label htmlFor="photo-upload">
-                <StyledButton
-                  component="span"
-                  startIcon={<Upload size={18} />}
-                  variant={'contained'}
-                  size="small"
-                  color="primary"
-                >
-                  Upload Photo
-                </StyledButton>
-              </label>
-
-              <StyledButton
-                color="error"
-                variant="outlined"
-                size="small"
-                startIcon={<Trash2 size={18} />}
-              >
-                Delete{' '}
-              </StyledButton>
-            </Stack>
-          </Stack>
-          {/* STUDENT NAME */}
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="first_name"
-                control={control}
-                label="First Name"
-                placeholder="First Name"
-                errors={errors}
-                icon={UserRoundPen}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="last_name"
-                control={control}
-                label="Last Name"
-                placeholder="Last Name"
-                errors={errors}
-                icon={UserRoundPen}
-                fullWidth
-              />
-            </Grid>
-
-            {/* STUDENT GENDER AND DATE OF BIRTH */}
-            <Grid item xs={12} sm={6}>
-              <GenderSelect
-                control={control}
-                errors={errors}
-                name="gender"
-                label="Gender"
-                defaultValue={studentData.gender || ''}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <DOBPicker
-                control={control}
-                errors={errors}
-                name="dob"
-                dob={dob}
-                setDob={setDob}
-                fullWidth
-              />
-            </Grid>
-            {/* STUDENT CLASS */}
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" fontWeight="bold" gutterBottom>
-                Class <span style={{ color: 'red' }}>*</span>
-              </Typography>
-              <Controller
-                name="class_id"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <>
-                    <Select
-                      {...field}
-                      value={field.value || ''}
-                      onChange={(e) => field.onChange(e.target.value)}
-                      displayEmpty
-                      fullWidth
-                    >
-                      <MenuItem value="" disabled>
-                        Select Class
-                      </MenuItem>
-                      {rows.length > 0 ? (
-                        rows.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem value="" disabled>
-                          No Class Available
-                        </MenuItem>
-                      )}
-                    </Select>
-                    {errors.class_id && (
-                      <Typography variant="caption" color="error">
-                        {errors.class_id.message}
-                      </Typography>
-                    )}
-                  </>
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* CONTACT INFORMATION */}
-              <PhoneInputField
-                name="phone_number"
-                control={control}
-                label="Contact Number"
-                errors={errors}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-
-          <InputField
-            name="address"
-            control={control}
-            label="Street Address"
-            placeholder="Phnom Penh, Street 210, ..."
-            errors={errors}
-            required={false}
-            multiline
-            minRows={5}
-            fullWidth
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Stack direction="column" gap={2}>
+        <Stack direction="row" gap={2} alignItems="center">
+          <Avatar
+            src={photoSrc}
+            alt="Profile"
+            ref={photoPreviewRef}
+            sx={{ width: '120px', height: '120px' }}
           />
-
-          {/* BUTTONS */}
-          <Stack direction={'row'} gap={1} justifyContent={'flex-end'}>
-            <StyledButton variant="outlined" size="small" onClick={handleClose}>
-              Cancel
-            </StyledButton>
+          <Stack direction="column" gap={2}>
+            <input
+              accept="image/*"
+              type="file"
+              id="photo-upload"
+              hidden
+              onChange={handlePhotoChange}
+            />
+            <label htmlFor="photo-upload">
+              <StyledButton
+                component="span"
+                startIcon={<Upload size={18} />}
+                variant="contained"
+                size="small"
+              >
+                Upload Photo
+              </StyledButton>
+            </label>
             <StyledButton
-              type="submit"
-              variant="contained"
-              color="primary"
+              color="error"
+              variant="outlined"
               size="small"
-              onClick={handleNext}
+              startIcon={<Trash2 size={18} />}
+              onClick={handleRemovePhoto}
             >
-              Continue
+              Delete
             </StyledButton>
           </Stack>
         </Stack>
-      </form>
-    </>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <InputField
+              name="firstName"
+              control={control}
+              label="First Name"
+              placeholder="First Name"
+              errors={errors}
+              icon={UserRoundPen}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <InputField
+              name="lastName"
+              control={control}
+              label="Last Name"
+              placeholder="Last Name"
+              errors={errors}
+              icon={UserRoundPen}
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <GenderSelect
+              control={control}
+              errors={errors}
+              name="gender"
+              label="Gender"
+              defaultValue=""
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <DOBPicker
+              control={control}
+              errors={errors}
+              name="dob"
+              dob={dob}
+              setDob={setDob}
+              fullWidth
+            />
+          </Grid>
+
+          {/* STUDENT CLASS */}
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body2" fontWeight="bold" gutterBottom>
+              Class <span style={{ color: 'red' }}>*</span>
+            </Typography>
+            <Controller
+              name="class_id"
+              control={control}
+              defaultValue={defaultValues.class_id || ''}
+              render={({ field }) => (
+                <>
+                  <StyledTextField
+                    {...field}
+                    value={field.value || ''}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    select
+                    fullWidth
+                    placeholder="Select Class"
+                    disabled={isLoading}
+                    >
+                    <MenuItem value="" disabled>
+                      {isLoading ? 'Loading classes...' : 'Select a class'}
+                    </MenuItem>
+                    {/* Check if classesData is an array before mapping */}
+
+                    {classesData?.data?.map((classItem) => (
+                      <MenuItem
+                        key={classItem.class_id}
+                        value={classItem.class_id}
+                      >
+                        {classItem.class_name}
+                      </MenuItem>
+                    ))}
+                  </StyledTextField>
+                  {errors.class_id && (
+                    <Typography variant="caption" color="error">
+                      {errors.class_id.message}
+                    </Typography>
+                  )}
+                  {error && (
+                    <Typography variant="caption" color="error">
+                      Failed to load classes
+                    </Typography>
+                  )}
+                </>
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <PhoneInputField
+              name="phoneNumber"
+              control={control}
+              label="Contact Number"
+              errors={errors}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
+
+        <InputField
+          name="address"
+          control={control}
+          label="Street Address"
+          placeholder="Phnom Penh, Street 210, ..."
+          errors={errors}
+          required={false}
+          multiline
+          minRows={5}
+          fullWidth
+        />
+
+        <Stack
+          direction="row"
+          alignSelf="flex-end"
+          justifyContent="flex-end"
+          width={{ xs: '100%', sm: '300px', md: '260px' }}
+          gap={2}
+          marginTop={{ xs: 2, sm: 0 }}
+        >
+          <StyledButton
+            fullWidth
+            variant="outlined"
+            color="inherit"
+            onClick={handleCancel}
+            size="small"
+          >
+            Cancel
+          </StyledButton>
+          <StyledButton
+            fullWidth
+            variant="contained"
+            type="submit"
+            size="small"
+          >
+            Submit
+          </StyledButton>
+        </Stack>
+      </Stack>
+    </form>
   );
 };
 
 export default StudentForm;
+// Define validation schema
+export const studentValidationSchema = yup.object({
+  firstName: yup
+    .string()
+    .trim()
+    .label('First Name')
+    .required('First name is required')
+    .matches(
+      /^[A-Za-z]+( [A-Za-z]+)*$/,
+      'Name must contain only alphabetic characters and single spaces between words',
+    )
+    .min(2, 'Name must be at least 2 characters long')
+    .max(40, 'Name must be less than 40 characters'),
+  lastName: yup
+    .string()
+    .trim()
+    .label('Last Name')
+    .required('Last name is required')
+    .matches(
+      /^[A-Za-z]+( [A-Za-z]+)*$/,
+      'Name must contain only alphabetic characters and single spaces between words',
+    )
+    .min(2, 'Name must be at least 2 characters long')
+    .max(40, 'Name must be less than 40 characters'),
+  phoneNumber: yup
+    .string()
+    .trim()
+    .required('Phone number is required')
+    .test(
+      'length',
+      'Phone number must be between 9 and 15 digits (excluding country code)',
+      (value) => {
+        // Extract the number part (after the country code)
+        const numberPart = value && value.replace(/[^0-9]/g, '');
+        return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
+      },
+    )
+    .matches(
+      /^\+\d{1,3}\s\d{1,3}.*$/,
+      'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    ),
+  photo: yup.mixed().nullable(),
+  gender: yup
+    .string()
+    .trim()
+    .transform((value) => capitalize(value))
+    // Transform the value before validation
+    .required('Gender is required')
+    .oneOf(
+      ['Male', 'Female', 'Other'],
+      'Gender must be either Male, Female, or Other',
+    ),
+  class_id: yup
+    .string()
+    .required('Class is required'),
+  dob: yup
+    .string()
+    .required('Date of birth is required')
+    .max(new Date(), 'Date of birth cannot be in the future')
+    .typeError('Invalid date format'),
+  address: yup
+    .string()
+    .trim()
+    .nullable()
+    .notRequired()
+    .max(200, 'Address must be less than 200 characters'),
+});
