@@ -18,6 +18,7 @@ import { classApi } from '../services/classApi';
 import { attendanceApi } from '../services/attendanceApi';
 import { teacherApi } from '../services/teacherApi';
 import { subjectApi } from '../services/subjectApi';
+import { studentApi } from '../services/studentApi';
 
 const store = configureStore({
   reducer: {
@@ -37,6 +38,7 @@ const store = configureStore({
     [attendanceApi.reducerPath]: attendanceApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [teacherApi.reducerPath]: teacherApi.reducer,
+    [studentApi.reducerPath]: studentApi.reducer,
   },
   // Middleware for API calls
   middleware: (getDefaultMiddleware) =>
@@ -46,6 +48,7 @@ const store = configureStore({
       teacherApi.middleware,
       subjectApi.middleware,
       classApi.middleware,
+      studentApi.middleware
     ),
 });
 
