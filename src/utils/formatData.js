@@ -273,17 +273,20 @@ export const getUserProfileUpdateData = (user) => {
 
 // Transform School Data for Updates
 export const getSchoolData = (user) => {
-  const profileKey = getProfileKey(user.data.role);
-  const profileSchools = user?.data[profileKey]?.School;
+  const profileKey = getProfileKey(user?.data?.role);
 
+  console.log('profileKey', profileKey);
+  
+  const profileSchools = user?.data[profileKey]?.School[0];
   if (!profileSchools) return {};
+  console.log('profileSchools', profileSchools);
 
   return {
     info_id: user.data[profileKey]?.info_id,
-    school_id: profileSchools.school_id,
-    school_name: profileSchools.school_name,
-    school_address: profileSchools.school_address,
-    school_phone_number: profileSchools.school_phone_number,
+    school_id: profileSchools?.school_id,
+    school_name: profileSchools?.school_name,
+    school_address: profileSchools?.school_address,
+    school_phone_number: profileSchools?.school_phone_number,
   };
 };
 
