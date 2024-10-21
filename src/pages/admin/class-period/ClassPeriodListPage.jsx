@@ -1,32 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Button } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Calendar,
   ClockArrowDown,
   ClockArrowUp,
-  FolderPen,
-  IdCard,
-  LetterText,
   PlusIcon,
   Timer,
-  CircleDashed,
 } from 'lucide-react';
-import { Chip } from '@mui/material';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import CreateModal from '../../../components/common/CreateModal';
-import EditModal from '../../../components/common/EditModal';
 import ViewModal from '../../../components/common/ViewModal';
 import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import {
   useGetClassPeriodQuery,
   useDeleteClassPeriodMutation,
   useCreateClassPeriodMutation,
-  useUpdateClassPeriodMutation,
-  useGetClassPeriodByIdQuery,
   useDeleteManyClassPeriodsMutation,
 } from '../../../services/classPeriodApi';
 import {
@@ -264,7 +256,7 @@ function ClassPeriodListPage() {
       icon: <ClockArrowDown size={18} />,
     },
     {
-      Period: selectedClassPeriod?.period,
+      'Duration': selectedClassPeriod?.period,
       icon: <Timer size={18} />,
     },
     {

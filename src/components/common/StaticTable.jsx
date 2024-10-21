@@ -8,9 +8,12 @@ import {
     TableRow,
     Paper,
     useMediaQuery,
-    TablePagination,
+    Typography,
+    Button
+
 } from "@mui/material";
 import { shadow } from "../../styles/global";
+import { Link } from "react-router-dom";
 
 /**
  * StaticTable Component
@@ -41,6 +44,8 @@ import { shadow } from "../../styles/global";
  */
 
 const StaticTable = ({ columns, rows, hideColumns = [] }) => {
+
+
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -78,7 +83,7 @@ const StaticTable = ({ columns, rows, hideColumns = [] }) => {
                         <TableRow key={index}>
                             {columns.map((column) =>
                                 !hideColumns.includes(column.id) ||
-                                !isMobile ? (
+                                    !isMobile ? (
                                     <TableCell key={column.id}>
                                         {row[column.id]}
                                     </TableCell>
@@ -88,15 +93,11 @@ const StaticTable = ({ columns, rows, hideColumns = [] }) => {
                     ))}
                 </TableBody>
             </Table>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            <Link to="/admin/students" >
+                <Button sx={{ display: "flex", justifyContent: "center", width: "100%", paddingY: 1.5, color: 'primary.main', textTransform: "none" }}>
+                    View All Teachers
+                </Button>
+            </Link>
         </TableContainer>
     );
 };

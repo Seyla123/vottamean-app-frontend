@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import dayjs from 'dayjs'
 const attendanceSlice = createSlice({
   name: 'attendance',
   initialState: {
@@ -8,8 +8,8 @@ const attendanceSlice = createSlice({
         class:"",
         filter:"",
         filterLabel:"All",
-        startDate:null,
-        endDate:null,
+        startDate:dayjs().format('YYYY-MM-DD'),
+        endDate:dayjs().format('YYYY-MM-DD'),
     }
   },
   reducers: {

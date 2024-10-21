@@ -115,7 +115,7 @@ const StudentListPage = () => {
 
   //useGetClassesDataQuery : a hook for return function to fetch classes record
   const { data: classesData, isSuccess: isClassesSuccess } =
-    useGetClassesDataQuery();
+    useGetClassesDataQuery({ active: 1 });
 
   //  when the student records are fetched successfully, transform the data and set the classes state
   useEffect(() => {

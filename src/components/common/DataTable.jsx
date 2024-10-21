@@ -271,7 +271,7 @@ const DataTable = ({
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
                       <TableCell key={column.id} align={column.align || 'left'}>
-                        {truncate(`${row[column.id]}`, isMobile ? 10 : 15)}
+                        {truncate(`${row[column.id]}`, isMobile ? 10 : 15) || 'N/A'}
                       </TableCell>
                     ) : null,
                   )}

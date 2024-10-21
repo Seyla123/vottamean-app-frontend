@@ -335,13 +335,6 @@ export const transformedFilterClasses = (classes) => {
   }));
 };
 
-export const transformedForFilter = (data, dataId, dataName) => {
-  return data.map((item) => ({
-    value: item.dataId,
-    label: item.dataName,
-  }));
-};
-
 // Function to transform the data
 export const transformMarkAttendancetTable = (apiResponse) => {
   return apiResponse.map((item) => ({
@@ -388,17 +381,17 @@ export const formatStudentFormData = (studentData) => {
   console.log(Info.dob ? dayjs(Info.dob) : null);
 
   return {
-    first_name: Info.first_name || '',
-    last_name: Info.last_name || '',
-    phone_number: Info.phone_number || '',
-    gender: Info.gender || '',
+    first_name: Info.first_name ||'N/A',
+    last_name: Info.last_name ||'N/A',
+    phone_number: Info.phone_number ||'N/A',
+    gender: Info.gender ||'N/A',
     dob: Info.dob || null, // Format DOB with dayjs
-    address: Info.address || '',
-    class_id: class_id ? String(class_id) : '',
-    guardian_first_name: guardian_first_name || '',
-    guardian_last_name: guardian_last_name || '',
-    guardian_email: guardian_email || '',
-    guardian_phone_number: guardian_phone_number || '',
-    guardian_relationship: guardian_relationship || '',
+    address: Info.address ||'N/A',
+    class_id: class_id ? String(class_id) :'N/A',
+    guardian_first_name: guardian_first_name ||'N/A',
+    guardian_last_name: guardian_last_name ||'N/A',
+    guardian_email: guardian_email ||'N/A',
+    guardian_phone_number: guardian_phone_number ||'N/A',
+    guardian_relationship: guardian_relationship ||'N/A',
   };
 };

@@ -7,6 +7,7 @@ export const attendanceApi = baseApi.injectEndpoints({
         url: `attendance`,
         method: 'GET',
         params: data.filter == 'custom' ? {
+          active:1,
           class_id: data.class,
           subject_id: data.subject,
           limit: data.limit,
@@ -14,6 +15,7 @@ export const attendanceApi = baseApi.injectEndpoints({
           gte_date: data.startDate,
           lte_date: data.endDate,
         } : {
+          active:1,
           class_id: data.class,
           subject_id: data.subject,
           filter: data.filter,
@@ -63,6 +65,7 @@ export const attendanceApi = baseApi.injectEndpoints({
         url: `attendance/reports`,
         method: 'GET',
         params: data.filter == 'custom' ? {
+          active:1,
           class_id: data.class,
           subject_id: data.subject,
           limit:1000,
@@ -70,6 +73,7 @@ export const attendanceApi = baseApi.injectEndpoints({
           gte_date: data.startDate,
           lte_date: data.endDate,
         } : {
+          active:1,
           class_id: data.class,
           subject_id: data.subject,
           filter: data.filter,

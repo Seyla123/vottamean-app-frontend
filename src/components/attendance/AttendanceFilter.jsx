@@ -8,26 +8,18 @@ import {
 } from '@mui/material';
 import FilterComponent from '../common/FilterComponent';
 import { useEffect, useState } from 'react';
-import {
-    transformedFilterSubjects,
-    transformedFilterClasses,
-} from '../../utils/formatData';
 import { Filter, BookIcon, LibraryIcon } from 'lucide-react';
 
 import DateRangePicker from './DateRangePicker';
+import { ensureOptionInList } from '../../utils/formatHelper';
 
-
-function AttendanceFilter({ reportAttendance, children }) {
+function AttendanceFilter({ reportAttendance, children , selectedSubjects, selectedClasses }) {
     const filterOptions = [
-        { value: 'all', label: 'All' },
         { value: 'custom', label: 'Custom' },
         { value: 'today', label: 'Today' },
         { value: 'weekly', label: 'This Week' },
         { value: 'monthly', label: 'This Month' },
-        { value: 'yearly', label: 'This Year' },
-        { value: 'lastWeek', label: 'Last Week' },
-        { value: 'lastMonth', label: 'Last Month' },
-        { value: 'lastYear', label: 'Last Year' },
+        { value: 'yearly', label: 'This Year' }
     ];
     // Get the dispatch function and the current filter state from the store
     const dispatch = useDispatch();
@@ -40,27 +32,27 @@ function AttendanceFilter({ reportAttendance, children }) {
             label: 'All',
         },
     ];
+
     // - subjects: the state of the subjects
     // - classes: the state of the classes
-    // - isExporting: the state of the export modal
+    // - filterPeriod: the seletor of the date periods
     const [subjects, setSubjects] = useState(allSelector);
     const [classes, setClasses] = useState(allSelector);
-
-
-
+    const filterPeriod = reportAttendance ? filterOptions : [...allSelector, ...filterOptions]
 
     // Get the data from the subject and class api
     const { data: subjectData, isSuccess: isSubjectSuccess } =
-        useGetSubjectsQuery();
+        useGetSubjectsQuery({active:1});
     const { data: dataClass, isSuccess: isClassSuccess } =
-        useGetClassesDataQuery();
+        useGetClassesDataQuery({active:1});
 
     // When the data is loaded, format the data and set the state
     useEffect(() => {
         if (isSubjectSuccess && isClassSuccess) {
+            
             // Format the data to be used in the FilterComponent
-            const formattedDataSubjects = transformedFilterSubjects(subjectData.data);
-            const formatDataClasses = transformedFilterClasses(dataClass.data);
+            const formattedDataSubjects = ensureOptionInList(subjectData?.data,selectedSubjects, 'subject_id', 'subject_name');
+            const formatDataClasses = ensureOptionInList(dataClass?.data,selectedClasses ,'class_id', 'class_name');
             // Set the state with the formatted data
             setSubjects([...allSelector, ...formattedDataSubjects]);
 
@@ -98,7 +90,7 @@ function AttendanceFilter({ reportAttendance, children }) {
             dispatch(setFilter({ ...filter, filter: '' }));
         } else {
             const selectedLabel =
-                filterOptions.find((item) => item.value === event.target.value)
+                filterPeriod.find((item) => item.value === event.target.value)
                     ?.label || 'All';
             dispatch(
                 setFilter({
@@ -121,7 +113,6 @@ function AttendanceFilter({ reportAttendance, children }) {
 
     return (
         <Box sx={filterBoxStyle}>
-            {children}
             <Stack
                 sx={{
                     flexDirection: { sm: 'row', xs: 'column' },
@@ -164,7 +155,7 @@ function AttendanceFilter({ reportAttendance, children }) {
                     />
                     <FilterComponent
                         value={filter.filter}
-                        data={filterOptions}
+                        data={filterPeriod}
                         onChange={handleFilterChange}
                         placeholder={'Date range'}
                         customStyles={{
@@ -173,6 +164,12 @@ function AttendanceFilter({ reportAttendance, children }) {
                         }}
                         icon={<Filter size={18} color="#B5B5B5" />}
                     />
+                    {filter.filter == 'custom' && (
+                        <DateRangePicker
+                            onEndDateChange={handleEndDateChange}
+                            onStartDateChange={handleStartDateChange}
+                        />
+                    )}
                 </Stack>
                 <Stack
                     sx={{
@@ -183,12 +180,7 @@ function AttendanceFilter({ reportAttendance, children }) {
                         flexWrap: 'wrap',
                     }}
                 >
-                    {filter.filter == 'custom' && (
-                        <DateRangePicker
-                            onEndDateChange={handleEndDateChange}
-                            onStartDateChange={handleStartDateChange}
-                        />
-                    )}
+                    {children}
                 </Stack>
             </Stack>
         </Box>

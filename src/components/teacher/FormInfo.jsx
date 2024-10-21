@@ -78,7 +78,7 @@ function FormInfo() {
         setSnackbar({
           open: true,
           message:
-            'Signup successful. Please check your email for verification.',
+            'Create teacher and send link for verification successful.',
           severity: 'success',
           autoHideDuration: 6000,
         }),

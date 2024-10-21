@@ -43,6 +43,14 @@ const AttendanceListPage = () => {
   // - selectedAttendance: the item that is currently being deleted
   const [selectedAttendance, setSelectedAttendance] = useState('');
 
+  // - selectorClasses: the list of all classes in the attendance data, including deleted ones
+  // - selectorSubjects: the list of all subjects in the attendance data, including deleted ones
+  const [selectorClasses, setSelectorClasses] = useState([]);
+  const [selectorSubjects, setSelectorSubjects] = useState([]);
+
+  // totalStatusSummary: the total summary of attendance status
+  const [totalStatusSummary, setTotalStatusSummary] = useState([]);
+
   // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
@@ -99,6 +107,9 @@ const AttendanceListPage = () => {
       const formattedData = transformAttendanceData(allAttendanceData.data);
       setRows(formattedData);
       setTotalRows(allAttendanceData.results);
+      setSelectorClasses(allAttendanceData.all_classes_unique);
+      setSelectorSubjects(allAttendanceData.all_subjects_unique);
+      setTotalStatusSummary(allAttendanceData?.total_summary);
     }
   }, [allAttendanceData, isSuccess]);
 
@@ -232,7 +243,7 @@ const AttendanceListPage = () => {
 
   console.log('this selected attendance : ', selectedAttendance);
 
-  const { className, studentId, subject, time, date, name, teacherName, day, status, address } = selectedAttendance;
+  const { className, studentId, subject, time, date, name, teacherName, day, status, address, statusId } = selectedAttendance;
   const attendanceDetail = [
     {
       'Student ID': studentId,
@@ -247,7 +258,7 @@ const AttendanceListPage = () => {
       icon: <MapPinHouse size={18} />,
     },
     {
-      Status: status,
+      Status: statusId,
       icon: <FolderPen size={18} />,
     },
     {
@@ -270,14 +281,13 @@ const AttendanceListPage = () => {
 
   return (
     <FormComponent>
-      <ReportHeader data={rows} title={filter.filterLabel} />
-      <Stack sx={tableShadow}>
-        <AttendanceFilter>
-          <ExportMenu
+      <ReportHeader data={totalStatusSummary} />
+      <ExportMenu
             isExporting={isExporting}
             handleExportsCsv={handleExportsCsv}
           />
-        </AttendanceFilter>
+      <Stack sx={tableShadow}>
+        <AttendanceFilter selectedClasses={selectorClasses} selectedSubjects={selectorSubjects} />
         <Divider />
         <AttendanceTable
           rows={rows}

@@ -5,13 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
 
 // style
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
-import ButtonContainer from '../../../components/common/ButtonContainer';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import RenderSelect from './RenderSelect';
-
+import StyledButton from '../../../components/common/StyledMuiButton';
 // api
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
@@ -27,22 +26,37 @@ import {
 // Validation Schema
 import { SessionValidator } from '../../../validators/validationSchemas';
 
+import { ensureOptionInList, transformedForSelector } from '../../../utils/formatHelper';
+
 const SessionUpdatePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const [originData, setOriginData] = useState(null); // originData ,
+  // selector options for session
+  const [periods, setPeriods] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [days, setDays] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
+  // store the original data to compare with the new data
+  // to check if there is any change to the data
+  const [originData, setOriginData] = useState(null);
+
+  // useGetSessionByIdQuery : a hook that returns a function to fetch session to be updated
   const { data: session } = useGetSessionByIdQuery(id);
+
+  // useUpdateSessionMutation : a hook return a function to update the session
   const [updateSession, { isLoading, isError, isSuccess, error }] =
     useUpdateSessionMutation();
 
-  const { data: periodData } = useGetClassPeriodQuery();
-  const { data: classData } = useGetClassesDataQuery();
-  const { data: teacherData } = useGetAllTeachersQuery();
-  const { data: dayData } = useGetDayQuery();
-  const { data: subjectData } = useGetSubjectsQuery();
+  //  hook that returns a function to fetch all selector for updating sessions
+  const { data: periodData, isSuccess: isPeriodSuccess } = useGetClassPeriodQuery({ active: 1 });
+  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery({ active: 1 });
+  const { data: teacherData, isSuccess: isTeacherSuccess } = useGetAllTeachersQuery({ active: 1 });
+  const { data: dayData, isSuccess: isDaySuccess } = useGetDayQuery();
+  const { data: subjectData, isSuccess: isSubjectSuccess } = useGetSubjectsQuery({ active: 1 });
 
   const {
     control,
@@ -61,86 +75,50 @@ const SessionUpdatePage = () => {
       day_id: '',
     },
   });
-console.log('this data session : ', session);
+
+  // when data is fetched succesfully ,  transform the data and set the state for update session
   useEffect(() => {
-    if (session) {
+    if (session && isPeriodSuccess && isClassSuccess && isTeacherSuccess && isDaySuccess && isSubjectSuccess) {
       const dataSession = {
-        teacher_id: session.data.Teacher.teacher_id,
-        period_id: session.data.Period.period_id,
-        class_id: session.data.Class.class_id,
-        subject_id: session.data.Subject.subject_id,
-        day_id: session.data.DayOfWeek.day_id,
+        teacher_id: session?.data?.Teacher?.teacher_id,
+        period_id: session?.data?.Period?.period_id,
+        class_id: session?.data?.Class?.class_id,
+        subject_id: session?.data?.Subject?.subject_id,
+        day_id: session?.data?.DayOfWeek?.day_id,
       };
+
+      // ensure the selected options are included in the list of options, event the deleted one
+      const formattedSelectedTeacher = ensureOptionInList(teacherData?.data, session?.data?.Teacher, 'teacher_id', ['Info.first_name', 'Info.last_name'])
+      const formattedSelectedClass = ensureOptionInList(classData?.data, session?.data?.Class, 'class_id', 'class_name')
+      const formattedSelectedSubject = ensureOptionInList(subjectData?.data, session?.data?.Subject, 'subject_id', 'subject_name')
+      const formattedSelectedPeriod = ensureOptionInList(periodData?.data, session?.data?.Period, 'period_id', ['start_time', 'end_time']);
+      const formattedSelectedDay = transformedForSelector(dayData?.data, 'day_id', 'day');
+
       reset(dataSession)
       setOriginData(dataSession);
-    }
-  }, [session, setValue]);
-
-  const [periods, setPeriods] = useState([]);
-  const [classes, setClasses] = useState([]);
-  const [teachers, setTeachers] = useState([]);
-  const [days, setDays] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-
-  useEffect(() => {
-    if (periodData) {
-      const transformedPeriods = periodData.data.map((item) => ({
-        value: item.period_id,
-        label: `${item.start_time} - ${item.end_time}`,
-      }));
-      setPeriods(transformedPeriods);
+      setPeriods(formattedSelectedPeriod)
+      setClasses(formattedSelectedClass)
+      setTeachers(formattedSelectedTeacher)
+      setDays(formattedSelectedDay)
+      setSubjects(formattedSelectedSubject)
     }
 
-    if (classData) {
-      const classFormat = classData.data.map((item) => ({
-        value: item.class_id,
-        label: item.class_name,
-      }));
-      setClasses(classFormat);
-    }
+  }, [session, isPeriodSuccess, isClassSuccess, isTeacherSuccess, isDaySuccess, isSubjectSuccess, setValue]);
 
-    if (teacherData) {
-      const teacherFormat = teacherData.data.map((item) => ({
-        value: item.teacher_id,
-        label: `${item.Info.first_name} ${item.Info.last_name}`,
-      }));
-      setTeachers(teacherFormat);
-    }
-
-    if (dayData) {
-      const dayFormat = dayData.data.map((item) => ({
-        value: item.day_id,
-        label: item.day,
-      }));
-      setDays(dayFormat);
-    }
-
-    if (subjectData) {
-      const subjectFormat = subjectData.data.map((item) => ({
-        value: item.subject_id,
-        label: item.subject_name,
-      }));
-      setSubjects(subjectFormat);
-    }
-  }, [periodData, classData, teacherData, dayData, subjectData]);
-
+  // handle submit
   const onSubmit = async (formData) => {
+    //Extract the relevant data from the form
     const sessionData = {
-      teacher_id: formData.teacher_id*1,
-      period_id: formData.period_id*1,
-      class_id: formData.class_id*1,
-      subject_id: formData.subject_id*1,
-      day_id: formData.day_id*1,
+      teacher_id: formData.teacher_id * 1,
+      period_id: formData.period_id * 1,
+      class_id: formData.class_id * 1,
+      subject_id: formData.subject_id * 1,
+      day_id: formData.day_id * 1,
     };
-    console.log('Form Data:', formData);
-    const noChange = JSON.stringify(sessionData) == JSON.stringify(originData);
-    console.log('session : ', sessionData);
-    console.log('origin  : ', originData);
-    console.log('is this no change ? : ', noChange);
 
+    const noChange = JSON.stringify(sessionData) == JSON.stringify(originData);
     // Compare current data with the original data
     if (noChange) {
-      console.log('No changes detected');
       dispatch(
         setSnackbar({
           open: true,
@@ -150,25 +128,15 @@ console.log('this data session : ', session);
       );
       return;
     }
+    //Call the updateSession mutation and
+    await updateSession({ id, sessionData }).unwrap();
 
-    console.log('Session Data:', sessionData);
-
-    try {
-      const result = await updateSession({ id, sessionData }).unwrap();
-      console.log('Session created successfully', result);
-    } catch (error) {
-      console.log('Error updating session', error);
-    }
   };
 
+  // when update is failed, show a snackbar with an error message
+  // when update is successful, show a snackbar with a success message and close the update modal
   useEffect(() => {
-    console.log({ isLoading, isError, isSuccess });
-
-    if (isLoading) {
-      dispatch(
-        setSnackbar({ open: true, message: 'Updating...', severity: 'info' }),
-      );
-    } else if (isError) {
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -186,73 +154,96 @@ console.log('this data session : ', session);
       );
       navigate('/admin/sessions');
     }
-  }, [isLoading, isError, isSuccess, dispatch, error, navigate]);
+  }, [isError, isSuccess, dispatch, error, navigate]);
 
 
   return (
     <FormComponent
-    title="Add session"
-    subTitle="Please Fill session information"
-  >
-    <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
-      <Box sx={containerStyle}>
-        <Box sx={selectedStyle}>
-          <Box>
-            <RenderSelect
-              name="teacher_id"
-              label="Teacher"
-              options={teachers}
-              control={control}
-              errors={errors}
-            />
+      title="Add session"
+      subTitle="Please Fill session information"
+    >
+      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
+        <Box sx={containerStyle}>
+          <Box sx={selectedStyle}>
+            <Box>
+              <RenderSelect
+                name="teacher_id"
+                label="Teacher"
+                options={teachers}
+                control={control}
+                errors={errors}
+              />
+            </Box>
+            <Box>
+              <RenderSelect
+                name="period_id"
+                label="Class Period"
+                options={periods}
+                control={control}
+                errors={errors}
+              />
+            </Box>
+          </Box>
+          <Box sx={selectedStyle}>
+            <Box>
+              <RenderSelect
+                name="class_id"
+                label="Class"
+                options={classes}
+                control={control}
+                errors={errors}
+              />
+            </Box>
+            <Box>
+              <RenderSelect
+                name="subject_id"
+                label="Subject"
+                options={subjects}
+                control={control}
+                errors={errors}
+              />
+            </Box>
           </Box>
           <Box>
             <RenderSelect
-              name="period_id"
-              label="Class Period"
-              options={periods}
+              name="day_id"
+              label="Day of Week"
+              options={days}
               control={control}
               errors={errors}
             />
           </Box>
         </Box>
-        <Box sx={selectedStyle}>
-          <Box>
-            <RenderSelect
-              name="class_id"
-              label="Class"
-              options={classes}
-              control={control}
-              errors={errors}
-            />
-          </Box>
-          <Box>
-            <RenderSelect
-              name="subject_id"
-              label="Subject"
-              options={subjects}
-              control={control}
-              errors={errors}
-            />
-          </Box>
-        </Box>
-        <Box>
-          <RenderSelect
-            name="day_id"
-            label="Day of Week"
-            options={days}
-            control={control}
-            errors={errors}
-          />
-        </Box>
-      </Box>
-      <ButtonContainer
-        leftBtnTitle="Cancel"
-        rightBtnTitle="Add Session"
-        rightBtn={handleSubmit(onSubmit)}
-      />
-    </CardComponent>
-  </FormComponent>
+        <Stack
+          direction={'row'}
+          alignSelf={'flex-end'}
+          justifyContent={'flex-end'}
+          width={{ xs: '100%', sm: '300px', md: '280px' }}
+          gap={2}
+          marginTop={{ xs: 2, sm: 0 }}
+        >
+          <StyledButton
+            onClick={() => navigate('/admin/sessions')}
+            fullWidth
+            variant="outlined"
+            color="inherit"
+            size="small"
+          >
+            Back
+          </StyledButton>
+          <StyledButton
+            fullWidth
+            variant="contained"
+            type="submit"
+            size="small"
+            disabled={isLoading}
+            onClick={handleSubmit(onSubmit)}
+          >
+            {isLoading ? 'Updating...' : 'Update'}
+          </StyledButton>
+        </Stack>
+      </CardComponent>
+    </FormComponent>
   );
 };
 

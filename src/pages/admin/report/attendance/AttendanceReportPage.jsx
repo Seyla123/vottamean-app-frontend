@@ -3,12 +3,20 @@ import FormComponent from "../../../../components/common/FormComponent";
 import { useGetReportAttendanceByClassQuery } from "../../../../services/attendanceApi";
 import AttendanceTable from "../../../../components/attendance/AttendanceTable";
 import { useSelector } from "react-redux";
-import { Stack } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 import { shadow } from "../../../../styles/global";
-import React from 'react';
+import ReportHeader from "../../../../components/attendance/ReportHeader";
 const AttendanceReportPage = () => {
   const [reportData, setReportData] = useState({});
   const [toggleAttendanceKey, setToggleAttendanceKey] = useState(false);
+
+  // - selectorClasses: the list of all classes in the attendance data, including deleted ones
+  // - selectorSubjects: the list of all subjects in the attendance data, including deleted ones
+  const [selectorClasses, setSelectorClasses] = useState([]);
+  const [selectorSubjects, setSelectorSubjects] = useState([]);
+
+  // totalStatusSummary: the total summary of attendance status
+  const [totalStatusSummary, setTotalStatusSummary] = useState([]);
 
   const filter = useSelector((state) => state.attendance.filter);
   const { data, isLoading, isError, isSuccess } = useGetReportAttendanceByClassQuery(filter);
@@ -16,6 +24,9 @@ const AttendanceReportPage = () => {
   useEffect(() => {
     if (isSuccess) {
       setReportData(data.data);
+      setSelectorClasses(data.all_classes_unique);
+      setSelectorSubjects(data.all_subjects_unique);
+      setTotalStatusSummary(data?.total_summary);
     }
   }, [data, isSuccess]);
 
@@ -28,7 +39,7 @@ const AttendanceReportPage = () => {
 
   return (
     <FormComponent title={"Attendance Report"}>
-      <Stack bgcolor={'white'} borderRadius={'8px'} sx={shadow}>
+      <ReportHeader data={totalStatusSummary} />
         <AttendanceTable
           dates={dates}
           result={result}
@@ -38,9 +49,9 @@ const AttendanceReportPage = () => {
           isLoading={isLoading}
           emptyTitle={emptyTitleData.emptyTitle}
           emptySubTitle={emptyTitleData.emptySubTitle}
+          selectedClasses={selectorClasses} 
+          selectedSubjects={selectorSubjects}
         />
-
-      </Stack>
     </FormComponent>
   );
 };

@@ -51,7 +51,7 @@ const StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
     data: classData,
     isLoading: isClassDataLoading,
     error: classDataError,
-  } = useGetClassesDataQuery();
+  } = useGetClassesDataQuery({ active: 1 });
 
   // - Local State
   const [dob, setDob] = useState(

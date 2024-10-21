@@ -40,7 +40,6 @@ const columns = [
 
 function SubjectListPage() {
   const dispatch = useDispatch();
-  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // rows : The data to be displayed in the table
   const [rows, setRows] = useState([]);
@@ -67,7 +66,7 @@ function SubjectListPage() {
 
   // useGetSubjectsQuery : a hook that returns a function to fetch all subject records
   const { data, isLoading, isSuccess, isError, error, isFetching } =
-    useGetSubjectsQuery({ page: page + 1, limit: rowsPerPage });
+    useGetSubjectsQuery({ active: 1, page: page + 1, limit: rowsPerPage });
 
   // useDeleteManySubjectsMutation : a hook that returns a function to delete many subjects record
   const [
@@ -154,20 +153,10 @@ function SubjectListPage() {
     dispatch,
   ]);
 
-  // when create is in progress, show a snackbar with a message "Creating..."
   // when create is failed, show a snackbar with an error message
   // when create is successful, show a snackbar with a success message and close the create modal
   useEffect(() => {
-    if (isCreating) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Creating...',
-          severity: 'info',
-        }),
-      );
-      setCreateModalOpen(false);
-    } else if (isCreateSuccess) {
+    if (isCreateSuccess) {
       dispatch(
         setSnackbar({
           open: true,
@@ -175,7 +164,7 @@ function SubjectListPage() {
           severity: 'success',
         }),
       );
-      setEditModalOpen(false);
+      setCreateModalOpen(false);
     } else if (isCreateError) {
       dispatch(
         setSnackbar({
@@ -185,7 +174,7 @@ function SubjectListPage() {
         }),
       );
     }
-  }, [isCreateError, isCreateSuccess, isCreating, dispatch]);
+  }, [isCreateError, isCreateSuccess, dispatch]);
 
   // Handle page change
   const handleChangePage = (newPage) => {
@@ -239,7 +228,7 @@ function SubjectListPage() {
       icon: <Book size={18} />,
     },
     {
-      Description: description,
+      Description: description || 'N/A',
       icon: <LetterText size={18} />,
     },
     { 'Created at': formatDate(createdAt), icon: <Calendar size={18} /> },
@@ -260,13 +249,7 @@ function SubjectListPage() {
     },
   ];
 
-  useEffect(() => {
-    if (!isLoading && !isFetching) {
-      setIsPageLoading(false);
-    }
-  }, [isLoading, isFetching]);
-
-  if (isPageLoading) {
+  if (isLoading) {
     return <LoadingCircle />;
   }
 
@@ -323,6 +306,7 @@ function SubjectListPage() {
         onSubmit={handleCreate}
         validationSchema={SubjectValidator}
         submitText={'Create Subject'}
+        isLoading={isCreating}
       />
 
       {/* EDIT SUBJECT MODAL */}

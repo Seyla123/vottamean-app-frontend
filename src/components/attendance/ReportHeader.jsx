@@ -1,22 +1,15 @@
 import React from "react";
-import { Box, Typography, Avatar } from "@mui/material";
+import { Box} from "@mui/material";
 import StatusGrid from "./StatusGrid"; 
-import CalendarImage from "../../assets/icon/calendar.png"; 
-import { tableShadow } from "../../styles/global"; 
+import { shadow } from "../../styles/global"; 
 
-const ReportHeader = ({ title,data }) => {
-      // Calculate status counts
-  const dataCount = data.reduce((counts, row) => {
-    if (row.status) {
-      counts[row.status] = (counts[row.status] || 0) + 1;
-    }
-    return counts;
-  }, {
-    Present: 0,
-    Late: 0,
-    Permission: 0,
-    Absent: 0,
-  });
+const ReportHeader = ({ data }) => {
+
+  const dataCount = data.length === 0 ? { Present: 0, Late: 0, Permission: 0, Absent: 0 } : data.reduce((acc, { status, total }) => {
+    acc[status.charAt(0).toUpperCase() + status.slice(1)] = total !== null && total !== undefined ? total : 0; // Capitalizes the first letter
+    return acc;
+}, { Present: 0, Late: 0, Permission: 0, Absent: 0 });
+  
   return (
     <Box sx={cardGrid}>
 
@@ -34,25 +27,10 @@ const cardGrid = {
   justifyContent: "space-between",
   alignItems: "center",
   width: "100%",
+  paddingY:{
+    sm:4
+  },
   backgroundColor: "white",
+  ...shadow
 };
 
-const boxGrid = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-  p: 2,
-};
-
-const avatar = {
-  width: {
-    xs: "80px",
-    sm: "100px",
-  },
-  height: {
-    xs: "80px",
-    sm: "100px",
-  },
-  objectFit: "cover",
-};
