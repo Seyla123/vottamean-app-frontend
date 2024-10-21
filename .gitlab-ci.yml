@@ -44,10 +44,6 @@ deploy-frontend:
     - ssh-keyscan -H ec2-44-206-226-251.compute-1.amazonaws.com >> ~/.ssh/known_hosts
     - eval $(ssh-agent -s)
 
-    # Copy frontend files to EC2 instance and restart the application
-    - echo "Copying built frontend files to EC2 and restarting NGINX..."
-    - rsync -avz -e "ssh -i ~/.ssh/id_rsa" /usr/src/app/dist/ ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com:/home/ubuntu/frontend/
-
     # SSH into EC2, log in to the Docker registry, and restart the application
     - echo "Logging in to Docker registry and restarting application on EC2..."
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com "
