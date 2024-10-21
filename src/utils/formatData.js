@@ -32,6 +32,17 @@ export const transformAttendanceData = (apiResponse) =>
       item.Sessions.Teacher.Info.last_name,
   }));
 
+export const transformAttendanceForUpdate = (attendanceDetail) => {
+  return {
+    studentName: getFullName(attendanceDetail?.Student.Info),
+    teacherName: getFullName(attendanceDetail?.Sessions.Teacher.Info),
+    subjectName: attendanceDetail?.Sessions.Subject.subject_name,
+    className: attendanceDetail?.Sessions.Class.class_name,
+    time: formatTimeTo12Hour(attendanceDetail?.Sessions.Period.start_time) + '-' + formatTimeTo12Hour(attendanceDetail?.Sessions.Period.end_time),
+    date: attendanceDetail?.date,
+    statusId: attendanceDetail?.status_id,
+  }
+}
 // Format attendance data detail
 export const formatAttendanceData = (apiResponse) => {
   const { Sessions, Status, Student } = apiResponse;
@@ -145,26 +156,27 @@ export function formatTeacherDetail(teacherData) {
   if (!teacherData || !teacherData.data || !teacherData.data.Info) {
     return []
   }
-  const { email,emailVerified } = teacherData.data.User;
-  const { 
+  const { email, emailVerified, active } = teacherData.data.User;
+  const {
     first_name,
-    last_name, 
-    gender, 
-    dob, 
-    phone_number, 
+    last_name,
+    gender,
+    dob,
+    phone_number,
     address,
     photo
-    } = teacherData.data.Info;
+  } = teacherData.data.Info;
 
   return {
     fullName: capitalize(`${first_name} ${last_name}`),
     email: email,
     phoneNumber: formatPhoneNumber(phone_number),
-    dateOfBirth:formatDate(dob),
+    dateOfBirth: formatDate(dob),
     gender: gender,
     address: address,
     photo: photo,
-    emailVerified: emailVerified
+    emailVerified: emailVerified,
+    active: active
   };
 }
 
@@ -381,17 +393,17 @@ export const formatStudentFormData = (studentData) => {
   console.log(Info.dob ? dayjs(Info.dob) : null);
 
   return {
-    first_name: Info.first_name ||'N/A',
-    last_name: Info.last_name ||'N/A',
-    phone_number: Info.phone_number ||'N/A',
-    gender: Info.gender ||'N/A',
+    first_name: Info.first_name || 'N/A',
+    last_name: Info.last_name || 'N/A',
+    phone_number: Info.phone_number || 'N/A',
+    gender: Info.gender || 'N/A',
     dob: Info.dob || null, // Format DOB with dayjs
-    address: Info.address ||'N/A',
-    class_id: class_id ? String(class_id) :'N/A',
-    guardian_first_name: guardian_first_name ||'N/A',
-    guardian_last_name: guardian_last_name ||'N/A',
-    guardian_email: guardian_email ||'N/A',
-    guardian_phone_number: guardian_phone_number ||'N/A',
-    guardian_relationship: guardian_relationship ||'N/A',
+    address: Info.address || 'N/A',
+    class_id: class_id ? String(class_id) : 'N/A',
+    guardian_first_name: guardian_first_name || 'N/A',
+    guardian_last_name: guardian_last_name || 'N/A',
+    guardian_email: guardian_email || 'N/A',
+    guardian_phone_number: guardian_phone_number || 'N/A',
+    guardian_relationship: guardian_relationship || 'N/A',
   };
 };

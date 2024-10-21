@@ -21,7 +21,7 @@ import ExportMenu from '../../../../components/attendance/ExportMenu';
 import { Stack, Divider } from '@mui/material';
 import { tableShadow } from './../../../../styles/global';
 import { FolderPen, IdCard, Timer, MapPinHouse, School } from 'lucide-react';
-
+import EditAttendanceModal from '../../../../components/attendance/EditAttendanceModal';
 const columns = [
   { id: 'name', label: 'Full Name' },
   { id: 'time', label: 'Time' },
@@ -316,6 +316,13 @@ const AttendanceListPage = () => {
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
         itemName={'attendance'}
+      />
+      <EditAttendanceModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        id={selectedAttendance.attendanceId}
+        getDataQuery={useGetAttendanceQuery}
+        useUpdateDataMutation={useUpdateAttendanceMutation}
       />
     </FormComponent>
   );
