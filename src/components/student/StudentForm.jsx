@@ -288,10 +288,10 @@ const StudentForm = ({
                     fullWidth
                     placeholder="Select Class"
                     disabled={isLoading}
-                    error={Boolean(fieldState?.error)} // Use the fieldState.error to set the error state
+                    error={errors?.class_id} 
                     helperText={
                       fieldState?.error ? fieldState.error.message : ''
-                    } // Show error message if available
+                    } 
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
