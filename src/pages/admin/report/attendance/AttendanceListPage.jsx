@@ -12,10 +12,9 @@ import { formatDate } from '../../../../utils/formatHelper';
 import FormComponent from '../../../../components/common/FormComponent';
 import AttendanceTable from '../../../../components/attendance/AttendanceListTable';
 import LoadingCircle from '../../../../components/loading/LoadingCircle';
-import ReportHeader from '../../../../components/attendance/ReportHeader';
 import DeleteConfirmationModal from '../../../../components/common/DeleteConfirmationModal';
 import AttendanceFilter from '../../../../components/attendance/AttendanceFilter';
-import EditModal from '../../../../components/common/EditModal';
+import TitleHeader from '../../../../components/common/TitleHeader';
 import ViewModal from '../../../../components/common/ViewModal';
 import ExportMenu from '../../../../components/attendance/ExportMenu';
 import { Stack, Divider } from '@mui/material';
@@ -239,9 +238,6 @@ const AttendanceListPage = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-  console.log('this is rows :', rows);
-
-  console.log('this selected attendance : ', selectedAttendance);
 
   const { className, studentId, subject, time, date, name, teacherName, day, status, address, statusId } = selectedAttendance;
   const attendanceDetail = [
@@ -281,7 +277,7 @@ const AttendanceListPage = () => {
 
   return (
     <FormComponent>
-      <ReportHeader data={totalStatusSummary} />
+      <TitleHeader title={'Attendance'} />
       <ExportMenu
             isExporting={isExporting}
             handleExportsCsv={handleExportsCsv}
