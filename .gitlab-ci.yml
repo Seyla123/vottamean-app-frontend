@@ -4,7 +4,7 @@ stages:
   - deploy
 
 # Build Docker image job
-build-backend:
+build-frontend:
   stage: build
   image: docker:latest
   services:
@@ -28,7 +28,7 @@ build-backend:
     - develop
 
 # Deploy job using rsync
-deploy-backend:
+deploy-frontend:
   stage: deploy
   image: ubuntu:20.04
   before_script:
@@ -45,7 +45,7 @@ deploy-backend:
     - eval $(ssh-agent -s)
 
     # Deploy the application on the EC2 instance using rsync
-    - echo "Deploying backend using rsync..."
+    - echo "Deploying frontend using rsync..."
     - rsync -avz --delete --exclude='.git' --exclude='node_modules' ./ ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com:/home/ubuntu/wavetrack-client/
 
     # SSH into EC2, log in to the Docker registry, and restart the application
