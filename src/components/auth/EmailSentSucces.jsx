@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import EmailSentIcon from '../../assets/icon/email-sent.svg';
-import { ChevronLeft, Fingerprint, Mail } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom'
 function EmailSentSucces({
     subTitle = 'We have sent a password reset link to your email. Please check your', title = "Email Sent" }) {

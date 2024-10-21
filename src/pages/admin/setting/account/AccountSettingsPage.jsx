@@ -84,6 +84,7 @@ const AccountSettingsPage = () => {
   if (error) {
     return <Typography>Error loading user data</Typography>;
   }
+  
 
   return (
     <FormComponent>
