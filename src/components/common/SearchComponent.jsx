@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
+import { InputAdornment, IconButton, Box } from '@mui/material';
 import { Search, X } from 'lucide-react';
 import { StyledTextField } from './InputField';
 
@@ -19,7 +19,6 @@ const SearchComponent = ({ sx, placeholder, value, onChange, onSearch }) => {
       sx={{
         position: 'relative',
         width: '100%',
-        maxWidth: '500px',
         ...sx,
       }}
     >
@@ -49,20 +48,6 @@ const SearchComponent = ({ sx, placeholder, value, onChange, onSearch }) => {
               </IconButton>
             </InputAdornment>
           ),
-        }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 2,
-            backgroundColor: '#ffffff',
-            transition: 'all 0.3s ease',
-            border: '1px solid #e0e0e0',
-            '&.Mui-focused': {
-              boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px',
-            },
-          },
-          '& .MuiOutlinedInput-notchedOutline': {
-            border: 'none',
-          },
         }}
       />
     </Box>

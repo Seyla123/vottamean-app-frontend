@@ -14,6 +14,7 @@ import {
 } from '../../../services/studentApi';
 import { useGetClassesDataQuery } from '../../../services/classApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
+import Grid from '@mui/material/Grid';
 import {
   formatStudentsList,
   transformedFilterClasses,
@@ -264,25 +265,24 @@ const StudentListPage = () => {
       </Stack>
 
       <Box sx={inputBoxStyles}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent={'space-between'}
-          width={'100%'}
-          gap={2}
-        >
-          <SearchComponent
-            placeholder="Search"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <FilterComponent
-            onChange={handleClassesChange}
-            placeholder="Class"
-            data={classes}
-            value={selectedClass}
-            icon={<BookIcon size={18} color="#B5B5B5" />}
-          />
-        </Stack>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={10}>
+            <SearchComponent
+              placeholder="Search"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <FilterComponent
+              onChange={handleClassesChange}
+              placeholder="Class"
+              data={classes}
+              value={selectedClass}
+              icon={<BookIcon size={18} color="#B5B5B5" />}
+            />
+          </Grid>
+        </Grid>
       </Box>
       <DataTable
         rows={rows}
