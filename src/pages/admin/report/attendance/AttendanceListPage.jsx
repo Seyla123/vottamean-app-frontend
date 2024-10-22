@@ -18,8 +18,15 @@ import TitleHeader from '../../../../components/common/TitleHeader';
 import ViewModal from '../../../../components/common/ViewModal';
 import ExportMenu from '../../../../components/attendance/ExportMenu';
 import { Stack, Divider } from '@mui/material';
-import { tableShadow } from './../../../../styles/global';
-import { FolderPen, IdCard, Timer, MapPinHouse, School } from 'lucide-react';
+import { shadow, tableShadow } from './../../../../styles/global';
+import {
+  FolderPen,
+  IdCard,
+  Timer,
+  MapPinHouse,
+  School,
+  Box,
+} from 'lucide-react';
 import EditAttendanceModal from '../../../../components/attendance/EditAttendanceModal';
 const columns = [
   { id: 'name', label: 'Full Name' },
@@ -197,49 +204,61 @@ const AttendanceListPage = () => {
   const handleExportsCsv = async () => {
     setIsExporting(true); // Set exporting status to true
     try {
-        // Create URL parameters from the filter state
-        const params = new URLSearchParams({
-            subject_id: filter.subject,
-            class_id: filter.class,
-            filter: filter.filter,
-        });
+      // Create URL parameters from the filter state
+      const params = new URLSearchParams({
+        subject_id: filter.subject,
+        class_id: filter.class,
+        filter: filter.filter,
+      });
 
-        // Fetch the CSV file from the server
-        const blob = await fetch(
-            `/api/v1/attendance/export-attendance?${params.toString()}`,
-            { credentials: 'include' },
-        ).then((res) => res.blob());
+      // Fetch the CSV file from the server
+      const blob = await fetch(
+        `/api/v1/attendance/export-attendance?${params.toString()}`,
+        { credentials: 'include' },
+      ).then((res) => res.blob());
 
-        // Generate a URL for the fetched CSV blob
-        const url = window.URL.createObjectURL(blob);
+      // Generate a URL for the fetched CSV blob
+      const url = window.URL.createObjectURL(blob);
 
-        // Create a temporary link element to trigger the download
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'attendance_data.csv'); // Set the download file name
-        document.body.appendChild(link);
-        link.click(); // Programmatically click the link to start download
-        document.body.removeChild(link); // Clean up the link element
+      // Create a temporary link element to trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'attendance_data.csv'); // Set the download file name
+      document.body.appendChild(link);
+      link.click(); // Programmatically click the link to start download
+      document.body.removeChild(link); // Clean up the link element
     } catch (error) {
-        // Log the error and show a snackbar with a failure message
-        console.error('Failed to download CSV:', error);
-        dispatch(
-            setSnackbar({
-                open: true,
-                message: 'Failed to download CSV',
-                severity: 'error',
-            }),
-        );
+      // Log the error and show a snackbar with a failure message
+      console.error('Failed to download CSV:', error);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Failed to download CSV',
+          severity: 'error',
+        }),
+      );
     } finally {
-        setIsExporting(false); // Reset exporting status after process is complete
+      setIsExporting(false); // Reset exporting status after process is complete
     }
-};
+  };
 
   if (isLoading) {
     return <LoadingCircle />;
   }
 
-  const { className, studentId, subject, time, date, name, teacherName, day, status, address, statusId } = selectedAttendance;
+  const {
+    className,
+    studentId,
+    subject,
+    time,
+    date,
+    name,
+    teacherName,
+    day,
+    status,
+    address,
+    statusId,
+  } = selectedAttendance;
   const attendanceDetail = [
     {
       'Student ID': studentId,
@@ -277,42 +296,49 @@ const AttendanceListPage = () => {
 
   return (
     <FormComponent>
-      <TitleHeader title={'Attendance'} />
-      <ExportMenu
-            isExporting={isExporting}
-            handleExportsCsv={handleExportsCsv}
-          />
-      <Stack sx={tableShadow}>
-        <AttendanceFilter selectedClasses={selectorClasses} selectedSubjects={selectorSubjects} />
-        <Divider />
-        <AttendanceTable
-          rows={rows}
-          columns={columns}
-          hideColumns={['id', 'subject', 'className', 'address']}
-          handleDelete={onDelete}
-          onEdit={handleEditOpen}
-          handleView={onView}
-          onSelectedDelete={handleSelectedDelete}
-          loading={isLoading}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          setPage={handleChangePage}
-          setRowsPerPage={handleChangeRowsPerPage}
-          totalRows={totalRows}
+      <Stack direction={'row'} gap={2} alignItems={'center'}>
+        <TitleHeader title={'Attendance'} />
+        <ExportMenu
+          isExporting={isExporting}
+          handleExportsCsv={handleExportsCsv}
         />
       </Stack>
+      <>
+        <AttendanceFilter
+          selectedClasses={selectorClasses}
+          selectedSubjects={selectorSubjects}
+        />
+      </>
+      <AttendanceTable
+        rows={rows}
+        columns={columns}
+        hideColumns={['id', 'subject', 'className', 'address']}
+        handleDelete={onDelete}
+        onEdit={handleEditOpen}
+        handleView={onView}
+        onSelectedDelete={handleSelectedDelete}
+        loading={isLoading}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        setPage={handleChangePage}
+        setRowsPerPage={handleChangeRowsPerPage}
+        totalRows={totalRows}
+      />
+
       <ViewModal
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         title="Attendance Details"
         data={attendanceDetail}
       />
+
       <DeleteConfirmationModal
         open={modal.open}
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={confirmDelete}
         itemName={'attendance'}
       />
+
       <EditAttendanceModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}

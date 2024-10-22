@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
+    width: '100%',
     borderRadius: 8,
     backgroundColor: theme.palette.background.paper,
     '& fieldset': {

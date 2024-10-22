@@ -32,6 +32,7 @@ const FilterComponent = ({
 
   return (
     <StyledTextField
+      fullWidth
       select
       value={value}
       onChange={onChange}

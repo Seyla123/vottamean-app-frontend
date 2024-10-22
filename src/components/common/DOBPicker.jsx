@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 
 export const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
+    width: '100%',
     borderRadius: 8,
     backgroundColor: theme.palette.background.paper,
     '& fieldset': {
@@ -58,40 +59,39 @@ const DOBPicker = ({
         Date Of Birth <span style={{ color: 'red', marginLeft: 1 }}>*</span>
       </Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Controller
-            name={name}
-            control={control}
-            defaultValue={initialDob}
-            render={({ field }) => (
-              <StyledDatePicker
-                disabled={disabled}
-                {...field}
-                value={initialDob}
-                onChange={(newValue) => {
-                  setDob(newValue);
-                  field.onChange(newValue ? newValue.format('YYYY-MM-DD') : '');
-                }}
-                maxDate={dayjs()}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    error: !!errors[name],
-                    helperText: errors[name] ? errors[name].message : '',
-                    placeholder: 'YYYY-MM-DD',
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Calendar size={18} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-        </Box>
+        <Controller
+          name={name}
+          control={control}
+          defaultValue={initialDob}
+          render={({ field }) => (
+            <StyledDatePicker
+              fullWidth
+              disabled={disabled}
+              {...field}
+              value={initialDob}
+              onChange={(newValue) => {
+                setDob(newValue);
+                field.onChange(newValue ? newValue.format('YYYY-MM-DD') : '');
+              }}
+              maxDate={dayjs()}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  error: !!errors[name],
+                  helperText: errors[name] ? errors[name].message : '',
+                  placeholder: 'YYYY-MM-DD',
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Calendar size={18} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
+        />
       </LocalizationProvider>
     </Box>
   );

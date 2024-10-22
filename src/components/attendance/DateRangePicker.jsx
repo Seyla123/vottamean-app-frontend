@@ -24,13 +24,7 @@ const DateRangePicker = ({ onStartDateChange, onEndDateChange }) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={{ xs: 1, sm: 2 }}
-        flexWrap="nowrap"
-        justifyContent="center"
-      >
+      <Stack direction="row" alignItems="center" width={'100%'} gap={2}>
         <StyledDatePicker
           value={startDate}
           onChange={handleStartDateChange}
