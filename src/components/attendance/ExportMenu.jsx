@@ -13,6 +13,7 @@ import {
   ToggleButton,
   Avatar,
   Grid,
+  IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
@@ -20,7 +21,7 @@ import {
   PictureAsPdf as PdfIcon,
   TableChart as ExcelIcon,
 } from '@mui/icons-material';
-import { DownloadIcon, File } from 'lucide-react';
+import { DownloadIcon, File, X } from 'lucide-react';
 import StyledButton from '../common/StyledMuiButton';
 import { BootstrapDialog } from '../common/BootstrapDialog';
 import pdfIcon from '../../assets/icon/pdf.png';
@@ -114,8 +115,19 @@ const ExportMenu = ({
                 Select the format you want to export your data to
               </Typography>
             </DialogTitle>
+            <IconButton
+              onClick={handleClose}
+              sx={(theme) => ({
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: theme.palette.grey[500],
+              })}
+            >
+              <X />
+            </IconButton>
 
-            <DialogContent>
+            <DialogContent dividers>
               <ToggleButtonGroup
                 value={exportType}
                 exclusive
@@ -172,15 +184,8 @@ const ExportMenu = ({
                 variant="contained"
                 size="small"
                 disabled={!exportType}
-                endIcon={
-                  isExporting ? (
-                    <CircularProgress size={16} />
-                  ) : (
-                    <DownloadIcon size={16} />
-                  )
-                }
               >
-                Export now
+                Confirm
               </StyledButton>
             </DialogActions>
           </BootstrapDialog>
