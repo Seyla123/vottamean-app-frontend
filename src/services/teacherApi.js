@@ -7,8 +7,10 @@ export const teacherApi = baseApi.injectEndpoints({
         url: 'teachers',
         method: 'POST',
         body: teacher,
+        credentials: 'include',
       }),
       invalidatesTags: ['Teachers'],
+      
     }),
 
     // Send invitation email
@@ -35,6 +37,7 @@ export const teacherApi = baseApi.injectEndpoints({
       query: (params) => ({
         url: 'teachers',
         params: params,
+        credentials: 'include',
       }),
       providesTags: ['Teachers'],
     }),
@@ -43,6 +46,7 @@ export const teacherApi = baseApi.injectEndpoints({
       query: (id) => ({
         url: `teachers/${id}`,
         method: 'DELETE',
+        credentials: 'include',
       }),
       invalidatesTags: ['Teachers'],
     }),
@@ -52,6 +56,7 @@ export const teacherApi = baseApi.injectEndpoints({
         url: `teachers/${id}`,
         method: 'PUT',
         body: updates,
+        credentials: 'include',
       }),
       invalidatesTags: ['Teachers'],
     }),
@@ -59,6 +64,7 @@ export const teacherApi = baseApi.injectEndpoints({
     getTeacher: builder.query({
       query: (id) => `teachers/${id}`,
       providesTags: ['Teachers'],
+      credentials: 'include',
     }),
 
     getTeacherScheduleClasses: builder.query({

@@ -95,9 +95,6 @@ function FormInfo() {
       console.error('Error signing up teacher:', error.message);
     }
   };
-
-
-
   // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
     event.preventDefault();
@@ -106,8 +103,6 @@ function FormInfo() {
       setPhotoFile(file);
       const newPreviewUrl = URL.createObjectURL(file);
       photoPreviewRef.current.src = newPreviewUrl;
-      // setPhotoPreview(newPreviewUrl);
-      console.log(file);
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
@@ -216,7 +211,7 @@ function FormInfo() {
       {/* Info Box */}
       <Stack
         direction={'column'}
-        spacing={2}
+        spacing={3}
         bgcolor={'background.paper'}
         boxShadow={shadow}
         p={2}
@@ -236,19 +231,19 @@ function FormInfo() {
             <GridInfo
               icon={<CalendarRange color={'#6c63ff'} />}
               text="Gain access to class schedules"
-            />
+            />  
             <GridInfo
               icon={<UsersRound color={'#6c63ff'} />}
               text="Mark students attendance"
             />
             <GridInfo
-              icon={<WandSparkles color={'#6c63ff'} />}
+              icon={<WandSparkles color={'#6c63ff'}/>}
               text="Enhanced Teacher Efficiency"
             />
           </Grid>
         </Box>
-        <Stack sx={{ display: { xs: 'none', sm: 'block' } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Stack sx={{ display: { xs: 'none', sm: 'block' }}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, ml:1  }}>
             <Settings color={'#6c63ff'} />
             <Typography variant="body2" fontWeight="medium">
               Gain better teacher experiences with our streamlined system
@@ -258,6 +253,7 @@ function FormInfo() {
             variant="body2"
             color="text.secondary"
             whiteSpace={'pre-line'}
+            ml={3}
           >
             This streamlined teacher account system aims to enhance efficiency
             and communication within the educational environment. By automating
@@ -273,7 +269,7 @@ function FormInfo() {
 
 export default FormInfo;
 // Grid Info Box
-const GridInfo = ({ icon, text }) => (
+export const GridInfo = ({ icon, text }) => (
   <Grid item xs={12}>
     <Box sx={gridBox}>
       <Box sx={miniInfo}>{icon}</Box>

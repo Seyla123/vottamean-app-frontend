@@ -231,11 +231,11 @@ export const createFormSchema = (fields) => {
     period_id: createSessionSchema,
     day_id: createSessionSchema,
     subject_name: subjectSchema,
-    guardian_first_name: firstNameSchema,
-    guardian_last_name: lastNameSchema,
-    guardian_email: emailSchema,
-    guardian_relationship: relationshipSchema,
-    guardian_phone_number: phoneSchema,
+    guardianFirstName: firstNameSchema,
+    guardianLastName: lastNameSchema,
+    guardianEmail: emailSchema,
+    guardianRelationship: relationshipSchema,
+    guardianPhoneNumber: phoneSchema,
 
     // Add more schemas as needed
   };
@@ -364,11 +364,11 @@ export const StudentValidator = createFormSchema([
 ]);
 
 export const GuardianValidator = createFormSchema([
-  'guardian_first_name',
-  'guardian_last_name',
-  'guardian_email',
-  'guardian_relationship',
-  'guardian_phone_number',
+  'guardianFirstName',
+  'guardianLastName',
+  'guardianEmail',
+  'guardianRelationship',
+  'guardianPhoneNumber',
 ]);
 
 // Send Teacher Invitation
