@@ -56,10 +56,10 @@ const AccountUsagePanel = ({
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={8}>
-          {!currentSubscription ? 
+          {currentSubscription  === 'None' ? 
           <NoSubscription setValue={setValue}/> 
           :
-          <UsageCard activePlan={activePlan} setValue={setValue} />}
+          <UsageCard activePlan={activePlan} setValue={setValue}/> }
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Stack spacing={3}>
@@ -91,8 +91,8 @@ const UsageCard = ({ activePlan, setValue }) => {
   const usagePercentage = 25; // Example usage percentage
 
   const visibleFeatures = showAllFeatures
-    ? activePlan.features
-    : activePlan.features.slice(0, 4);
+    ? activePlan?.features
+    : activePlan?.features.slice(0, 4);
 
   return (
     <Card sx={shadow}>
@@ -106,10 +106,10 @@ const UsageCard = ({ activePlan, setValue }) => {
           <Typography variant="h6" gutterBottom>
             Your Plan Details
           </Typography>
-          <Chip label={activePlan.type} size="small" color="primary" />
+          <Chip label={activePlan?.type} size="small" color="primary" />
         </Box>
         <Grid container spacing={2} mt={2}>
-          {visibleFeatures.map((feature, index) => (
+          {visibleFeatures?.map((feature, index) => (
             <Grid item xs={12} sm={6} key={index}>
               <Typography
                 variant="body2"
@@ -124,7 +124,7 @@ const UsageCard = ({ activePlan, setValue }) => {
             </Grid>
           ))}
         </Grid>
-        {activePlan.features.length > 4 && (
+        {activePlan?.features?.length > 4 && (
           <Box display="flex" justifyContent="center" mt={2}>
             <StyledButton
               size="small"
@@ -198,13 +198,15 @@ const NoSubscription = ({setValue}) => {
               component="img"
               src={NoSubscriptionIamge}
               alt="credit card"
-              sx={{ width: '400px', objectFit: 'contain' }}
+              sx={{ width: '300px', objectFit: 'contain' }}
             />
           </Box>
-          <Typography variant="body1" textAlign={'center'}>
-            Upgrading to a paid plan
-            to unlock more features.
-          </Typography>
+          <AlertCard
+              title={'Unlock More Features'}
+              description="Upgrade your plan to access advanced tools and increase your productivity. Our higher-tier plans offer extended limits and exclusive features to help your business grow."
+              severity="info"
+              icon={<Info size={18} />}
+            />
         </Stack>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
