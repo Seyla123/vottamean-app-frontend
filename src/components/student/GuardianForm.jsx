@@ -87,7 +87,7 @@ const GuardianForm = ({
             variant="h6"
             component="h2"
             fontWeight={'bold'}
-            gutterBottom
+            mb={2}
           >
             Guardian Information
           </Typography>

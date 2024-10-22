@@ -65,7 +65,7 @@ const StudentForm = ({
           severity: 'error',
         }),
       );
-    } 
+    }
   }, [classesData, error]);
 
   const {
@@ -179,7 +179,7 @@ const StudentForm = ({
           Student Information
         </Typography>
         {/* Profile */}
-        <Stack direction="row" gap={2} alignItems="center">
+        <Stack direction="row" gap={2} alignItems="center" py={2}>
           {photoPreview || photoFile ? (
             <Avatar
               src={photoSrc}
@@ -221,8 +221,8 @@ const StudentForm = ({
             </StyledButton>
           </Stack>
         </Stack>
-      {/* Input fields */}
-        <Grid container spacing={2}>
+        {/* Input fields */}
+        <Grid container spacing={2} alignItems={'center'}>
           <Grid item xs={12} sm={6}>
             <InputField
               name="firstName"
@@ -268,7 +268,7 @@ const StudentForm = ({
 
           {/* STUDENT CLASS */}
           <Grid item xs={12} sm={6}>
-            <Typography variant="body2" fontWeight="bold" gutterBottom>
+            <Typography variant="body2" fontWeight="bold" mb={1}>
               Class <span style={{ color: 'red' }}>*</span>
             </Typography>
             <Controller
@@ -305,7 +305,7 @@ const StudentForm = ({
                               Class
                             </span>
                           );
-                        }``
+                        };
                         // Find the class name from the classesData based on selected class_id
                         const selectedClass = classesData?.data?.find(
                           (classItem) =>
