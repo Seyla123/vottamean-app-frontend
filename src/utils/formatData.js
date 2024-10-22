@@ -389,7 +389,7 @@ export const formatStudentFormData = (studentData) => {
     guardian_phone_number,
     guardian_relationship,
   } = studentData.data;
-  console.log(Info.dob ? dayjs(Info.dob) : null);
+console.log('student data:',studentData.data)
 
   return {
     first_name: Info.first_name || 'N/A',
