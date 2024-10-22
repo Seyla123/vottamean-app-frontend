@@ -47,6 +47,7 @@ const Layout = ({ teacherSite, adminSite }) => {
     try {
       await logout().unwrap();
       dispatch(logoutAction());
+      window.location.reload();
     } catch (error) {
       console.error('Failed to logout:', error);
     }
