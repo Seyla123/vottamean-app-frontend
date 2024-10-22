@@ -30,26 +30,13 @@ import dayjs from 'dayjs';
 
 const GuardianForm = ({
   handleFormChange,
+  isLoading,
   handleBack,
   handleSubmitForm,
   studentData,
 }) => {
-  const { class_id } = studentData || {};
-  console.log('class_id in GuardianForm:', class_id);
-  console.log('student data recieve on guardian form:', studentData);
-  // - Dispatch actions
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  // const studentData = useSelector((state) => state.student);
-
-  // - Create Student API
-  const [createStudent, { isLoading, isError, error, isSuccess }] =
-    useCreateStudentMutation();
-  const [showPassword, setShowPassword] = useState(false);
-
   // yup validation from account information schema
   const {
-    register,
     control,
     handleSubmit,
     formState: { errors },
@@ -64,12 +51,10 @@ const GuardianForm = ({
     },
   });
 
-  // Form submit function
-
+  // Form submission function
   const onSubmit = async (data) => {
-   const formData = new FormData(); // Use `let` to allow modification
-    // Logging the student data
-    console.log('Student Data:', studentData);
+    // Create form data
+   const formData = new FormData(); 
     // Create an object with the form data
     const formFields = {
       guardian_first_name: data.guardianFirstName,
@@ -77,7 +62,7 @@ const GuardianForm = ({
       guardian_relationship: data.guardianRelationship,
       guardian_phone_number: data.guardianPhoneNumber,
       guardian_email: data.guardianEmail,
-      class_id: Number(studentData.class_id),
+      class_id: Number(studentData.class_id), // Converting to number
       first_name: studentData.firstName,
       last_name: studentData.lastName,
       dob: dayjs(studentData.dob).format('YYYY-MM-DD'),
@@ -96,7 +81,7 @@ const GuardianForm = ({
       console.log('Appending photo:', studentData.photo);
       formData.append('photo', studentData.photo);
     }
-  
+    // Direct file append to FormData
     try {
       await handleSubmitForm(formData);
     } catch (error) {
@@ -124,7 +109,7 @@ const GuardianForm = ({
                 name="guardianFirstName"
                 control={control}
                 label="Guardian First Name"
-                placeholder="Guardian First Name"
+                placeholder="First Name"
                 errors={errors}
                 icon={UserRoundPen}
               />
@@ -134,7 +119,7 @@ const GuardianForm = ({
                 name="guardianLastName"
                 control={control}
                 label="Guardian Last Name"
-                placeholder="Guardian Last Name"
+                placeholder="Last Name"
                 errors={errors}
                 icon={UserRoundPen}
               />
@@ -165,7 +150,6 @@ const GuardianForm = ({
             placeholder="Relationship"
             errors={errors}
             icon={Diversity1Icon}
-            required={false}
           />
 
           {/* Action Buttons */}
