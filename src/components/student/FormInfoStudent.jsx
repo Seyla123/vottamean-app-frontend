@@ -7,20 +7,29 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   useMediaQuery,
+  Grid,
   useTheme,
   Stack,
+  Typography,
 } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 // - Icon from lucide
-import { User, Settings } from 'lucide-react';
+import {
+  User,
+  Settings,
+  NotebookPen,
+  BookMarked,
+  BellRing,
+  FolderKanban,
+} from 'lucide-react';
 
 // - Custom Components
 import StudentForm from './StudentForm';
 import GuardianForm from './GuardianForm';
 import { shadow } from '../../styles/global';
 import { StyledTab } from '../common/StyledTabs';
-
+import { GridInfo } from '../teacher/FormInfo';
 // Api for create student
 import { useCreateStudentMutation } from '../../services/studentApi';
 
@@ -118,12 +127,12 @@ function FormInfoStudent() {
       navigate('/admin/students');
     }
   }, [dispatch, isError, error, isSuccess, navigate]);
-  
+
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
+        flexDirection: { xs: 'column', sm: 'column', md: 'column', lg: 'row' },
         gap: { xs: 2, sm: 3 },
         height: '100%',
       }}
@@ -200,6 +209,59 @@ function FormInfoStudent() {
             />
           </TabPanel>
         </TabContext>
+      </Stack>
+      {/* Info Box */}
+      <Stack
+        direction={'column'}
+        spacing={3}
+        bgcolor={'background.paper'}
+        boxShadow={shadow}
+        p={2}
+        justifyContent={'space-between'}
+        maxWidth={{
+          xs: '100%',
+          sm: '100%',
+          md: '240px',
+          lg: '300px',
+        }}
+      >
+        <Box width={'100%'}>
+          <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
+          Simply create a student account, and fill in guardian information:
+          </Typography>
+          <Grid container spacing={2}>
+            <GridInfo
+              icon={<NotebookPen color={'#6c63ff'}/>}
+              text="Easy Student Registration and Class Assignment"
+            />
+            <GridInfo
+              icon={<BookMarked color={'#6c63ff'}/>}
+              text="Real-time Attendance Updates and Reporting"
+            />
+            <GridInfo
+              icon={<BellRing color={'#6c63ff'}/>}
+              text="Automated Guardian Notifications for Attendance Status"
+            />
+          </Grid>
+        </Box>
+        <Stack sx={{ display: { xs: 'none', sm: 'block' }}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap:1 }}>
+            <Settings color={'#6c63ff'}/>
+            <Typography variant="body2" fontWeight="medium">
+            Attendance Management and Parent Communication.
+            </Typography>
+          </Box>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            whiteSpace={'pre-line'}
+            ml={2.5}
+          >
+            Our system simplifies attendance tracking, allowing you to focus on
+            teaching. Real-time notifications keep guardians informed about
+            their child's attendance.
+          </Typography>
+        </Stack>
       </Stack>
     </Box>
   );
