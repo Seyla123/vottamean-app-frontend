@@ -1,26 +1,19 @@
 // - React and third-party libraries
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // - Mui Component
 import {
   Box,
-  Tab,
-  Typography,
-  Card,
-  Grid,
   useMediaQuery,
   useTheme,
   Stack,
 } from '@mui/material';
-
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 // - Icon from lucide
-import { User, KeyRound, Settings } from 'lucide-react';
-
-// - Redux Hooks and APIs
-// import { updateFormData } from '../../store/slices/studentSlice';
+import { User, Settings } from 'lucide-react';
 
 // - Custom Components
 import StudentForm from './StudentForm';
@@ -28,42 +21,36 @@ import GuardianForm from './GuardianForm';
 import { shadow } from '../../styles/global';
 import { StyledTab } from '../common/StyledTabs';
 
+// Api for create student
 import { useCreateStudentMutation } from '../../services/studentApi';
-import { useNavigate } from 'react-router-dom';
-// Redux Slice
+
+// Redux Slice setSnackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
+
 function FormInfoStudent() {
-  const theme = useTheme();
+  // Dispatch the action
+  const dispatch = useDispatch();
+  // Navigate
   const navigate = useNavigate();
+  // Reference for photo preview to avoid re-render
   const photoPreviewRef = useRef(null);
+  // Mobile size responsive
+  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // useSignUpTeacherMutation : a hook return function for sign up teacher api
+  // useCreateStudentMutation : a hook return function for create student api
   const [createStudent, { isLoading, isError, error, isSuccess }] =
     useCreateStudentMutation();
 
-  // Dispatch the action to update the form data
-  const dispatch = useDispatch();
-
+  // State for tab control
   const [value, setValue] = useState('1');
+  // State for student validation
   const [isStudentInfoValid, setIsStudentInfoValid] = useState(false);
+  // State for student data
   const [studentData, setStudentData] = useState({});
+  // State for Photo upload and ui
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-
-  // State variable to keep track of the current step
-  const [activeStep, setActiveStep] = useState(0);
-  // Function to handle the form data change
-  // const handleFormChange = (stepData) => {
-  //   dispatch(updateFormData(stepData));
-  // };
-  // Class ID selection
-  const [selectedClassId, setSelectedClassId] = useState(null);
-
-    // Function to handle class selection, if needed
-    const handleClassChange = (event) => {
-      setSelectedClassId(event.target.value);
-    };
 
   // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
@@ -79,12 +66,12 @@ function FormInfoStudent() {
     }
   };
 
-  // Function to go to the previous step
+  // Function to go to the previous tab (Student Form)
   const handleBack = () => {
     setValue('1');
   };
 
-  // Function to go to the next step
+  // Function to go to the next tab (Guardian Form)
   const handleNext = (isValid, data) => {
     if (isValid) {
       setStudentData((prevData) => ({
@@ -97,16 +84,18 @@ function FormInfoStudent() {
     }
   };
 
-  // Handle Submit form
+  // Function to handle form submission
   const handleSubmitForm = async (formData) => {
-    
-  console.log(formData)
     try {
       await createStudent(formData).unwrap();
     } catch (error) {
       console.error('Error signing up student:', error.message);
     }
   };
+
+  // Show Loading effect when creating student
+  // If the create process was not successful, show an error message
+  // Check if the create process was successful and if so, navigate to students list page
   useEffect(() => {
     if (isError) {
       dispatch(
@@ -121,56 +110,15 @@ function FormInfoStudent() {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            'Create teacher and send link for verification successful.',
+          message: 'Create student and send link for verification successful.',
           severity: 'success',
           autoHideDuration: 6000,
         }),
       );
-      navigate('/admin/teachers');
+      navigate('/admin/students');
     }
   }, [dispatch, isError, error, isSuccess, navigate]);
-  // // Array of steps to display in the stepper
-  // const steps = [
-  //   {
-  //     label: 'Student',
-  //     description: 'Enter student details',
-  //     icon: <User size={24} />,
-  //   },
-  //   {
-  //     label: 'Guardian',
-  //     description: 'Enter guardian details',
-  //     icon: <KeyRound size={24} />,
-  //   },
-  // ];
-
-  // Array of components to render in each step
-  // const stepFormComponents = [
-  //   <StudentForm handleFormChange={handleFormChange} handleNext={handleNext} />,
-  //   <GuardianForm
-  //     handleFormChange={handleFormChange}
-  //     handleNext={handleNext}
-  //     handleBack={handleBack}
-  //   />,
-  // ];
-
-  // const CustomIconBox = ({ icon }) => (
-  //   <Box
-  //     sx={{
-  //       width: 40,
-  //       height: 40,
-  //       display: 'flex',
-  //       justifyContent: 'center',
-  //       alignItems: 'center',
-  //       borderRadius: 2,
-  //       backgroundColor: '#fff',
-  //       padding: '8px',
-  //     }}
-  //   >
-  //     {icon}
-  //   </Box>
-  // );
-
+  
   return (
     <Box
       sx={{
@@ -244,10 +192,8 @@ function FormInfoStudent() {
             value="2"
           >
             <GuardianForm
-             studentData={{ 
-              ...studentData, 
-              classId: selectedClassId  // Pass class_id from parent state
-            }} 
+              studentData={studentData}
+              isLoading={isLoading}
               handleBack={handleBack}
               handleSubmitForm={handleSubmitForm}
               disabled={!isStudentInfoValid}
