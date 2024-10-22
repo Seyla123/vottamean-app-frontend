@@ -1,164 +1,108 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
-  Typography,
-  Card,
-  Stepper,
-  StepLabel,
-  Step,
+  Stack,
+  Tabs,
+  Tab,
   useMediaQuery,
+  Typography,
+  Grid,
 } from '@mui/material';
-import { shadow } from '../../../styles/global';
-import {
-  useGetStudentsByIdQuery,
-  useUpdateStudentMutation,
-} from '../../../services/studentApi';
+import { useTheme } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
+import { useUpdateStudentMutation } from '../../../services/studentApi';
+import StyledButton from '../../../components/common/StyledMuiButton' ; 
 
 import StudentUpdateForm from '../../../components/student/StudentUpdateForm';
 import GuardianUpdateForm from '../../../components/student/GuardianUpdateForm';
 
-import { KeyRound, User } from 'lucide-react';
-import { useTheme } from '@emotion/react';
-
-// import { updateFormData } from '../../../store/slices/studentSlice';
-import { useNavigate } from 'react-router-dom';
-
+// Define TabPanel component
+const TabPanel = ({ children, value, index }) => {
+  return value === index ? <Box>{children}</Box> : null;
+};
 
 const StudentUpdatePage = () => {
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
- // Dispatch the action to update the form data
- const dispatch = useDispatch();
+  // Dispatch the action to update the form data
+  const dispatch = useDispatch();
 
-   // State variable to keep track of the current step
-   const [activeStep, setActiveStep] = useState(0);
+  // State variable to keep track of the active tab
+  const [value, setValue] = useState(1);
 
-     // Function to handle the form data change
   const handleFormChange = (stepData) => {
     dispatch(updateFormData(stepData));
   };
-    // Function to go to the next step
-    const handleNext = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
- 
-  // Function to go to the previous step
-  const handleBack = () => {
-    console.log('Hello');
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-   
+
+  // Handle navigation between tabs
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
+
+  // Handle cancel and navigate away
   const handleCancel = () => {
-     navigate('/admin/students')
-  }
-
-
-  // Array of steps to display in the stepper
-  const steps = [
-    {
-      label: 'Student',
-      description: 'Enter student details',
-      icon: <User size={24} />,
-    },
-    {
-      label: 'Guardian',
-      description: 'Enter guardian details',
-      icon: <KeyRound size={24} />,
-    },
-  ];
-
-  const CustomIconBox = ({ icon }) => (
-    <Box
-      sx={{
-        width: 40,
-        height: 40,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 2,
-        backgroundColor: '#fff',
-        padding: '8px',
-      }}
-    >
-      {icon}
-    </Box>
-  );
-  // Array of components to render in each step
-  const stepFormComponents = [
-    <StudentUpdateForm handleFormChange={handleFormChange} handleNext={handleNext}  onClose={handleCancel}
-    />,
-    <GuardianUpdateForm
-    handleFormChange={handleFormChange}
-    handleNext={handleNext}
-    onClose={handleBack}
-    />,
-  ];
+    navigate('/admin/students');
+  };
 
   return (
     <>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 2, sm: 3 },
-          height: '100%',
-        }}
-      >
-        <Card sx={cardContainer}>
-          {/* Sidebar with stepper */}
-          <Box
-            sx={{
-              width: { xs: '100%', sm: '250px' },
-              borderRight: { sm: '1px solid #e0e0e0' },
-              p: 2,
-            }}
+      <Box sx={{ p: 2 }}>
+        <Stack
+          sx={{
+            direction: 'row',
+            bgcolor: '#fafafa',
+            boxShadow: '0px 3px 6px rgba(0,0,0,0.1)',
+            p: 1.5,
+            borderRadius: 4,
+            spacing: 2,
+          }}
+        >
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            TabIndicatorProps={{ style: { display: 'none' } }}
           >
-            <Stepper
-              activeStep={activeStep}
-              orientation={isMobile ? 'horizontal' : 'vertical'}
-              sx={{ mt: 2 }}
-            >
-              {steps.map((step, index) => (
-                <Step
-                  key={index}
-                  sx={{
-                    opacity: activeStep === index ? 1 : 0.5,
-                    transition: 'opacity 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
-                  }}
-                >
-                  <StepLabel
-                    icon={<CustomIconBox icon={step.icon} />}
-                    optional={
-                      <Typography variant="body2" color="grey.300">
-                        {step.description}
-                      </Typography>
-                    }
-                  >
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                      {step.label}
-                    </Typography>
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
+            <Tab
+              label="Student"
+              value={1}
+              sx={{
+                bgcolor: value === 1 ? '#eeedff' : 'transparent',
+                borderRadius: 4,
+                padding: isMobile ? '8px 24px' : '8px 16px',
+              }}
+            />
+            <Tab
+              label="Guardian"
+              value={2}
+              sx={{
+                bgcolor: value === 2 ? '#eeedff' : 'transparent',
+                borderRadius: 4,
+                padding: isMobile ? '8px 24px' : '8px 16px',
+              }}
+            />
+          </Tabs>
+        </Stack>
 
-          {/* Form components */}
-          <Box
-            sx={{
-              flex: 1,
-              p: 3,
-              backgroundColor: '#ffffff',
-              overflowY: 'auto',
-            }}
-          >
-            {/* Render the form component based on the active step */}
-            {stepFormComponents[activeStep]}
-          </Box>
-        </Card>
+        <Box sx={{ mt: 2 }}>
+          {/* Render StudentUpdateForm when value is 1 */}
+          <TabPanel value={value} index={1}>
+            <StudentUpdateForm
+              handleFormChange={handleFormChange}
+              onClose={handleCancel}
+            />
+          </TabPanel>
+
+          {/* Render GuardianUpdateForm when value is 2 */}
+          <TabPanel value={value} index={2}>
+            <GuardianUpdateForm
+              handleFormChange={handleFormChange}
+              onClose={handleCancel}
+            />
+          </TabPanel>
+        </Box>
       </Box>
     </>
   );
@@ -171,7 +115,6 @@ const imgStyle = {
   height: { xs: 120, sm: 160 },
 };
 
-// Styles
 const cardContainer = {
   display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
@@ -179,5 +122,4 @@ const cardContainer = {
   height: '100%',
   borderRadius: 1,
   overflow: 'hidden',
-  ...shadow,
 };
