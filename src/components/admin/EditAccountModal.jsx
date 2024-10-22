@@ -88,6 +88,8 @@ const EditAccountModal = ({
   // Add a new state to track if the profile photo should be removed
   const [removePhoto, setRemovePhoto] = useState(false);
 
+  const [photo, setPhoto] = useState(null);
+
   const disableInputIfTeacher = checkUserRole === 'teacher';
 
   // - Form state management
@@ -180,7 +182,15 @@ const EditAccountModal = ({
     });
 
     try {
-      await updateUserProfile(formData).unwrap();
+      if (checkUserRole === 'teacher') {
+        // teacher role can only upload photo
+        const teacherForm = new FormData();
+        teacherForm.append('photo', selectedFile);
+        await updateUserProfile(teacherForm).unwrap();
+      } else {
+        // Accessing the formData controller to retrieve the photo
+        await updateUserProfile(formData).unwrap();
+      }
       dispatch(
         setSnackbar({
           open: true,

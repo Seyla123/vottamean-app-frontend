@@ -9,7 +9,6 @@ import {
   ClipboardMinusIcon as ReportGmailerrorredIcon,
   ScrollTextIcon as ChecklistIcon,
   SettingsIcon,
-  LogOutIcon,
   Zap,
   UserRoundIcon as Person,
 } from 'lucide-react';
@@ -22,14 +21,14 @@ const navigation = [
     icon: <HomeIcon size={18} />,
   },
   {
+    segment: 'admin/teachers',
+    title: 'Teacher',
+    icon: <TeacherIcon size={18} />,
+  },
+  {
     segment: 'admin/class-periods',
     title: 'Class Period',
     icon: <ClassPeriodIcon size={18} />,
-  },
-  {
-    segment: 'admin/subjects',
-    title: 'Subject',
-    icon: <SubjectIcon size={18} />,
   },
   {
     segment: 'admin/classes',
@@ -42,9 +41,9 @@ const navigation = [
     icon: <StudentIcon size={18} />,
   },
   {
-    segment: 'admin/teachers',
-    title: 'Teacher',
-    icon: <TeacherIcon size={18} />,
+    segment: 'admin/subjects',
+    title: 'Subject',
+    icon: <SubjectIcon size={18} />,
   },
   {
     segment: 'admin/sessions',

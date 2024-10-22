@@ -7,6 +7,8 @@ import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
 import { Box, Stepper, Step, StepLabel, Typography } from '@mui/material';
 import { User, Users, Contact, School } from 'lucide-react';
+import { useVerifyEmailMutation } from '../../services/authApi';
+import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/Logo.svg';
 import image1 from '../../assets/images/image-1.jpg';
@@ -21,6 +23,7 @@ const SignupPage = () => {
   // State variable to keep track of the current step
   const [activeStep, setActiveStep] = useState(0);
 
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
   // Function to handle the form data change
   const handleFormChange = (stepData) => {
     dispatch(updateFormData(stepData));
@@ -79,8 +82,10 @@ const SignupPage = () => {
     <CreateSchoolForm
       handleBack={handleBack}
       handleFormChange={handleFormChange}
+      handleSignUpSuccess={() => setSignUpSuccess(true)}
     />,
   ];
+  console.log('this is : ', signUpSuccess);
 
   const CustomIconBox = ({ icon }) => (
     <Box
@@ -133,38 +138,39 @@ const SignupPage = () => {
           component={'div'}
           sx={{ px: { xs: 0, md: 4 }, position: 'relative', zIndex: 10 }}
         >
-          <Stepper
-            activeStep={activeStep}
-            orientation="vertical"
-            sx={{ mt: 4 }}
-          >
-            {steps.map((step, index) => (
-              <Step
-                key={index}
-                sx={{
-                  opacity: activeStep === index ? 1 : 0.5,
-                  transition: 'opacity 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
-                }}
-              >
-                <StepLabel
-                  icon={<CustomIconBox icon={step.icon} />}
-                  optional={
-                    <Typography variant="body2" color="grey.300">
-                      {step.description}
-                    </Typography>
-                  }
+          {!signUpSuccess &&
+            <Stepper
+              activeStep={activeStep}
+              orientation="vertical"
+              sx={{ mt: 4 }}
+            >
+              {steps.map((step, index) => (
+                <Step
+                  key={index}
+                  sx={{
+                    opacity: activeStep === index ? 1 : 0.5,
+                    transition: 'opacity 0.3s cubic-bezier(0.45, 0, 0.55, 1)',
+                  }}
                 >
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: 'bold' }}
-                    color="common.white"
+                  <StepLabel
+                    icon={<CustomIconBox icon={step.icon} />}
+                    optional={
+                      <Typography variant="body2" color="grey.300">
+                        {step.description}
+                      </Typography>
+                    }
                   >
-                    {step.label}
-                  </Typography>
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+                    <Typography
+                      variant="body1"
+                      sx={{ fontWeight: 'bold' }}
+                      color="common.white"
+                    >
+                      {step.label}
+                    </Typography>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>}
         </Box>
 
         {/* IMAGE CONTAINER */}
@@ -235,8 +241,11 @@ const SignupPage = () => {
             zIndex: 10,
           }}
         />
-        {/* FORM COMPONENTs */}
-        {stepFormComponents[activeStep]}
+        {signUpSuccess ?
+          <EmailSentSucces title='Verification Email Sent' subTitle='We have sent a verification link to your email.' />
+          :
+          stepFormComponents[activeStep]
+        }
       </Box>
     </Box>
   );

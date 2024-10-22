@@ -21,7 +21,7 @@ import InputField from '../common/InputField';
 import { useSignupMutation } from '../../services/authApi';
 import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 
-const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
+const CreateSchoolForm = ({ handleBack, handleFormChange, handleSignUpSuccess }) => {
   const formData = useSelector((state) => state.form);
   const dispatch = useDispatch();
   const [signup, { isLoading, isError, isSuccess, error }] =
@@ -63,6 +63,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange }) => {
             'Your account has been successfully created. Please verify your email.',
         }),
       );
+      handleSignUpSuccess();
     }
   }, [isError, isSuccess, dispatch, error]);
 

@@ -81,15 +81,23 @@ const EditSchoolModal = ({ open, onClose }) => {
       school_phone_number: '',
     },
   });
-
+  
   // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getSchoolData(userProfile);
       // Dynamically set the form default values
-      reset(formattedData);
+      reset({
+        school_name: formattedData.school_name,
+        school_address: formattedData.school_address,
+        school_phone_number: formattedData.school_phone_number,
+      });
       // Store the original data for comparison
-      setOriginalData(formattedData);
+      setOriginalData({
+        school_name: formattedData.school_name,
+        school_address: formattedData.school_address,
+        school_phone_number: formattedData.school_phone_number,
+      });
     }
   }, [isSuccess, userProfile, reset]);
 
@@ -214,7 +222,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           Cancel
         </StyledButton>
         {/* SAVE CHANGES BUTTON */}
-        <StyledButton size="small" type="submit" variant="contained">
+        <StyledButton size="small" type="submit" variant="contained" onClick={handleSubmit(onSubmit)}>
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>
