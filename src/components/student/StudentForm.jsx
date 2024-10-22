@@ -4,21 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
-import SomethingWentWrong from '../common/SomethingWentWrong';
-import LoadingCircle from '../loading/LoadingCircle';
 import * as yup from 'yup';
 
-// - Material UI Components
+// - Material UI Components and luicide icons
 import {
   MenuItem,
-  Box,
   Typography,
-  Select,
-  Button,
-  Paper,
   Grid,
   Avatar,
-  IconButton,
   Stack,
   capitalize,
   InputAdornment,
@@ -31,12 +24,9 @@ import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import StyledButton from '../common/StyledMuiButton';
-import SubHeader from '../teacher/SubHeader';
 import { StyledTextField } from '../common/GenderSelect';
 // - Redux Slices and APIs
 import { useGetClassesDataQuery } from '../../services/classApi';
-// import { updateFormData } from '../../store/slices/studentSlice';
-import { validationSchema } from '../teacher/TeacherInfo';
 import { useNavigate } from 'react-router-dom';
 // Redux Slice
 import { setSnackbar } from '../../store/slices/uiSlice';
@@ -56,6 +46,8 @@ const StudentForm = ({
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
   const theme = useTheme();
+
+  // useGetClassesDataQuery : a hook return function for class data api
   const {
     data: classesData,
     isLoading,
@@ -63,6 +55,7 @@ const StudentForm = ({
     isError,
   } = useGetClassesDataQuery();
 
+  // Dispatch the action for error fetching classes data
   useEffect(() => {
     if (isError) {
       dispatch(
@@ -72,16 +65,13 @@ const StudentForm = ({
           severity: 'error',
         }),
       );
-    } else {
-      console.log('Classes Data:', classesData); // Ensure the data is fetched correctly
-    }
+    } 
   }, [classesData, error]);
 
   const {
     control,
     handleSubmit,
     setValue,
-    getValues,
     formState: { errors },
     reset,
   } = useForm({
@@ -131,7 +121,7 @@ const StudentForm = ({
       }
     }
 
-    // Cleanup function
+    // Cleanup function to revoke the old photo URL
     return () => {
       if (photoPreview && typeof photoPreview !== 'string') {
         URL.revokeObjectURL(photoPreview);
@@ -139,6 +129,7 @@ const StudentForm = ({
     };
   }, [defaultValues]);
 
+  // form submission
   const onSubmit = (data) => {
     console.log('data being submit form Student Form:', data);
     handleNext(true, {
@@ -149,6 +140,7 @@ const StudentForm = ({
     });
   };
 
+  // Handle remove photo
   const handleRemovePhoto = () => {
     if (photoPreview) {
       URL.revokeObjectURL(photoPreview);
@@ -157,22 +149,25 @@ const StudentForm = ({
     setPhotoPreview(null);
     setValue('photo', null);
 
-    // Reset file input 
+    // Reset file input
     if (photoPreviewRef.current) {
       photoPreviewRef.current.value = '';
     }
   };
 
+  // Handle cancel back home
   const handleCancel = () => {
     navigate('/admin/students');
   };
 
+  // Photo preview
   const photoSrc =
     photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction="column" gap={2}>
+        {/* Header */}
         <Typography
           mt={2}
           alignSelf={'start'}
@@ -183,6 +178,7 @@ const StudentForm = ({
         >
           Student Information
         </Typography>
+        {/* Profile */}
         <Stack direction="row" gap={2} alignItems="center">
           {photoPreview || photoFile ? (
             <Avatar
@@ -202,6 +198,7 @@ const StudentForm = ({
               hidden
               onChange={handlePhotoChange}
             />
+            {/* Upload button */}
             <label htmlFor="photo-upload">
               <StyledButton
                 component="span"
@@ -212,6 +209,7 @@ const StudentForm = ({
                 Upload
               </StyledButton>
             </label>
+            {/* Remove button */}
             <StyledButton
               color="error"
               variant="outlined"
@@ -223,7 +221,7 @@ const StudentForm = ({
             </StyledButton>
           </Stack>
         </Stack>
-
+      {/* Input fields */}
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <InputField
@@ -247,7 +245,6 @@ const StudentForm = ({
               fullWidth
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <GenderSelect
               control={control}
@@ -288,10 +285,10 @@ const StudentForm = ({
                     fullWidth
                     placeholder="Select Class"
                     disabled={isLoading}
-                    error={errors?.class_id} 
+                    error={errors?.class_id}
                     helperText={
                       fieldState?.error ? fieldState.error.message : ''
-                    } 
+                    }
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -308,8 +305,7 @@ const StudentForm = ({
                               Class
                             </span>
                           );
-                        }
-
+                        }``
                         // Find the class name from the classesData based on selected class_id
                         const selectedClass = classesData?.data?.find(
                           (classItem) =>
@@ -339,7 +335,6 @@ const StudentForm = ({
               )}
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <PhoneInputField
               name="phoneNumber"
@@ -350,7 +345,6 @@ const StudentForm = ({
             />
           </Grid>
         </Grid>
-
         <InputField
           name="address"
           control={control}
@@ -362,7 +356,7 @@ const StudentForm = ({
           minRows={5}
           fullWidth
         />
-
+        {/* Buttons */}
         <Stack
           direction="row"
           alignSelf="flex-end"
