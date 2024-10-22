@@ -37,7 +37,7 @@ const PricingPlanCard = ({
       <Card
         sx={{
           boxShadow: shadow,
-          border: '1px solid',
+          border: '2px solid',
           borderColor: 'primary.main',
           height: '100%',
           borderRadius: 2,
