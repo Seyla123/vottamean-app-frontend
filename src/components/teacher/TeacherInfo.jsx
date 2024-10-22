@@ -30,6 +30,7 @@ import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
 // icons from luicide react
 import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
+import { teacherData } from '../../utils/formatData';
 
 const TeacherInfo = ({
   handleNextClick,
@@ -39,7 +40,7 @@ const TeacherInfo = ({
   setPhotoFile,
   photoPreview,
   setPhotoPreview,
-  photoPreviewRef
+  photoPreviewRef,
 }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
@@ -75,6 +76,10 @@ const TeacherInfo = ({
         dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
       });
       setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
+      // Clear old photo URL if it exists
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
 
       // If there is a photo, create a preview URL
       if (defaultValues.photo) {
@@ -83,6 +88,7 @@ const TeacherInfo = ({
             ? defaultValues.photo
             : URL.createObjectURL(defaultValues.photo);
         setPhotoPreview(photoUrl);
+        setPhotoFile(defaultValues.photo);
       }
     }
 
@@ -103,7 +109,6 @@ const TeacherInfo = ({
       photo: photoFile || photoPreview || null,
     });
   };
-
   // Handle remove photo
   const handleRemovePhoto = () => {
     if (photoPreview) {
@@ -111,7 +116,12 @@ const TeacherInfo = ({
     }
     setPhotoFile(null);
     setPhotoPreview(null);
-    setValue('photo', '');
+    setValue('photo', null);
+
+    // Reset file input
+    if (photoPreviewRef.current) {
+      photoPreviewRef.current.value = '';
+    }
   };
 
   // Handle cancel back home
@@ -140,9 +150,7 @@ const TeacherInfo = ({
             </Typography>
             {/* <Divider /> */}
           </Box>
-          <Box
-            sx={profileContainer}
-          >
+          <Box sx={profileContainer}>
             {/* Profile */}
             {photoPreview || photoFile ? (
               <Avatar
@@ -247,21 +255,13 @@ const TeacherInfo = ({
           </Box>
           {/* Date of Birth */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <Controller
-              name="dob"
+            <DOBPicker
               control={control}
-              defaultValue=''
-              maxDate={dayjs()}
-              render={({ field, fieldState: { error } }) => (
-                <DOBPicker
-                name={field.name}
-                control={control}
-                label="Date of Birth"
-                value={dob}
-                setDob={setDob}
-                errors={errors}
-                />
-              )}
+              errors={errors}
+              name="dob"
+              dob={dob}
+              setDob={setDob}
+              fullWidth
             />
           </Box>
           {/* Contact Number */}
@@ -330,7 +330,7 @@ const profileContainer = {
   gap: 2,
   pb: { xs: 2, sm: 4 },
   pt: { xs: 0, sm: 4 },
-}
+};
 const profileBox = {
   width: '100%',
   margin: 'auto',

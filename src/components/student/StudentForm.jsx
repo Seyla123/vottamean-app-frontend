@@ -4,23 +4,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
-import SomethingWentWrong from '../common/SomethingWentWrong';
-import LoadingCircle from '../loading/LoadingCircle';
+import * as yup from 'yup';
 
-// - Material UI Components
+// - Material UI Components and luicide icons
 import {
   MenuItem,
-  Box,
   Typography,
-  Select,
-  Button,
-  Paper,
   Grid,
   Avatar,
-  IconButton,
   Stack,
+  capitalize,
+  InputAdornment,
 } from '@mui/material';
-import { UserRoundPen, Upload, Trash2 } from 'lucide-react';
+import { UserRoundPen, Upload, Trash2, ImagePlus, School } from 'lucide-react';
 
 // - Custom Components
 import DOBPicker from '../common/DOBPicker';
@@ -28,332 +24,432 @@ import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import StyledButton from '../common/StyledMuiButton';
-import SubHeader from '../teacher/SubHeader';
-
+import { StyledTextField } from '../common/GenderSelect';
 // - Redux Slices and APIs
 import { useGetClassesDataQuery } from '../../services/classApi';
-import { updateFormData } from '../../store/slices/studentSlice';
-
-// - Validation
-import { StudentValidator } from '../../validators/validationSchemas';
-
 import { useNavigate } from 'react-router-dom';
+// Redux Slice
+import { setSnackbar } from '../../store/slices/uiSlice';
+import RandomAvatar from '../common/RandomAvatar';
+import { useTheme } from '@emotion/react';
 
-const StudentForm = ({ handleNext, handleFormChange, handleClose }) => {
-  // - Dispatch actions
-  const dispatch = useDispatch();
+const StudentForm = ({
+  handleNext,
+  defaultValues = {},
+  handlePhotoChange,
+  photoFile,
+  setPhotoFile,
+  photoPreview,
+  setPhotoPreview,
+  photoPreviewRef,
+}) => {
   const navigate = useNavigate();
+  const [dob, setDob] = useState(null);
+  const theme = useTheme();
 
-  const studentData = useSelector((state) => state.student);
-
-  // - API Class
+  // useGetClassesDataQuery : a hook return function for class data api
   const {
-    data: classData,
-    isLoading: isClassDataLoading,
-    error: classDataError,
-  } = useGetClassesDataQuery({ active: 1 });
+    data: classesData,
+    isLoading,
+    error,
+    isError,
+  } = useGetClassesDataQuery();
 
-  // - Local State
-  const [dob, setDob] = useState(
-    studentData.dob ? dayjs(studentData.dob) : null,
-  );
-
-  // - Class Rows State
-  const [rows, setRows] = useState([]);
-  const [isRowsLoading, setIsRowsLoading] = useState(true);
-
-  // - Image Upload States
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
-  // - Loading Class IDs
+  // Dispatch the action for error fetching classes data
   useEffect(() => {
-    if (classData && Array.isArray(classData.data)) {
-      setRows(
-        classData.data.map((classItem) => ({
-          value: String(classItem.class_id),
-          label: classItem.class_name,
-        })),
-      );
-      setIsRowsLoading(false);
-    }
-  }, [classData]);
-
-  // - Form Handlers
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    reset,
-  } = useForm({
-    resolver: yupResolver(StudentValidator),
-    defaultValues: {
-      photo: studentData.photo || '',
-      first_name: studentData.first_name || '',
-      last_name: studentData.last_name || '',
-      gender: studentData.gender || '',
-      class_id: studentData.class_id ? String(studentData.class_id) : '',
-      phone_number: studentData.phone_number || '',
-      address: studentData.address || '',
-      dob: studentData.dob || '',
-    },
-  });
-
-  // - Image Upload Handlers
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (
-      file &&
-      file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
-    ) {
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-    } else {
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Invalid image file',
+          message: 'Error fetching classes data',
           severity: 'error',
         }),
       );
     }
-  };
+  }, [classesData, error]);
 
-  // - Form Data Handlers tracking input changes
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(studentValidationSchema),
+    defaultValues: {
+      firstName: defaultValues.first_name || '',
+      lastName: defaultValues.last_name || '',
+      phoneNumber: defaultValues.phone_number || '',
+      gender: defaultValues.gender || '',
+      dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
+      address: defaultValues.address || '',
+      class_id: defaultValues.class_id ? String(defaultValues.class_id) : null,
+      photo: defaultValues.photo || '',
+      guardianFirstName: defaultValues.guardian_first_name || '',
+      guardianLastName: defaultValues.guardian_last_name || '',
+      guardianEmail: defaultValues.guardian_email || '',
+      guardianPhoneNumber: defaultValues.guardian_phone_number || '',
+      guardianRelationship: defaultValues.guardian_relationship || '',
+    },
+  });
+
+  // Reset form and photo states when defaultValues change
   useEffect(() => {
-    if (studentData) {
-      setValue('photo', studentData.photo || '');
-      setValue('first_name', studentData.first_name || '');
-      setValue('last_name', studentData.last_name || '');
-      setValue('gender', studentData.gender || '');
-      const classId = String(studentData.class_id);
-      const isClassIdValid = rows.some((row) => row.value === classId);
-      setValue('class_id', isClassIdValid ? classId : '');
-      setValue('phone_number', studentData.phone_number || '');
-      setValue('address', studentData.address || '');
-      setDob(studentData.dob ? dayjs(studentData.dob) : null);
-    }
-  }, [studentData, setValue, rows]);
+    if (defaultValues) {
+      reset({
+        ...defaultValues,
+        class_id: defaultValues.class_id
+          ? String(defaultValues.class_id)
+          : null,
+        dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
+      });
+      setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
 
-  // - Handle form submission
-  const onSubmit = (data) => {
-    const formattedDob = dob ? dayjs(dob).format('YYYY-MM-DD') : null;
+      // Clear old photo URL if it exists
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
 
-    // - Create form data for submission
-    const formData = new FormData();
-
-    // - Append all fields from the data object to formData
-    Object.entries({ ...data, dob: formattedDob }).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    // - Append the file separately if selected
-    if (selectedFile) {
-      formData.append('photo', selectedFile);
+      // Set new photo preview if exists
+      if (defaultValues.photo) {
+        const photoUrl =
+          typeof defaultValues.photo === 'string'
+            ? defaultValues.photo
+            : URL.createObjectURL(defaultValues.photo);
+        setPhotoPreview(photoUrl);
+        setPhotoFile(defaultValues.photo);
+      }
     }
 
-    // - Dispatch only serializable data to Redux
-    const updatedData = {
-      ...data,
-      dob: formattedDob,
-      photoUrl: previewUrl,
+    // Cleanup function to revoke the old photo URL
+    return () => {
+      if (photoPreview && typeof photoPreview !== 'string') {
+        URL.revokeObjectURL(photoPreview);
+      }
     };
+  }, [defaultValues]);
 
-    // - Update the form data in Redux
-    dispatch(updateFormData(updatedData));
-    handleFormChange(updatedData);
-
-    // - Reset form
-    reset();
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    handleNext();
+  // form submission
+  const onSubmit = (data) => {
+    console.log('data being submit form Student Form:', data);
+    handleNext(true, {
+      ...data,
+      class_id: data.class_id ? Number(data.class_id) : null, // Converting to number
+      dob: data.dob ? dob.toISOString() : null,
+      photo: photoFile || photoPreview || null,
+    });
   };
 
-  // - Show loading circle while fetching class data
-  if (isClassDataLoading || isRowsLoading) {
-    return <LoadingCircle />;
-  }
+  // Handle remove photo
+  const handleRemovePhoto = () => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setValue('photo', null);
 
-  // if there is an error fetching class data
-  if (classDataError) {
-    return <SomethingWentWrong customStyles={{ minHeight: '70vh' }} />;
-  }
+    // Reset file input
+    if (photoPreviewRef.current) {
+      photoPreviewRef.current.value = '';
+    }
+  };
+
+  // Handle cancel back home
+  const handleCancel = () => {
+    navigate('/admin/students');
+  };
+
+  // Photo preview
+  const photoSrc =
+    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack direction={'column'} gap={2}>
-          {/* STUDENT PROFILE IMAGE UPLOAD */}
-          <Stack direction={'row'} gap={2} alignItems={'center'}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Header */} 
+        <Typography
+          alignSelf={'start'}
+          variant="h6"
+          component="h2"
+          fontWeight={'bold'}
+          gutterBottom
+        >
+          Student Information
+        </Typography>
+      <Stack direction="column" gap={2}>
+   
+        {/* Profile */}
+        <Stack direction="row" gap={2} alignItems="center" py={3}>
+          {photoPreview || photoFile ? (
             <Avatar
-              src={previewUrl || studentData.photo}
+              src={photoSrc}
               alt="Profile"
-              sx={{ width: '120px', height: '120px' }}
+              sx={{ width: 140, height: 140, bgcolor: '#eee' }}
             />
-            <Stack direction={'column'} gap={2}>
-              <input
-                accept="image/*"
-                type="file"
-                id="photo-upload"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-              />
-              <label htmlFor="photo-upload">
-                <StyledButton
-                  component="span"
-                  startIcon={<Upload size={18} />}
-                  variant={'contained'}
-                  size="small"
-                  color="primary"
-                >
-                  Upload Photo
-                </StyledButton>
-              </label>
-
+          ) : (
+            <RandomAvatar size={140} />
+          )}
+          <Stack direction="column" gap={2}>
+            <input
+              accept="image/*"
+              type="file"
+              id="photo-upload"
+              ref={photoPreviewRef}
+              hidden
+              onChange={handlePhotoChange}
+            />
+            {/* Upload button */}
+            <label htmlFor="photo-upload">
               <StyledButton
-                color="error"
-                variant="outlined"
+                component="span"
+                startIcon={<ImagePlus size={18} />}
+                variant="contained"
                 size="small"
-                startIcon={<Trash2 size={18} />}
               >
-                Delete{' '}
+                Upload
               </StyledButton>
-            </Stack>
-          </Stack>
-          {/* STUDENT NAME */}
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="first_name"
-                control={control}
-                label="First Name"
-                placeholder="First Name"
-                errors={errors}
-                icon={UserRoundPen}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="last_name"
-                control={control}
-                label="Last Name"
-                placeholder="Last Name"
-                errors={errors}
-                icon={UserRoundPen}
-                fullWidth
-              />
-            </Grid>
-
-            {/* STUDENT GENDER AND DATE OF BIRTH */}
-            <Grid item xs={12} sm={6}>
-              <GenderSelect
-                control={control}
-                errors={errors}
-                name="gender"
-                label="Gender"
-                defaultValue={studentData.gender || ''}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <DOBPicker
-                control={control}
-                errors={errors}
-                name="dob"
-                dob={dob}
-                setDob={setDob}
-                fullWidth
-              />
-            </Grid>
-            {/* STUDENT CLASS */}
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" fontWeight="bold" gutterBottom>
-                Class <span style={{ color: 'red' }}>*</span>
-              </Typography>
-              <Controller
-                name="class_id"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <>
-                    <Select
-                      {...field}
-                      value={field.value || ''}
-                      onChange={(e) => field.onChange(e.target.value)}
-                      displayEmpty
-                      fullWidth
-                    >
-                      <MenuItem value="" disabled>
-                        Select Class
-                      </MenuItem>
-                      {rows.length > 0 ? (
-                        rows.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem value="" disabled>
-                          No Class Available
-                        </MenuItem>
-                      )}
-                    </Select>
-                    {errors.class_id && (
-                      <Typography variant="caption" color="error">
-                        {errors.class_id.message}
-                      </Typography>
-                    )}
-                  </>
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* CONTACT INFORMATION */}
-              <PhoneInputField
-                name="phone_number"
-                control={control}
-                label="Contact Number"
-                errors={errors}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-
-          <InputField
-            name="address"
-            control={control}
-            label="Street Address"
-            placeholder="Phnom Penh, Street 210, ..."
-            errors={errors}
-            required={false}
-            multiline
-            minRows={5}
-            fullWidth
-          />
-
-          {/* BUTTONS */}
-          <Stack direction={'row'} gap={1} justifyContent={'flex-end'}>
-            <StyledButton variant="outlined" size="small" onClick={handleClose}>
-              Cancel
-            </StyledButton>
+            </label>
+            {/* Remove button */}
             <StyledButton
-              type="submit"
-              variant="contained"
-              color="primary"
+              color="error"
+              variant="outlined"
               size="small"
-              onClick={handleNext}
+              startIcon={<Trash2 size={18} />}
+              onClick={handleRemovePhoto}
             >
-              Continue
+              Remove
             </StyledButton>
           </Stack>
         </Stack>
-      </form>
-    </>
+        {/* Input fields */}
+        <Grid container spacing={2} alignItems={'center'}>
+          <Grid item xs={12} sm={6}>
+            <InputField
+              name="firstName"
+              control={control}
+              label="First Name"
+              placeholder="First Name"
+              errors={errors}
+              icon={UserRoundPen}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <InputField
+              name="lastName"
+              control={control}
+              label="Last Name"
+              placeholder="Last Name"
+              errors={errors}
+              icon={UserRoundPen}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <GenderSelect
+              control={control}
+              errors={errors}
+              name="gender"
+              label="Gender"
+              defaultValue=""
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <DOBPicker
+              control={control}
+              errors={errors}
+              name="dob"
+              dob={dob}
+              setDob={setDob}
+              fullWidth
+            />
+          </Grid>
+
+          {/* STUDENT CLASS */}
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body2" fontWeight="bold" mb={1}>
+              Class <span style={{ color: 'red' }}>*</span>
+            </Typography>
+            <Controller
+              name="class_id"
+              control={control}
+              defaultValue={defaultValues.class_id || ''}
+              render={({ field, fieldState }) => (
+                <>
+                  <StyledTextField
+                    {...field}
+                    value={field.value || ''}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    select
+                    fullWidth
+                    disabled={isLoading}
+                    error={errors?.class_id}
+                    helperText={
+                      fieldState?.error ? fieldState.error.message : ''
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <School size={20} /> {/* Icon */}
+                        </InputAdornment>
+                      ),
+                    }}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (selected) => {
+                        if (!selected) {
+                          return (
+                            <span style={{ color: theme.palette.grey[400] }}>
+                              Class
+                            </span>
+                          );
+                        };
+                        // Find the class name from the classesData based on selected class_id
+                        const selectedClass = classesData?.data?.find(
+                          (classItem) =>
+                            classItem.class_id === Number(selected),
+                        );
+                        return selectedClass ? selectedClass.class_name : '';
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      {isLoading ? 'Loading classes...' : 'Select a class'}
+                    </MenuItem>
+                    {classesData?.data?.length ? (
+                      classesData.data.map((classItem) => (
+                        <MenuItem
+                          key={classItem.class_id}
+                          value={classItem.class_id}
+                        >
+                          {classItem.class_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>No classes available</MenuItem>
+                    )}
+                  </StyledTextField>
+                </>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <PhoneInputField
+              name="phoneNumber"
+              control={control}
+              label="Contact Number"
+              errors={errors}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
+        <InputField
+          name="address"
+          control={control}
+          label="Street Address"
+          placeholder="Phnom Penh, Street 210, ..."
+          errors={errors}
+          required={false}
+          multiline
+          minRows={5}
+          fullWidth
+        />
+        {/* Buttons */}
+        <Stack
+          direction="row"
+          alignSelf="flex-end"
+          justifyContent="flex-end"
+          width={{ xs: '100%', sm: '300px', md: '260px' }}
+          gap={2}
+          marginTop={{ xs: 2, sm: 0 }}
+        >
+          <StyledButton
+            fullWidth
+            variant="outlined"
+            color="inherit"
+            onClick={handleCancel}
+            size="small"
+          >
+            Cancel
+          </StyledButton>
+          <StyledButton
+            fullWidth
+            variant="contained"
+            type="submit"
+            size="small"
+          >
+            Submit
+          </StyledButton>
+        </Stack>
+      </Stack>
+    </form>
   );
 };
 
 export default StudentForm;
+// Define validation schema
+export const studentValidationSchema = yup.object({
+  firstName: yup
+    .string()
+    .trim()
+    .label('First Name')
+    .required('First name is required')
+    .matches(
+      /^[A-Za-z]+( [A-Za-z]+)*$/,
+      'Name must contain only alphabetic characters and single spaces between words',
+    )
+    .min(2, 'Name must be at least 2 characters long')
+    .max(40, 'Name must be less than 40 characters'),
+  lastName: yup
+    .string()
+    .trim()
+    .label('Last Name')
+    .required('Last name is required')
+    .matches(
+      /^[A-Za-z]+( [A-Za-z]+)*$/,
+      'Name must contain only alphabetic characters and single spaces between words',
+    )
+    .min(2, 'Name must be at least 2 characters long')
+    .max(40, 'Name must be less than 40 characters'),
+  phoneNumber: yup
+    .string()
+    .trim()
+    .required('Phone number is required')
+    .test(
+      'length',
+      'Phone number must be between 9 and 15 digits (excluding country code)',
+      (value) => {
+        // Extract the number part (after the country code)
+        const numberPart = value && value.replace(/[^0-9]/g, '');
+        return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
+      },
+    )
+    .matches(
+      /^\+\d{1,3}\s\d{1,3}.*$/,
+      'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    ),
+  photo: yup.mixed().nullable(),
+  gender: yup
+    .string()
+    .trim()
+    .transform((value) => capitalize(value))
+    // Transform the value before validation
+    .required('Gender is required')
+    .oneOf(
+      ['Male', 'Female', 'Other'],
+      'Gender must be either Male, Female, or Other',
+    ),
+  class_id: yup.number().required('Class is required'),
+  dob: yup
+    .string()
+    .required('Date of birth is required')
+    .max(new Date(), 'Date of birth cannot be in the future')
+    .typeError('Invalid date format'),
+  address: yup
+    .string()
+    .trim()
+    .nullable()
+    .notRequired()
+    .max(200, 'Address must be less than 200 characters'),
+});
