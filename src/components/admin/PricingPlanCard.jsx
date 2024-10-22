@@ -45,7 +45,7 @@ const PricingPlanCard = ({
         }}
       >
         <Box
-          sx={{ p: 3, borderBottom: '1px solid', borderColor: 'primary.main' }}
+          sx={{ p: 3, borderColor: 'primary.main' }}
         >
           <Typography
             variant="h5"
