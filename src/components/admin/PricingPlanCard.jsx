@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid, Divider } from '@mui/material';
 import SubscriptionButton from '../../pages/payment/SubscriptionButton';
 import { shadow } from '../../styles/global';
 import { Check } from 'lucide-react';
@@ -89,7 +89,7 @@ const PricingPlanCard = ({
             )}
           </Box>
         </Box>
-        <CardContent sx={{ backgroundColor: '#F6F5F2', height: '100%' }}>
+        <CardContent sx={{ height: '100%' }}>
           <Typography variant="body1" fontWeight={'bold'}>
             Everything in{' '}
             {plan.type === 'Basic'
