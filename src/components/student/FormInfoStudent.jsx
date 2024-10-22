@@ -193,9 +193,6 @@ function FormInfoStudent() {
           <TabPanel
             sx={{
               flexGrow: 1,
-              height: {
-                sm: '60vh',
-              },
               padding: 2,
             }}
             value="2"

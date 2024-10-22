@@ -42,7 +42,7 @@ const GuardianForm = ({
   // Form submission function
   const onSubmit = async (data) => {
     // Create form data
-   const formData = new FormData(); 
+    const formData = new FormData();
     // Create an object with the form data
     const formFields = {
       guardian_first_name: data.guardianFirstName,
@@ -58,12 +58,12 @@ const GuardianForm = ({
       phone_number: studentData.phoneNumber,
       address: studentData.address || '',
     };
-  
+
     // Append fields to FormData
     Object.entries(formFields).forEach(([key, value]) =>
-      formData.append(key, value)
+      formData.append(key, value),
     );
-  
+
     // Append the photo if it exists
     if (studentData.photo) {
       console.log('Appending photo:', studentData.photo);
@@ -76,22 +76,22 @@ const GuardianForm = ({
       console.error('Error creating student:', error);
     }
   };
-  
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Guardian Name Inputs */}
+        <Typography
+          alignSelf={'start'}
+          variant="h6"
+          component="h2"
+          fontWeight={'bold'}
+          mb={2}
+        >
+          Guardian Information
+        </Typography>
         <Stack direction={'column'} gap={2}>
-          <Typography
-            alignSelf={'start'}
-            variant="h6"
-            component="h2"
-            fontWeight={'bold'}
-            mb={2}
-          >
-            Guardian Information
-          </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} alignItems={'center'}>
             <Grid item xs={12} sm={6}>
               <InputField
                 name="guardianFirstName"
@@ -115,37 +115,42 @@ const GuardianForm = ({
           </Grid>
           {/* GUARDIAN CONTACT INFORMATION */}
           {/* Guardian Phone Number */}
-          <PhoneInputField
-            name="guardianPhoneNumber"
-            control={control}
-            label="Contact Number"
-            errors={errors}
-          />
+          <Grid item xs={12} sm={6}>
+            <PhoneInputField
+              name="guardianPhoneNumber"
+              control={control}
+              label="Contact Number"
+              errors={errors}
+            />
+          </Grid>
           {/* Guardian Email */}
-          <InputField
-            name="guardianEmail"
-            control={control}
-            label="Email"
-            placeholder="Enter guardian email"
-            errors={errors}
-            icon={Mail}
-          />
+          <Grid item xs={12} sm={6}>
+            <InputField
+              name="guardianEmail"
+              control={control}
+              label="Email"
+              placeholder="Enter guardian email"
+              errors={errors}
+              icon={Mail}
+            />
+          </Grid>
           {/* Guardian Relationship */}
-          <InputField
-            name="guardianRelationship"
-            control={control}
-            label="Relationship"
-            placeholder="Relationship"
-            errors={errors}
-            icon={Diversity1Icon}
-          />
-
+          <Grid item xs={12} sm={6}>
+            <InputField
+              name="guardianRelationship"
+              control={control}
+              label="Relationship"
+              placeholder="Relationship"
+              errors={errors}
+              icon={Diversity1Icon}
+            />
+          </Grid>
           {/* Action Buttons */}
           <Stack
             direction={'row'}
             alignSelf={'flex-end'}
             justifyContent={'flex-end'}
-            width={{ xs: '100%', sm: '300px', md: '280px' }}
+            width={{ xs: '100%', sm: '300px', md: '260px' }}
             gap={2}
             marginTop={{ xs: 2, sm: 0 }}
           >
