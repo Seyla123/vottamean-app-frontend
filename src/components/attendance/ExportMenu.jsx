@@ -3,6 +3,7 @@ import { KeyboardArrowDown as KeyboardArrowDownIcon, Edit as EditIcon, FileCopy 
 import { useState } from 'react';
 import { alpha ,styled} from '@mui/material/styles';
 import { DownloadIcon } from "lucide-react";
+import StyledButton from '../common/StyledMuiButton';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -72,7 +73,7 @@ const ExportMenu = ({
     return (
         <Stack direction="row" justifyContent="flex-end" sx={{ width: '100%' }}>
             {handleExportsCsv ? (
-                <Button
+                <StyledButton
                     variant="contained"
                     size="small"
                     endIcon={
@@ -87,10 +88,10 @@ const ExportMenu = ({
                     sx={{ alignSelf: 'flex-end' }}
                 >
                     Export CSV
-                </Button>
+                </StyledButton>
             ) : (
                 <Box>
-                    <Button
+                    <StyledButton
                         id="demo-customized-button"
                         aria-controls={open ? 'demo-customized-menu' : undefined}
                         aria-haspopup="true"
@@ -102,7 +103,7 @@ const ExportMenu = ({
                         endIcon={<KeyboardArrowDownIcon />}
                     >
                         exports
-                    </Button>
+                    </StyledButton>
                     <StyledMenu
                         id="demo-customized-menu"
                         MenuListProps={{

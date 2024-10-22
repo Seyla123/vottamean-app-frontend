@@ -271,7 +271,6 @@ const StudentListPage = () => {
           gap={2}
         >
           <SearchComponent
-            sx={{ width: '100%', maxWidth: '100%' }}
             placeholder="Search"
             value={searchTerm}
             onChange={handleSearchChange}

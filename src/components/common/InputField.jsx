@@ -3,7 +3,7 @@ import { TextField, Typography, InputAdornment, Box } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+export const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: 8,
     backgroundColor: theme.palette.background.paper,

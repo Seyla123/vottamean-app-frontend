@@ -7,7 +7,7 @@ import { Box, Typography, InputAdornment, styled } from '@mui/material';
 import { Calendar } from 'lucide-react';
 import dayjs from 'dayjs';
 
-const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
+export const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: 8,
     backgroundColor: theme.palette.background.paper,
@@ -26,6 +26,11 @@ const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
   },
   '& .MuiInputAdornment-root': {
     marginRight: 0,
+  },
+  // Add this specific targeting for the calendar icon
+  '& .MuiIconButton-root .MuiSvgIcon-root': {
+    fontSize: 18, // Adjust this value to make the icon smaller or larger
+    color: '#757575', // This matches the gray color shown in your image
   },
 }));
 
