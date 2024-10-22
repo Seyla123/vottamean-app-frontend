@@ -48,9 +48,9 @@ deploy-frontend:
     - echo "Logging in to Docker registry and restarting application on EC2..."
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com "
       echo '$CI_REGISTRY_PASSWORD' | sudo docker login -u '$CI_REGISTRY_USER' --password-stdin $CI_REGISTRY &&
-      cd /home/ubuntu/docker-compose-setup &&
+      cd /home/ubuntu/frontend &&
       sudo docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
-      sudo docker-compose -f /home/ubuntu/docker-compose-setup/docker-compose.yml up -d --build
+      sudo docker-compose -f /home/ubuntu/frontend/docker-compose.yml up -d --build
       "
 
   environment:
