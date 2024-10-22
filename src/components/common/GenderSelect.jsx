@@ -62,7 +62,7 @@ const GenderSelect = ({
   };
 
   return (
-    <Stack direction="column" spacing={1}>
+    <Stack direction="column" spacing={1} sx={{ width: '100%' }}>
       <Typography variant="body2" fontWeight="bold">
         {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
       </Typography>

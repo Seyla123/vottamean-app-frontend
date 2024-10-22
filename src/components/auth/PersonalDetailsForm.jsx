@@ -115,6 +115,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               name="gender"
               label="Gender"
               defaultValue={formData.gender}
+              fullWidth
             />
 
             <DOBPicker
