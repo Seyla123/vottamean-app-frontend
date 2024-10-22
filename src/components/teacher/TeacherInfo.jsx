@@ -44,7 +44,7 @@ const TeacherInfo = ({
 }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
-  // const photoPreviewRef = useRef(null);
+
   // React hook form
   const {
     control,
@@ -69,6 +69,7 @@ const TeacherInfo = ({
     },
   });
 
+  // Update form when defaultValues change
   useEffect(() => {
     if (defaultValues) {
       reset({
@@ -76,12 +77,13 @@ const TeacherInfo = ({
         dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
       });
       setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
+
       // Clear old photo URL if it exists
       if (photoPreview) {
         URL.revokeObjectURL(photoPreview);
       }
 
-      // If there is a photo, create a preview URL
+      // Set new photo preview if exists
       if (defaultValues.photo) {
         const photoUrl =
           typeof defaultValues.photo === 'string'
@@ -91,15 +93,13 @@ const TeacherInfo = ({
         setPhotoFile(defaultValues.photo);
       }
     }
-
-    // Cleanup function to revoke the preview URL
+    // Cleanup function to revoke the old photo URL
     return () => {
       if (photoPreview && typeof photoPreview !== 'string') {
         URL.revokeObjectURL(photoPreview);
       }
     };
-  }, [defaultValues, reset, photoPreview, setPhotoPreview]);
-
+  }, [defaultValues]);
   // Handle form submission
   const onSubmit = (data) => {
     handleNextClick(true, {
@@ -128,8 +128,7 @@ const TeacherInfo = ({
   const handleCancel = () => {
     navigate('/admin/teachers');
   };
-
-  // Preview photo
+  // Photo preview
   const photoSrc =
     photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
 
@@ -148,7 +147,6 @@ const TeacherInfo = ({
             >
               Teacher Information
             </Typography>
-            {/* <Divider /> */}
           </Box>
           <Box sx={profileContainer}>
             {/* Profile */}
@@ -160,8 +158,6 @@ const TeacherInfo = ({
               />
             ) : (
               <RandomAvatar
-                username={`${getValues('firstName')} ${getValues('lastName')}`}
-                gender={getValues('gender')}
                 size={140}
               />
             )}
@@ -254,8 +250,7 @@ const TeacherInfo = ({
             />
           </Box>
           {/* Date of Birth */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
-            <DOBPicker
+          <DOBPicker
               control={control}
               errors={errors}
               name="dob"
@@ -263,7 +258,6 @@ const TeacherInfo = ({
               setDob={setDob}
               fullWidth
             />
-          </Box>
           {/* Contact Number */}
           <Box sx={{ ...textFieldGap, width: '100%' }}>
             <PhoneInputField
