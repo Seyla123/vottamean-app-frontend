@@ -1,35 +1,23 @@
 // - React and third-party libraries
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate } from 'react-router-dom';
 
 // - Material UI components
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 
 // - Material UI and Lucid Icons
 import { Mail, UserRoundPen } from 'lucide-react';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
-
-// - Custom components
-import SubHeader from '../teacher/SubHeader';
-import InputField from '../common/InputField';
-import PhoneInputField from '../common/PhoneInputField';
-import LoadingCircle from '../../components/loading/LoadingCircle';
-import { GuardianValidator } from '../../validators/validationSchemas';
-
-// - Redux Slices
-import { setSnackbar } from '../../store/slices/uiSlice';
-// import { resetFormData } from '../../store/slices/studentSlice';
-
-// - Student API
-import { useCreateStudentMutation } from '../../services/studentApi';
-import StyledButton from '../common/StyledMuiButton';
 import dayjs from 'dayjs';
 
+// - Custom components
+import InputField from '../common/InputField';
+import PhoneInputField from '../common/PhoneInputField';
+import { GuardianValidator } from '../../validators/validationSchemas';
+import StyledButton from '../common/StyledMuiButton';
+
 const GuardianForm = ({
-  handleFormChange,
   isLoading,
   handleBack,
   handleSubmitForm,
