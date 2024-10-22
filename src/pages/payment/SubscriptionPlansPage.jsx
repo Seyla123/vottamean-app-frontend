@@ -193,7 +193,7 @@ const SubscriptionPlansPage = () => {
                   aria-label="billing cycle tabs"
                 >
                   <StyledTabPricing value="monthly" label="Monthly" />
-                  <StyledTabPricing value="yearly" label="Yearly (Save 10%)" />
+                  <StyledTabPricing value="yearly" label="Annually (Save 16%)" />
                 </StyledTabs>
               </Box>
             </Box>
