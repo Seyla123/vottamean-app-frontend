@@ -111,7 +111,6 @@ const routesConfig = [
       },
     ],
   },
-
   {
     path: 'teacher',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
@@ -151,7 +150,6 @@ const routesConfig = [
   },
   {
     path: 'admin',
-    showSidebar: true,
     element: <ProtectedRoutes adminSite />,
     children: [
       {
@@ -203,6 +201,7 @@ const routesConfig = [
       },
       {
         path: 'payment',
+        noLayout:true,
         children: [
           {
             path: '',
