@@ -8,7 +8,11 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const renderRoutes = (routes) =>
   routes.map(({ path, element, children }) => (
-    <Route key={path} path={path} element={element}>
+    <Route
+      key={path}
+      path={path}
+      element={element}
+    >
       {children && renderRoutes(children)}
     </Route>
   ));

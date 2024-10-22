@@ -52,15 +52,11 @@ import ClassDetailPage from '../pages/admin/class/ClassDetailPage';
 import ClassCreatePage from '../pages/admin/class/ClassCreatePage';
 import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 
-import SchoolUpdatePage from '../pages/admin/setting/account/SchoolUpdatePage';
-
 import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
 import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
 import AttendanceListPage from '../pages/admin/report/attendance/AttendanceListPage';
-
-import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
 // Teacher site
 import MarkAttendanceClass from '../pages/teacherSite/schedule/MarkAttendanceClass';
@@ -115,7 +111,6 @@ const routesConfig = [
       },
     ],
   },
-
   {
     path: 'teacher',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
@@ -155,7 +150,6 @@ const routesConfig = [
   },
   {
     path: 'admin',
-    showSidebar: true,
     element: <ProtectedRoutes adminSite />,
     children: [
       {
@@ -207,6 +201,7 @@ const routesConfig = [
       },
       {
         path: 'payment',
+        noLayout:true,
         children: [
           {
             path: '',
