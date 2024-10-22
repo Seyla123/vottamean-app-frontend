@@ -1,51 +1,57 @@
 import React from 'react';
-import { Box, Grid, Avatar, Typography } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Avatar,
+  Typography,
+  Card,
+  Stack,
+  CardContent,
+  CardActions,
+} from '@mui/material';
 import theme from '../../styles/theme';
-import { shadow } from '../../styles/global';
 import { statusDetails } from '../../data/status';
+import { shadow } from '../../styles/global';
+import StyledButton from '../common/StyledMuiButton';
 
 const StatusGrid = ({ statusCounts }) => {
   return (
-    <Box sx={{ width: '100%' }}>
-      <Grid container sx={gridContainerStyles}>
-        {statusDetails.map(({ icon: Icon, label, color }, index) => (
-          <Grid key={index} item xs={6} sm={3} sx={gridIconStyles}>
-            <Avatar sx={{ bgcolor: color, width: 40, height: 40, mb: 1 }}>
-              <Icon color="white" size={18} />
-            </Avatar>
-            <Typography
-              variant="body2"
-              sx={{ color: theme.palette.secondary.main }}
-            >
-              {label}
-            </Typography>
-            <Typography variant="h5">
-              {statusCounts[label]?.toString().padStart(2, '0') || '00'}
-            </Typography>
+    <>
+      <Grid container spacing={2}>
+        {statusDetails.map(({ icon: Icon, label, bgColor, color }, index) => (
+          <Grid item xs={6} key={index}>
+            <Card sx={{ boxShadow: shadow }}>
+              <CardContent>
+                <Typography variant="body1" gutterBottom>
+                  {label}
+                </Typography>
+                <Stack direction={'row'} alignItems={'center'} gap={1}>
+                  <Box
+                    sx={{
+                      backgroundImage: bgColor,
+                      width: 40,
+                      height: 40,
+                      borderRadius: 3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon size={24} color={color} />
+                  </Box>
+                  <Box>
+                    <Typography variant="h5">
+                      {statusCounts[label]?.toString().padStart(2, '0') || ''}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </CardContent>
+            </Card>
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </>
   );
 };
 
 export default StatusGrid;
-const gridContainerStyles = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  p: 1,
-  width: '100%',
-};
-
-const gridIconStyles = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  textAlign: 'center',
-  width: '100%',
-  p: 1,
-  overflow: 'hidden',
-};
