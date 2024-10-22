@@ -79,15 +79,13 @@ const SubscriptionPlansPage = () => {
       icon: <Leaf size={24} />,
       monthlyPrice: '$0',
       yearlyPrice: '$0',
-      description: 'Discover WaveTrack',
+      description: 'Discover Vottamean',
       features: [
-        'Basic Reports',
-        'Basic Attendance',
-        'Basic Class',
-        'Basic Subject',
-        'Basic Student',
-        'Basic Teacher',
-        'Basic Account',
+        'Limited User Accounts',
+        'Up to 5 Teacher Accounts',
+        'Up to 50 Student Accounts',
+        'Full Access to All Features',
+        'All Devices Supported',
       ],
       isFree: true,
     },
@@ -98,14 +96,11 @@ const SubscriptionPlansPage = () => {
       yearlyPrice: '$39.99',
       description: 'Ideal for growing businesses',
       features: [
-        'Advanced Reports',
-        'Advanced Attendance',
-        'Advanced Class',
-        'Advanced Subject',
-        'Advanced Student',
-        'Advanced Teacher',
-        'Advanced Account',
-        'Advanced Reports',
+        'Extra User Accounts',
+        'Up to 100 Teacher Accounts',
+        'Up to 1000 Student Accounts',
+        'Full Access to All Features',
+        'All Devices Supported',
       ],
       isFree: false,
     },
@@ -116,16 +111,12 @@ const SubscriptionPlansPage = () => {
       yearlyPrice: '$99.99',
       description: 'Built for school manager',
       features: [
-        'Premium Reports',
-        'Premium Attendance',
-        'Premium Class',
-        'Premium Subject',
-        'Premium Student',
-        'Premium Teacher',
-        'Premium Account',
-        'Premium Reports',
-        'Premium Attendance',
-        'Premium Class',
+        'Unlimited User Accounts',
+        'Unlimited Teacher Accounts',
+        'Unlimited Student Accounts',
+        'Full Access to All Features',
+        'All Devices Supported',
+        'Significant Saving',
       ],
       isFree: false,
     },
@@ -193,7 +184,7 @@ const SubscriptionPlansPage = () => {
                   aria-label="billing cycle tabs"
                 >
                   <StyledTabPricing value="monthly" label="Monthly" />
-                  <StyledTabPricing value="yearly" label="Yearly (Save 10%)" />
+                  <StyledTabPricing value="yearly" label="Annually (Save 16%)" />
                 </StyledTabs>
               </Box>
             </Box>
