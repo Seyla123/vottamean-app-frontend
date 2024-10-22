@@ -202,6 +202,7 @@ const AttendanceListPage = () => {
 
   // handle export csv
   const handleExportsCsv = async () => {
+    console.log('iwhaiwdn');
     setIsExporting(true); // Set exporting status to true
     try {
       // Create URL parameters from the filter state

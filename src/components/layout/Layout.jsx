@@ -71,7 +71,7 @@ const Layout = ({ teacherSite, adminSite }) => {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            backgroundColor: '#F5F5F7',
+            backgroundColor: '#F5F5F5',
           },
         },
       },
