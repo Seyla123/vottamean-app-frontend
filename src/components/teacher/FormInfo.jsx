@@ -95,9 +95,6 @@ function FormInfo() {
       console.error('Error signing up teacher:', error.message);
     }
   };
-
-
-
   // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
     event.preventDefault();
@@ -106,8 +103,6 @@ function FormInfo() {
       setPhotoFile(file);
       const newPreviewUrl = URL.createObjectURL(file);
       photoPreviewRef.current.src = newPreviewUrl;
-      // setPhotoPreview(newPreviewUrl);
-      console.log(file);
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
