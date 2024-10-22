@@ -119,7 +119,7 @@ function FormInfoStudent() {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Create student and send link for verification successful.',
+          message: 'Create student successful.',
           severity: 'success',
           autoHideDuration: 6000,
         }),
