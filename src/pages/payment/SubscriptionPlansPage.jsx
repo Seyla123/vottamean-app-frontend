@@ -79,7 +79,7 @@ const SubscriptionPlansPage = () => {
       icon: <Leaf size={24} />,
       monthlyPrice: '$0',
       yearlyPrice: '$0',
-      description: 'Discover WaveTrack',
+      description: 'Discover Vottamean',
       features: [
         'Basic Reports',
         'Basic Attendance',
