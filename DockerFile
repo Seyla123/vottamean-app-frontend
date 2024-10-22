@@ -25,7 +25,7 @@ COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 # Set the right permissions 
 RUN chmod -R 755 /usr/share/nginx/html
 
-# Expose port 5173 since Nginx serves HTTP on this port
+# Expose port 5173 Nginx serves HTTP on this port
 EXPOSE 5173
 
 # Start NGINX server
