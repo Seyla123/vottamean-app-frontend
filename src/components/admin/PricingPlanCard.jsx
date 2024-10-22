@@ -89,6 +89,7 @@ const PricingPlanCard = ({
             )}
           </Box>
         </Box>
+        <Divider sx={{borderBottomWidth: '2.5px', borderRadius: '5px', borderColor: 'primary.main', mx: 4}}/>
         <CardContent sx={{ height: '100%' }}>
           <Typography variant="body1" fontWeight={'bold'}>
             Everything in{' '}
