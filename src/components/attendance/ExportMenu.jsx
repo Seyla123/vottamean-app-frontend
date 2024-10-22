@@ -21,7 +21,7 @@ import {
   PictureAsPdf as PdfIcon,
   TableChart as ExcelIcon,
 } from '@mui/icons-material';
-import { DownloadIcon, File, X } from 'lucide-react';
+import { Download, DownloadIcon, File, X } from 'lucide-react';
 import StyledButton from '../common/StyledMuiButton';
 import { BootstrapDialog } from '../common/BootstrapDialog';
 import pdfIcon from '../../assets/icon/pdf.png';
@@ -185,7 +185,7 @@ const ExportMenu = ({
                 size="small"
                 disabled={!exportType}
               >
-                Confirm
+                {isExporting ? 'Exporting...' : 'Confirm'}
               </StyledButton>
             </DialogActions>
           </BootstrapDialog>
