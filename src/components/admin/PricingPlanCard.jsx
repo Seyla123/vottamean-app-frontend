@@ -30,7 +30,7 @@ const PricingPlanCard = ({
             }}
           >
             <Typography variant="h6" textAlign={'center'}>
-              Your Plan
+              Your Current Plan
             </Typography>
           </Box>
         )}
@@ -119,3 +119,4 @@ const PricingPlanCard = ({
 };
 
 export default PricingPlanCard;
+

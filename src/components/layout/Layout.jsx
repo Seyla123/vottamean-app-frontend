@@ -38,6 +38,9 @@ const Layout = ({ teacherSite, adminSite }) => {
     }
   }, [isSuccess, userDataProfile]);
 
+  console.log('this is user profile data', userDataProfile);
+  
+
   const [logout] = useLogoutMutation();
 
   const handleLogout = async () => {

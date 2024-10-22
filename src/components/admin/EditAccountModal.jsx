@@ -88,8 +88,6 @@ const EditAccountModal = ({
   // Add a new state to track if the profile photo should be removed
   const [removePhoto, setRemovePhoto] = useState(false);
 
-  const [photo, setPhoto] = useState(null);
-
   const disableInputIfTeacher = checkUserRole === 'teacher';
 
   // - Form state management
