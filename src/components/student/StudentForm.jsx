@@ -166,10 +166,8 @@ const StudentForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack direction="column" gap={2}>
-        {/* Header */}
+        {/* Header */} 
         <Typography
-          mt={2}
           alignSelf={'start'}
           variant="h6"
           component="h2"
@@ -178,8 +176,10 @@ const StudentForm = ({
         >
           Student Information
         </Typography>
+      <Stack direction="column" gap={2}>
+   
         {/* Profile */}
-        <Stack direction="row" gap={2} alignItems="center" py={2}>
+        <Stack direction="row" gap={2} alignItems="center" py={3}>
           {photoPreview || photoFile ? (
             <Avatar
               src={photoSrc}
@@ -283,7 +283,6 @@ const StudentForm = ({
                     onChange={(e) => field.onChange(e.target.value)}
                     select
                     fullWidth
-                    placeholder="Select Class"
                     disabled={isLoading}
                     error={errors?.class_id}
                     helperText={
