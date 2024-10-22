@@ -72,7 +72,7 @@ const navigation = [
       {
         segment: 'attendance',
         title: 'Attendance',
-        icon: <ChecklistIcon size={18} />,
+        icon: <ListCheck size={18} />,
       },
     ],
   },
