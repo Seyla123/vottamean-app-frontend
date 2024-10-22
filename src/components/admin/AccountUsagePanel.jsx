@@ -19,7 +19,8 @@ import LinearProgress, {
   linearProgressClasses,
 } from '@mui/material/LinearProgress';
 import AlertCard from '../common/AlertCard';
-import creditCardImage from '../../assets/images/credit-card.svg';
+import CreditCardImage from '../../assets/images/credit-card.svg';
+import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import { Link } from 'react-router-dom';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -55,7 +56,10 @@ const AccountUsagePanel = ({
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={8}>
-          <UsageCard activePlan={activePlan} setValue={setValue} />
+          {!currentSubscription ? 
+          <NoSubscription setValue={setValue}/> 
+          :
+          <UsageCard activePlan={activePlan} setValue={setValue} />}
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Stack spacing={3}>
@@ -172,6 +176,49 @@ const UsageCard = ({ activePlan, setValue }) => {
     </Card>
   );
 };
+const NoSubscription = ({setValue}) => {
+  return (
+    <Card sx={shadow}>
+      <CardContent>
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          gap={2}
+          justifyContent={'space-between'}
+        >
+          <Typography variant="h6" gutterBottom>
+            You have not subscribed yet
+          </Typography>
+          <Chip label={'No Subscription'} size="small" color="primary" />
+        </Box>
+
+        <Stack spacing={3}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              component="img"
+              src={NoSubscriptionIamge}
+              alt="credit card"
+              sx={{ width: '400px', objectFit: 'contain' }}
+            />
+          </Box>
+          <Typography variant="body1" textAlign={'center'}>
+            Upgrading to a paid plan
+            to unlock more features.
+          </Typography>
+        </Stack>
+      </CardContent>
+      <CardActions sx={{ justifyContent: 'flex-end' }}>
+        <StyledButton
+          size="small"
+          variant="outlined"
+          onClick={() => setValue('2')}
+        >
+          Upgrade to pro
+        </StyledButton>
+      </CardActions>
+    </Card>
+  );
+};
 
 const SubcriptionCard = () => {
   return (
@@ -182,7 +229,7 @@ const SubcriptionCard = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               component="img"
-              src={creditCardImage}
+              src={CreditCardImage}
               alt="credit card"
               sx={{ width: '240px', objectFit: 'contain' }}
             />
