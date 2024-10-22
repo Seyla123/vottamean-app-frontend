@@ -287,7 +287,7 @@ function TeacherDetailPage() {
                   icon={<CircleDashed size={18} color={'#6c63ff'} />}
                   label="Status"
                   value={
-                    formattedTeacher.emailVerified ? (
+                    formattedTeacher.emailVerified && formattedTeacher.active ? (
                       <Chip
                         size="small"
                         sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
@@ -301,7 +301,7 @@ function TeacherDetailPage() {
                             }}
                           />
                         }
-                        label="Verified"
+                        label="Active"
                       />
                     ) : (
                       <Chip
@@ -320,7 +320,7 @@ function TeacherDetailPage() {
                             }}
                           />
                         }
-                        label="Not Verified"
+                        label="Inactive"
                       />
                     )
                   }

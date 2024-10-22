@@ -44,8 +44,8 @@ export const attendanceApi = baseApi.injectEndpoints({
       invalidatesTags: ['Attendance'],
     }),
     getAttendance: builder.query({
-      query: (data) => ({
-        url: `attendance/${data.id}`,
+      query: (id) => ({
+        url: `attendance/${id}`,
         method: 'GET',
         credentials: 'include',
       }),
@@ -84,6 +84,17 @@ export const attendanceApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Attendance'],
     }),
+    updateAttendance:builder.mutation({
+      query: (data) => ({
+        url: `attendance/${data.id}`,
+        method: 'PUT',
+        body: {
+          status_id : data.statusId
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Attendance'],
+    })
   }),
 });
 
@@ -94,4 +105,5 @@ export const {
   useMarkAttendanceMutation,
   useGetReportAttendanceByClassQuery,
   useDeleteManyAttendanceMutation,
+  useUpdateAttendanceMutation,
 } = attendanceApi;

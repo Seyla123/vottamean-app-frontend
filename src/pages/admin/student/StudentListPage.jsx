@@ -236,13 +236,7 @@ const StudentListPage = () => {
     navigate(`/admin/students/${row.id}`);
   };
 
-  useEffect(() => {
-    if (!isLoading && !isFetching && isClassesSuccess) {
-      setIsPageLoading(false);
-    }
-  }, [isLoading, isFetching, isClassesSuccess]);
-
-  if (isPageLoading) {
+  if (isLoading) {
     return <LoadingCircle />;
   }
 
