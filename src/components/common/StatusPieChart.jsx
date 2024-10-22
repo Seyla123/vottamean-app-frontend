@@ -27,6 +27,9 @@ const StatusPieChart = ({ statusCounts }) => {
           <Typography variant="h6" align="center">
             No data available
           </Typography>
+          <Typography variant="body2" align="center">
+            Go to the attendance list and mark attendance for each student.
+          </Typography>
         </CardContent>
       </Card>
     );

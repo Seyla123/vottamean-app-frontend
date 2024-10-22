@@ -395,7 +395,7 @@ const AttendanceTable = ({
   };
   return (
     <>
-      <Stack direction={'row'} gap={2}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} gap={2}>
         <AttendanceFilter
           reportAttendance
           selectedClasses={selectedClasses}
