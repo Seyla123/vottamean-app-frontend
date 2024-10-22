@@ -50,7 +50,8 @@ deploy-frontend:
       echo '$CI_REGISTRY_PASSWORD' | sudo docker login -u '$CI_REGISTRY_USER' --password-stdin $CI_REGISTRY &&
       cd /home/ubuntu/frontend &&
       sudo docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
-      sudo docker-compose -f /home/ubuntu/frontend/docker-compose.yml up -d --build
+      sudo docker-compose -f /home/ubuntu/frontend/docker-compose.yml up -d --build &&
+      sudo docker cp frontend:/usr/share/nginx/html /home/ubuntu/frontend-project
       "
 
   environment:
