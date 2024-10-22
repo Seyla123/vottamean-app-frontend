@@ -308,7 +308,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 />
               ) : (
                 <RandomAvatar
-                  username={`${getValues('firstName') || ''} ${getValues('lastName') || ''}`}
                   size={140}
                 />
               )}
