@@ -67,6 +67,7 @@ function PaymentSuccessPage() {
             justifyContent: 'center',
             width: '100%',
             maxWidth: '500px',
+            textAlign: 'center',
           }}
         >
           {!isLoading ?
