@@ -3,7 +3,7 @@ import SignupPage from '../pages/auth/SignupPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
-import VerifySuccessfullyPage from '../pages/auth/VerifySuccessfullyPage';
+import VerifyResetPasswordPage from '../pages/auth/VerifyResetPasswordPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
@@ -52,15 +52,11 @@ import ClassDetailPage from '../pages/admin/class/ClassDetailPage';
 import ClassCreatePage from '../pages/admin/class/ClassCreatePage';
 import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 
-import SchoolUpdatePage from '../pages/admin/setting/account/SchoolUpdatePage';
-
 import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
 import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
 import AttendanceListPage from '../pages/admin/report/attendance/AttendanceListPage';
-
-import UserUpdatePage from '../pages/admin/setting/account/UserUpdatePage';
 
 // Teacher site
 import MarkAttendanceClass from '../pages/teacherSite/schedule/MarkAttendanceClass';
@@ -103,7 +99,7 @@ const routesConfig = [
       },
       {
         path: 'verify-reset-password/:token',
-        element: <VerifySuccessfullyPage />,
+        element: <VerifyResetPasswordPage />,
       },
       {
         path: 'reset-password/:token',
@@ -139,7 +135,7 @@ const routesConfig = [
           {
             path: ':id',
             element: <MarkAttendanceClass />,
-          }
+          },
         ],
       },
       {
@@ -324,7 +320,7 @@ const routesConfig = [
           {
             path: ':id',
             element: <AttendanceViewPage />,
-          }
+          },
         ],
       },
       {
@@ -345,7 +341,7 @@ const routesConfig = [
               {
                 path: '',
                 element: <AccountSettingsPage />,
-              }
+              },
             ],
           },
         ],

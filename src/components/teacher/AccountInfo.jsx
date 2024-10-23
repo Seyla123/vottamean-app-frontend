@@ -4,11 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Material UI components
-import {
-  Box,
-  Typography,
-  Stack,
-} from '@mui/material';
+import { Box, Typography, Stack } from '@mui/material';
 import StyledButton from '../common/StyledMuiButton';
 import dayjs from 'dayjs';
 
@@ -26,7 +22,6 @@ const AccountInfo = ({
   teacherData,
   isLoading,
 }) => {
-
   const [showPassword, setShowPassword] = useState(false);
 
   // yup validation from account information schema
@@ -45,7 +40,6 @@ const AccountInfo = ({
   });
   // Form submit function
   const onSubmit = async (data) => {
-
     const formData = new FormData();
     // Create an object with the form data
     const formFields = {
@@ -74,7 +68,7 @@ const AccountInfo = ({
       await handleSubmitForm(formData);
     } catch (error) {
       console.error('Failed to sign up teacher:', error.message);
-    } 
+    }
   };
 
   return (
@@ -151,7 +145,7 @@ const AccountInfo = ({
               size="small"
               disabled={isLoading}
             >
-              {isLoading ? 'Adding...' : 'Add'}
+              {isLoading ? 'Submitting...' : 'Submit'}
             </StyledButton>
           </Stack>
         </Box>

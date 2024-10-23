@@ -310,7 +310,7 @@ const TeacherInfo = ({
               type="submit"
               size="small"
             >
-              Submit
+              Continue
             </StyledButton>
           </Stack>
         </Box>
