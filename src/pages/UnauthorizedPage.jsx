@@ -8,7 +8,8 @@ import ShortHeader from '../components/layout/ShortHeader';
 const UnauthorizedPage = () => {
   return (
     <>
-    <ShortHeader/>
+    <ShortHeader>
+
     <SomethingWentWrong
       imageUrl={unAuthorzedImg}
       title=' Unauthorized Access'
@@ -28,6 +29,7 @@ const UnauthorizedPage = () => {
         </Link>
       </Stack>
     </SomethingWentWrong>
+    </ShortHeader>
     </>
   )
 };

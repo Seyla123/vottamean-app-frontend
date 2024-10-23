@@ -309,7 +309,7 @@ const EditAccountModal = ({
                   placeholder="First Name"
                   errors={errors}
                   icon={UserRoundPen}
-                  disabled={false}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -322,7 +322,7 @@ const EditAccountModal = ({
                   placeholder="Last Name"
                   errors={errors}
                   icon={UserRoundPen}
-                  disabled={false}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 

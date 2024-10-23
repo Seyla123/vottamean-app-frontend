@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Button, Stack, Skeleton, Typography, CircularProgress } from '@mui/material';
 import { CircleCheckBig } from 'lucide-react';
-import Logo from '../../assets/images/Logo.svg';
 import StyledButton from '../../components/common/StyledMuiButton';
 import { useGetSessionDetailsQuery } from '../../services/paymentApi';
 import { useNavigate } from 'react-router-dom';
+import ShortHeader from '../../components/layout/ShortHeader';
 function PaymentSuccessPage() {
   const navigate = useNavigate();
   // Function to extract the session_id from the URL query parameter
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
   const session_id = urlParams.get('session_id');
-  
+
   const [sessionData, setSessionData] = useState({});
   const { data: getSessionDetails, isLoading, isError, error, isSuccess } = useGetSessionDetailsQuery(session_id);
 
   useEffect(() => {
-    if(isError){
+    if (isError) {
       navigate('/admin/payment/failure')
     }
     if (getSessionDetails) {
@@ -52,22 +52,20 @@ function PaymentSuccessPage() {
 
   return (
     <>
-      <Box component="section" sx={styles.pageContainer}>
-        {/* LEFT CONTAINER */}
-        <Box component="div" sx={styles.leftContainer}>
-          <img src={Logo} alt="wavetrack logo" style={styles.logo} />
-        </Box>
+
+     <ShortHeader>
+     <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: '#fff', width: '100%'}}>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 2,
-            height: '90vh',
             justifyContent: 'center',
+            gap: 2,
             width: '100%',
             maxWidth: '500px',
             textAlign: 'center',
+           
           }}
         >
           {!isLoading ?
@@ -122,11 +120,12 @@ function PaymentSuccessPage() {
                 Return to Homepage
               </StyledButton>
             </>
-            : 
+            :
             <CircularProgress color="success" />
           }
         </Box>
-      </Box>
+      </Stack>
+     </ShortHeader>
     </>
   );
 }

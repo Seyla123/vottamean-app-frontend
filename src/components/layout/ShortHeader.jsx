@@ -1,20 +1,25 @@
 import React from 'react';
-import { AppBar, Toolbar } from '@mui/material';
+import { AppBar,Stack, Toolbar, CssBaseline } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/VOTTAMEAN.svg';
-
-const ShortHeader = () => {
+const ShortHeader = ({ children }) => {
   return (
-    <AppBar position="static" color='none' sx={styles.pageContainer}>
-      <Toolbar component={'div'} sx={styles.leftContainer}>
-        <Link to="/">
-          <img
-            src={Logo}
-            alt="wavetrack logo" style={styles.logo} 
-          />
-        </Link>
-      </Toolbar>
-    </AppBar>
+    <>
+      <CssBaseline />
+      <AppBar position="absolute" color='white' sx={styles.pageContainer}>
+        <Toolbar component={'div'} sx={styles.leftContainer}>
+          <Link to="/">
+            <img
+              src={Logo}
+              alt="wavetrack logo" style={styles.logo}
+            />
+          </Link>
+        </Toolbar>
+        <Stack sx={{height: '80vh', justifyContent: 'center', alignItems: 'center', display:'flex', width: '100%'}}>
+          {children}
+        </Stack>
+      </AppBar>
+    </>
   );
 };
 
@@ -28,7 +33,8 @@ const styles = {
     gap: 2,
     shadow: 'none',
     boxShadow: "none",
-    backgroundColor:'white'
+    backgroundColor: 'white',
+    height: '100vh',
   },
   leftContainer: {
     width: '100%',

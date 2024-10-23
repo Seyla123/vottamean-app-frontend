@@ -7,7 +7,8 @@ import ShortHeader from '../components/layout/ShortHeader';
 const NotFoundPage = () => {
   return (
     <>
-        <ShortHeader />
+        <ShortHeader >
+
         <SomethingWentWrong
             imageUrl={notFoundImage}
             title="404: Page Not Found"
@@ -24,6 +25,7 @@ const NotFoundPage = () => {
               Go to Home
             </StyledButton>
           </SomethingWentWrong>
+        </ShortHeader>
     </>
   );
 };
