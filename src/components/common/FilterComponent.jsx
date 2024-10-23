@@ -19,8 +19,6 @@ const FilterComponent = ({
   placeholder,
   value,
   onChange,
-  customStyles,
-  icon,
 }) => {
   const selectedLabel =
     data.find((item) => item.value === value)?.label || placeholder;
@@ -37,12 +35,10 @@ const FilterComponent = ({
       value={value}
       onChange={onChange}
       size="small"
-      displayEmpty
       SelectProps={{
         displayEmpty: true,
         renderValue: (selected) => (
           <Stack direction={'row'} gap={1} alignItems={'center'}>
-            {/* {icon && <InputAdornment position="start">{icon}</InputAdornment>} */}
             <InputLabel> {truncate(selectedLabel, truncateLength)}</InputLabel>
           </Stack>
         ),
