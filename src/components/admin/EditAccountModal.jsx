@@ -51,26 +51,6 @@ const EditAccountModal = ({
   checkUserRole,
 }) => {
   // - Initialize dispatch and navigate hooks
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * EditAccountModal component is a dialog modal used to edit the user's profile.
- * It renders a form with the user's current profile data and allows the user to
- * update it. The form includes input fields for the user's first name, last name,
- * contact number, street address, gender, and date of birth. The user can also
- * upload a new profile photo or remove the existing one. The modal has a cancel
- * button to close the modal and a save changes button to update the user's
- * profile.
- *
- * @param {boolean} open - Whether the modal is open or not.
- * @param {function} onClose - The function to call when the modal is closed.
- * @param {string} profilePhoto - The URL of the user's current profile photo.
- * @param {string} userName - The user's username.
- * @param {string} userGender - The user's gender.
- * @param {string} checkUserRole - The user's role (teacher or student).
- *
- * @returns {JSX.Element} The EditAccountModal component.
- */
-/******  f9887302-8bd1-42a3-9a8e-23557bd775a3  *******/
   const dispatch = useDispatch();
 
   // - Redux hooks update user api
