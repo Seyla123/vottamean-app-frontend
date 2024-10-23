@@ -114,7 +114,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
     >
       <HeaderTitle
         title={'Get Started Now'}
-        subTitle={'Get started now -- Get 30 days free trial!'}
+        subTitle={'Register your account today by providing your information in just four simple steps.'}
       />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
