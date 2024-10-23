@@ -22,7 +22,7 @@ import AlertCard from '../common/AlertCard';
 import CreditCardImage from '../../assets/images/credit-card.svg';
 import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import { Link } from 'react-router-dom';
-
+import CancelSubscription from '../../pages/payment/CancelSubscription';
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
@@ -56,14 +56,14 @@ const AccountUsagePanel = ({
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={8}>
-          {!currentSubscription ? 
-          <NoSubscription setValue={setValue}/> 
-          :
-          <UsageCard activePlan={activePlan} setValue={setValue} />}
+          {currentSubscription === 'None' ?
+            <NoSubscription setValue={setValue} />
+            :
+            <UsageCard activePlan={activePlan} setValue={setValue} />}
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Stack spacing={3}>
-            {activePlan && <SubcriptionCard />}
+            {activePlan && <SubcriptionCard/>}
             <Card sx={shadow}>
               <CardContent>
                 <Typography variant="body1" gutterBottom>
@@ -74,9 +74,12 @@ const AccountUsagePanel = ({
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <Link to="contact">
-                  <StyledButton size="small">Contact Our Support</StyledButton>
-                </Link>
+                <StyledButton
+                  size="small"
+                  onClick={() => window.location.assign('mailto:wavetrack.app@gmail.com')}
+                >
+                  Contact Our Support
+                </StyledButton>
               </CardActions>
             </Card>
           </Stack>
@@ -91,8 +94,8 @@ const UsageCard = ({ activePlan, setValue }) => {
   const usagePercentage = 25; // Example usage percentage
 
   const visibleFeatures = showAllFeatures
-    ? activePlan.features
-    : activePlan.features.slice(0, 4);
+    ? activePlan?.features
+    : activePlan?.features.slice(0, 4);
 
   return (
     <Card sx={shadow}>
@@ -106,10 +109,10 @@ const UsageCard = ({ activePlan, setValue }) => {
           <Typography variant="h6" gutterBottom>
             Your Plan Details
           </Typography>
-          <Chip label={activePlan.type} size="small" color="primary" />
+          <Chip label={activePlan?.type} size="small" color="primary" />
         </Box>
         <Grid container spacing={2} mt={2}>
-          {visibleFeatures.map((feature, index) => (
+          {visibleFeatures?.map((feature, index) => (
             <Grid item xs={12} sm={6} key={index}>
               <Typography
                 variant="body2"
@@ -124,7 +127,7 @@ const UsageCard = ({ activePlan, setValue }) => {
             </Grid>
           ))}
         </Grid>
-        {activePlan.features.length > 4 && (
+        {activePlan?.features?.length > 4 && (
           <Box display="flex" justifyContent="center" mt={2}>
             <StyledButton
               size="small"
@@ -176,7 +179,7 @@ const UsageCard = ({ activePlan, setValue }) => {
     </Card>
   );
 };
-const NoSubscription = ({setValue}) => {
+const NoSubscription = ({ setValue }) => {
   return (
     <Card sx={shadow}>
       <CardContent>
@@ -193,18 +196,20 @@ const NoSubscription = ({setValue}) => {
         </Box>
 
         <Stack spacing={3}>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               component="img"
               src={NoSubscriptionIamge}
               alt="credit card"
-              sx={{ width: '400px', objectFit: 'contain' }}
+              sx={{ width: '300px', objectFit: 'contain' }}
             />
           </Box>
-          <Typography variant="body1" textAlign={'center'}>
-            Upgrading to a paid plan
-            to unlock more features.
-          </Typography>
+          <AlertCard
+            title={'Subscription Required'}
+            description="We wanted to remind you that your account isn’t subscribed. Please select a plan to ensure continued access. We’ll temporarily disable accounts without a subscription soon."
+            severity="warning"
+            icon={<Info size={18} />}
+          />
         </Stack>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
@@ -223,8 +228,8 @@ const NoSubscription = ({setValue}) => {
 const SubcriptionCard = () => {
   return (
     <Card sx={{ height: '100%', boxShadow: shadow }}>
-      <CardContent>
-        <Stack>
+      <CardContent sx={{ display:'flex', flexDirection: 'column', gap: 2 }}>
+        <Stack> 
           <Typography variant="h6">Subcription</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
@@ -234,12 +239,16 @@ const SubcriptionCard = () => {
               sx={{ width: '240px', objectFit: 'contain' }}
             />
           </Box>
-
+          <Stack gap={1}>
           <Typography variant="body1" textAlign={'center'}>
             Your subscription is currently <b>active</b>.
             <br /> You can cancel anytime.
           </Typography>
+          <CancelSubscription/>
+          </Stack>
         </Stack>
+
+
       </CardContent>
     </Card>
   );

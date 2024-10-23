@@ -13,6 +13,7 @@ import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage'
 
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
+import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
 import PaymentCancelPage from '../pages/payment/PaymentCancelPage';
 import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
 import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
@@ -111,7 +112,6 @@ const routesConfig = [
       },
     ],
   },
-
   {
     path: 'teacher',
     element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
@@ -151,7 +151,6 @@ const routesConfig = [
   },
   {
     path: 'admin',
-    showSidebar: true,
     element: <ProtectedRoutes adminSite />,
     children: [
       {
@@ -203,6 +202,7 @@ const routesConfig = [
       },
       {
         path: 'payment',
+        noLayout:true,
         children: [
           {
             path: '',
@@ -211,6 +211,10 @@ const routesConfig = [
           {
             path: 'success',
             element: <PaymentSuccessPage />,
+          },
+          {
+            path:'failure',
+            element: <PaymentFailurePage />,
           },
           {
             path: 'cancel',

@@ -3,7 +3,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useCheckAuthQuery } from '../services/authApi';
 import Layout from '../components/layout/Layout';
 import LoadingPage from '../pages/LoadingPage';
+import { useLocation } from 'react-router-dom';
 const ProtectedRoutes = ({ teacherSite, adminSite }) => {
+  const location = useLocation();
   // Fetch authentication state from Redux
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
@@ -20,7 +22,7 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
 
   // redirect to the relevant dashboard
   // depending on their role
-  if (window.location.pathname === '/') {
+  if (location.pathname === '/') {
     if (user?.role === 'admin') {
       // Redirect to the admin dashboard
       return <Navigate to="/admin/home" />;
@@ -40,6 +42,14 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   }
   if (teacherSite && user?.role !== 'teacher') {
     return <Navigate to="/unauthorized" />;
+  }
+
+  // List of paths that shouldn't use the layout
+  const noLayoutPaths = ['/admin/payment/success', '/admin/payment/failure'];
+
+  // Check if the current path is in the noLayoutPaths array
+  if (noLayoutPaths.includes(location.pathname)) {
+    return <Outlet />; // No layout, render the component directly
   }
 
   // Render the protected route

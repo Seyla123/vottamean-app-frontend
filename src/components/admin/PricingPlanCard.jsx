@@ -77,8 +77,6 @@ const PricingPlanCard = ({
             {!plan.isFree && (
               <SubscriptionButton
                 planType={plan.type}
-                adminId={adminId}
-                currentPlan={currentSubscription}
                 billingCycle={billingCycle}
                 isFree={plan.isFree}
                 isSubscribed={

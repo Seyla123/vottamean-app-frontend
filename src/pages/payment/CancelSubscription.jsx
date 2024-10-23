@@ -1,42 +1,35 @@
-import React from 'react';
-import { Button, Typography, Box } from '@mui/material';
+import React, { useEffect } from 'react';
 import { useCancelPaymentIntentMutation } from '../../services/paymentApi';
+import { useGetUserProfileQuery } from '../../services/userApi';
 import StyledButton from '../../components/common/StyledMuiButton';
-
+import { useDispatch } from 'react-redux';
+import { setSnackbar } from '../../store/slices/uiSlice';
 function CancelSubscription({ adminId }) {
-  const [cancelPaymentIntent, { isLoading, isSuccess, isError }] =
-    useCancelPaymentIntentMutation();
+  const dispatch = useDispatch();
 
+  const [cancelPaymentIntent, { isLoading, isSuccess, isError, error}] =
+    useCancelPaymentIntentMutation();
+  const {refetch} = useGetUserProfileQuery();
+
+  useEffect(() => {
+    if(isSuccess){
+      dispatch(setSnackbar({ open: true, message: 'Subscription cancelled successfully', severity: 'success' }));
+      refetch();
+    }else if(isError){
+      dispatch(setSnackbar({ open: true, message: error?.data?.message || 'Failed to cancel subscription', severity: 'error' }));
+    }
+  },[isSuccess, isError, error, dispatch]);
   const handleCancel = async () => {
-    try {
       // Pass adminId as an argument
       await cancelPaymentIntent({ admin_id: adminId }).unwrap();
-    } catch (error) {
-      console.error('Failed to cancel subscription: ', error);
-    }
   };
 
   return (
-    <Box sx={{ textAlign: 'center', mt: 4 }}>
-      <StyledButton
-        size="small"
-        variant="outlined"
-        onClick={handleCancel}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Cancelling...' : 'Cancel Subscription'}
+     <>
+      <StyledButton disabled={isLoading} color="error" variant="outlined" type="submit" size="small" onClick={handleCancel}>
+        {isLoading ? 'Canceling...' : 'Cancel Subscription'}
       </StyledButton>
-      {isSuccess && (
-        <Typography color="success.main" sx={{ mt: 2 }}>
-          Subscription cancelled successfully!
-        </Typography>
-      )}
-      {isError && (
-        <Typography color="error.main" sx={{ mt: 2 }}>
-          Failed to cancel subscription.
-        </Typography>
-      )}
-    </Box>
+     </>
   );
 }
 

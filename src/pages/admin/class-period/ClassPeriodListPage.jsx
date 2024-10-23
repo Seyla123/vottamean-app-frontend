@@ -72,7 +72,7 @@ function ClassPeriodListPage() {
 
   //useGetClassPeriodQuery : a hook that return a function to fetch all class periods
   const { data, isLoading, isSuccess, isError, isFetching, error } =
-    useGetClassPeriodQuery({ page: page + 1, limit: rowsPerPage });
+    useGetClassPeriodQuery({ page: page + 1, limit: rowsPerPage, active:1  });
 
   // useDeleteManyClassPeriodsMutation : returns a function to delete many class periods
   const [

@@ -60,7 +60,7 @@ const AttendanceTable = ({
   const pdfRef = useRef();
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
 
   const convertDayToShorthand = (day) => {
     const dayMap = {
@@ -401,10 +401,12 @@ const AttendanceTable = ({
           selectedClasses={selectedClasses}
           selectedSubjects={selectedSubjects}
         />
-        <ExportMenu
-          handleExportPDF={exportPdfById}
-          handleExportXLSX={exportTableToXLSX}
-        />
+        <Box >
+          <ExportMenu
+            handleExportPDF={exportPdfById}
+            handleExportXLSX={exportTableToXLSX}
+          />
+        </Box>
       </Stack>
 
       <Stack bgcolor={'white'} borderRadius={'8px'} sx={shadow}>
@@ -556,4 +558,3 @@ const AttendanceTable = ({
 
 export default AttendanceTable;
 
-// Component for generating the hidden content to be exported as PDF

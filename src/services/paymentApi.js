@@ -15,9 +15,18 @@ export const paymentApi = baseApi.injectEndpoints({
     // Define the Stripe endpoint to create a checkout session
     createCheckoutSession: builder.mutation({
       query: (sessionData) => ({
-        url: 'payments/create-checkout-session',
+        url: 'payments/checkout',
         method: 'POST',
         body: sessionData,
+      }),
+    }),
+
+    // get session data from Stripe
+    getSessionDetails: builder.query({
+      query: (sessionId) => ({
+        url: `payments/checkout/sessions/${sessionId}`,
+        method: 'GET',
+        credentials: 'include',
       }),
     }),
 
@@ -38,4 +47,5 @@ export const {
   useCreatePaymentIntentMutation,
   useCreateCheckoutSessionMutation,
   useCancelPaymentIntentMutation,
+  useGetSessionDetailsQuery
 } = paymentApi;
