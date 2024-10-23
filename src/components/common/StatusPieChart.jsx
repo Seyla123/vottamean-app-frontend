@@ -22,7 +22,7 @@ const StatusPieChart = ({ statusCounts }) => {
   // Only render the chart if there's data
   if (total === 0) {
     return (
-      <Card sx={{ boxShadow: shadow, height: '100%' }}>
+      <Card sx={{ boxShadow: shadow, height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CardContent>
           <Typography variant="h6" align="center">
             No data available

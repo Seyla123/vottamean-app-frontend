@@ -60,6 +60,9 @@ function AttendanceFilter({
         'subject_id',
         'subject_name',
       );
+
+      console.log('formattedDataSubjects', formattedDataSubjects);
+      
       const formatDataClasses = ensureOptionInList(
         dataClass?.data,
         selectedClasses,
@@ -78,7 +81,7 @@ function AttendanceFilter({
           : [...allSelector, ...formatDataClasses],
       );
     }
-  }, [isSubjectSuccess, isClassSuccess]);
+  }, [isSubjectSuccess, isClassSuccess, selectedSubjects, selectedClasses]);
   // handle subject change
   const handleSubjectChange = (event) => {
     if (event.target.value === 'all') {

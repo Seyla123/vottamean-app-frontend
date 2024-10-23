@@ -8,7 +8,7 @@ import TitleHeader from '../../../../components/common/TitleHeader';
 
 const AttendanceReportPage = () => {
   const [reportData, setReportData] = useState({});
-  const [toggleAttendanceKey, setToggleAttendanceKey] = useState(false);
+  const [toggleAttendanceKey, setToggleAttendanceKey] = useState(true);
 
   // - selectorClasses: the list of all classes in the attendance data, including deleted ones
   // - selectorSubjects: the list of all subjects in the attendance data, including deleted ones
@@ -31,6 +31,9 @@ const AttendanceReportPage = () => {
     }
   }, [data, isSuccess]);
 
+  console.log('this is the setSelectorSubjects data', selectorSubjects);
+  
+
   const { dates, result, classes, school } = reportData;
 
   const emptyTitleData = {
@@ -46,7 +49,7 @@ const AttendanceReportPage = () => {
 
   return (
     <FormComponent>
-      <TitleHeader title={'Subject'} />
+      <TitleHeader title={'Attendance Report'} />
       <ReportHeader data={totalStatusSummary} />
       <AttendanceTable
         dates={dates}
