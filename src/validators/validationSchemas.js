@@ -213,7 +213,6 @@ export const createFormSchema = (fields) => {
     currentPassword: currentPasswordSchema,
     newPassword: newPasswordSchema,
     newPasswordConfirm: newPasswordConfirmSchema,
-    name: nameSchema,
     first_name: firstNameSchema,
     last_name: lastNameSchema,
     gender: genderSchema,
