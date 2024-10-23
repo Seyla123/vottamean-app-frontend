@@ -34,16 +34,6 @@ import moment from 'moment';
  *    </Box>
  */
 
-// Common name validation schema
-const nameSchema = Yup.string()
-  .trim()
-  .required('This field is required')
-  .matches(
-    /^[A-Za-z]+( [A-Za-z]+)*$/,
-    'Name must contain only alphabetic characters and single spaces between words',
-  )
-  .min(2, 'Name must be at least 2 characters long')
-  .max(40, 'Name must be less than 40 characters');
 
 // School name validator
 export const schoolNameSchema = Yup.string()
