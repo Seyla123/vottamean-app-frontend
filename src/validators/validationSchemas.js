@@ -53,7 +53,7 @@ export const schoolNameSchema = Yup.string()
   .max(50, 'School name must be less than 50 characters');
 
 // First name validator
-export const firstNameSchema = nameSchema
+export const firstNameSchema = Yup.string()
   .label('First name')
   .required('First name is required')
   .matches(
