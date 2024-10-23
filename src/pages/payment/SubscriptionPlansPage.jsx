@@ -71,7 +71,6 @@ const SubscriptionPlansPage = () => {
       setCurrentSubscription(userData?.data?.subscriptions?.[0]?.plan_type || 'None');
       setIsSubscriptionActive(userData?.data?.subscriptions?.[0]?.status === 'active');
     }
-    console.log('Current click :');
 
   }, [userData, isLoading, isSuccess, isError])
 
