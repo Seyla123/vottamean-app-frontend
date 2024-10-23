@@ -131,6 +131,7 @@ const content = {
   maxWidth: '600px',
   width: '100%',
   borderRadius: '16px',
+  margin: '16px',
   py: '32px',
   px: {
     xs: '24px',
