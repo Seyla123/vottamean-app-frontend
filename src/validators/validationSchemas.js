@@ -55,7 +55,11 @@ export const schoolNameSchema = Yup.string()
 // First name validator
 export const firstNameSchema = nameSchema
   .label('First name')
-  .required('First name is required');
+  .required('First name is required')
+  .matches(
+    /^[A-Za-z]+( [A-Za-z]+)*$/,
+    'Name must contain only alphabetic characters and single spaces between words',
+  )
 
 // Last name validator
 export const lastNameSchema = nameSchema
