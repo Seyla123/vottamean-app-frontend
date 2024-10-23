@@ -22,7 +22,7 @@ import AlertCard from '../common/AlertCard';
 import CreditCardImage from '../../assets/images/credit-card.svg';
 import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import { Link } from 'react-router-dom';
-
+import CancelSubscription from '../../pages/payment/CancelSubscription';
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
@@ -56,14 +56,14 @@ const AccountUsagePanel = ({
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={8}>
-          {currentSubscription  === 'None' ? 
-          <NoSubscription setValue={setValue}/> 
-          :
-          <UsageCard activePlan={activePlan} setValue={setValue}/> }
+          {currentSubscription === 'None' ?
+            <NoSubscription setValue={setValue} />
+            :
+            <UsageCard activePlan={activePlan} setValue={setValue} />}
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Stack spacing={3}>
-            {activePlan && <SubcriptionCard />}
+            {activePlan && <SubcriptionCard/>}
             <Card sx={shadow}>
               <CardContent>
                 <Typography variant="body1" gutterBottom>
@@ -74,9 +74,12 @@ const AccountUsagePanel = ({
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <Link to="contact">
-                  <StyledButton size="small">Contact Our Support</StyledButton>
-                </Link>
+                <StyledButton
+                  size="small"
+                  onClick={() => window.location.assign('mailto:wavetrack.app@gmail.com')}
+                >
+                  Contact Our Support
+                </StyledButton>
               </CardActions>
             </Card>
           </Stack>
@@ -176,7 +179,7 @@ const UsageCard = ({ activePlan, setValue }) => {
     </Card>
   );
 };
-const NoSubscription = ({setValue}) => {
+const NoSubscription = ({ setValue }) => {
   return (
     <Card sx={shadow}>
       <CardContent>
@@ -193,7 +196,7 @@ const NoSubscription = ({setValue}) => {
         </Box>
 
         <Stack spacing={3}>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               component="img"
               src={NoSubscriptionIamge}
@@ -202,11 +205,11 @@ const NoSubscription = ({setValue}) => {
             />
           </Box>
           <AlertCard
-              title={'Unlock More Features'}
-              description="Upgrade your plan to access advanced tools and increase your productivity. Our higher-tier plans offer extended limits and exclusive features to help your business grow."
-              severity="info"
-              icon={<Info size={18} />}
-            />
+            title={'Subscription Required'}
+            description="We wanted to remind you that your account isn’t subscribed. Please select a plan to ensure continued access. We’ll temporarily disable accounts without a subscription soon."
+            severity="warning"
+            icon={<Info size={18} />}
+          />
         </Stack>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end' }}>
@@ -225,8 +228,8 @@ const NoSubscription = ({setValue}) => {
 const SubcriptionCard = () => {
   return (
     <Card sx={{ height: '100%', boxShadow: shadow }}>
-      <CardContent>
-        <Stack>
+      <CardContent sx={{ display:'flex', flexDirection: 'column', gap: 2 }}>
+        <Stack> 
           <Typography variant="h6">Subcription</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
@@ -236,12 +239,16 @@ const SubcriptionCard = () => {
               sx={{ width: '240px', objectFit: 'contain' }}
             />
           </Box>
-
+          <Stack gap={1}>
           <Typography variant="body1" textAlign={'center'}>
             Your subscription is currently <b>active</b>.
             <br /> You can cancel anytime.
           </Typography>
+          <CancelSubscription/>
+          </Stack>
         </Stack>
+
+
       </CardContent>
     </Card>
   );

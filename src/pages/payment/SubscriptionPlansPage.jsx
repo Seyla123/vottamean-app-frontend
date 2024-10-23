@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Tabs, Tab, styled, Grid } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import SubscriptionButton from './SubscriptionButton';
 import CancelSubscription from './CancelSubscription';
 import { useGetUserProfileQuery } from '../../services/userApi';
+import { useCancelPaymentIntentMutation } from '../../services/paymentApi';
 import FormComponent from '../../components/common/FormComponent';
 import { grey } from '@mui/material/colors';
 import { Leaf, Sprout, TreeDeciduous } from 'lucide-react';
@@ -12,6 +13,7 @@ import AccountUsagePanel from '../../components/admin/AccountUsagePanel';
 import PlanComparison from '../../components/admin/PlanComparison';
 import { StyledTab } from '../../components/common/StyledTabs';
 import TitleHeader from '../../components/common/TitleHeader';
+import LoadingCircle from '../../components/loading/LoadingCircle';
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -57,20 +59,29 @@ const SubscriptionPlansPage = () => {
     setValue(newValue);
   };
 
-  const { data: userData, isLoading } = useGetUserProfileQuery();
-  const [billingCycle, setBillingCycle] = useState('monthly');
+  const { data: userData, isLoading, isSuccess, isError } = useGetUserProfileQuery();
 
-  if (isLoading) return <Typography>Loading...</Typography>;
+  const [billingCycle, setBillingCycle] = useState('monthly');
+  const [currentSubscription, setCurrentSubscription] = useState('None');
+  const [isSubscriptionActive, setIsSubscriptionActive] = useState(false);
+
+  useEffect(() => {
+    if (userData) {
+      // Extract current subscription details from backend
+      setCurrentSubscription(userData?.data?.subscriptions?.[0]?.plan_type || 'None');
+      setIsSubscriptionActive(userData?.data?.subscriptions?.[0]?.status === 'active');
+    }
+    console.log('Current click :');
+
+  }, [userData, isLoading, isSuccess, isError])
+
+  if (isLoading) return <LoadingCircle />;
 
   // Extract admin_id from user profile's adminProfile
   const adminId = userData?.data?.adminProfile?.admin_id;
   console.log('Admin ID in Subscription Plans Page:', adminId);
 
-  // Extract current subscription details from backend
-  const currentSubscription =
-    userData?.data?.subscriptions?.[0]?.plan_type || 'None';
-  const isSubscriptionActive =
-    userData?.data?.subscriptions?.[0]?.status === 'active';
+
 
   // Define plan prices for Monthly and Yearly billing
   const plans = [
@@ -215,17 +226,6 @@ const SubscriptionPlansPage = () => {
                   </Grid>
                 ))}
               </Grid>
-            </Box>
-
-            <Box mt={14}>
-              <Typography variant="h4" textAlign={'center'} fontWeight={'bold'}>
-                Cancel Subscription
-              </Typography>
-              <Typography variant="body1" textAlign={'center'} mt={2}>
-                Cancel your Subscription
-              </Typography>
-              {/* Add the CancelSubscription component */}
-              {isSubscriptionActive && <CancelSubscription adminId={adminId} />}
             </Box>
           </Box>
         </TabPanel>
