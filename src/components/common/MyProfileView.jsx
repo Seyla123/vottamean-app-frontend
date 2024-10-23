@@ -35,9 +35,6 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
       />
       {/* CONTAINER */}
       <Grid container>
-        {/* <Grid item xs={12}>
-          <ProfileSection profilePhoto={profilePhoto} userData={userData} />
-        </Grid> */}
         <Grid item xs={12}>
           <InformationSection
             title="Personal Details"

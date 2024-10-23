@@ -7,7 +7,7 @@ import { useGetUserProfileQuery } from '../../services/userApi';
 import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
-import Logo from '../../assets/images/Logo.svg';
+import Logo from '../../assets/images/VOTTAMEAN.svg';
 import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -39,7 +39,6 @@ const Layout = ({ teacherSite, adminSite }) => {
   }, [isSuccess, userDataProfile]);
 
   console.log('this is user profile data', userDataProfile);
-  
 
   const [logout] = useLogoutMutation();
 
@@ -47,7 +46,7 @@ const Layout = ({ teacherSite, adminSite }) => {
     try {
       await logout().unwrap();
       dispatch(logoutAction());
-      window.location.reload();
+      window.location.href = '/auth/signin';
     } catch (error) {
       console.error('Failed to logout:', error);
     }
@@ -97,7 +96,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         logo: (
           <img
             src={Logo}
-            alt="WaveTrack"
+            alt="LogoVottamean"
             style={{
               width: '150px',
               height: '100%',

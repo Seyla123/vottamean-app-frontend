@@ -4,8 +4,11 @@ import unAuthorzedImg from '../assets/images/police-img.svg';
 import StyledButton from '../components/common/StyledMuiButton';
 import SomethingWentWrong from '../components/common/SomethingWentWrong';
 import { Stack } from '@mui/material';
+import ShortHeader from '../components/layout/ShortHeader';
 const UnauthorizedPage = () => {
   return (
+    <>
+    <ShortHeader/>
     <SomethingWentWrong
       imageUrl={unAuthorzedImg}
       title=' Unauthorized Access'
@@ -25,6 +28,7 @@ const UnauthorizedPage = () => {
         </Link>
       </Stack>
     </SomethingWentWrong>
+    </>
   )
 };
 

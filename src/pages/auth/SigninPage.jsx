@@ -19,14 +19,14 @@ const SigninPage = () => {
       {/* LEFT CONTAINER */}
       <Box component="div" sx={styles.leftContainer}>
         {/* LOGO */}
-        <img src={Logo} alt="wavetrack logo" style={styles.logo} />
+        <img src={Logo} alt="Vottamean logo" style={styles.logo} />
 
         {/* FORM CONTAINER */}
         <Box sx={styles.formContainer}>
           {/* FORM HEADER */}
           <HeaderTitle
-            title={' Welcome to WaveTrack!'}
-            subTitle={`Accurately record and monitor student attendance with WaveTrack's user-friendly platform.`}
+            title={' Welcome to Vottamean!'}
+            subTitle={`Accurately record and monitor student attendance with Vottamean's user-friendly platform.`}
           />
           {/* FORM MAIN */}
           <LoginForm />

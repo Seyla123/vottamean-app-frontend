@@ -128,8 +128,8 @@ function HomePage() {
 
   const { data: userDataProfile, isSuccess } = useGetUserProfileQuery();
 
-  const { data: getAllStudent, isSuccess: isStudentSuccess, isLoading: isStudentLoading } = useGetAllStudentsQuery({ active: 1, page:1, limit: 5 });
-  const { data: getAllTeacher, isSuccess: isTeacherSuccess, isLoading: isTeacherLoading } = useGetAllTeachersQuery({ active: 1, page:1, limit: 5  });
+  const { data: getAllStudent, isSuccess: isStudentSuccess, isLoading: isStudentLoading } = useGetAllStudentsQuery({ active: 1, page: 1, limit: 5 });
+  const { data: getAllTeacher, isSuccess: isTeacherSuccess, isLoading: isTeacherLoading } = useGetAllTeachersQuery({ active: 1, page: 1, limit: 5 });
 
 
   // - Fetch user data
@@ -143,9 +143,6 @@ function HomePage() {
       setUserFirstName(userDataProfile?.data?.adminProfile?.Info.first_name);
     }
   }, [isSuccess, userDataProfile, isStudentSuccess, isTeacherSuccess]);
-  console.log('this is totalStudent ',getAllStudent );
-  console.log('this is totalTeacher ',totalTeacher );
-  console.log('this is shortListTeacher ',shortListTeacher );
 
 
 
@@ -227,39 +224,39 @@ function HomePage() {
           background: '#FFFFFF',
         }}
       >
-        {isStudentLoading || isTeacherLoading ?  
-        <Box  sx={{ display: 'flex',width: '100%', height:'100%', justifyContent: 'center', alignItems: 'center' }}>
-          <CircularProgress/>
-        </Box>
-        :
-        statusCard?.map((item) => (
-          <Grid container key={item.id}>
-            <Grid item>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                }}
-              >
+        {isStudentLoading || isTeacherLoading ?
+          <Box sx={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+            <CircularProgress />
+          </Box>
+          :
+          statusCard?.map((item) => (
+            <Grid container key={item.id}>
+              <Grid item>
                 <Box
-                  sx={{ ...shadow }}
-                  width={40}
-                  height={40}
-                  display={'flex'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
                 >
-                  {item.icon}
+                  <Box
+                    sx={{ ...shadow }}
+                    width={40}
+                    height={40}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                  >
+                    {item.icon}
+                  </Box>
+                  <Box>
+                    <Typography variant="body2">{item.title}</Typography>
+                    <Typography variant="body1">{item.amount}</Typography>
+                  </Box>
                 </Box>
-                <Box>
-                  <Typography variant="body2">{item.title}</Typography>
-                  <Typography variant="body1">{item.amount}</Typography>
-                </Box>
-              </Box>
+              </Grid>
             </Grid>
-          </Grid>
-        ))}
+          ))}
       </Box>
     );
   };
@@ -295,7 +292,7 @@ function HomePage() {
       <Grid container spacing={2}>
         <Grid item xs={12} lg={8}>
           <SectionTitle
-            title={'Get started with WaveTrack'}
+            title={'Get started with Vottamean'}
             subtitle={
               "Create your teacher's account, classes, subjects, and students to start tracking your students's progress."
             }
@@ -313,16 +310,21 @@ function HomePage() {
             ))}
           </Box>
         </Grid>
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12} lg={4} >
           <SectionTitle
             title={'Teacher Directory'}
             subtitle={"View and manage your school's teaching staff"}
           />
-          <StaticTable
-            rows={shortListTeacher}
-            columns={teacherColumnArr}
-            hideColumns={['name']}
-          />
+          <Stack gap={3}>
+            <StaticTable
+              rows={shortListTeacher}
+              columns={teacherColumnArr}
+              hideColumns={['name']}
+            />
+            <Box>
+              <DateCalendarCard />
+            </Box>
+          </Stack>
         </Grid>
       </Grid>
     </FormComponent>

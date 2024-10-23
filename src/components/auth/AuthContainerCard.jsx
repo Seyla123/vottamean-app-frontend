@@ -1,6 +1,6 @@
 import { Stack, Box, Typography } from '@mui/material';
 import ImagePreviewCarousel from './ImagePreviewCarousel';
-import LogoWaveTrack from '../../assets/images/Logo.svg';
+import LogoVottamean from '../../assets/images/VOTTAMEAN.svg';
 import image1 from '../../assets/images/auth-illustrator-img-1.svg';
 import image2 from '../../assets/images/auth-illustrator-img-2.svg';
 import image3 from '../../assets/images/auth-illustrator-img-3.png';
@@ -36,7 +36,7 @@ function AuthContainerCard({ sideCard, children }) {
         }}
       >
         <img
-          src={LogoWaveTrack}
+          src={LogoVottamean}
           alt=""
           style={{ width: '140px', position: 'absolute', top: 32, left: 32 }}
         />
@@ -52,7 +52,7 @@ function AuthContainerCard({ sideCard, children }) {
             }}
           >
             <Typography variant="h4" fontWeight={'bold'}>
-              Welcome to WaveTrack! <br />A New Hope for Attendance
+              Welcome to Vottamean! <br />A New Hope for Attendance
             </Typography>
             <Typography
               variant="body1"
@@ -63,7 +63,7 @@ function AuthContainerCard({ sideCard, children }) {
               }}
             >
               Accurately record and monitor student attendance with
-              WaveTrack&apos;s user-friendly platform. Improve efficiency and
+              Vottamean&apos;s user-friendly platform. Improve efficiency and
               reduce paperwork, all while ensuring every student is accounted
               for.
             </Typography>

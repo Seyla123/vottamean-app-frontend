@@ -35,7 +35,7 @@ const TeacherDashboardPage = () => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <WelcomeCard
-            subTitle="Welcome back to your dashboard"
+            subTitle="Welcome back to your home page"
             name={first_name}
             schoolName={school_name}
           />

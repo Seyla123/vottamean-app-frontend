@@ -228,7 +228,7 @@ function AccountProfilePage() {
                       textAlign="start"
                       color="text.secondary"
                     >
-                      Permanently delete your account from WaveTrack service
+                      Permanently delete your account from Vottamean service
                     </Typography>
                   </Box>
                   <StyledButton
