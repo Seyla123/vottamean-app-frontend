@@ -6,6 +6,7 @@ const StyledMuiButton = styled(Button)(({ theme, variant }) => ({
   textTransform: 'capitalize',
   padding: '10px 16px',
   borderRadius: 6,
+  pointerEvents: 'auto',
   boxShadow: 'none',
   transition: 'all ease-in-out 0.3s', // Slightly longer transition for smoother effect
 
