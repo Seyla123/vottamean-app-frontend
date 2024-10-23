@@ -71,6 +71,7 @@ export const lastNameSchema = nameSchema
     /^[A-Za-z]+( [A-Za-z]+)*$/,
     'Name must contain only alphabetic characters and single spaces between words',
   )
+  .min(2, 'School name must be at least 2 characters long')
 
 // Date of birth validator
 export const dobSchema = Yup.string()
