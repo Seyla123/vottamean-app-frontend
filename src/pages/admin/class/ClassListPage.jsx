@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Box } from '@mui/material';
+import { Stack, Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BookMarked,
@@ -72,7 +72,7 @@ const ClassListPage = () => {
   //useGetClassesDataQuery :  a hook that returns a function to fetch classes record
   const { data, isLoading, isSuccess, isError, error, isFetching } =
     useGetClassesDataQuery({
-      active:1,
+      active: 1,
       search: search,
       limit: rowsPerPage,
       page: page + 1,
@@ -259,10 +259,13 @@ const ClassListPage = () => {
   ];
 
   console.log(selectedClass);
-  
+
   const dataToView = [
     { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },
-    { Description: selectedClass?.description || 'N/A', icon: <LetterText size={18} /> },
+    {
+      Description: selectedClass?.description || 'N/A',
+      icon: <LetterText size={18} />,
+    },
     {
       'Created at': formatDate(selectedClass?.createdAt),
       icon: <Calendar size={18} />,
@@ -288,18 +291,15 @@ const ClassListPage = () => {
         </StyledButton>
       </Stack>
       <Box>
-        <Stack
-          direction="row"
-          justifyContent={'flex-start'}
-          width={'100%'}
-          gap={2}
-        >
-          <SearchComponent
-            placeholder="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </Stack>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}>
+            <SearchComponent
+              placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </Grid>
+        </Grid>
       </Box>
       <DataTable
         rows={rows}

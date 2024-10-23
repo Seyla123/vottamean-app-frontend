@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { ChevronDown } from 'lucide-react';
 import { truncate } from '../../utils/truncate';
+import { StyledTextField } from './InputField';
 
 const FilterComponent = ({
   data,
@@ -30,38 +31,21 @@ const FilterComponent = ({
   const truncateLength = isMobile ? 7 : 10;
 
   return (
-    <Select
+    <StyledTextField
+      fullWidth
+      select
       value={value}
       onChange={onChange}
       size="small"
       displayEmpty
-      // IconComponent={() => <ChevronDown size={18} color="#757575" />}
-      sx={{
-        width: '100%',
-        maxWidth: { xs: '100%', sm: '200px' },
-        height: '42px',
-        backgroundColor: '#ffffff',
-        border: '1px solid #e0e0e0',
-        borderRadius: 2,
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: 'none',
-        },
-        ...customStyles,
-      }}
-      renderValue={(selected) => (
-        <Stack direction={'row'} gap={1} alignItems={'center'}>
-          {/* {icon && <InputAdornment position="start">{icon}</InputAdornment>} */}
-          <InputLabel> {truncate(selectedLabel, truncateLength)}</InputLabel>
-        </Stack>
-      )}
-      MenuProps={{
-        PaperProps: {
-          sx: {
-            '& .MuiMenuItem-root': {
-              padding: '8px 16px !important',
-            },
-          },
-        },
+      SelectProps={{
+        displayEmpty: true,
+        renderValue: (selected) => (
+          <Stack direction={'row'} gap={1} alignItems={'center'}>
+            {/* {icon && <InputAdornment position="start">{icon}</InputAdornment>} */}
+            <InputLabel> {truncate(selectedLabel, truncateLength)}</InputLabel>
+          </Stack>
+        ),
       }}
     >
       {data.map((item) => (
@@ -69,7 +53,7 @@ const FilterComponent = ({
           {item.label}
         </MenuItem>
       ))}
-    </Select>
+    </StyledTextField>
   );
 };
 

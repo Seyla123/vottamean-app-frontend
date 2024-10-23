@@ -38,11 +38,14 @@ export const transformAttendanceForUpdate = (attendanceDetail) => {
     teacherName: getFullName(attendanceDetail?.Sessions.Teacher.Info),
     subjectName: attendanceDetail?.Sessions.Subject.subject_name,
     className: attendanceDetail?.Sessions.Class.class_name,
-    time: formatTimeTo12Hour(attendanceDetail?.Sessions.Period.start_time) + '-' + formatTimeTo12Hour(attendanceDetail?.Sessions.Period.end_time),
+    time:
+      formatTimeTo12Hour(attendanceDetail?.Sessions.Period.start_time) +
+      '-' +
+      formatTimeTo12Hour(attendanceDetail?.Sessions.Period.end_time),
     date: attendanceDetail?.date,
     statusId: attendanceDetail?.status_id,
-  }
-}
+  };
+};
 // Format attendance data detail
 export const formatAttendanceData = (apiResponse) => {
   const { Sessions, Status, Student } = apiResponse;
@@ -154,18 +157,11 @@ export function teacherData(teachers) {
 // Format teacher detail
 export function formatTeacherDetail(teacherData) {
   if (!teacherData || !teacherData.data || !teacherData.data.Info) {
-    return []
+    return [];
   }
   const { email, emailVerified, active } = teacherData.data.User;
-  const {
-    first_name,
-    last_name,
-    gender,
-    dob,
-    phone_number,
-    address,
-    photo
-  } = teacherData.data.Info;
+  const { first_name, last_name, gender, dob, phone_number, address, photo } =
+    teacherData.data.Info;
 
   return {
     fullName: capitalize(`${first_name} ${last_name}`),
@@ -176,7 +172,7 @@ export function formatTeacherDetail(teacherData) {
     address: address,
     photo: photo,
     emailVerified: emailVerified,
-    active: active
+    active: active,
   };
 }
 
@@ -276,7 +272,7 @@ export const getSchoolData = (user) => {
   const profileKey = getProfileKey(user?.data?.role);
 
   console.log('profileKey', profileKey);
-  
+
   const profileSchools = user?.data[profileKey]?.School[0];
   if (!profileSchools) return {};
   console.log('profileSchools', profileSchools);

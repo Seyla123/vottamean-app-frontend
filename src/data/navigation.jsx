@@ -11,7 +11,15 @@ import {
   SettingsIcon,
   Zap,
   UserRoundIcon as Person,
+  CalendarRange,
+  BookCopy,
+  CalendarClock,
+  CalendarDays,
+  ListCheck,
+  ChartPie,
+  Settings2,
 } from 'lucide-react';
+import CastForEducationIcon from '@mui/icons-material/CastForEducation';
 
 const navigation = [
   { kind: 'header', title: 'Menu' },
@@ -28,12 +36,17 @@ const navigation = [
   {
     segment: 'admin/class-periods',
     title: 'Class Period',
-    icon: <ClassPeriodIcon size={18} />,
+    icon: <CalendarClock size={18} />,
+  },
+  {
+    segment: 'admin/subjects',
+    title: 'Subject',
+    icon: <BookCopy size={18} />,
   },
   {
     segment: 'admin/classes',
     title: 'Class',
-    icon: <ClassIcon size={18} />,
+    icon: <CastForEducationIcon fontSize="18px" />,
   },
   {
     segment: 'admin/students',
@@ -41,30 +54,25 @@ const navigation = [
     icon: <StudentIcon size={18} />,
   },
   {
-    segment: 'admin/subjects',
-    title: 'Subject',
-    icon: <SubjectIcon size={18} />,
-  },
-  {
     segment: 'admin/sessions',
     title: 'Session',
-    icon: <CalendarMonthIcon size={18} />,
+    icon: <CalendarDays size={18} />,
   },
   {
     segment: 'admin/attendance',
     title: 'Attendance',
-    icon: <ChecklistIcon size={18} />,
+    icon: <ListCheck size={18} />,
   },
 
   {
     segment: 'admin/reports',
     title: 'Report',
-    icon: <ReportGmailerrorredIcon size={18} />,
+    icon: <ChartPie size={18} />,
     children: [
       {
         segment: 'attendance',
         title: 'Attendance',
-        icon: <ChecklistIcon size={18} />,
+        icon: <ListCheck size={18} />,
       },
     ],
   },
@@ -80,7 +88,7 @@ const navigation = [
   {
     segment: 'admin/settings',
     title: 'Settings',
-    icon: <SettingsIcon size={18} />,
+    icon: <Settings2 size={18} />,
     children: [
       {
         segment: 'account',

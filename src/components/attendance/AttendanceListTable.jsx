@@ -28,8 +28,7 @@ import EmptyDataImage from '../../assets/images/empty-image.svg';
 import StyledButton from './../common/StyledMuiButton';
 import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
 import { FileText, Trash2, Pencil, EllipsisVertical } from 'lucide-react';
-
-
+import { shadow } from '../../styles/global';
 
 const AttendanceListTable = ({
   rows,
@@ -45,7 +44,7 @@ const AttendanceListTable = ({
   setRowsPerPage,
   totalRows,
   idField = 'attendanceId',
-  onEdit
+  onEdit,
 }) => {
   const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -58,15 +57,15 @@ const AttendanceListTable = ({
 
   const handleChangePage = (event, newPage) => {
     if (newPage > 0) {
-      setPage(newPage)
+      setPage(newPage);
     } else {
-      setPage(0)
+      setPage(0);
     }
   };
-    // Adjust the page if the current page becomes empty after deleting rows
+  // Adjust the page if the current page becomes empty after deleting rows
   useEffect(() => {
     if (rows.length === 0 && page > 0) {
-      handleChangePage(prevPage => prevPage - 1);
+      handleChangePage((prevPage) => prevPage - 1);
     } else if (rows.length === 0 && page === 0) {
       handleChangePage(0);
     }
@@ -153,7 +152,7 @@ const AttendanceListTable = ({
   };
 
   const visibleColumns = columns.filter((col) =>
-    isMobile ? !hideColumns.includes(col.id) : true
+    isMobile ? !hideColumns.includes(col.id) : true,
   );
 
   const handleChangeRowsPerPage = (event) => {
@@ -163,7 +162,7 @@ const AttendanceListTable = ({
   const height = rowsPerPage === 5 ? '300px' : '700px';
 
   return (
-    <Paper sx={{ boxShadow: 'none' }}>
+    <Paper sx={{ boxShadow: shadow }}>
       <TableContainer>
         <Table aria-label="sticky table">
           <TableHead sx={{ height: '60px' }}>
@@ -322,7 +321,8 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
           verticalAlign: 'middle',
         }}
       >
-        <Box component={'div'}
+        <Box
+          component={'div'}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -352,7 +352,6 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
   );
 };
 const LoadingTable = ({ columns, height }) => {
-
   return (
     <TableRow>
       <TableCell
