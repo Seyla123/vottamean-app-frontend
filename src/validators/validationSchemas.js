@@ -66,7 +66,11 @@ export const firstNameSchema = nameSchema
 // Last name validator
 export const lastNameSchema = nameSchema
   .label('Last name')
-  .required('Last name is required');
+  .required('Last name is required')
+  .matches(
+    /^[A-Za-z]+( [A-Za-z]+)*$/,
+    'Name must contain only alphabetic characters and single spaces between words',
+  )
 
 // Date of birth validator
 export const dobSchema = Yup.string()
