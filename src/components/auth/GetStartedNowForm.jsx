@@ -18,6 +18,7 @@ import FormFooter from './FormFooter';
 import PasswordIndicator from './PasswordIndicator';
 import PasswordInput from './PasswordInput';
 import InputField from '../common/InputField';
+import TermsConditions from './TermsConditions';
 
 // - Validator
 import { getStartSignupValidator } from '../../validators/validationSchemas';
@@ -27,6 +28,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState({
     length: false,
     number: false,
@@ -178,18 +180,25 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           {/* AGREE WITH TERMS */}
           <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox onClick={hanleAgree} required />
-            <Typography variant="body2" component={'span'}>
+            <Typography variant="body2" component="span">
               I agree with the
+            </Typography>
+            <Box sx={{ ml: 0.5 }}>
               <Link
-                href="/auth/term"
-                sx={{ display: 'inline-block' }}
+                component="button"
+                sx={{ display: 'inline-block', cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setOpenModal(true);
+                }}
                 underline="hover"
               >
                 <Typography variant="body2" color="primary">
                   Terms and Conditions
                 </Typography>
               </Link>
-            </Typography>
+            </Box>
           </Box>
 
           {/* SUBMIT BUTTON */}
@@ -206,6 +215,12 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
           <FormFooter href={'/auth/signin'} />
         </Stack>
       </form>
+
+      {/* Terms Modal */}
+      <TermsConditions
+        open={openModal}
+        handleClose={() => setOpenModal(false)}
+      />
     </Box>
   );
 };
