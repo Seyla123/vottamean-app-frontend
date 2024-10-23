@@ -34,16 +34,6 @@ import moment from 'moment';
  *    </Box>
  */
 
-// Common name validation schema
-const nameSchema = Yup.string()
-  .trim()
-  .required('This field is required')
-  .matches(
-    /^[A-Za-z]+( [A-Za-z]+)*$/,
-    'Name must contain only alphabetic characters and single spaces between words',
-  )
-  .min(2, 'Name must be at least 2 characters long')
-  .max(40, 'Name must be less than 40 characters');
 
 // School name validator
 export const schoolNameSchema = Yup.string()
@@ -53,15 +43,27 @@ export const schoolNameSchema = Yup.string()
   .max(50, 'School name must be less than 50 characters');
 
 // First name validator
-export const firstNameSchema = nameSchema
+export const firstNameSchema = Yup.string()
   .label('First name')
-  .required('First name is required');
+  .required('First name is required')
+  .min(2, 'School name must be at least 2 characters long')
+  .max(50, 'School name must be less than 50 characters')
+  .matches(
+    /^[A-Za-z]+( [A-Za-z]+)*$/,
+    'Name must contain only alphabetic characters and single spaces between words',
+  );
 
 // Last name validator
-export const lastNameSchema = nameSchema
+export const lastNameSchema = Yup.string()
   .label('Last name')
-  .required('Last name is required');
-
+  .required('Last name is required')
+  .min(2, 'School name must be at least 2 characters long')
+  .max(50, 'School name must be less than 50 characters')
+  .matches(
+    /^[A-Za-z]+( [A-Za-z]+)*$/,
+    'Name must contain only alphabetic characters and single spaces between words',
+  );
+    
 // Date of birth validator
 export const dobSchema = Yup.string()
   .required('Date of birth is required')
@@ -211,7 +213,6 @@ export const createFormSchema = (fields) => {
     currentPassword: currentPasswordSchema,
     newPassword: newPasswordSchema,
     newPasswordConfirm: newPasswordConfirmSchema,
-    name: nameSchema,
     first_name: firstNameSchema,
     last_name: lastNameSchema,
     gender: genderSchema,
