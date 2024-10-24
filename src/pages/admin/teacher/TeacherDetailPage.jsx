@@ -64,7 +64,7 @@ import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import verifyBadge from '../../../assets/icon/verify_badge.svg';
 import RandomAvatar from '../../../components/common/RandomAvatar';
-import {formatDate} from '../../../utils/formatHelper'
+import { formatDate } from '../../../utils/formatHelper';
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -92,17 +92,16 @@ function TeacherDetailPage() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-
-  // Hanlde click for open menu 
+  // Hanlde click for open menu
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  // Hanlde click for close menu 
+  // Hanlde click for close menu
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+
   // Format teacher data and set it in the state
   useEffect(() => {
     if (teacherData) {
@@ -228,14 +227,18 @@ function TeacherDetailPage() {
                     sx={{ width: 140, height: 140, bgcolor: '#eee' }}
                   />
                 ) : (
-                  <RandomAvatar size={140} />
+                  <RandomAvatar
+                    username={formattedTeacher.fullName}
+                    gender={formattedTeacher.gender}
+                    size={140}
+                  />
                 )}
-               
+
                 <Stack
                   direction="column"
                   alignItems={{ xs: 'center', sm: 'start' }}
-                > 
-                {/* Name */}
+                >
+                  {/* Name */}
                   <Typography
                     gutterBottom
                     variant="h5"
@@ -284,7 +287,8 @@ function TeacherDetailPage() {
                   icon={<CircleDashed size={18} color={'#6c63ff'} />}
                   label="Status"
                   value={
-                    formattedTeacher.emailVerified && formattedTeacher.active ? (
+                    formattedTeacher.emailVerified &&
+                    formattedTeacher.active ? (
                       <Chip
                         size="small"
                         sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}

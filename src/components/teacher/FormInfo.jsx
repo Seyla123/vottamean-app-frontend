@@ -8,7 +8,6 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import dayjs from 'dayjs';
 import {
   Box,
-  Tab,
   Typography,
   Card,
   Grid,
@@ -43,7 +42,7 @@ import { StyledTab } from '../common/StyledTabs';
 function FormInfo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const photoPreviewRef= useRef(null);
+  const photoPreviewRef = useRef(null);
   const theme = useTheme();
 
   // Responsive Mobile size
@@ -59,7 +58,7 @@ function FormInfo() {
   // useSignUpTeacherMutation : a hook return function for sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
     useSignUpTeacherMutation();
- 
+
   // Show Loading effect when signing up the teacher
   // If the sign up was not successful, show an error message
   // Check if the signup was successful and if so, navigate to teachers list page
@@ -77,8 +76,7 @@ function FormInfo() {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            'Create teacher and send link for verification successful.',
+          message: 'Create teacher and send link for verification successful.',
           severity: 'success',
           autoHideDuration: 6000,
         }),
@@ -87,14 +85,6 @@ function FormInfo() {
     }
   }, [dispatch, isError, error, isSuccess, navigate]);
 
-  // Handle Submit form
-  const handleSubmitForm = async (formData) => {
-    try {
-      await signUpTeacher(formData).unwrap();
-    } catch (error) {
-      console.error('Error signing up teacher:', error.message);
-    }
-  };
   // Hanlde Photo Upload
   const handlePhotoChange = (event) => {
     event.preventDefault();
@@ -109,11 +99,11 @@ function FormInfo() {
     }
   };
 
-  // Handle Next that continue to account info after checked validations
+  // Handle Next with form data persistence
   const handleNextClick = (isValid, data) => {
     if (isValid) {
-      setTeacherData((prevData) => ({
-        ...prevData,
+      setTeacherData((prev) => ({
+        ...prev,
         ...data,
         photo: data.photo,
       }));
@@ -121,11 +111,32 @@ function FormInfo() {
       setIsTeacherInfoValid(true);
     }
   };
+  // Handle Submit form
+  const handleSubmitForm = async (formData) => {
+    try {
+      await signUpTeacher(formData).unwrap();
+    } catch (error) {
+      console.error('Error signing up teacher:', error.message);
+    }
+  };
 
   // handle back to teacher info
   const handleBack = () => {
     setValue('1');
   };
+
+  // Cleanup effect for photo URLs
+  useEffect(() => {
+    return () => {
+      if (
+        photoPreview &&
+        typeof photoPreview === 'string' &&
+        photoPreview.startsWith('blob:')
+      ) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
 
   return (
     <Box
@@ -183,17 +194,14 @@ function FormInfo() {
               photoFile={photoFile}
               setPhotoFile={setPhotoFile}
               photoPreview={photoPreview}
-              photoPreviewRef={photoPreviewRef}
               setPhotoPreview={setPhotoPreview}
+              photoPreviewRef={photoPreviewRef}
               handleSubmitForm={handleSubmitForm}
             />
           </TabPanel>
           <TabPanel
             sx={{
               flexGrow: 1,
-              height: {
-                sm: '60vh',
-              },
               padding: 2,
             }}
             value="2"
@@ -210,18 +218,7 @@ function FormInfo() {
       </Stack>
       {/* Info Box */}
       <Stack
-        direction={'column'}
-        spacing={3}
-        bgcolor={'background.paper'}
-        boxShadow={shadow}
-        p={2}
-        justifyContent={'space-between'}
-        maxWidth={{
-          xs: '100%',
-          sm: '100%',
-          md: '240px',
-          lg: '300px',
-        }}
+        sx={infoBox}
       >
         <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
@@ -231,19 +228,21 @@ function FormInfo() {
             <GridInfo
               icon={<CalendarRange color={'#6c63ff'} />}
               text="Gain access to class schedules"
-            />  
+            />
             <GridInfo
               icon={<UsersRound color={'#6c63ff'} />}
               text="Mark students attendance"
             />
             <GridInfo
-              icon={<WandSparkles color={'#6c63ff'}/>}
+              icon={<WandSparkles color={'#6c63ff'} />}
               text="Enhanced Teacher Efficiency"
             />
           </Grid>
         </Box>
-        <Stack sx={{ display: { xs: 'none', sm: 'block' }}}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, ml:1  }}>
+        <Stack sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, ml: 1 }}
+          >
             <Settings color={'#6c63ff'} />
             <Typography variant="body2" fontWeight="medium">
               Gain better teacher experiences with our streamlined system
@@ -289,6 +288,21 @@ const tabStyle = {
     color: 'text.disabled',
   },
 };
+const infoBox ={
+  display: { xs: 'none', sm: 'flex' },
+  direction: 'column',
+  gap: 3,
+  bgcolor: 'background.paper',
+  boxShadow: shadow,
+  p: 2,
+  justifyContent: 'space-between',
+  maxWidth: {
+    xs: '100%',
+    sm: '100%',
+    md: '240px',
+    lg: '300px',
+  }
+}
 const gridBox = {
   display: 'flex',
   width: '100%',

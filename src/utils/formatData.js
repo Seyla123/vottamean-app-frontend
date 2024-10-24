@@ -379,7 +379,6 @@ export const formatTeacherFormData = (teacherData) => {
 };
 export const formatStudentFormData = (studentData) => {
   if (!studentData || !studentData.data) return null;
-
   const {
     Info,
     class_id,
@@ -389,14 +388,13 @@ export const formatStudentFormData = (studentData) => {
     guardian_phone_number,
     guardian_relationship,
   } = studentData.data;
-  console.log(Info.dob ? dayjs(Info.dob) : null);
-
   return {
     first_name: Info.first_name || 'N/A',
     last_name: Info.last_name || 'N/A',
     phone_number: Info.phone_number || 'N/A',
     gender: Info.gender || 'N/A',
-    dob: Info.dob || null, // Format DOB with dayjs
+    dob: Info.dob || null, 
+    photo: Info.photo || 'N/A',
     address: Info.address || 'N/A',
     class_id: class_id ? String(class_id) : 'N/A',
     guardian_first_name: guardian_first_name || 'N/A',

@@ -42,7 +42,7 @@ const GuardianForm = ({
   // Form submission function
   const onSubmit = async (data) => {
     // Create form data
-   const formData = new FormData(); 
+    const formData = new FormData();
     // Create an object with the form data
     const formFields = {
       guardian_first_name: data.guardianFirstName,
@@ -58,12 +58,12 @@ const GuardianForm = ({
       phone_number: studentData.phoneNumber,
       address: studentData.address || '',
     };
-  
+
     // Append fields to FormData
     Object.entries(formFields).forEach(([key, value]) =>
-      formData.append(key, value)
+      formData.append(key, value),
     );
-  
+
     // Append the photo if it exists
     if (studentData.photo) {
       console.log('Appending photo:', studentData.photo);
@@ -76,101 +76,100 @@ const GuardianForm = ({
       console.error('Error creating student:', error);
     }
   };
-  
+
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Guardian Name Inputs */}
-        <Stack direction={'column'} gap={2}>
-          <Typography
-            alignSelf={'start'}
-            variant="h6"
-            component="h2"
-            fontWeight={'bold'}
-            mb={2}
-          >
-            Guardian Information
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardianFirstName"
-                control={control}
-                label="Guardian First Name"
-                placeholder="First Name"
-                errors={errors}
-                icon={UserRoundPen}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardianLastName"
-                control={control}
-                label="Guardian Last Name"
-                placeholder="Last Name"
-                errors={errors}
-                icon={UserRoundPen}
-              />
-            </Grid>
-          </Grid>
-          {/* GUARDIAN CONTACT INFORMATION */}
-          {/* Guardian Phone Number */}
-          <PhoneInputField
-            name="guardianPhoneNumber"
-            control={control}
-            label="Contact Number"
-            errors={errors}
-          />
-          {/* Guardian Email */}
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* Guardian Name Inputs */}
+      <Typography
+        alignSelf={'start'}
+        variant="h6"
+        component="h2"
+        fontWeight={'bold'}
+        mb={2}
+      >
+        Guardian Information
+      </Typography>
+      <Stack direction={'column'} spacing={2}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <InputField
-            name="guardianEmail"
+            name="guardianFirstName"
             control={control}
-            label="Email"
-            placeholder="Enter guardian email"
+            label="Guardian First Name"
+            placeholder="First Name"
             errors={errors}
-            icon={Mail}
-          />
-          {/* Guardian Relationship */}
-          <InputField
-            name="guardianRelationship"
-            control={control}
-            label="Relationship"
-            placeholder="Relationship"
-            errors={errors}
-            icon={Diversity1Icon}
+            icon={UserRoundPen}
           />
 
-          {/* Action Buttons */}
-          <Stack
-            direction={'row'}
-            alignSelf={'flex-end'}
-            justifyContent={'flex-end'}
-            width={{ xs: '100%', sm: '300px', md: '280px' }}
-            gap={2}
-            marginTop={{ xs: 2, sm: 0 }}
-          >
-            <StyledButton
-              onClick={handleBack}
-              fullWidth
-              variant="outlined"
-              color="inherit"
-              size="small"
-            >
-              Back
-            </StyledButton>
-            <StyledButton
-              fullWidth
-              variant="contained"
-              type="submit"
-              size="small"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Adding...' : 'Add'}
-            </StyledButton>
-          </Stack>
+          <InputField
+            name="guardianLastName"
+            control={control}
+            label="Guardian Last Name"
+            placeholder="Last Name"
+            errors={errors}
+            icon={UserRoundPen}
+          />
         </Stack>
-      </form>
-    </>
+        {/* GUARDIAN CONTACT INFORMATION */}
+        {/* Guardian Phone Number */}
+        <PhoneInputField
+          name="guardianPhoneNumber"
+          control={control}
+          label="Contact Number"
+          errors={errors}
+        />
+
+        {/* Guardian Email */}
+
+        <InputField
+          name="guardianEmail"
+          control={control}
+          label="Email"
+          placeholder="Enter guardian email"
+          errors={errors}
+          icon={Mail}
+        />
+
+        {/* Guardian Relationship */}
+
+        <InputField
+          name="guardianRelationship"
+          control={control}
+          label="Relationship"
+          placeholder="Relationship"
+          errors={errors}
+          icon={Diversity1Icon}
+        />
+
+        {/* Action Buttons */}
+        <Stack
+          direction={'row'}
+          alignSelf={'flex-end'}
+          justifyContent={'flex-end'}
+          width={{ xs: '100%', sm: '300px', md: '260px' }}
+          gap={2}
+          marginTop={{ xs: 2, sm: 0 }}
+        >
+          <StyledButton
+            onClick={handleBack}
+            fullWidth
+            variant="outlined"
+            color="inherit"
+            size="small"
+          >
+            Back
+          </StyledButton>
+          <StyledButton
+            fullWidth
+            variant="contained"
+            type="submit"
+            size="small"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Adding...' : 'Add'}
+          </StyledButton>
+        </Stack>
+      </Stack>
+    </form>
   );
 };
 

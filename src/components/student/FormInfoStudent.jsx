@@ -21,7 +21,6 @@ import {
   NotebookPen,
   BookMarked,
   BellRing,
-  FolderKanban,
 } from 'lucide-react';
 
 // - Custom Components
@@ -193,10 +192,8 @@ function FormInfoStudent() {
           <TabPanel
             sx={{
               flexGrow: 1,
-              height: {
-                sm: '60vh',
-              },
               padding: 2,
+
             }}
             value="2"
           >
@@ -212,18 +209,7 @@ function FormInfoStudent() {
       </Stack>
       {/* Info Box */}
       <Stack
-        direction={'column'}
-        spacing={3}
-        bgcolor={'background.paper'}
-        boxShadow={shadow}
-        p={2}
-        justifyContent={'space-between'}
-        maxWidth={{
-          xs: '100%',
-          sm: '100%',
-          md: '240px',
-          lg: '300px',
-        }}
+      sx={infoBox}
       >
         <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
@@ -244,8 +230,8 @@ function FormInfoStudent() {
             />
           </Grid>
         </Box>
-        <Stack sx={{ display: { xs: 'none', sm: 'block' }}}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap:1 }}>
+        <Stack sx={{ display: { xs: 'none', sm: 'block'}}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap:1}}>
             <Settings color={'#6c63ff'}/>
             <Typography variant="body2" fontWeight="medium">
             Attendance Management and Parent Communication.
@@ -290,3 +276,18 @@ const tabStyle = {
     color: 'text.disabled',
   },
 };
+const infoBox ={
+  display: { xs: 'none', sm: 'flex' },
+  direction: 'column',
+  gap: 3,
+  bgcolor: 'background.paper',
+  boxShadow: shadow,
+  p: 2,
+  justifyContent: 'space-between',
+  maxWidth: {
+    xs: '100%',
+    sm: '100%',
+    md: '240px',
+    lg: '300px',
+  }
+}

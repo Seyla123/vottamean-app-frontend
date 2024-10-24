@@ -3,14 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
-
+import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Box, MenuItem,Select, Stack, Typography } from '@mui/material';
-import { UserRoundPen } from 'lucide-react';
+import {
+  Box,
+  MenuItem,
+  Grid,
+  Select,
+  Stack,
+  Typography,
+  InputAdornment,
+  FormControl,
+} from '@mui/material';
+import { ImagePlus, School, Trash2, UserRoundPen } from 'lucide-react';
 import dayjs from 'dayjs';
-
-
+import { StyledTextField } from '../common/GenderSelect';
 import StyledButton from '../common/StyledMuiButton';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import PhoneInputField from '../common/PhoneInputField';
@@ -18,50 +26,48 @@ import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
 
-
 import { useGetClassesDataQuery } from '../../services/classApi';
 import {
   useGetStudentsByIdQuery,
   useUpdateStudentMutation,
 } from '../../services/studentApi';
 
-import { StudentValidator } from '../../validators/validationSchemas';
-import SubHeader from '../teacher/SubHeader';
+import { studentValidationSchema } from '../student/StudentForm';
 import { formatStudentFormData } from '../../utils/formatData';
 import { ensureOptionInList } from '../../utils/formatHelper';
+import RandomAvatar from '../common/RandomAvatar';
+import { useTheme } from '@emotion/react';
+import SomethingWentWrong from '../common/SomethingWentWrong';
 
-
-const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
+const StudentUpdateForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const theme = useTheme();
 
-  // Fetch student data when the modal is open an is available
-  const {
-    data: studentData,
-    isLoading,
-    isError,
-  } = useGetStudentsByIdQuery(id);
+  const { data: studentData, isLoading, isError, error } = useGetStudentsByIdQuery(id);
+  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery(
+    { active: 1 },
+  );
 
-
-  // Fetch classes data
-  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery({ active: 1 });
-
-  // Local State
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
   const [classes, setClasses] = useState([]);
+  const [hasPhotoChanges, setHasPhotoChanges] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [profileImg, setProfileImg] = useState('');
 
-  // Update Student Mutation
   const [updateStudent] = useUpdateStudentMutation();
 
-  // React Hook Form setup
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
-    resolver: yupResolver(StudentValidator),
+    resolver: yupResolver(studentValidationSchema),
     defaultValues: {
       photo: '',
       first_name: '',
@@ -74,44 +80,54 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
     },
   });
 
-  // Populate form with fetched student data
   useEffect(() => {
     if (studentData && classData && isClassSuccess) {
+      console.log('studentData:', studentData);
       const formattedData = formatStudentFormData(studentData);
-      const formattedClassData = ensureOptionInList(classData.data, studentData?.data?.Class,  'class_id', 'class_name');
 
-        const studentInfo = {
-          ...formattedData,
-          dob: formattedData.dob ? dayjs(formattedData.dob).format('YYYY-MM-DD') : null,
-        }; 
-        setClasses(formattedClassData);
-        reset(studentInfo);
-        setDob(studentInfo.dob);
-        setOriginalData(studentInfo);
+      const formattedClassData = ensureOptionInList(
+        classData?.data,
+        studentData?.data?.Class,
+        'class_id',
+        'class_name',
+      );
+
+      const studentInfo = {
+        ...formattedData,
+        dob: formattedData.dob
+          ? dayjs(formattedData.dob).format('YYYY-MM-DD')
+          : null,
+      };
+
+      setClasses(formattedClassData);
+      reset(studentInfo);
+      setDob(studentInfo.dob);
+      setOriginalData(studentInfo);
     }
+    // console.log('studentData:', studentData);
+    console.log('classData:', classData);
+    console.log('isClassSuccess:', isClassSuccess);
   }, [studentData, reset, classData, isClassSuccess]);
 
-  // Handle form submission
   const onSubmit = async (data) => {
     const submittedData = {
-      first_name: data.first_name,
-      last_name: data.last_name,
-      phone_number: data.phone_number,
+      first_name: data.firstName,
+      last_name: data.lastName,
+      phone_number: data.phoneNumber,
       gender: data.gender,
-      dob: data.dob && dayjs(data.dob).isValid()
-        ? dayjs(data.dob).format('YYYY-MM-DD')
-        : null,
+      dob:
+        data.dob && dayjs(data.dob).isValid()
+          ? dayjs(data.dob).format('YYYY-MM-DD')
+          : null,
       address: data.address,
       class_id: data.class_id,
     };
 
-    // Check if any of the fields have changed
     const hasChanges = Object.keys(submittedData).some(
       (key) => submittedData[key] !== originalData[key],
     );
 
-    // If no changes were made, close the modal
-    if (!hasChanges) {
+    if (!hasChanges && !hasPhotoChanges) {
       dispatch(
         setSnackbar({
           open: true,
@@ -121,15 +137,20 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
         }),
       );
       handleNext();
-
       return;
     }
-    // Update the student information with the new data
+
     try {
-      const result = await updateStudent({
-        id,
-        updates: submittedData,
-      }).unwrap();
+      const formData = new FormData();
+      Object.keys(submittedData).forEach((key) =>
+        formData.append(key, submittedData[key]),
+      );
+
+      if (selectedFile) {
+        formData.append('photo', selectedFile);
+      }
+
+      const result = await updateStudent({ id, updates: formData }).unwrap();
 
       if (result.status === 'success') {
         dispatch(
@@ -145,66 +166,120 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
         throw new Error('Update failed');
       }
     } catch (error) {
-      console.error('Update failed', error);
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Update failed: ' + (error.message || 'Unknown error'),
+          message: `Update failed: ${error.message}`,
           severity: 'error',
           autoHideDuration: 6000,
         }),
       );
     }
   };
-  const handleCancel = () => {
-    navigate('/admin/studnets')
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (
+      file &&
+      file.type.startsWith('image/') &&
+      file.size <= 5 * 1024 * 1024
+    ) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setValue('photo', file);
+      setHasPhotoChanges(true);
+    } else {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Invalid image file',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setSelectedFile(null);
+    setProfileImg(null);
+    setPreviewUrl(null);
+    setValue('photo', null);
+    setHasPhotoChanges(true); 
+  };
+
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isError) {
+    return <SomethingWentWrong description={error?.data?.message} />
   }
 
-  // Loading and error handling
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError)
-    return <Typography color="error">Error loading student data</Typography>;
-
-
   return (
-    <>
-      <Box
-        sx={{
-          width: '800px',
-          bgcolor: '#ffffff',
-          borderRadius: '8px',
-          p: 4,
-        }}
+    <Box
+      sx={{
+        bgcolor: '#ffffff',
+        borderRadius: '8px',
+        p: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+      }}
+    >
+      <Typography
+        variant="h5"
+        component="h2"
+        fontWeight="bold"
+        gutterBottom
+        mb={4}
       >
-        {/* Title */}
-        <Typography
-          variant="h5"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
-          mb={4}
-        >
-          Edit Student Information
-        </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={3}>
-            {/* Profile picture upload */}
-            <SubHeader title="Student Information" />
+        Edit Student Information
+      </Typography>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={3}>
+          <Stack direction="row" gap={2} alignItems="center" py={3}>
+            {previewUrl || profileImg ? (
+              <Avatar
+                src={previewUrl || profileImg}
+                alt="Profile"
+                sx={{ width: 140, height: 140 }}
+              />
+            ) : (
+              <RandomAvatar size={140} />
+            )}
+            <input
+              id="photo-upload"
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handlePhotoChange}
+            />
             <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-                mb: 2,
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-              }}
+              display="flex"
+              flexDirection="column"
+              alignItems="start"
+              gap={2}
             >
-              {/* Image upload logic (if any) */}
-              {/* ... */}
+              <label htmlFor="photo-upload">
+                <StyledButton
+                  variant="contained"
+                  size="small"
+                  component="span"
+                  startIcon={<ImagePlus size={18} />}
+                >
+                  Upload
+                </StyledButton>
+              </label>
+              <StyledButton
+                variant="outlined"
+                size="small"
+                color="error"
+                startIcon={<Trash2 size={18} />}
+                onClick={handleRemovePhoto}
+              >
+                Remove
+              </StyledButton>
             </Box>
-
-            {/* STUDENT NAME */}
-            <Box display="flex" flexDirection="row" sx={boxContainer}>
+          </Stack>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
               <InputField
                 name="first_name"
                 control={control}
@@ -213,6 +288,8 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
                 errors={errors}
                 icon={UserRoundPen}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <InputField
                 name="last_name"
                 control={control}
@@ -221,116 +298,126 @@ const StudentUpdateForm = ({ onClose, handleNext, handleBack }) => {
                 errors={errors}
                 icon={UserRoundPen}
               />
-            </Box>
-
-            {/* STUDENT GENDER AND DATE OF BIRTH */}
-            <Box display="flex" flexDirection="row" sx={boxContainer}>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <GenderSelect
                 control={control}
                 errors={errors}
                 name="gender"
-                defaultValue={studentData.gender || ''}
                 label="Gender"
+                fullWidth
               />
-              {/* Date of Birth */}
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <DOBPicker
                 control={control}
                 errors={errors}
                 name="dob"
                 dob={dob}
                 setDob={setDob}
+                fullWidth
               />
-            </Box>
-
-            {/* Class Selection */}
-            <Controller
-                name="class_id"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <>
-                    <Select
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <Typography variant="body2" fontWeight="bold" gutterBottom>
+                  Class <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                </Typography>
+                <Controller
+                  name="class_id"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <StyledTextField
                       {...field}
                       value={field.value || ''}
                       onChange={(e) => field.onChange(e.target.value)}
-                      displayEmpty
+                      select
                       fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <School size={20} />
+                          </InputAdornment>
+                        ),
+                      }}
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return (
+                              <span style={{ color: theme.palette.grey[400] }}>
+                                Select Class
+                              </span>
+                            );
+                          }
+                          const selectedClass = classes.find(
+                            (classes) => classes.class_id === selected,
+                          );
+                          return selectedClass ? selectedClass.class_name : '';
+                        },
+                      }}
                     >
                       <MenuItem value="" disabled>
-                        Select Class
+                        Select a class
                       </MenuItem>
-                      {
-                        classes.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
+                      {classes.length > 0 &&
+                        classes.map((classItem) => (
+                          <MenuItem
+                            key={classItem.class_id}
+                            value={classItem.class_id}
+                          >
+                            {classItem.class_name}
                           </MenuItem>
-                        ))
-                      }
-                    </Select>
-                  </>
-                )}
+                        ))}
+                    </StyledTextField>
+                  )}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <PhoneInputField
+                name="phone_number"
+                control={control}
+                label="Contact Number"
+                errors={errors}
+                fullWidth
               />
-
-            {/* Phone Number */}
-            <PhoneInputField
-              name="phone_number"
-              control={control}
-              label="Contact Number"
-              errors={errors}
-            />
-
-            {/* Address */}
-            <InputField
-              name="address"
-              control={control}
-              label="Street Address"
-              placeholder="Phnom Penh, Street 210, ..."
-              errors={errors}
-              required={false}
-              multiline
-              minRows={5}
-            />
-
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-                width: '100%',
-                justifyContent: 'flex-end',
-              }}
+            </Grid>
+          </Grid>
+          <InputField
+            name="address"
+            control={control}
+            label="Street Address"
+            placeholder="Phnom Penh, Street 210, ..."
+            errors={errors}
+            required={false}
+            multiline
+            minRows={5}
+            fullWidth
+          />
+          <Stack direction={'row'} gap={1} justifyContent={'flex-end'}>
+            <StyledButton
+              variant="outlined"
+              size="small"
+              // onClick={handleCancel}
             >
-              <StyledButton
-                variant="outlined"
-                color="inherit"
-                size="small"
-                onClick={onClose}
-              >
-                Cancel
-              </StyledButton>
-              <StyledButton
-                size="small"
-                type="submit"
-                variant="contained"
-                color="primary"
-              >
-                Save Changes
-              </StyledButton>
-            </Box>
+              Cancel
+            </StyledButton>
+            <StyledButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Continue
+            </StyledButton>
           </Stack>
-        </form>
-      </Box>
-    </>
+        </Stack>
+      </form>
+    </Box>
   );
 };
 
 export default StudentUpdateForm;
-
-const boxContainer = {
-  width: '100%',
-  marginTop: '14px',
-  padding: '0px',
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-};

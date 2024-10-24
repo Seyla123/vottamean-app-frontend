@@ -1,6 +1,5 @@
 // React and third-party libraries
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 // React Hook Form
@@ -10,15 +9,8 @@ import * as yup from 'yup';
 import dayjs from 'dayjs';
 
 // MUI Components
-import {
-  Box,
-  Avatar,
-  Typography,
-  Stack,
-  capitalize,
-  Divider,
-} from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { Box, Avatar, Typography, Stack, capitalize } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // Custom Components
@@ -28,9 +20,9 @@ import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
+
 // icons from luicide react
 import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
-import { teacherData } from '../../utils/formatData';
 
 const TeacherInfo = ({
   handleNextClick,
@@ -44,7 +36,7 @@ const TeacherInfo = ({
 }) => {
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
-  // const photoPreviewRef = useRef(null);
+
   // React hook form
   const {
     control,
@@ -69,6 +61,7 @@ const TeacherInfo = ({
     },
   });
 
+  // Update form when defaultValues change
   useEffect(() => {
     if (defaultValues) {
       reset({
@@ -76,12 +69,13 @@ const TeacherInfo = ({
         dob: defaultValues.dob ? dayjs(defaultValues.dob) : null,
       });
       setDob(defaultValues.dob ? dayjs(defaultValues.dob) : null);
+
       // Clear old photo URL if it exists
       if (photoPreview) {
         URL.revokeObjectURL(photoPreview);
       }
 
-      // If there is a photo, create a preview URL
+      // Set new photo preview if exists
       if (defaultValues.photo) {
         const photoUrl =
           typeof defaultValues.photo === 'string'
@@ -91,14 +85,13 @@ const TeacherInfo = ({
         setPhotoFile(defaultValues.photo);
       }
     }
-
-    // Cleanup function to revoke the preview URL
+    // Cleanup function to revoke the old photo URL
     return () => {
       if (photoPreview && typeof photoPreview !== 'string') {
         URL.revokeObjectURL(photoPreview);
       }
     };
-  }, [defaultValues, reset, photoPreview, setPhotoPreview]);
+  }, [defaultValues]);
 
   // Handle form submission
   const onSubmit = (data) => {
@@ -109,6 +102,7 @@ const TeacherInfo = ({
       photo: photoFile || photoPreview || null,
     });
   };
+
   // Handle remove photo
   const handleRemovePhoto = () => {
     if (photoPreview) {
@@ -129,16 +123,16 @@ const TeacherInfo = ({
     navigate('/admin/teachers');
   };
 
-  // Preview photo
+  // Photo preview
   const photoSrc =
-    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
+    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : null);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
           {/* Header */}
-          <Box alignSelf={'start'} sx={{ width: '100%' }}>
+          <Box alignSelf={'start'} width={'100%'}>
             <Typography
               alignSelf={'start'}
               variant="h6"
@@ -148,7 +142,6 @@ const TeacherInfo = ({
             >
               Teacher Information
             </Typography>
-            {/* <Divider /> */}
           </Box>
           <Box sx={profileContainer}>
             {/* Profile */}
@@ -205,16 +198,14 @@ const TeacherInfo = ({
             </Box>
           </Box>
           {/* Name */}
-          <Stack
-            direction={{
-              xs: 'column',
-              md: 'row',
-            }}
-            width={'100%'}
-            spacing={2}
-            sx={textFieldGap}
-          >
-            <Box sx={{ flex: 1, width: '100%' }}>
+          <Stack direction={'column'} spacing={2} width="100%">
+            <Stack
+              direction={{
+                xs: 'column',
+                sm: 'row',
+              }}
+              spacing={2}
+            >
               <InputField
                 name="firstName"
                 control={control}
@@ -223,8 +214,6 @@ const TeacherInfo = ({
                 placeholder="First Name"
                 errors={errors}
               />
-            </Box>
-            <Box sx={{ flex: 1, width: '100%' }}>
               <InputField
                 name="lastName"
                 control={control}
@@ -233,10 +222,8 @@ const TeacherInfo = ({
                 icon={UserRoundPen}
                 errors={errors}
               />
-            </Box>
-          </Stack>
-          {/* Gender */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            </Stack>
+            {/* Gender */}
             <Controller
               name="gender"
               control={control}
@@ -252,9 +239,7 @@ const TeacherInfo = ({
                 />
               )}
             />
-          </Box>
-          {/* Date of Birth */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            {/* Date of Birth */}
             <DOBPicker
               control={control}
               errors={errors}
@@ -263,18 +248,14 @@ const TeacherInfo = ({
               setDob={setDob}
               fullWidth
             />
-          </Box>
-          {/* Contact Number */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            {/* Contact Number */}
             <PhoneInputField
               name="phoneNumber"
               control={control}
               label="Contact Number"
               errors={errors}
             />
-          </Box>
-          {/* Address */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            {/* Address */}
             <InputField
               name="address"
               required={false}
@@ -285,7 +266,7 @@ const TeacherInfo = ({
               multiline={true}
               minRows={5}
             />
-          </Box>
+          </Stack>
           {/* Buttons */}
           <Stack
             direction={'row'}
@@ -339,11 +320,6 @@ const profileBox = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  flexDirection: 'column',
-};
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
   flexDirection: 'column',
 };
 // Define validation schema
