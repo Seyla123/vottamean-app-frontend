@@ -72,11 +72,11 @@ export const teacherApi = baseApi.injectEndpoints({
         url: `teachers/sessions`,
         method: 'GET',
         params: {
-          filter: data?.filter || '',
+          filter: data?.filter || 'all',
           active : 1
         },
       }),
-      providesTags: ['Teachers'],
+      providesTags: ['Teachers','Attendance'],
     }),
 
     getAllStudentsByClassInSession: builder.query({
