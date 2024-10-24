@@ -45,6 +45,7 @@ import PhoneInputField from '../common/PhoneInputField';
 import RandomAvatar from '../common/RandomAvatar';
 import StyledButton from '../common/StyledMuiButton';
 import DOBPicker from '../common/DOBPicker';
+import SomethingWentWrong from '../common/SomethingWentWrong';
 
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const navigate = useNavigate();
@@ -58,6 +59,11 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const [originalData, setOriginalData] = useState(null);
   const [hasFormChanges, setHasFormChanges] = useState(false);
   const [hasPhotoChanges, setHasPhotoChanges] = useState(false);
+  const [photoState, setPhotoState] = useState({
+    profileImg: '',
+    isRemoved: false,
+    hasChanges: false,
+  });
 
   // useGetTeacherQuery : a hook return function for fetching all teacher data
   const {
@@ -118,6 +124,12 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         setProfileImg(formattedData.photo);
         // Save the original data to compare with later
         setOriginalData(teacherInfo);
+        // Set the photo state
+        setPhotoState({
+          profileImg: teacherInfo.photo,
+          isRemoved: false,
+          hasChanges: false,
+        });
       }
     }
   }, [teacherData, reset, isSuccess]);
@@ -170,19 +182,24 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       address: originalData.address,
     };
 
-    // Check if any of the fields have changed
-    const hasChanges = Object.keys(dataOriginal).some(
-      (key) => dataOriginal[key] !== submittedData[key],
-    );
+    const hasChanges = Object.keys(submittedData).some((key) => {
+      const originalValue = dataOriginal[key];
+      const newValue = submittedData[key];
 
-    // Set the state of whether the form has changes
-    setHasFormChanges(hasChanges);
+      // Handle null/undefined cases
+      if (!originalValue && !newValue) return false;
+      if (!originalValue || !newValue) return true;
 
-    // Check for photo changes
-    setHasPhotoChanges(!!selectedFile);
+      // Compare values
+      return String(originalValue).trim() !== String(newValue).trim();
+    });
 
-    // If no changes were made, show a message and exit
-    if (!hasChanges && !hasPhotoChanges) {
+    // Check for photo changes using photoState
+    // If the photo has been changed or removed, the hasPhotoChange state will be set to true
+    const hasPhotoChange = photoState.hasChanges || photoState.isRemoved;
+
+    // If there are no changes and no photo changes, show a message and exit
+    if (!hasChanges && !hasPhotoChange) {
       dispatch(
         setSnackbar({
           open: true,
@@ -193,66 +210,91 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       onClose();
       return;
     }
-
     // Create a new FormData object
     const formData = new FormData();
 
     // Append the data properties to the FormData object
-    Object.entries(submittedData).forEach(([key, value]) =>
-      formData.append(key, value),
-    );
-
-    // Append the photo if it exists
+    Object.entries(submittedData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+    // Handle photo changes
     if (selectedFile) {
+      // New photo being uploaded
       formData.append('photo', selectedFile);
-    } else {
-      formData.append('photo', profileImg);
+    } else if (photoState.isRemoved) {
+      // Explicitly removing photo
+      formData.append('remove_photo', 'true');
+      formData.append('photo', '');  
+    } else if (photoState.profileImg) {
+      // Keeping existing photo
+      formData.append('existing_photo', photoState.profileImg);
     }
-
+  
+    console.log('Photo state:', {
+      selectedFile: selectedFile ? 'exists' : 'null',
+      photoState,
+      profileImg
+    });
     // Update the teacher data with new data
     await updateTeacher({ id: teacherId, updates: formData }).unwrap();
   };
 
-  // Handle change photo
+  // Update the photo change handler
+  // This will be called when the user selects a new profile photo
+  // If the file is valid, it will be set as the new value for the "photo" field
+  // and the preview will be updated
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
+    // Check if the file is an image and is under 5MB
     if (
       file &&
       file.type.startsWith('image/') &&
       file.size <= 5 * 1024 * 1024
     ) {
       setSelectedFile(file);
+      // Set the preview to the new image
       setPreviewUrl(URL.createObjectURL(file));
+      // Set the new value for the "photo" field
       setValue('photo', file);
-      setHasPhotoChanges(true);
+      // Update the hasChanges state to true
+      setPhotoState((prev) => ({
+        ...prev,
+        isRemoved: false,
+        hasChanges: true,
+      }));
     } else {
+      // If the file is invalid, show an error message
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Invalid image file',
+          message: file
+            ? 'File must be an image under 5MB'
+            : 'Please select a file',
           severity: 'error',
         }),
       );
     }
   };
-
-  // Handle remove photo
   const handleRemovePhoto = () => {
     setSelectedFile(null);
-    setProfileImg(null);
+    setProfileImg(null);  // Make sure this is null, not an empty string
     setPreviewUrl(null);
     setValue('photo', null);
+    setPhotoState((prev) => ({
+      profileImg: null,  // Change this to null instead of empty string
+      isRemoved: true,
+      hasChanges: true,
+    }));
   };
 
+  
+
   // Fetch data error message
-  if (isError)
-    dispatch(
-      setSnackbar({
-        open: true,
-        message: `Error fetching teacher data, ${error.data?.message}`,
-        severity: 'error',
-      }),
-    );
+  if (isError) {
+    return <SomethingWentWrong description={error?.data?.message} />;
+  }
 
   return (
     <Modal
@@ -308,6 +350,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 />
               ) : (
                 <RandomAvatar
+                  username={`${getValues('firstName')} ${getValues('lastName')}`}
+                  gender={getValues('gender')}
                   size={140}
                 />
               )}
