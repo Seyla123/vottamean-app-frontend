@@ -1,9 +1,8 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tab, Typography, Card, Tabs, Box, styled } from '@mui/material';
+import { Typography } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 
 // Components
 import FormComponent from '../../../../components/common/FormComponent';
@@ -11,8 +10,6 @@ import FormComponent from '../../../../components/common/FormComponent';
 import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
-// Image and Icon
-import { UserRound, Settings } from 'lucide-react';
 
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
@@ -24,10 +21,10 @@ import {
 
 // User Profile Data formatting
 import { getUserProfileData } from '../../../../utils/formatData';
-import LoadingPage from '../../../LoadingPage';
+import LoadingCircle from '../../../../components/loading/LoadingCircle';
 import { StyledTab } from '../../../../components/common/StyledTabs';
 import TitleHeader from '../../../../components/common/TitleHeader';
-
+import SomethingWentWrong from '../../../../components/common/SomethingWentWrong';
 const AccountSettingsPage = () => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
@@ -47,9 +44,6 @@ const AccountSettingsPage = () => {
 
   // Local state for tab
   const [value, setValue] = useState('1');
-
-  // Determine if the screen size is mobile
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
@@ -77,13 +71,13 @@ const AccountSettingsPage = () => {
   };
 
   if (isLoading) {
-    return <LoadingPage />;
+    return <LoadingCircle />;
   }
 
   if (error) {
-    return <Typography>Error loading user data</Typography>;
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
-  
+
 
   return (
     <FormComponent>
@@ -109,15 +103,14 @@ const AccountSettingsPage = () => {
             iconPosition="start"
           />
         </TabList>
-
-        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
-          {/* MY PROFILE VIEW */}
-          <MyProfileView
-            profilePhoto={userData?.photo}
-            userData={userData?.userProfile}
-            schoolProfileData={userData.schoolProfile}
-          />
-        </TabPanel>
+          <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
+            {/* MY PROFILE VIEW */}
+            <MyProfileView
+              profilePhoto={userData?.photo}
+              userData={userData?.userProfile}
+              schoolProfileData={userData.schoolProfile}
+            />
+          </TabPanel>
 
         <TabPanel sx={{ flexGrow: 1, p: 0 }} value="2">
           {/* SECURITY VIEW */}

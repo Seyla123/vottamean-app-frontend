@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Typography, Box, Grid, Card } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
-import ChangePasswordForm from '../../pages/admin/setting/account/ChangePasswordForm';
+import ChangePasswordForm from './ChangePasswordForm';
 import { Info } from 'lucide-react';
 
 // Image and Icon
