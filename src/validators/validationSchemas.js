@@ -34,7 +34,6 @@ import moment from 'moment';
  *    </Box>
  */
 
-
 // School name validator
 export const schoolNameSchema = Yup.string()
   .trim()
@@ -63,7 +62,7 @@ export const lastNameSchema = Yup.string()
     /^[A-Za-z]+( [A-Za-z]+)*$/,
     'Name must contain only alphabetic characters and single spaces between words',
   );
-    
+
 // Date of birth validator
 export const dobSchema = Yup.string()
   .required('Date of birth is required')
@@ -388,3 +387,6 @@ export const CompletedRegistrationValidator = createFormSchema([
   'password',
   'passwordConfirm',
 ]);
+
+export const CombinedStudentGuardianValidator =
+  StudentValidator.concat(GuardianValidator);
