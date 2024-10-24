@@ -54,18 +54,6 @@ function FormInfo() {
   const [teacherData, setTeacherData] = useState({});
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    gender: '',
-    dob: null,
-    address: '',
-    photo: null,
-    email: '',
-    password: '',
-    passwordConfirm: '',
-  });
 
   // useSignUpTeacherMutation : a hook return function for sign up teacher api
   const [signUpTeacher, { isLoading, isError, error, isSuccess }] =
