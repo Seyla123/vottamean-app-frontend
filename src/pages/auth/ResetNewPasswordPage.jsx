@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 // Material UI components
 import {
@@ -29,7 +28,7 @@ import PasswordInput from '../../components/auth/PasswordInput';
 
 // Icons
 import BackgroundImage from '../../assets/images/reset-password-illustration.svg';
-import Logo from '../../assets/images/Logo.svg';
+import Logo from '../../assets/images/VOTTAMEAN.svg';
 
 // Validator
 import { ResetPasswordValidator } from '../../validators/validationSchemas';

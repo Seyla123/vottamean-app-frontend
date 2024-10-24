@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import ShortHeader from '../../components/layout/ShortHeader';
 import { useVerifyEmailMutation } from '../../services/authApi';
-import { Box, Typography, Button, Card, CircularProgress } from '@mui/material';
+import { Box, Typography, Card, CircularProgress } from '@mui/material';
 import verifiedImage from '../../assets/images/authenticated-img.png';
 import failAuthenticatedImage from '../../assets/images/fail-authenticated-img.png';
 import StyledButton from '../../components/common/StyledMuiButton';

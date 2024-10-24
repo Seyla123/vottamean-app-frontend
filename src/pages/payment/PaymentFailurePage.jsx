@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import Logo from '../../assets/images/Logo.svg';
 import ErrorIcon from '../../assets/images/undraw_Weather_notification_re_3pad.png'
 import StyledButton from '../../components/common/StyledMuiButton';
 import { useNavigate } from 'react-router-dom';

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/images/Logo.svg';
-import { useNavigate } from 'react-router-dom';
+import Logo from '../../assets/images/VOTTAMEAN.svg';
 
 // Redux hooks and actions
 import { useForgotPasswordMutation } from '../../services/authApi';
@@ -15,12 +14,7 @@ import {
   Box,
   Typography,
   TextField,
-  Button,
-  Card,
-  Snackbar,
-  Alert,
   InputAdornment,
-  colors,
   CircularProgress,
 } from '@mui/material';
 
