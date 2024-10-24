@@ -218,18 +218,7 @@ function FormInfo() {
       </Stack>
       {/* Info Box */}
       <Stack
-        direction={'column'}
-        spacing={3}
-        bgcolor={'background.paper'}
-        boxShadow={shadow}
-        p={2}
-        justifyContent={'space-between'}
-        maxWidth={{
-          xs: '100%',
-          sm: '100%',
-          md: '240px',
-          lg: '300px',
-        }}
+        sx={infoBox}
       >
         <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
@@ -299,6 +288,21 @@ const tabStyle = {
     color: 'text.disabled',
   },
 };
+const infoBox ={
+  display: { xs: 'none', sm: 'flex' },
+  direction: 'column',
+  gap: 3,
+  bgcolor: 'background.paper',
+  boxShadow: shadow,
+  p: 2,
+  justifyContent: 'space-between',
+  maxWidth: {
+    xs: '100%',
+    sm: '100%',
+    md: '240px',
+    lg: '300px',
+  }
+}
 const gridBox = {
   display: 'flex',
   width: '100%',

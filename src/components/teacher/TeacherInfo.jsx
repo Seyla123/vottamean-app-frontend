@@ -1,6 +1,5 @@
 // React and third-party libraries
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 // React Hook Form
@@ -10,15 +9,8 @@ import * as yup from 'yup';
 import dayjs from 'dayjs';
 
 // MUI Components
-import {
-  Box,
-  Avatar,
-  Typography,
-  Stack,
-  capitalize,
-  Divider,
-} from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { Box, Avatar, Typography, Stack, capitalize } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 // Custom Components
@@ -28,9 +20,9 @@ import PhoneInputField from '../common/PhoneInputField';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
+
 // icons from luicide react
 import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
-import { teacherData } from '../../utils/formatData';
 
 const TeacherInfo = ({
   handleNextClick,
@@ -100,6 +92,7 @@ const TeacherInfo = ({
       }
     };
   }, [defaultValues]);
+
   // Handle form submission
   const onSubmit = (data) => {
     handleNextClick(true, {
@@ -109,6 +102,7 @@ const TeacherInfo = ({
       photo: photoFile || photoPreview || null,
     });
   };
+
   // Handle remove photo
   const handleRemovePhoto = () => {
     if (photoPreview) {
@@ -128,16 +122,17 @@ const TeacherInfo = ({
   const handleCancel = () => {
     navigate('/admin/teachers');
   };
+
   // Photo preview
   const photoSrc =
-    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
+    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : null);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={profileBox}>
           {/* Header */}
-          <Box alignSelf={'start'} sx={{ width: '100%' }}>
+          <Box alignSelf={'start'} width={'100%'}>
             <Typography
               alignSelf={'start'}
               variant="h6"
@@ -158,9 +153,9 @@ const TeacherInfo = ({
               />
             ) : (
               <RandomAvatar
-              username={`${getValues('firstName')} ${getValues('lastName')}`}
-              gender={getValues('gender')}
-              size={140}
+                username={`${getValues('firstName')} ${getValues('lastName')}`}
+                gender={getValues('gender')}
+                size={140}
               />
             )}
             <input
@@ -203,16 +198,14 @@ const TeacherInfo = ({
             </Box>
           </Box>
           {/* Name */}
-          <Stack
-            direction={{
-              xs: 'column',
-              md: 'row',
-            }}
-            width={'100%'}
-            spacing={2}
-            sx={textFieldGap}
-          >
-            <Box sx={{ flex: 1, width: '100%' }}>
+          <Stack direction={'column'} spacing={2} width="100%">
+            <Stack
+              direction={{
+                xs: 'column',
+                sm: 'row',
+              }}
+              spacing={2}
+            >
               <InputField
                 name="firstName"
                 control={control}
@@ -221,8 +214,6 @@ const TeacherInfo = ({
                 placeholder="First Name"
                 errors={errors}
               />
-            </Box>
-            <Box sx={{ flex: 1, width: '100%' }}>
               <InputField
                 name="lastName"
                 control={control}
@@ -231,10 +222,8 @@ const TeacherInfo = ({
                 icon={UserRoundPen}
                 errors={errors}
               />
-            </Box>
-          </Stack>
-          {/* Gender */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            </Stack>
+            {/* Gender */}
             <Controller
               name="gender"
               control={control}
@@ -250,9 +239,8 @@ const TeacherInfo = ({
                 />
               )}
             />
-          </Box>
-          {/* Date of Birth */}
-          <DOBPicker
+            {/* Date of Birth */}
+            <DOBPicker
               control={control}
               errors={errors}
               name="dob"
@@ -260,17 +248,14 @@ const TeacherInfo = ({
               setDob={setDob}
               fullWidth
             />
-          {/* Contact Number */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            {/* Contact Number */}
             <PhoneInputField
               name="phoneNumber"
               control={control}
               label="Contact Number"
               errors={errors}
             />
-          </Box>
-          {/* Address */}
-          <Box sx={{ ...textFieldGap, width: '100%' }}>
+            {/* Address */}
             <InputField
               name="address"
               required={false}
@@ -281,7 +266,7 @@ const TeacherInfo = ({
               multiline={true}
               minRows={5}
             />
-          </Box>
+          </Stack>
           {/* Buttons */}
           <Stack
             direction={'row'}
@@ -335,11 +320,6 @@ const profileBox = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  flexDirection: 'column',
-};
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
   flexDirection: 'column',
 };
 // Define validation schema
