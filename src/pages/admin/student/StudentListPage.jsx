@@ -25,6 +25,7 @@ import DeleteConfirmationModal from '../../../components/common/DeleteConfirmati
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import CreateStudentModal from '../../../components/common/CreateStudentModal';
 import TitleHeader from '../../../components/common/TitleHeader';
+import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 
 const columns = [
   { id: 'id', label: 'ID' },
@@ -37,6 +38,22 @@ const columns = [
 const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
+  const [open, setOpen] = useState(false);
+
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+
+  const handleCreateModalOpen = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCreateModalClose = () => {
+    setOpenCreateModal(false);
+  };
 
   // - rows: the student records that are currently being displayed on the page
   // - searchTerm: the search term that is currently being used to filter the table
@@ -190,10 +207,12 @@ const StudentListPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  // Handle for goes to edit page
-  const handleEdit = (row) => {
-    navigate(`/admin/students/update/${row.id}`);
+  // Handle Update clicked
+  const handleEdit = (student) => {
+    setSelectedStudentId(student.id);
+    setIsUpdateOpen(true);
   };
+
 
   // Handle delete one clicked
   const handleDelete = (row) => {
@@ -294,6 +313,12 @@ const StudentListPage = () => {
         onClose={() => dispatch(setModal({ open: false }))}
         onConfirm={handleDeleteConfirmed}
         itemName={selectedStudent?.name}
+      />
+      {/* Update modal */}
+      <UpdateStudentForm
+        isOpen={isUpdateOpen}
+        onClose={() => setIsUpdateOpen(false)}
+        studentId={selectedStudentId}
       />
     </FormComponent>
   );
