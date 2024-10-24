@@ -5,15 +5,16 @@ import ShortcutCard from '../../../components/teacherSite/ShortcutCard';
 import teacherIcon from '../../../assets/images/teacher-93.svg';
 import checkListIcon from '../../../assets/images/checklist-1-97.svg';
 import TeacherWelcomeCard from '../../../components/teacherSite/TeacherWelcomeCard';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const TeacherHomePage = () => {
     return (
         <FormComponent
-            title={'Dashboard'}
-            subTitle={
-                'This is where you manage your class schedule. View, filter, and organize your teaching activities by day to streamline lesson planning and classroom interactions.'
-            }
         >
+            <TitleHeader
+                title={'Home'}
+
+            />
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <TeacherWelcomeCard />
@@ -22,28 +23,25 @@ const TeacherHomePage = () => {
                 <Grid item xs={12} md={8}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <ShortcutCard
-                            title={
-                                'Meet your customers on their preferred communication channel'
-                            }
+                            title={'Efficiently Manage Classes and Student Records'}
                             description={
-                                'Expand your reach and push contacts closer to purchase with multichannel campaigns: email, WhatsApp, SMS, Web Push...'
+                                'Access and manage your class schedules with ease. Filter schedules by date, mark attendance, and monitor student numbers across all your classes.'
                             }
                             icon={checkListIcon}
                             href={'/teacher/schedule'}
                             buttonText={'View Schedule'}
                         />
                         <ShortcutCard
-                            title={
-                                'Meet your customers on their preferred communication channel'
-                            }
+                            title={'Manage Your Account Settings'}
                             description={
-                                'Expand your reach and push contacts closer to purchase with multichannel campaigns: email, WhatsApp, SMS, Web Push...'
+                                'Update your password, reset credentials, deactivate your account, and view your profile. Comprehensive account management at your fingertips.'
                             }
                             icon={teacherIcon}
                             href={'/teacher/settings/account'}
-                            buttonText={'View Teacher'}
+                            buttonText={'Account Settings'}
                         />
                     </Box>
+
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <DateCalendarCard />

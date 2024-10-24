@@ -14,6 +14,7 @@ import { setSnackbar } from '../../../store/slices/uiSlice';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import TeacherWelcomeCard from '../../../components/teacherSite/TeacherWelcomeCard';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const columns = [
   {
@@ -137,12 +138,9 @@ function MarkAttendanceClass() {
     return <LoadingCircle />;
   }
 
-  // if isError or isErrorStatus is true, then show error message
-  if (isError) {
-    return <SomethingWentWrong description={error?.data.message} />;
-  }
-  if (isErrorStatus) {
-    return <SomethingWentWrong description={errorStatus?.data.message} />;
+  // if isError or isErrorStatus is true, then redict to teacher schedule page
+  if (isError || isErrorStatus) {
+    navigate('/teacher/schedule')
   }
 
   //handle submit mark attendance student
@@ -165,12 +163,10 @@ function MarkAttendanceClass() {
   };
 
   return (
-    <FormComponent
-      title={`Mark Attendance`}
-      subTitle={`This is total ${classInfo?.total_students} students `}
-    >
+    <FormComponent>
+      <TitleHeader title={'Mark Attendance Class'}/>
       {/* welcome card */}
-      {/* <TeacherWelcomeCard  subTitle={`Welcome to class ${classInfo?.class_name}`} /> */}
+      <TeacherWelcomeCard  subTitle={`Welcome to class ${classInfo?.class_name}`} />
 
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
@@ -192,7 +188,7 @@ function MarkAttendanceClass() {
       <AttendanceTable
         rows={rows}
         columns={columns}
-        hideColumns={['dob', 'address', 'phone']}
+        hideColumns={['dob', 'address', 'phone','id']}
         status={status}
         onStatusChange={handleStatusChange}
       />

@@ -11,11 +11,17 @@ import {
   MenuItem,
   useMediaQuery,
   useTheme,
-  Button,
   Menu,
+  Chip,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Stack,
+  Alert,
 } from '@mui/material';
 import { styled } from '@mui/system';
-import { Clock, Calendar, Users, ListFilter } from 'lucide-react';
+import { Clock, Calendar, Users, ListFilter, X } from 'lucide-react';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
 import EmptyList from '../../../components/common/EmptyList';
 import classHeaderImg1 from '../../../assets/images/study-bg.avif';
@@ -29,6 +35,8 @@ import FormComponent from '../../../components/common/FormComponent';
 import emptyClassesImage from '../../../assets/images/teacher-99.svg';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import { BootstrapDialog } from '../../../components/common/BootstrapDialog'
+import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
 
 const headerImages = [
   classHeaderImg1,
@@ -65,6 +73,7 @@ const IconWrapper = styled(Box)(({ theme }) => ({
 }));
 
 const days = [
+  'Today',
   'All',
   'Monday',
   'Tuesday',
@@ -75,7 +84,7 @@ const days = [
   'Sunday',
 ];
 
-const ClassListItem = ({ classData, onClick }) => {
+const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
   const dayIndex = [
     'sunday',
     'monday',
@@ -87,8 +96,15 @@ const ClassListItem = ({ classData, onClick }) => {
   ].indexOf(classData.day.toLowerCase());
   const headerImage = headerImages[dayIndex % headerImages.length];
 
+  const handleClassClick = () => {
+    if (classData.isClassMarked) {
+      openModal(true);
+    } else {
+      onClick();
+    }
+  }
   return (
-    <StyledPaper onClick={onClick}>
+    <StyledPaper onClick={handleClassClick}>
       <Box
         sx={{
           position: 'relative',
@@ -99,6 +115,8 @@ const ClassListItem = ({ classData, onClick }) => {
           width: '100%',
           transition: 'background-size 0.3s ease-in-out',
           backgroundSize: '100% auto',
+          filter: classData.isClassMarked ? 'grayscale(1)' : 'none', // Grayscale if marked
+          pointerEvents: classData.isClassMarked ? 'none' : 'auto', // Disable interaction if marked
         }}
       >
         <Box
@@ -110,13 +128,13 @@ const ClassListItem = ({ classData, onClick }) => {
             zIndex: 10,
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             padding: 2,
-            color: 'white',
+            color: classData.isClassMarked ? 'rgba(255, 255, 255, 0.5)' : 'white', // Lighten text if marked
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}
         >
-          <Typography variant="h6" fontWeight={'bold'} gutterBottom noWrap>
+          <Typography variant="h6" fontWeight="bold" gutterBottom noWrap>
             {classData.class_name}
           </Typography>
           <Typography variant="body2" noWrap>
@@ -135,9 +153,9 @@ const ClassListItem = ({ classData, onClick }) => {
           <Clock size={16} />
           <Typography variant="body2">
             {classData.start_time.slice(0, 5)}
-            {classData.start_time.slice(6, 7) === 'PM' ? 'PM' : 'AM'} -{' '}
+            {classData.start_time.slice(6, 7) === 'PM' ? ' PM' : ' AM'} -{' '}
             {classData.end_time.slice(0, 5)}
-            {classData.start_time.slice(6, 7) === 'PM' ? 'PM' : 'AM'}
+            {classData.end_time.slice(6, 7) === 'PM' ? ' PM' : ' AM'}
           </Typography>
         </IconWrapper>
         <IconWrapper>
@@ -146,6 +164,43 @@ const ClassListItem = ({ classData, onClick }) => {
             {classData.students} student{classData.students > 1 ? 's' : ''}
           </Typography>
         </IconWrapper>
+        {filterDay === 'today' && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {!classData.isClassMarked ? (
+              <Chip
+                size="small"
+                sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
+                icon={
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      bgcolor: '#059212',
+                    }}
+                  />
+                }
+                label="Pending Marked"
+              />
+            ) : (
+              <Chip
+                size="small"
+                sx={{ backgroundColor: '#fffbeb', color: '#edbb00' }}
+                icon={
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      bgcolor: '#edbb00',
+                    }}
+                  />
+                }
+                label="Completed Marked"
+              />
+            )}
+          </Box>
+        )}
       </Box>
     </StyledPaper>
   );
@@ -157,8 +212,13 @@ function TeacherScheduleClassPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [classesData, setClassesData] = useState([]);
-  const [selectedDay, setSelectedDay] = useState('All');
+  const [selectedDay, setSelectedDay] = useState('Today');
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [filterDay, setFilterDay] = useState('all')
+
+  const [openModal, setOpenModal] = useState(false);
+
 
   //useGetTeacherScheduleClassesQuery : a hook return a function that fetch the classes schedule
   const {
@@ -166,25 +226,36 @@ function TeacherScheduleClassPage() {
     isLoading,
     isSuccess,
     isError,
-  } = useGetTeacherScheduleClassesQuery();
+  } = useGetTeacherScheduleClassesQuery({ filter: filterDay });
 
   // when the classes schedule records are fetched successfully, set to the state
   useEffect(() => {
     if (getTeacherClasses && isSuccess) {
       setClassesData(getTeacherClasses.data);
+      console.log('get teacher class : ', getTeacherClasses.data);
+
+
     }
   }, [getTeacherClasses, isSuccess]);
 
   // Returns all classesData if selectedDay is 'All', otherwise
   // filters classesData to only include classes that match the selectedDay
   const filteredClasses = useMemo(() => {
+    if (selectedDay === 'Today') {
+      setFilterDay('today')
+      return classesData;
+    } else {
+      setFilterDay('all')
+    }
     if (selectedDay === 'All') {
       return classesData;
     }
+
     return classesData.filter(
       (c) => c.day.toLowerCase() === selectedDay.toLowerCase(),
     );
   }, [classesData, selectedDay]);
+
 
   // handle class clicked
   const handleClassClick = (sessionId) => {
@@ -221,7 +292,6 @@ function TeacherScheduleClassPage() {
       ))}
     </Grid>
   );
-
   const renderContent = () => {
     // if loading, render skeleton
     if (isLoading) {
@@ -251,6 +321,8 @@ function TeacherScheduleClassPage() {
             <ClassListItem
               classData={classData}
               onClick={() => handleClassClick(classData.session_id)}
+              filterDay={filterDay}
+              openModal={setOpenModal}
             />
           </Grid>
         ))}
@@ -319,6 +391,7 @@ function TeacherScheduleClassPage() {
     >
       {renderDaySelector()}
       {renderContent()}
+      <ClassMarkedModal open={openModal} onClose={() => setOpenModal(false)} />
     </FormComponent>
   );
 }
