@@ -158,7 +158,9 @@ const TeacherInfo = ({
               />
             ) : (
               <RandomAvatar
-                size={140}
+              username={`${getValues('firstName')} ${getValues('lastName')}`}
+              gender={getValues('gender')}
+              size={140}
               />
             )}
             <input
