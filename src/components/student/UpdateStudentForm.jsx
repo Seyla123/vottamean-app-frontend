@@ -58,7 +58,6 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
   const [classes, setClasses] = useState([]);
-  const [hasPhotoChanges, setHasPhotoChanges] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [photoState, setPhotoState] = useState({
     profileImg: '',
@@ -374,7 +373,6 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
           bgcolor: '#ffffff',
           borderRadius: '8px',
           p: 4,
-          height: '100%',
           overflowY: 'scroll',
         }}
       >
