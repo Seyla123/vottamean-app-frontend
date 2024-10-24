@@ -3,47 +3,35 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { CombinedStudentGuardianValidator } from '../../validators/validationSchemas';
-import * as yup from 'yup';
 
 // MUI components
 import {
   Box,
   Avatar,
   Typography,
-  Button,
-  Grid,
-  Select,
   Divider,
   Modal,
   InputAdornment,
   MenuItem,
-  FormControl,
-  InputLabel,
-  FormHelperText,
   Stack,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
+
 // Redux API
 import {
   useGetStudentsByIdQuery,
   useUpdateStudentMutation,
 } from '../../services/studentApi';
-
 import { useGetClassesDataQuery } from '../../services/classApi';
 
 // yup validation from teacher info
-
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // react hook form
 import { useForm, Controller } from 'react-hook-form';
-
-// formated data
-import { formatStudentFormData } from '../../utils/formatData';
 
 // icons from luicide react
 import { ImagePlus, Mail, School, Trash2, UserRoundPen } from 'lucide-react';
@@ -56,11 +44,12 @@ import PhoneInputField from '../common/PhoneInputField';
 import RandomAvatar from '../common/RandomAvatar';
 import StyledButton from '../common/StyledMuiButton';
 import DOBPicker from '../common/DOBPicker';
-import { Diversity3 } from '@mui/icons-material';
 import { ensureOptionInList } from '../../utils/formatHelper';
 import LoadingCircle from '../loading/LoadingCircle';
 import { StyledTextField } from '../common/InputField';
 import SomethingWentWrong from '../common/SomethingWentWrong';
+
+
 const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
