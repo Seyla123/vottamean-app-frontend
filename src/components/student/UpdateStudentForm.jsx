@@ -20,12 +20,13 @@ import {
   FormControl,
   InputLabel,
   FormHelperText,
+  Stack,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
-
+import Diversity1Icon from '@mui/icons-material/Diversity1';
 // Redux API
 import {
   useGetStudentsByIdQuery,
@@ -59,6 +60,7 @@ import { Diversity3 } from '@mui/icons-material';
 import { ensureOptionInList } from '../../utils/formatHelper';
 import LoadingCircle from '../loading/LoadingCircle';
 import { StyledTextField } from '../common/InputField';
+import SomethingWentWrong from '../common/SomethingWentWrong';
 const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -72,8 +74,10 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   const [photoState, setPhotoState] = useState({
     profileImg: '',
     isRemoved: false,
-    hasChanges: false
+    hasChanges: false,
   });
+
+  // useGetStudentsByIdQuery: a hook return function for get student by id
   const {
     data: studentData,
     isLoading,
@@ -81,10 +85,12 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     error,
   } = useGetStudentsByIdQuery(studentId, { skip: !isOpen || !studentId });
 
+  // useGetClassesDataQuery: a hook return function for get classes data
   const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery(
     { active: 1 },
   );
 
+  // useUpdateStudentMutation: a hook return function for update student
   const [
     updateStudent,
     {
@@ -95,6 +101,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     },
   ] = useUpdateStudentMutation();
 
+  // React hook form
   const {
     control,
     handleSubmit,
@@ -104,6 +111,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     getValues,
   } = useForm({
     resolver: yupResolver(CombinedStudentGuardianValidator),
+    // Set default values for the form
     defaultValues: {
       first_name: '',
       last_name: '',
@@ -120,8 +128,10 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
       guardianRelationship: '',
     },
   });
-// Update the useEffect that sets initial data
+
+  // useEffect for setting initial data
   useEffect(() => {
+    // If student data and classes data are available, set the initial values
     if (studentData?.data && classData?.data && isClassSuccess) {
       const formattedClassData = ensureOptionInList(
         classData?.data,
@@ -130,8 +140,10 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
         'class_name',
       );
 
+      // Set the class id to the selected class after ensuring it is a string
       const classId = studentData.data.class_id?.toString() || '';
 
+      // Set the student information
       const studentInfo = {
         first_name: studentData.data.Info.first_name || '',
         last_name: studentData.data.Info.last_name || '',
@@ -154,31 +166,67 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
       setClasses(formattedClassData);
       setDob(studentInfo.dob);
       setOriginalData(studentInfo);
+      // Set the photo state
       setPhotoState({
         profileImg: studentInfo.photo,
         isRemoved: false,
-        hasChanges: false
+        hasChanges: false,
       });
     }
   }, [studentData, reset, classData, isClassSuccess]);
 
+  // useEffect for handling update success and error
+  // when update is successful, show a snackbar with a success message and close the modal
+  // when update is failed, show a snackbar with an error message and close the modal
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Student information updated successfully',
+          severity: 'success',
+        }),
+      );
+      // close the modal and navigate to the list of students
+      onClose();
+      navigate('/admin/students');
+    } else if (isUpdateError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `${updateError?.data?.message || 'Failed to update student'}`,
+          severity: 'error',
+        }),
+      );
+      onClose();
+    }
+  }, [isUpdateSuccess, dispatch, isUpdateError, navigate]);
+
   // Update the photo change handler
+  // This will be called when the user selects a new profile photo
+  // If the file is valid, it will be set as the new value for the "photo" field
+  // and the preview will be updated
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
+    // Check if the file is an image and is under 5MB
     if (
       file &&
       file.type.startsWith('image/') &&
       file.size <= 5 * 1024 * 1024
     ) {
       setSelectedFile(file);
+      // Set the preview to the new image
       setPreviewUrl(URL.createObjectURL(file));
+      // Set the new value for the "photo" field
       setValue('photo', file);
-      setPhotoState(prev => ({
+      // Update the hasChanges state to true
+      setPhotoState((prev) => ({
         ...prev,
         isRemoved: false,
-        hasChanges: true
+        hasChanges: true,
       }));
     } else {
+      // If the file is invalid, show an error message
       dispatch(
         setSnackbar({
           open: true,
@@ -196,153 +244,132 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     setSelectedFile(null);
     setPreviewUrl(null);
     setValue('photo', null);
-    setPhotoState(prev => ({
+    setPhotoState((prev) => ({
       profileImg: '',
       isRemoved: true,
-      hasChanges: true
+      hasChanges: true,
     }));
   };
 
-  // Update the submit function
+  // Update data submit function
+  // It will compare the submitted data to the original data and check for changes
+  // If there are changes, it will create a FormData object and attach the changed fields to it
+  // It will then call the updateStudent function to update the student information
   const onSubmit = async (data) => {
-    try {
-      const classId = data.class_id ? Number(data.class_id) : null;
-  
-      if (classId === null) {
-        dispatch(
-          setSnackbar({
-            open: true,
-            message: 'Please select a class',
-            severity: 'error',
-          }),
-        );
-        return;
-      }
-  
-      const submittedData = {
-        first_name: data.first_name,
-        last_name: data.last_name,
-        phone_number: data.phone_number,
-        gender: data.gender,
-        dob: data.dob && dayjs(data.dob).isValid()
-          ? dayjs(data.dob).format('YYYY-MM-DD')
-          : null,
-        class_id: classId,
-        address: data.address,
-        guardian_first_name: data.guardianFirstName,
-        guardian_last_name: data.guardianLastName,
-        guardian_email: data.guardianEmail,
-        guardian_phone_number: data.guardianPhoneNumber,
-        guardian_relationship: data.guardianRelationship,
-      };
-  
-      // Format original data in the same way as submitted data for comparison
-      const formattedOriginalData = {
-        first_name: originalData.first_name,
-        last_name: originalData.last_name,
-        phone_number: originalData.phone_number,
-        gender: originalData.gender,
-        dob: originalData.dob,
-        class_id: Number(originalData.class_id),
-        address: originalData.address,
-        guardian_first_name: originalData.guardianFirstName,
-        guardian_last_name: originalData.guardianLastName,
-        guardian_email: originalData.guardianEmail,
-        guardian_phone_number: originalData.guardianPhoneNumber,
-        guardian_relationship: originalData.guardianRelationship,
-      };
-  
-      // Check for changes by comparing each field
-      const hasChanges = Object.keys(submittedData).some((key) => {
-        const originalValue = formattedOriginalData[key];
-        const newValue = submittedData[key];
-  
-        // Handle null/undefined cases
-        if (!originalValue && !newValue) return false;
-        if (!originalValue || !newValue) return true;
-  
-        // Compare values
-        return String(originalValue).trim() !== String(newValue).trim();
-      });
-  
-      // Check for photo changes using photoState
-      const hasPhotoChange = photoState.hasChanges || photoState.isRemoved;
-  
-      if (!hasChanges && !hasPhotoChange) {
-        dispatch(
-          setSnackbar({
-            open: true,
-            message: 'No changes made.',
-            severity: 'info',
-          }),
-        );
-        return;
-      }
-  
-      const formData = new FormData();
-  
-      // Append all non-null fields to FormData
-      Object.entries(submittedData).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          formData.append(key, value);
-        }
-      });
-  
-      // Append the photo if it exists
-      if (selectedFile) {
-        formData.append('photo', selectedFile);
-      } else if (photoState.isRemoved) {
-        formData.append('remove_photo', 'true');
-      } else if (profileImg) {
-        formData.append('existing_photo', profileImg);
-      }
-  
-      await updateStudent({
-        id: studentId,
-        updates: formData,
-      }).unwrap();
-    } catch (error) {
-      console.error('Update Error:', error);
+    const classId = data.class_id ? Number(data.class_id) : null;
+
+    // Check if the class id is valid
+    if (classId === null) {
       dispatch(
         setSnackbar({
           open: true,
-          message:
-            error.data?.message || 'Failed to update student information',
+          message: 'Please select a class',
           severity: 'error',
         }),
       );
+      return;
     }
-  };
-  
-  useEffect(() => {
-    if (isUpdateSuccess) {
+
+    // Format the submitted data in the same way as the original data
+    const submittedData = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone_number: data.phone_number,
+      gender: data.gender,
+      dob:
+        data.dob && dayjs(data.dob).isValid()
+          ? dayjs(data.dob).format('YYYY-MM-DD')
+          : null,
+      class_id: classId,
+      address: data.address,
+      guardian_first_name: data.guardianFirstName,
+      guardian_last_name: data.guardianLastName,
+      guardian_email: data.guardianEmail,
+      guardian_phone_number: data.guardianPhoneNumber,
+      guardian_relationship: data.guardianRelationship,
+    };
+
+    // Format the original data in the same way as the submitted data for comparison
+    const formattedOriginalData = {
+      first_name: originalData.first_name,
+      last_name: originalData.last_name,
+      phone_number: originalData.phone_number,
+      gender: originalData.gender,
+      dob: originalData.dob,
+      class_id: Number(originalData.class_id),
+      address: originalData.address,
+      guardian_first_name: originalData.guardianFirstName,
+      guardian_last_name: originalData.guardianLastName,
+      guardian_email: originalData.guardianEmail,
+      guardian_phone_number: originalData.guardianPhoneNumber,
+      guardian_relationship: originalData.guardianRelationship,
+    };
+
+    // Check for changes by comparing each field
+    // If any field has changed, the hasChanges state will be set to true
+    const hasChanges = Object.keys(submittedData).some((key) => {
+      const originalValue = formattedOriginalData[key];
+      const newValue = submittedData[key];
+
+      // Handle null/undefined cases
+      if (!originalValue && !newValue) return false;
+      if (!originalValue || !newValue) return true;
+
+      // Compare values
+      return String(originalValue).trim() !== String(newValue).trim();
+    });
+
+    // Check for photo changes using photoState
+    // If the photo has been changed or removed, the hasPhotoChange state will be set to true
+    const hasPhotoChange = photoState.hasChanges || photoState.isRemoved;
+
+    // If there are no changes and no photo changes, show a message and exit
+    if (!hasChanges && !hasPhotoChange) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Student information updated successfully',
-          severity: 'success',
+          message: 'No changes made.',
+          severity: 'info',
         }),
       );
-      navigate('/admin/students');
+      onClose();
+      return;
     }
-  }, [isUpdateSuccess, dispatch, navigate]);
-  
-  //   setSelectedFile(null);
-  //   setProfileImg(null);
-  //   setPreviewUrl(null);
-  //   setValue('photo', null);
-  //   setHasPhotoChanges(true);
-  // };
 
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append all non-null fields to FormData
+    Object.entries(submittedData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+
+    // Append the photo if it exists
+    if (selectedFile) {
+      formData.append('photo', selectedFile);
+    } else if (photoState.isRemoved) {
+      formData.append('remove_photo', 'true');
+    } else if (profileImg) {
+      formData.append('existing_photo', profileImg);
+    }
+
+    // Update the student
+    await updateStudent({
+      id: studentId,
+      updates: formData,
+    }).unwrap();
+  };
+
+  // Loading State
   if (isLoading) return <LoadingCircle />;
-  if (isError)
-    dispatch(
-      setSnackbar({
-        open: true,
-        message: `Error fetching student and guardian data, ${error.data?.message}`,
-        severity: 'error',
-      }),
-    );
+
+  // Error State
+  if (isError) {
+    return <SomethingWentWrong description={error?.data?.message} />;
+  }
+
   return (
     <Modal
       aria-labelledby="update-teacher"
@@ -359,7 +386,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
           borderRadius: '8px',
           p: 4,
           height: '100%',
-          overflow: 'scroll',
+          overflowY: 'scroll',
         }}
       >
         {/* Title */}
@@ -440,10 +467,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
               </Box>
             </Box>
             <Divider />
-            {/* Form */}
-            <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-              {/* First Name */}
-              <Box sx={{ flex: 1, width: '100%' }}>
+            {/* INPUT FIELDS */}
+            <Stack direction="column" spacing={2} mt={2}>
+              {/* Name */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                {/* First Name */}
                 <Controller
                   name="first_name"
                   control={control}
@@ -459,9 +487,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     />
                   )}
                 />
-              </Box>
-              {/* Last Name */}
-              <Box sx={{ flex: 1, width: '100%' }}>
+                {/* Last Name */}
                 <Controller
                   name="last_name"
                   control={control}
@@ -477,117 +503,120 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     />
                   )}
                 />
-              </Box>
-            </Box>
-            {/* Gender */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <Controller
-                name="gender"
-                control={control}
-                defaultValue=""
-                rules={{ required: 'Gender is required' }}
-                render={({ field }) => (
-                  <GenderSelect
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                {/* Gender */}
+                <Controller
+                  name="gender"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: 'Gender is required' }}
+                  render={({ field }) => (
+                    <GenderSelect
+                      control={control}
+                      errors={errors}
+                      name={field.name}
+                      label="Gender"
+                      defaultValue={field.value}
+                      disabled={false}
+                    />
+                  )}
+                />
+                {/* Date of Birth */}
+                <Controller
+                  name="dob"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <DOBPicker
+                      control={control}
+                      name={field.name}
+                      label="Date of Birth"
+                      defaultValue={field.value}
+                      value={dob || null}
+                      errors={errors}
+                      setDob={setDob}
+                    />
+                  )}
+                />
+              </Stack>
+              {/* Class */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Box sx={{ width: '100%' }}>
+                  <Typography variant="body2" fontWeight="bold" mb={1}>
+                    Class <span style={{ color: 'red' }}>*</span>
+                  </Typography>
+                  <Controller
+                    name="class_id"
                     control={control}
-                    errors={errors}
-                    name={field.name}
-                    label="Gender"
-                    defaultValue={field.value}
-                    disabled={false}
-                  />
-                )}
-              />
-            </Box>
-            {/* Date of Birth */}
-            <Box
-              sx={{
-                ...textFieldGap,
-                width: '100%',
-                gap: {
-                  xs: '12px',
-                  sm: 3,
-                },
-              }}
-            >
-              <Controller
-                name="dob"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <DOBPicker
-                    control={control}
-                    name={field.name}
-                    label="Date of Birth"
-                    defaultValue={field.value}
-                    value={dob || null}
-                    errors={errors}
-                    setDob={setDob}
-                  />
-                )}
-              />
-            </Box>
-            <Typography variant="body2" fontWeight="bold" mb={1}>
-              Class <span style={{ color: 'red' }}>*</span>
-            </Typography>
-            <Controller
-              name="class_id"
-              control={control}
-              defaultValue=""
-              render={({ field, fieldState }) => (
-                <FormControl fullWidth error={!!errors?.class_id}>
-                  <Select
-                    {...field}
-                    value={field.value || ''}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    displayEmpty
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return (
-                          <span style={{ color: theme.palette.grey[400] }}>
-                            Class
-                          </span>
-                        );
-                      }
-                      const selectedClass = classData?.data?.find(
-                        (classItem) => classItem.class_id === Number(selected),
-                      );
-                      return selectedClass ? selectedClass.class_name : '';
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      {isLoading ? 'Loading classes...' : 'Select a class'}
-                    </MenuItem>
-                    {classData?.data?.length ? (
-                      classData.data.map((classItem) => (
-                        <MenuItem
-                          key={classItem.class_id}
-                          value={classItem.class_id}
-                        >
-                          {classItem.class_name}
+                    defaultValue=""
+                    render={({ field, fieldState }) => (
+                      <StyledTextField
+                        select
+                        fullWidth
+                        disabled={isLoading}
+                        error={!!errors?.class_id}
+                        helperText={
+                          fieldState?.error ? fieldState.error.message : ''
+                        }
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <School size={20} />
+                            </InputAdornment>
+                          ),
+                        }}
+                        SelectProps={{
+                          value: field.value || '',
+                          onChange: field.onChange,
+                          renderValue: (selected) => {
+                            if (!selected) {
+                              return (
+                                <span
+                                  style={{ color: theme.palette.grey[400] }}
+                                >
+                                  Class
+                                </span>
+                              );
+                            }
+                            const selectedClass = classData?.data?.find(
+                              (classItem) =>
+                                classItem.class_id === Number(selected),
+                            );
+                            return selectedClass
+                              ? selectedClass.class_name
+                              : '';
+                          },
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          {isLoading ? 'Loading classes...' : 'Select a class'}
                         </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem disabled>No classes available</MenuItem>
+                        {classData?.data?.length ? (
+                          classData.data.map((classItem) => (
+                            <MenuItem
+                              key={classItem.class_id}
+                              value={classItem.class_id}
+                            >
+                              {classItem.class_name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No classes available</MenuItem>
+                        )}
+                      </StyledTextField>
                     )}
-                  </Select>
-                  <FormHelperText>
-                    {fieldState.error ? fieldState.error.message : ''}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
-
-            {/* Phone Number */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
-              <PhoneInputField
-                name="phone_number"
-                control={control}
-                label="Contact Number"
-                errors={errors}
-              />
-            </Box>
-            {/* Address */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+                  />
+                </Box>
+                {/* Phone Number */}
+                <PhoneInputField
+                  name="phone_number"
+                  control={control}
+                  label="Contact Number"
+                  errors={errors}
+                />
+              </Stack>
+              {/* Address */}
               <InputField
                 name="address"
                 required={false}
@@ -596,91 +625,81 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                 placeholder="Phnom Penh, Street 210,..."
                 errors={errors}
                 multiline={true}
-                minRows={5}
               />
-            </Box>
-            <Grid container spacing={2} alignItems={'center'}>
-              <Grid container spacing={2} alignItems={'center'}>
-                <Grid item xs={12} sm={6}>
-                  <InputField
-                    name="guardianFirstName"
-                    control={control}
-                    label="Guardian First Name"
-                    placeholder="First Name"
-                    errors={errors}
-                    icon={UserRoundPen}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <InputField
-                    name="guardianLastName"
-                    control={control}
-                    label="Guardian Last Name"
-                    placeholder="Last Name"
-                    errors={errors}
-                    icon={UserRoundPen}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-            {/* GUARDIAN CONTACT INFORMATION */}
-            {/* Guardian Phone Number */}
-            <Grid item xs={12} sm={6}>
-              <PhoneInputField
-                name="guardianPhoneNumber"
-                control={control}
-                label="Contact Number"
-                errors={errors}
-              />
-            </Grid>
-            {/* Guardian Email */}
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardianEmail"
-                control={control}
-                label="Email"
-                placeholder="Enter guardian email"
-                errors={errors}
-                icon={Mail}
-              />
-            </Grid>
-            {/* Guardian Relationship */}
-            <Grid item xs={12} sm={6}>
+              {/* GUARDIAN INFORMATION */}
+              {/* Guardian Name */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <InputField
+                  name="guardianFirstName"
+                  control={control}
+                  label="Guardian First Name"
+                  placeholder="First Name"
+                  errors={errors}
+                  icon={UserRoundPen}
+                />
+                <InputField
+                  name="guardianLastName"
+                  control={control}
+                  label="Guardian Last Name"
+                  placeholder="Last Name"
+                  errors={errors}
+                  icon={UserRoundPen}
+                />
+              </Stack>
+              {/* GUARDIAN CONTACT INFORMATION */}
+              {/* Guardian Phone Number */}
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <PhoneInputField
+                  name="guardianPhoneNumber"
+                  control={control}
+                  label="Contact Number"
+                  errors={errors}
+                />
+                {/* Guardian Email */}
+                <InputField
+                  name="guardianEmail"
+                  control={control}
+                  label="Email"
+                  placeholder="Enter guardian email"
+                  errors={errors}
+                  icon={Mail}
+                />
+              </Stack>
+              {/* Guardian Relationship */}
               <InputField
                 name="guardianRelationship"
                 control={control}
                 label="Relationship"
                 placeholder="Relationship"
                 errors={errors}
-                icon={Diversity3}
+                icon={Diversity1Icon}
               />
-            </Grid>
+            </Stack>
+
             {/* Buttons */}
-            <Grid item xs={12}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: 2,
-                  mt: 2,
-                  width: '100%',
-                }}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: 2,
+                mt: 2,
+                width: '100%',
+              }}
+            >
+              {/* CANCEL BUTTON */}
+              <StyledButton variant="text" size="small" onClick={onClose}>
+                Cancel
+              </StyledButton>
+              {/* SAVE CHANGES BUTTON */}
+              <StyledButton
+                type="submit"
+                size="small"
+                variant="contained"
+                disabled={isUpdateLoading}
               >
-                {/* CANCEL BUTTON */}
-                <StyledButton variant="text" size="small" onClick={onClose}>
-                  Cancel
-                </StyledButton>
-                {/* SAVE CHANGES BUTTON */}
-                <StyledButton
-                  type="submit"
-                  size="small"
-                  variant="contained"
-                  disabled={isUpdateLoading}
-                >
-                  {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                </StyledButton>
-              </Box>
-            </Grid>
+                {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+              </StyledButton>
+            </Box>
           </form>
         </LocalizationProvider>
       </Box>
