@@ -2,7 +2,7 @@
 import { Box } from '@mui/material';
 
 // Icon & IMAGE
-import Logo from '../../assets/images/Logo.svg';
+import Logo from '../../assets/images/VOTTAMEAN.svg';
 import patternImage from '../../assets/images/pattern-1.png';
 import patternImage2 from '../../assets/images/pattern-2.png';
 

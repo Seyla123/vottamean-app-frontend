@@ -97,7 +97,7 @@ const ErrorState = () => (
       alt="Verified"
       style={{ width: '250px' }}
     />
-    <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' }}>
+    <Typography variant="h4" fontWeight={'bold'}>
       Verification Failed
     </Typography>
     <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
@@ -106,7 +106,7 @@ const ErrorState = () => (
     <Link to="/auth/signin">
     <StyledButton
       size="small"
-      variant="outlined"
+      variant="contained"
       color="primary"
     >
       Try again
@@ -153,7 +153,6 @@ const centerContent = {
   justifyContent: 'center',
   textAlign: 'center',
   height: '100%',
-  padding: 3,
 };
 
 export default VerifyEmailPage;

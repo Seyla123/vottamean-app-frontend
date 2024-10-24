@@ -29,9 +29,9 @@ function PaymentSuccessPage() {
               color: 'error.light',
             }}
           >
-            <Box component={'img'} src={ErrorIcon} sx={{ maxWidth: '600px' }} />
+            <Box component={'img'} alt="Verified" src={ErrorIcon} sx={{ width : '100%', maxWidth: '400px' }} />
           </Box>
-          <Typography variant="h4" fontWeight={'bold'} sx={{ color: '#ff3333' }}>
+          <Typography variant="h4" fontWeight={'bold'} >
             Payment Failed
           </Typography>
           <Typography variant="body1" color={'text.secondary'}>
