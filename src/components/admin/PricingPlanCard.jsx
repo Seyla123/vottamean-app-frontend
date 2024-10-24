@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, Card, CardContent, Grid, Divider } from '@mui/material';
-import SubscriptionButton from '../../pages/payment/SubscriptionButton';
-import { shadow } from '../../styles/global';
+import SubscriptionButton from './SubscriptionButton';
 import { Check } from 'lucide-react';
 const PricingPlanCard = ({
   plan,

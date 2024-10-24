@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
-  CardHeader,
   Chip,
   Grid,
   Stack,
@@ -21,8 +19,7 @@ import LinearProgress, {
 import AlertCard from '../common/AlertCard';
 import CreditCardImage from '../../assets/images/credit-card.svg';
 import NoSubscriptionIamge from '../../assets/images/online-pay.png';
-import { Link } from 'react-router-dom';
-import CancelSubscription from '../../pages/payment/CancelSubscription';
+import CancelSubscription from './CancelSubscription';
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,

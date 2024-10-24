@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Button, Stack, Skeleton, Typography, CircularProgress } from '@mui/material';
+import { Box, Stack, Typography, CircularProgress } from '@mui/material';
 import { CircleCheckBig } from 'lucide-react';
 import StyledButton from '../../components/common/StyledMuiButton';
 import { useGetSessionDetailsQuery } from '../../services/paymentApi';
@@ -48,7 +48,6 @@ function PaymentSuccessPage() {
       value: new Date(sessionData?.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
     },
   ];
-
 
   return (
     <>

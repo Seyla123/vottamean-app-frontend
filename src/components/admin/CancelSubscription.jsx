@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useCancelPaymentIntentMutation } from '../../services/paymentApi';
 import { useGetUserProfileQuery } from '../../services/userApi';
-import StyledButton from '../../components/common/StyledMuiButton';
+import StyledButton from '../common/StyledMuiButton';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
-import { BootstrapDialog } from '../../components/common/BootstrapDialog';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 import {
   Box,
   DialogActions,
