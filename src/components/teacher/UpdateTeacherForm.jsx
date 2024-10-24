@@ -232,11 +232,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       formData.append('existing_photo', photoState.profileImg);
     }
   
-    console.log('Photo state:', {
-      selectedFile: selectedFile ? 'exists' : 'null',
-      photoState,
-      profileImg
-    });
     // Update the teacher data with new data
     await updateTeacher({ id: teacherId, updates: formData }).unwrap();
   };
