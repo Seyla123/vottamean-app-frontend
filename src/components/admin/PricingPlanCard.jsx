@@ -5,7 +5,6 @@ import { Check } from 'lucide-react';
 const PricingPlanCard = ({
   plan,
   billingCycle,
-  adminId,
   currentSubscription,
   isSubscriptionActive,
 }) => {

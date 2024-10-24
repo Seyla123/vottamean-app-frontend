@@ -13,8 +13,6 @@ import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage'
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
 import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
-import PaymentCancelPage from '../pages/payment/PaymentCancelPage';
-import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
 import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
 
 import UnauthorizedPage from '../pages/UnauthorizedPage';
@@ -210,15 +208,7 @@ const routesConfig = [
           {
             path:'failure',
             element: <PaymentFailurePage />,
-          },
-          {
-            path: 'cancel',
-            element: <PaymentCancelPage />,
-          },
-          {
-            path: 'payment-required',
-            element: <PaymentRequiredPage />,
-          },
+          }
         ],
       },
       {
