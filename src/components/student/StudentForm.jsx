@@ -74,6 +74,7 @@ const StudentForm = ({
     setValue,
     formState: { errors },
     reset,
+    getValues,
   } = useForm({
     resolver: yupResolver(studentValidationSchema),
     defaultValues: {
@@ -166,18 +167,17 @@ const StudentForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Header */} 
-        <Typography
-          alignSelf={'start'}
-          variant="h6"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
-        >
-          Student Information
-        </Typography>
+      {/* Header */}
+      <Typography
+        alignSelf={'start'}
+        variant="h6"
+        component="h2"
+        fontWeight={'bold'}
+        gutterBottom
+      >
+        Student Information
+      </Typography>
       <Stack direction="column" gap={2}>
-   
         {/* Profile */}
         <Stack direction="row" gap={2} alignItems="center" py={3}>
           {photoPreview || photoFile ? (
@@ -187,7 +187,11 @@ const StudentForm = ({
               sx={{ width: 140, height: 140, bgcolor: '#eee' }}
             />
           ) : (
-            <RandomAvatar size={140} />
+            <RandomAvatar
+              username={`${getValues('firstName')} ${getValues('lastName')}`}
+              gender={getValues('gender')}
+              size={140}
+            />
           )}
           <Stack direction="column" gap={2}>
             <input
@@ -304,7 +308,7 @@ const StudentForm = ({
                               Class
                             </span>
                           );
-                        };
+                        }
                         // Find the class name from the classesData based on selected class_id
                         const selectedClass = classesData?.data?.find(
                           (classItem) =>
