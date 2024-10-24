@@ -5,9 +5,8 @@ import { useDispatch } from 'react-redux';
 
 // Custom components
 import FormComponent from '../../../components/common/FormComponent';
-import CardComponent from '../../../components/common/CardComponent';
-import CardInformation from '../../../components/common/CardInformation';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 // Redux API and slice
 import {
@@ -157,10 +156,8 @@ function TeacherDetailPage() {
 
   return (
     <>
-      <FormComponent
-        title="Teacher Details"
-        subTitle="View Teacher Information"
-      >
+      <FormComponent>
+        <TitleHeader title={'Teacher Detail'} />
         <Stack direction={{ sm: 'column', md: 'row' }} spacing={3}>
           <Card
             sx={{ boxShadow: shadow, bgcolor: 'white', p: 3, width: '100%' }}
@@ -432,7 +429,8 @@ const GridDetail = ({ icon, label, value }) => {
         />
       </Grid>
       <Grid item xs={12} sm={8}>
-        <Typography
+        <Typography 
+        component={'div'}
           variant="body2"
           sx={{
             textTransform: 'capitalize',

@@ -291,21 +291,21 @@ export function studentsData(student) {
   const profileInfo = student?.Info;
 
   return {
-    id: student.student_id,
+    id: student?.student_id,
     name: getFullName(profileInfo),
-    class: student.Class.class_name || 'N/A',
-    gender: student.Info.gender || 'N/A',
-    'Date of Birth': student.Info.dob ? formatDate(student.Info.dob) : 'N/A',
-    phone: student.Info.phone_number || 'N/A',
-    email: student.guardian_email || 'N/A',
-    address: student.Info.address || 'N/A',
+    class: student?.Class?.class_name || 'N/A',
+    gender: student?.Info?.gender || 'N/A',
+    'Date of Birth': student?.Info.dob ? formatDate(student?.Info?.dob) : 'N/A',
+    phone: student?.Info?.phone_number || 'N/A',
+    email: student?.guardian_email || 'N/A',
+    address: student?.Info?.address || 'N/A',
   };
 }
 
 // GuardianData Formatted
 export function guardianData(guardian) {
   return {
-    "Guardian's Name": `${guardian.guardian_first_name || 'N/A'} ${guardian.guardian_last_name || 'N/A'}`,
+    "Guardian's Name": `${guardian?.guardian_first_name || 'N/A'} ${guardian?.guardian_last_name || 'N/A'}`,
     Relationship: guardian.guardian_relationship || 'N/A',
     Phone: formatPhoneNumber(guardian.guardian_phone_number),
     Email: guardian.guardian_email,
@@ -314,14 +314,14 @@ export function guardianData(guardian) {
 
 // Combined User and School Profile Data
 export const StudentProfile = (student) => {
-  const info = student.Info;
+  const info = student?.Info;
   const studentProfile = studentsData(student);
   const guardianProfile = guardianData(student);
 
   return {
     studentProfile,
     guardianProfile,
-    photo: info.photo,
+    photo: info?.photo,
   };
 };
 

@@ -8,11 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Typography,
   Box,
-  Button,
-  InputAdornment,
-  TextField,
   IconButton,
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -20,34 +16,28 @@ import {
 } from '@mui/material';
 
 // - Lucid Icons
-import { EyeIcon, EyeOff, KeyRound, X } from 'lucide-react';
+import { KeyRound, X } from 'lucide-react';
 
 // - Custom Components
-import StyledButton from '../../../../components/common/StyledMuiButton';
-import PasswordInput from '../../../../components/auth/PasswordInput';
+import StyledButton from './StyledMuiButton';
+import PasswordInput from '../auth/PasswordInput';
 
 // - Redux Hooks and APIs
-import { setSnackbar } from '../../../../store/slices/uiSlice';
-import { useChangePasswordMutation } from '../../../../services/authApi';
+import { setSnackbar } from '../../store/slices/uiSlice';
+import { useChangePasswordMutation } from '../../services/authApi';
 
 // - Validator
-import { ChangePasswordValidator } from '../../../../validators/validationSchemas';
-import { BootstrapDialog } from '../../../../components/common/BootstrapDialog';
+import { ChangePasswordValidator } from '../../validators/validationSchemas';
+import { BootstrapDialog } from './BootstrapDialog';
 
 const ChangePasswordForm = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const [isShowPassword, setIsShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setIsShowPassword((prevShowPassword) => !prevShowPassword);
-  };
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: yupResolver(ChangePasswordValidator),
   });

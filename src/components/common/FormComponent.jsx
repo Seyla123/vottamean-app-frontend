@@ -22,12 +22,10 @@
  * @returns JSX.Element
  */
 
-import TitleHeader from './TitleHeader';
 import { Stack } from '@mui/material';
-function FormComponent({ title, subTitle, children }) {
+function FormComponent({ children }) {
   return (
     <Stack component={'div'} direction="column" gap={2} mt={4}>
-      {/* <TitleHeader title={title} subTitle={subTitle} /> */}
       {children}
     </Stack>
   );

@@ -53,7 +53,7 @@ const StudentForm = ({
     isLoading,
     error,
     isError,
-  } = useGetClassesDataQuery();
+  } = useGetClassesDataQuery({active : 1});
 
   // Dispatch the action for error fetching classes data
   useEffect(() => {
