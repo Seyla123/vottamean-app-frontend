@@ -12,6 +12,7 @@ import DeleteConfirmationModal from '../../components/common/DeleteConfirmationM
 import LoadingCircle from '../../components/loading/LoadingCircle';
 import { formatStudentsList } from '../../utils/formatData';
 import { setSnackbar, setModal } from '../../store/slices/uiSlice';
+import SomethingWentWrong from '../common/SomethingWentWrong';
 
 const columns = [
   { id: 'name', label: 'Name' },
@@ -175,7 +176,9 @@ const StudentListTable = () => {
   if (isLoading) {
     return <LoadingCircle />;
   }
-
+  if (isError) {
+    return <SomethingWentWrong description={error?.data?.message} />
+  }
   return (
     <Box>
       <DataTable

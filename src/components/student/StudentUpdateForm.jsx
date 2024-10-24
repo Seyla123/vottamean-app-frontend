@@ -37,6 +37,7 @@ import { formatStudentFormData } from '../../utils/formatData';
 import { ensureOptionInList } from '../../utils/formatHelper';
 import RandomAvatar from '../common/RandomAvatar';
 import { useTheme } from '@emotion/react';
+import SomethingWentWrong from '../common/SomethingWentWrong';
 
 const StudentUpdateForm = () => {
   const { id } = useParams();
@@ -44,7 +45,7 @@ const StudentUpdateForm = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const { data: studentData, isLoading, isError } = useGetStudentsByIdQuery(id);
+  const { data: studentData, isLoading, isError, error } = useGetStudentsByIdQuery(id);
   const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery(
     { active: 1 },
   );
@@ -207,8 +208,9 @@ const StudentUpdateForm = () => {
   };
 
   if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError)
-    return <Typography color="error">Error loading student data</Typography>;
+  if (isError) {
+    return <SomethingWentWrong description={error?.data?.message} />
+  }
 
   return (
     <Box
