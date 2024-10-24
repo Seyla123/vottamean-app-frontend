@@ -14,7 +14,6 @@ import {
   Modal,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 
@@ -31,14 +30,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // react hook form
 import { useForm, Controller } from 'react-hook-form';
 
+// redux slice
+import { setSnackbar } from '../../store/slices/uiSlice';
+
 // formated data
 import { formatTeacherFormData } from '../../utils/formatData';
 
 // icons from luicide react
-import { ImagePlus, Trash2, UserRoundPen } from 'lucide-react';
+import { ImagePlus, Trash2 } from 'lucide-react';
 
 // Custom components
-import { setSnackbar } from '../../store/slices/uiSlice';
 import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import PhoneInputField from '../common/PhoneInputField';
@@ -57,8 +58,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const [profileImg, setProfileImg] = useState('');
   const [dob, setDob] = useState(null);
   const [originalData, setOriginalData] = useState(null);
-  const [hasFormChanges, setHasFormChanges] = useState(false);
-  const [hasPhotoChanges, setHasPhotoChanges] = useState(false);
   const [photoState, setPhotoState] = useState({
     profileImg: '',
     isRemoved: false,
@@ -182,6 +181,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       address: originalData.address,
     };
 
+    // Check for data changes
     const hasChanges = Object.keys(submittedData).some((key) => {
       const originalValue = dataOriginal[key];
       const newValue = submittedData[key];
@@ -226,12 +226,12 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     } else if (photoState.isRemoved) {
       // Explicitly removing photo
       formData.append('remove_photo', 'true');
-      formData.append('photo', '');  
+      formData.append('photo', '');
     } else if (photoState.profileImg) {
       // Keeping existing photo
       formData.append('existing_photo', photoState.profileImg);
     }
-  
+
     // Update the teacher data with new data
     await updateTeacher({ id: teacherId, updates: formData }).unwrap();
   };
@@ -272,19 +272,20 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       );
     }
   };
+
+  // Handle remove photo
   const handleRemovePhoto = () => {
     setSelectedFile(null);
-    setProfileImg(null);  // Make sure this is null, not an empty string
+    setProfileImg(null);
     setPreviewUrl(null);
     setValue('photo', null);
+    // Reset the photo state
     setPhotoState((prev) => ({
-      profileImg: null,  // Change this to null instead of empty string
+      profileImg: null,
       isRemoved: true,
       hasChanges: true,
     }));
   };
-
-  
 
   // Fetch data error message
   if (isError) {
