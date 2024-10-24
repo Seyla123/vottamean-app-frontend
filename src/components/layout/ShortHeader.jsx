@@ -1,22 +1,49 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import { AppBar,Stack, Toolbar, CssBaseline } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/images/Logo.png';
-
-const ShortHeader = () => {
+import Logo from '../../assets/images/VOTTAMEAN.svg';
+const ShortHeader = ({ children }) => {
   return (
-    <AppBar position="static" color="transparent">
-      <Toolbar>
-        <Link to="/">
-          <img
-            src={Logo}
-            alt="Logo"
-            style={{ width: '150px', height: '100%' }}
-          />
-        </Link>
-      </Toolbar>
-    </AppBar>
+    <>
+      <CssBaseline />
+      <AppBar position="absolute" color='white' sx={styles.pageContainer}>
+        <Toolbar component={'div'} sx={styles.leftContainer}>
+          <Link to="/">
+            <img
+              src={Logo}
+              alt="wavetrack logo" style={styles.logo}
+            />
+          </Link>
+        </Toolbar>
+        <Stack sx={{height: '80vh', justifyContent: 'center', alignItems: 'center', display:'flex', width: '100%'}}>
+          {children}
+        </Stack>
+      </AppBar>
+    </>
   );
 };
 
 export default ShortHeader;
+const styles = {
+  pageContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    p: 2,
+    gap: 2,
+    shadow: 'none',
+    boxShadow: "none",
+    backgroundColor: 'white',
+    height: '100vh',
+  },
+  leftContainer: {
+    width: '100%',
+  },
+  logo: {
+    width: '150px',
+    position: 'absolute',
+    top: '10px',
+    left: '10px',
+    zIndex: 10,
+  },
+};

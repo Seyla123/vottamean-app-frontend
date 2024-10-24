@@ -3,7 +3,6 @@ import SignupPage from '../pages/auth/SignupPage';
 import SigninPage from '../pages/auth/SigninPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
-import VerifyResetPasswordPage from '../pages/auth/VerifyResetPasswordPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
@@ -14,8 +13,6 @@ import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage'
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
 import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
-import PaymentCancelPage from '../pages/payment/PaymentCancelPage';
-import PaymentRequiredPage from '../pages/payment/PaymentRequiredPage';
 import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
 
 import UnauthorizedPage from '../pages/UnauthorizedPage';
@@ -97,10 +94,6 @@ const routesConfig = [
       {
         path: 'forgot-password',
         element: <ForgotPasswordPage />,
-      },
-      {
-        path: 'verify-reset-password/:token',
-        element: <VerifyResetPasswordPage />,
       },
       {
         path: 'reset-password/:token',
@@ -215,15 +208,7 @@ const routesConfig = [
           {
             path:'failure',
             element: <PaymentFailurePage />,
-          },
-          {
-            path: 'cancel',
-            element: <PaymentCancelPage />,
-          },
-          {
-            path: 'payment-required',
-            element: <PaymentRequiredPage />,
-          },
+          }
         ],
       },
       {

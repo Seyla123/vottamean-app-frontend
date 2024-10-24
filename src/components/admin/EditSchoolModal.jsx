@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // Redux Hooks and APIs
@@ -20,17 +20,11 @@ import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Material UI components
 import {
-  Box,
-  Button,
   Grid,
-  InputAdornment,
-  Modal,
-  TextField,
   Typography,
   CircularProgress,
   DialogTitle,
   DialogContent,
-  Dialog,
   DialogActions,
   IconButton,
 } from '@mui/material';

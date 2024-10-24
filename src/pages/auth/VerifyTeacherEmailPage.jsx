@@ -1,17 +1,12 @@
-import React, { useEffect } from 'react';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-
+import { useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import ShortHeader from '../../components/layout/ShortHeader';
 import { useVerifyTeacherEmailMutation } from '../../services/authApi';
-
-// Material UI components
-import { Box, Typography, Button, Card } from '@mui/material';
-import HeaderTitle from '../../components/auth/HeaderTitle';
-
-// Image and icon
-import BackgroundImage from '../../assets/images/verified-illustration-img.svg';
-import Logo from '../../assets/images/Logo.svg';
-import { ShieldCheck, ChevronLeft, Phone, ShieldX } from 'lucide-react';
+import { Box, Typography, Card, CircularProgress } from '@mui/material';
+import verifiedImage from '../../assets/images/authenticated-img.png';
+import failAuthenticatedImage from '../../assets/images/fail-authenticated-img.png';
 import StyledButton from '../../components/common/StyledMuiButton';
+import { Link } from 'react-router-dom'
 
 function VerifyTeacherEmailPage() {
   const { verificationToken } = useParams();
@@ -28,9 +23,6 @@ function VerifyTeacherEmailPage() {
 
   // Perform email verification on component mount
   useEffect(() => {
-    console.log('verificationToken:', verificationToken);
-    console.log('tempToken:', tempToken);
-
     if (verificationToken && tempToken) {
       verifyEmail({ verificationToken, tempToken })
         .unwrap()
@@ -50,209 +42,117 @@ function VerifyTeacherEmailPage() {
 
   return (
     <>
-      <Box component="section" sx={styles.pageContainer}>
-        {/* LEFT CONTAINER */}
-        <Box component="div" sx={styles.leftContainer}>
-          {/* LOGO */}
-          <img src={Logo} alt="wavetrack logo" style={styles.logo} />
+      <ShortHeader >
 
-          {/* FORM MAIN */}
-          <Box sx={styles.formContainer}>
-            <Box component={'div'} sx={styles.iconContainer}>
-              {isSuccess ? <ShieldCheck size={100} /> : <ShieldX size={100} />}
-            </Box>
-            {/* FORM HEADER */}
-            <HeaderTitle
-              title={
-                isSuccess
-                  ? 'Your password has been successfully reset.'
-                  : 'Password Reset Failed.'
-              }
-              subTitle={
-                'We were unable to reset your password at this time. Please try again later.'
-              }
-            />
-            <form>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: { xs: 2, md: 3 },
-                }}
-              >
-                {/* BUTTON */}
-                {isSuccess ? (
-                  <Box
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-                  >
-                    <StyledButton
-                      size="small"
-                      variant="contained"
-                      onClick={handleLoginRedirect}
-                      disabled={isLoading}
-                    >
-                      Go to sign in
-                    </StyledButton>
-                  </Box>
-                ) : (
-                  <StyledButton
-                    size="small"
-                    variant="contained"
-                    onClick={handleLoginRedirect}
-                    disabled={isLoading}
-                  >
-                    Try again
-                  </StyledButton>
-                )}
-              </Box>
-            </form>
-            {/* FOOTER */}
-          </Box>
+        <Box sx={screen}>
+          <Card sx={content}>
+            {isLoading ? (
+              <LoadingState />
+            ) : isSuccess ? (
+              <SuccessState handleLoginRedirect={handleLoginRedirect} />
+            ) : isError || verificationToken ? (
+              <ErrorState />
+            ) : null}
+          </Card>
         </Box>
-
-        {/* RIGHT CONTAINER */}
-        <Box component="div" sx={styles.rightContainer}>
-          {/* IMAGE OVERLAY */}
-          <Box component="div" sx={styles.imageOverlay} />
-
-          {/* CONTENT */}
-          <Box sx={styles.content}>
-            <Typography variant="h3" color="white">
-              Support Information
-            </Typography>
-            <Typography variant="subtitle1" color="white">
-              If you didn't request this change or notice any suspicious
-              activity, please contact our support team immediately.
-            </Typography>
-            <Typography variant="body1" color="white">
-              Reach out to our support team if you're facing any issues.{' '}
-            </Typography>
-            <Link to={'/'} style={styles.contactSupport}>
-              <Phone size={14} />
-              <span style={{ marginLeft: 6 }}> HexCode+ Support</span>
-            </Link>
-          </Box>
-        </Box>
-      </Box>
+      </ShortHeader>
     </>
   );
 }
 
-export default VerifyTeacherEmailPage;
+const LoadingState = () => (
+  <Box sx={centerContent}>
+    <CircularProgress size={60} />
+    <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }} >
+      Verifying your email...
+    </Typography>
+  </Box>
+);
+
+const SuccessState = ({ handleLoginRedirect }) => (
+  <Box sx={centerContent}>
+    <img src={verifiedImage} alt="Verified" style={{ width: '250px' }} />
+    <Typography variant="h4" sx={{ mt: 2, fontWeight: 'bold' }}>
+      Email Verified!
+    </Typography>
+    <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
+      Your email has been successfully verified. You can now log in to your
+      account.
+    </Typography>
+    <StyledButton
+      variant="contained"
+      color="primary"
+      size="small"
+      onClick={handleLoginRedirect}
+    >
+      Go to Login
+    </StyledButton>
+  </Box>
+);
+
+const ErrorState = () => (
+  <Box sx={centerContent}>
+    <img
+      src={failAuthenticatedImage}
+      alt="Verified"
+      style={{ width: '250px' }}
+    />
+    <Typography variant="h4" fontWeight={'bold'}>
+      Verification Failed
+    </Typography>
+    <Typography variant="body1" sx={{ mt: 1, mb: 3, textAlign: 'center' }}>
+      We couldn't verify your email. The link may have expired or is invalid.
+    </Typography>
+    <Link to="/auth/signin">
+    <StyledButton
+      size="small"
+      variant="contained"
+      color="primary"
+    >
+      Try again
+    </StyledButton>
+    
+    </Link>
+  </Box>
+);
 
 // Styles
-const styles = {
-  pageContainer: {
-    height: '100vh',
-    width: '100vw',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    p: 2,
-    gap: 2,
-    bgcolor: 'white',
-  },
-  leftContainer: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-  },
-  fieldContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-  },
-  logo: {
-    width: '150px',
-    position: 'absolute',
-    top: '10px',
-    left: '10px',
-    zIndex: 10,
-  },
-  iconContainer: {
-    width: {
-      xs: '40px',
-      md: '50px',
-    },
-    height: {
-      xs: '40px',
-      md: '50px',
-    },
-    p: 1,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 2,
-    border: '1px solid #ccc',
-  },
-  formContainer: {
-    width: '100%',
-    maxWidth: '400px',
-    height: '100%',
-    justifyContent: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
-    margin: '0 auto',
-  },
-  rightContainer: {
-    display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
-    position: 'relative',
-    zIndex: 10,
-    width: '100%',
-    height: '100%',
-    background: 'linear-gradient(180deg, #F5EFFF 0%, #8B93FF 100%)',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    borderRadius: 2,
-    p: 2,
-    overflow: 'hidden',
-  },
-  imageOverlay: {
-    position: 'absolute',
-    backgroundImage: `url(${BackgroundImage})`,
-    backgroundRepeat: 'no-repeat',
-    top: 0,
-    left: 0,
-    zIndex: 1,
-    width: '100%',
-    height: '100%',
-    pointerEvents: 'none',
-  },
-  content: {
-    p: 4,
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    maxWidth: '800px',
-    position: 'absolute',
-    zIndex: 50,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-  },
-  footer: {
-    color: 'black',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 1,
-  },
-  emailContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-    alignItems: 'center',
-    textAlign: 'center',
-  },
+const screen = {
+  width: '100%',
+  height: '80vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
 
-  contactSupport: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-    width: 'fit-content',
-    background: 'white',
-    borderRadius: '4px',
-    padding: '2px 8px',
+const content = {
+  backgroundColor: '#ffff',
+  maxWidth: '600px',
+  width: '100%',
+  borderRadius: '16px',
+  boxShadow: 'none',
+  margin: '16px',
+  py: '32px',
+  px: {
+    xs: '24px',
+    md: '32px',
+  },
+  display: 'flex',
+  flexDirection: 'column',
+  gap: {
+    xs: '24px',
+    md: '32px',
   },
 };
+
+const centerContent = {
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  height: '100%',
+};
+
+export default VerifyTeacherEmailPage;

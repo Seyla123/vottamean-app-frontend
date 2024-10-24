@@ -11,7 +11,7 @@ const TestimonialCard = () => (
     <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Box component="img" src={googleLogo} sx={imgStyle} />
       <Typography variant="body1" color="text.secondary">
-        WaveTrack has revolutionized the way we manage our workforce. Highly
+        Vottamean has revolutionized the way we manage our workforce. Highly
         recommended!
       </Typography>
       <Box sx={{ display: 'flex', gap: 1 }}>

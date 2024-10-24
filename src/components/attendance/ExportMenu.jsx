@@ -98,7 +98,14 @@ const ExportMenu = ({
             variant="contained"
             size="small"
             onClick={handleClickOpen}
-            endIcon={<DownloadIcon size={14} />}
+            disabled={isExporting}
+            endIcon={
+              isExporting ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : (
+                <DownloadIcon size={16} />
+              )
+            }
           >
             Export
           </StyledButton>

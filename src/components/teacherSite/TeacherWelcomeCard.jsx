@@ -15,7 +15,7 @@ function TeacherWelcomeCard({subTitle, handleError}) {
     
     return (
         <WelcomeCard
-            subTitle={subTitle || `Welcome back to your dashboard`}
+            subTitle={subTitle || `Welcome back to your home`}
             name={userData?.Info?.first_name}
             schoolName={userData?.School?.school_name}
             isLoading={isLoading}

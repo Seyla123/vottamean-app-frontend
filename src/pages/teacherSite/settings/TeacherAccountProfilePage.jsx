@@ -59,12 +59,13 @@ const AccountSettingsPage = () => {
     if (user) {
       const transformedData = getUserProfileData(user);
       const schoolData = getSchoolData(user);
+      
       setUserData(transformedData);
       setSchoolProfile({
-        schoolId: schoolData.school_id,
-        schoolName: schoolData.school_name,
-        schoolAddress: schoolData.school_address,
-        schoolPhoneNumber: schoolData.school_phone_number,
+        schoolId: schoolData?.school_id,
+        schoolName: schoolData?.school_name,
+        schoolAddress: schoolData?.school_address,
+        schoolPhoneNumber: schoolData?.school_phone_number,
       });
       dispatch(updateFormData(transformedData));
     }

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Tabs, Tab, styled, Grid } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import SubscriptionButton from './SubscriptionButton';
-import CancelSubscription from './CancelSubscription';
 import { useGetUserProfileQuery } from '../../services/userApi';
-import { useCancelPaymentIntentMutation } from '../../services/paymentApi';
 import FormComponent from '../../components/common/FormComponent';
 import { grey } from '@mui/material/colors';
 import { Leaf, Sprout, TreeDeciduous } from 'lucide-react';

@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react';
+import { useState } from 'react';
 import {
-  Grid2 as Grid,
   Stack,
   TableContainer,
   Table,
@@ -9,11 +8,8 @@ import {
   TableHead,
   TableBody,
   Paper,
-  Divider,
-  Button,
   TablePagination,
   Box,
-  Typography,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import HeaderReportTable from './HeaderReportTable';
@@ -25,9 +21,8 @@ import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import EmptyTable from '../common/EmptyTable';
 import ExportMenu from './ExportMenu';
-import { Info } from 'lucide-react';
-import AlertCard from '../common/AlertCard';
 import { shadow } from '../../styles/global';
+import { useSelector } from 'react-redux';
 // Styled components for Table cells
 const StyledTableCell = styled(TableCell)(
   ({ theme, fontSize, maxWidth, minWidth, width }) => ({
@@ -57,10 +52,11 @@ const AttendanceTable = ({
   selectedClasses,
   selectedSubjects,
 }) => {
-  const pdfRef = useRef();
-
+  const filter = useSelector((state) => state.attendance.filter);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
+
+  const [isExporting, setIsExporting] = useState(false);
 
   const convertDayToShorthand = (day) => {
     const dayMap = {
@@ -145,47 +141,64 @@ const AttendanceTable = ({
   };
 
   const exportTableToXLSX = () => {
-    const table = document.getElementById('my-table');
-    if (!table) return;
-    // Convert HTML table to worksheet
-    const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-
-    // Generate Excel file and trigger download
-    XLSX.writeFile(wb, 'attendance_report.xlsx');
+    setIsExporting(true);
+    try {
+      const table = document.getElementById('my-table');
+      if (!table) return;
+      // Convert HTML table to worksheet
+      const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
+  
+      // Generate Excel file and trigger download
+      XLSX.writeFile(wb, 'attendance_report.xlsx');
+    } catch (error) {
+      console.error('Error exporting table to XLSX :', error);
+    }finally {
+      setIsExporting(false);
+    }
   };
 
   const exportPdfById = () => {
-    const pdf = new jsPDF('p', 'mm', 'a4'); // Initialize jsPDF for A4 Portrait format
-    const pageWidth = 210; // A4 page width in mm
+    setIsExporting(true);
+    try {
+      const pdf = new jsPDF('p', 'mm', 'a4'); // Initialize jsPDF for A4 Portrait format
+      const pageWidth = 210; // A4 page width in mm
 
-    const canvasPromises = []; // To capture the rendered table for each page
-    const getAll = document.querySelectorAll('#pdf-page-export');
-    getAll.forEach((element) => {
-      canvasPromises.push(
-        html2canvas(element, {
-          useCORS: true,
-          scale: 2, // Scale up for better resolution
-        }),
-      );
-    });
-    Promise.all(canvasPromises).then((canvases) => {
-      canvases.forEach((canvas, canvasIndex) => {
-        const imgData = canvas.toDataURL('image/jpeg', 2.0); // Get the image data from the canvas
-        const imgWidth = pageWidth - 20; // 10mm margin on both sides
-        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-
-        if (canvasIndex === 0) {
-          pdf.addImage(imgData, 'JPEG', 10, 10, imgWidth, imgHeight);
-        } else {
-          pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', 10, 10, imgWidth, imgHeight);
-        }
+      const canvasPromises = []; // To capture the rendered table for each page
+      const getAll = document.querySelectorAll('#pdf-page-export');
+      getAll.forEach((element) => {
+        canvasPromises.push(
+          html2canvas(element, {
+            useCORS: true,
+            scale: 2, // Scale up for better resolution
+          }),
+        );
       });
+      Promise.all(canvasPromises).then((canvases) => {
+        canvases.forEach((canvas, canvasIndex) => {
+          const imgData = canvas.toDataURL('image/jpeg', 2.0); // Get the image data from the canvas
+          const imgWidth = pageWidth - 20; // 10mm margin on both sides
+          const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
 
-      // Save the PDF
-      pdf.save(`loop_attendance_reports.pdf`);
-    });
+          if (canvasIndex === 0) {
+            pdf.addImage(imgData, 'JPEG', 10, 10, imgWidth, imgHeight);
+          } else {
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 10, 10, imgWidth, imgHeight);
+          }
+        });
+        // Save the PDF
+        pdf.save(`attendance_reports_class_id_${filter.class}_${filter.startDate}_${filter.endDate}.pdf`);
+
+      });
+    } catch (error) {
+      console.error('export pdf error : ', error);
+
+    } finally {
+      
+      setIsExporting(false);
+    }
   };
+
   const PdfDownloadContent = ({
     students,
     dates,
@@ -405,6 +418,7 @@ const AttendanceTable = ({
           <ExportMenu
             handleExportPDF={exportPdfById}
             handleExportXLSX={exportTableToXLSX}
+            isExporting={isExporting}
           />
         </Box>
       </Stack>
@@ -422,17 +436,6 @@ const AttendanceTable = ({
           <LoadingCircle />
         ) : dates?.length > 0 ? (
           <>
-            {/* 
-                    <PdfDownloadContent
-                        students={result}
-                        dates={dates}
-                        school={school}
-                        classData={classData}
-                        isHide={false}
-                        forPreview={true}
-                        fontSizeCell='0.75rem'
-                        studentLimit={rowsPerPage}
-                    /> */}
             <Paper
               sx={{
                 boxShadow: 'none',

@@ -2,10 +2,9 @@ import { useGetSubjectsQuery } from '../../services/subjectApi';
 import { useGetClassesDataQuery } from '../../services/classApi';
 import { setFilter } from '../../store/slices/attendanceSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Grid, Stack } from '@mui/material';
+import {  Grid, Stack } from '@mui/material';
 import FilterComponent from '../common/FilterComponent';
 import { useEffect, useState } from 'react';
-import { Filter, BookIcon, LibraryIcon } from 'lucide-react';
 
 import DateRangePicker from './DateRangePicker';
 import { ensureOptionInList } from '../../utils/formatHelper';
@@ -60,8 +59,6 @@ function AttendanceFilter({
         'subject_id',
         'subject_name',
       );
-
-      console.log('formattedDataSubjects', formattedDataSubjects);
       
       const formatDataClasses = ensureOptionInList(
         dataClass?.data,

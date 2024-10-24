@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs from 'dayjs';
 
 // MUI Components
 import {
-  Dialog,
-  Box,
-  TextField,
   Avatar,
   Typography,
-  InputAdornment,
   Grid,
-  MenuItem,
   Divider,
   DialogContent,
   DialogTitle,
@@ -309,7 +304,7 @@ const EditAccountModal = ({
                   placeholder="First Name"
                   errors={errors}
                   icon={UserRoundPen}
-                  disabled={false}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 
@@ -322,7 +317,7 @@ const EditAccountModal = ({
                   placeholder="Last Name"
                   errors={errors}
                   icon={UserRoundPen}
-                  disabled={false}
+                  disabled={disableInputIfTeacher}
                 />
               </Grid>
 

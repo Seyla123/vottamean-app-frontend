@@ -2,7 +2,7 @@
 import { Box } from '@mui/material';
 
 // Icon & IMAGE
-import Logo from '../../assets/images/Logo.svg';
+import Logo from '../../assets/images/VOTTAMEAN.svg';
 import patternImage from '../../assets/images/pattern-1.png';
 import patternImage2 from '../../assets/images/pattern-2.png';
 
@@ -19,14 +19,14 @@ const SigninPage = () => {
       {/* LEFT CONTAINER */}
       <Box component="div" sx={styles.leftContainer}>
         {/* LOGO */}
-        <img src={Logo} alt="wavetrack logo" style={styles.logo} />
+        <img src={Logo} alt="Vottamean logo" style={styles.logo} />
 
         {/* FORM CONTAINER */}
         <Box sx={styles.formContainer}>
           {/* FORM HEADER */}
           <HeaderTitle
-            title={' Welcome to WaveTrack!'}
-            subTitle={`Accurately record and monitor student attendance with WaveTrack's user-friendly platform.`}
+            title={' Welcome to Vottamean!'}
+            subTitle={`Accurately record and monitor student attendance with Vottamean's user-friendly platform.`}
           />
           {/* FORM MAIN */}
           <LoginForm />
