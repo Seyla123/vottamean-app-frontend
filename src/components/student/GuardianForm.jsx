@@ -78,104 +78,98 @@ const GuardianForm = ({
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Guardian Name Inputs */}
-        <Typography
-          alignSelf={'start'}
-          variant="h6"
-          component="h2"
-          fontWeight={'bold'}
-          mb={2}
-        >
-          Guardian Information
-        </Typography>
-        <Stack direction={'column'} gap={2}>
-          <Grid container spacing={2} alignItems={'center'}>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardianFirstName"
-                control={control}
-                label="Guardian First Name"
-                placeholder="First Name"
-                errors={errors}
-                icon={UserRoundPen}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputField
-                name="guardianLastName"
-                control={control}
-                label="Guardian Last Name"
-                placeholder="Last Name"
-                errors={errors}
-                icon={UserRoundPen}
-              />
-            </Grid>
-          </Grid>
-          {/* GUARDIAN CONTACT INFORMATION */}
-          {/* Guardian Phone Number */}
-          <Grid item xs={12} sm={6}>
-            <PhoneInputField
-              name="guardianPhoneNumber"
-              control={control}
-              label="Contact Number"
-              errors={errors}
-            />
-          </Grid>
-          {/* Guardian Email */}
-          <Grid item xs={12} sm={6}>
-            <InputField
-              name="guardianEmail"
-              control={control}
-              label="Email"
-              placeholder="Enter guardian email"
-              errors={errors}
-              icon={Mail}
-            />
-          </Grid>
-          {/* Guardian Relationship */}
-          <Grid item xs={12} sm={6}>
-            <InputField
-              name="guardianRelationship"
-              control={control}
-              label="Relationship"
-              placeholder="Relationship"
-              errors={errors}
-              icon={Diversity1Icon}
-            />
-          </Grid>
-          {/* Action Buttons */}
-          <Stack
-            direction={'row'}
-            alignSelf={'flex-end'}
-            justifyContent={'flex-end'}
-            width={{ xs: '100%', sm: '300px', md: '260px' }}
-            gap={2}
-            marginTop={{ xs: 2, sm: 0 }}
-          >
-            <StyledButton
-              onClick={handleBack}
-              fullWidth
-              variant="outlined"
-              color="inherit"
-              size="small"
-            >
-              Back
-            </StyledButton>
-            <StyledButton
-              fullWidth
-              variant="contained"
-              type="submit"
-              size="small"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Adding...' : 'Add'}
-            </StyledButton>
-          </Stack>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* Guardian Name Inputs */}
+      <Typography
+        alignSelf={'start'}
+        variant="h6"
+        component="h2"
+        fontWeight={'bold'}
+        mb={2}
+      >
+        Guardian Information
+      </Typography>
+      <Stack direction={'column'} spacing={2}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <InputField
+            name="guardianFirstName"
+            control={control}
+            label="Guardian First Name"
+            placeholder="First Name"
+            errors={errors}
+            icon={UserRoundPen}
+          />
+
+          <InputField
+            name="guardianLastName"
+            control={control}
+            label="Guardian Last Name"
+            placeholder="Last Name"
+            errors={errors}
+            icon={UserRoundPen}
+          />
         </Stack>
-      </form>
-    </>
+        {/* GUARDIAN CONTACT INFORMATION */}
+        {/* Guardian Phone Number */}
+        <PhoneInputField
+          name="guardianPhoneNumber"
+          control={control}
+          label="Contact Number"
+          errors={errors}
+        />
+
+        {/* Guardian Email */}
+
+        <InputField
+          name="guardianEmail"
+          control={control}
+          label="Email"
+          placeholder="Enter guardian email"
+          errors={errors}
+          icon={Mail}
+        />
+
+        {/* Guardian Relationship */}
+
+        <InputField
+          name="guardianRelationship"
+          control={control}
+          label="Relationship"
+          placeholder="Relationship"
+          errors={errors}
+          icon={Diversity1Icon}
+        />
+
+        {/* Action Buttons */}
+        <Stack
+          direction={'row'}
+          alignSelf={'flex-end'}
+          justifyContent={'flex-end'}
+          width={{ xs: '100%', sm: '300px', md: '260px' }}
+          gap={2}
+          marginTop={{ xs: 2, sm: 0 }}
+        >
+          <StyledButton
+            onClick={handleBack}
+            fullWidth
+            variant="outlined"
+            color="inherit"
+            size="small"
+          >
+            Back
+          </StyledButton>
+          <StyledButton
+            fullWidth
+            variant="contained"
+            type="submit"
+            size="small"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Adding...' : 'Add'}
+          </StyledButton>
+        </Stack>
+      </Stack>
+    </form>
   );
 };
 
