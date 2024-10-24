@@ -1,6 +1,6 @@
 // React and third-party libraries
 import React, { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -9,24 +9,18 @@ import { useDispatch } from 'react-redux';
 import {
   Box,
   Typography,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
 } from '@mui/material';
 
 // Lucid Icons
 import {
   ChevronLeft,
-  EyeIcon,
-  EyeOff,
   RectangleEllipsis,
-  LockKeyholeOpen,
+  ShieldCheck,
+  ShieldX,
 } from 'lucide-react';
 
 // Redux hooks and actions
 import { useResetPasswordMutation } from '../../services/authApi';
-import { setSnackbar } from '../../store/slices/uiSlice';
 
 // Custom Components
 import HeaderTitle from '../../components/auth/HeaderTitle';
@@ -43,9 +37,14 @@ import StyledButton from '../../components/common/StyledMuiButton';
 
 const ResetNewPasswordPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { token } = useParams();
-  const [showPassword, setShowPassword] = useState(false);
+  
+// - showPassword: a boolean to show/hide password input field
+// - isSubmit: a boolean to track if the form is submitted or not
+const [showPassword, setShowPassword] = useState(false);
+const [isSubmit, setIsSubmit] = useState(false);
+
+// - passwordValidation: an object to store the validation result of the password
   const [passwordValidation, setPasswordValidation] = useState({
     length: false,
     number: false,
@@ -65,7 +64,7 @@ const ResetNewPasswordPage = () => {
 
   const passwordValue = watch('password', '');
 
-  // Redux Reset Password API
+  // useResetPasswordMutation : Redux Reset Password API
   const [resetPassword, { isLoading, isSuccess, isError, error }] =
     useResetPasswordMutation();
 
@@ -75,7 +74,9 @@ const ResetNewPasswordPage = () => {
         token,
         newPassword: data.password,
       }).unwrap();
+      setIsSubmit(true);
     } catch (err) {
+      setIsSubmit(true)
       console.error('Password reset error:', err);
     }
   };
@@ -107,112 +108,111 @@ const ResetNewPasswordPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (isError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: error?.data?.message || 'An error occurred.',
-        }),
-      );
-    } else if (isSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message:
-            'Your Password has been successfully changed. Please try to login.',
-        }),
-      );
-      navigate('/auth/signin');
-    }
-  }, [isError, isSuccess, dispatch, error, navigate]);
+  const handleLoginRedirect = () => {
+    navigate('/auth/signin');
+  };
+  const handleBackButtonClick = () => {
+    setIsSubmit(false);
+  };
 
   return (
     <Box component="section" sx={styles.pageContainer}>
       {/* LEFT CONTAINER */}
       <Box component="div" sx={styles.leftContainer}>
         <img src={Logo} alt="wavetrack logo" style={styles.logo} />
-
-        <Box sx={styles.formContainer}>
-          <Box component={'div'} sx={styles.iconContainer}>
-            <RectangleEllipsis size={100} />
-          </Box>
-          <HeaderTitle
-            title={'Reset New Password'}
-            subTitle={'Enter your new password to reset your password.'}
+        {isSubmit ? (
+          <ResetPasswordSubmit
+            isLoading={isLoading}
+            handleLoginRedirect={handleLoginRedirect}
+            handleBackButtonClick={handleBackButtonClick}
+            isSuccess={isSuccess}
+            isError={isError}
+            error={error}
           />
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: { xs: 2, md: 3 },
-              }}
-            >
-              {/* NEW PASSWORD INPUT */}
-              <PasswordInput
-                name="password"
-                label="New Password"
-                control={control}
-                showPassword={showPassword}
-                togglePasswordVisibility={togglePasswordVisibility}
-                error={errors.password}
-                placeholder="Enter new password"
-              />
-              {/* NEW CONFIRM PASSWORD INPUT */}
-              <PasswordInput
-                name="passwordConfirm"
-                label="Confirm Password"
-                control={control}
-                showPassword={showPassword}
-                togglePasswordVisibility={togglePasswordVisibility}
-                error={errors.passwordConfirm}
-                placeholder="Confirm new password"
-              />
-              {/* PASSWORD VALIDITY INDICATORS */}
-              <Box
-                sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}
-              >
-                <Typography variant="body2" fontWeight="bold">
-                  Register Requirement{' '}
-                  <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <PasswordIndicator
-                  isValid={passwordValidation.length}
-                  message="At least 8 characters."
-                />
-                <PasswordIndicator
-                  isValid={passwordValidation.letter}
-                  message="Contain at least one letter."
-                />
-                <PasswordIndicator
-                  isValid={passwordValidation.number}
-                  message="Contain at least one number."
-                />
-                <PasswordIndicator
-                  isValid={passwordValidation.special}
-                  message="Contain at least one special character."
-                />
-              </Box>
-              <StyledButton
-                variant="contained"
-                type="submit"
-                size="small"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Resetting...' : 'Reset Password'}
-              </StyledButton>
+        ) : (
+          <Box sx={styles.formContainer}>
+            <Box component={'div'} sx={styles.iconContainer}>
+              <RectangleEllipsis size={100} />
             </Box>
-          </form>
-          <Link to={'/auth/signin'} style={styles.footer}>
-            <ChevronLeft size={18} />
-            <Typography variant="body2">Back to sign in</Typography>
-          </Link>
-        </Box>
+            <HeaderTitle
+              title={'Reset New Password'}
+              subTitle={'Enter your new password to reset your password.'}
+            />
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: { xs: 2, md: 3 },
+                }}
+              >
+                {/* NEW PASSWORD INPUT */}
+                <PasswordInput
+                  name="password"
+                  label="New Password"
+                  control={control}
+                  showPassword={showPassword}
+                  togglePasswordVisibility={togglePasswordVisibility}
+                  error={errors.password}
+                  placeholder="Enter new password"
+                />
+                {/* NEW CONFIRM PASSWORD INPUT */}
+                <PasswordInput
+                  name="passwordConfirm"
+                  label="Confirm Password"
+                  control={control}
+                  showPassword={showPassword}
+                  togglePasswordVisibility={togglePasswordVisibility}
+                  error={errors.passwordConfirm}
+                  placeholder="Confirm new password"
+                />
+                {/* PASSWORD VALIDITY INDICATORS */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1,
+                    mt: 1,
+                  }}
+                >
+                  <Typography variant="body2" fontWeight="bold">
+                    Register Requirement{' '}
+                    <span style={{ color: 'red', marginLeft: 1 }}>*</span>
+                  </Typography>
+                  <PasswordIndicator
+                    isValid={passwordValidation.length}
+                    message="At least 8 characters."
+                  />
+                  <PasswordIndicator
+                    isValid={passwordValidation.letter}
+                    message="Contain at least one letter."
+                  />
+                  <PasswordIndicator
+                    isValid={passwordValidation.number}
+                    message="Contain at least one number."
+                  />
+                  <PasswordIndicator
+                    isValid={passwordValidation.special}
+                    message="Contain at least one special character."
+                  />
+                </Box>
+                <StyledButton
+                  variant="contained"
+                  type="submit"
+                  size="small"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Resetting...' : 'Reset Password'}
+                </StyledButton>
+              </Box>
+            </form>
+            <Link to={'/auth/signin'} style={styles.footer}>
+              <ChevronLeft size={18} />
+              <Typography variant="body2">Back to sign in</Typography>
+            </Link>
+          </Box>
+        )}
       </Box>
-
       {/* RIGHT CONTAINER */}
       <Box component="div" sx={styles.rightContainer}>
         <Box component="div" sx={styles.imageOverlay} />
@@ -357,4 +357,75 @@ const styles = {
     borderRadius: '4px',
     padding: '2px 8px',
   },
+};
+
+//
+const ResetPasswordSubmit = ({
+  isLoading,
+  handleLoginRedirect,
+  isSuccess,
+  error,
+  handleBackButtonClick
+}) => {
+  return (
+    <>
+      <Box sx={styles.formContainer}>
+        <Box component={'div'} sx={styles.iconContainer}>
+          {isSuccess ? <ShieldCheck size={100} /> : <ShieldX size={100} />}
+        </Box>
+        {/* FORM HEADER */}
+        <HeaderTitle
+          title={
+            isSuccess
+              ? 'Your password has been successfully reset.'
+              : 'Password Reset Failed.'
+          }
+          subTitle={
+            isSuccess
+              ? 'You can now sign in with your new password. '
+              : ( error ? `${error?.data?.message}. Please try again.`:'We were unable to reset your password at this time. Please try again later.')
+          }
+        />
+        <form>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: 2, md: 3 },
+            }}
+          >
+            {/* BUTTON */}
+            {isSuccess ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <StyledButton
+                  size="small"
+                  variant="contained"
+                  onClick={handleLoginRedirect}
+                  disabled={isLoading}
+                >
+                  Go to sign in
+                </StyledButton>
+              </Box>
+            ) : (
+              <StyledButton
+                size="small"
+                variant="contained"
+                onClick={handleBackButtonClick}
+                disabled={isLoading}
+              >
+                Try again
+              </StyledButton>
+            )}
+            {!isSuccess && (
+              <Link to={'/auth/signin'} style={styles.footer}>
+                <ChevronLeft size={18} />
+                <Typography variant="body2">Back to sign in</Typography>
+              </Link>
+            )}
+          </Box>
+        </form>
+        {/* FOOTER */}
+      </Box>
+    </>
+  );
 };
