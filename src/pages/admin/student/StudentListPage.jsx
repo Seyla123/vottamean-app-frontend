@@ -213,7 +213,6 @@ const StudentListPage = () => {
     setIsUpdateOpen(true);
   };
 
-
   // Handle delete one clicked
   const handleDelete = (row) => {
     setSelectedStudent(row);
@@ -284,7 +283,6 @@ const StudentListPage = () => {
               placeholder="Class"
               data={classes}
               value={selectedClass}
-              icon={<BookIcon size={18} color="#B5B5B5" />}
             />
           </Grid>
         </Grid>
@@ -299,7 +297,7 @@ const StudentListPage = () => {
         isLoading={isLoading}
         emptyTitle={'No Student'}
         emptySubTitle={'No Student Available'}
-        hideColumns={['address', 'Date of Birth', 'id']}
+        hideColumns={['address', 'Date of Birth', 'id', 'gender']}
         showNO={false}
         page={page}
         rowsPerPage={rowsPerPage}
