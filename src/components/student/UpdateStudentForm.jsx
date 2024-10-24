@@ -12,8 +12,14 @@ import {
   Typography,
   Button,
   Grid,
+  Select,
   Divider,
   Modal,
+  InputAdornment,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -39,7 +45,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { formatStudentFormData } from '../../utils/formatData';
 
 // icons from luicide react
-import { ImagePlus, Mail, Trash2, UserRoundPen } from 'lucide-react';
+import { ImagePlus, Mail, School, Trash2, UserRoundPen } from 'lucide-react';
 
 // Custom components
 import { setSnackbar } from '../../store/slices/uiSlice';
@@ -52,9 +58,10 @@ import DOBPicker from '../common/DOBPicker';
 import { Diversity3 } from '@mui/icons-material';
 import { ensureOptionInList } from '../../utils/formatHelper';
 import LoadingCircle from '../loading/LoadingCircle';
-
+import { StyledTextField } from '../common/InputField';
 const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -68,15 +75,12 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     data: studentData,
     isLoading,
     isError,
-    isSuccess,
     error,
   } = useGetStudentsByIdQuery(studentId, { skip: !isOpen || !studentId });
 
   const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery(
     { active: 1 },
   );
-
-  console.log('this student data : ', studentData);
 
   const [
     updateStudent,
@@ -115,39 +119,36 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   });
 
   useEffect(() => {
-    if (studentData && classData && isClassSuccess) {
-      console.log('studentData:', studentData);
-
+    if (studentData?.data && classData?.data && isClassSuccess) {
       const formattedClassData = ensureOptionInList(
         classData?.data,
         studentData?.data?.Class,
         'class_id',
         'class_name',
       );
-      const formattedData = formatStudentFormData(studentData);
-      console.log('formattedData:', formattedData);
-      console.log('formattedClassData:', formattedClassData);
+
+      // Ensure class_id is properly extracted and converted to string
+      const classId = studentData.data.class_id?.toString() || '';
+
       const studentInfo = {
-        ...formattedData,
-        dob: formattedData.dob
-          ? dayjs(formattedData.dob).format('YYYY-MM-DD')
+        first_name: studentData.data.Info.first_name || '',
+        last_name: studentData.data.Info.last_name || '',
+        phone_number: studentData.data.Info.phone_number || '',
+        gender: studentData.data.Info.gender || '',
+        dob: studentData.data.Info.dob
+          ? dayjs(studentData.data.Info.dob).format('YYYY-MM-DD')
           : null,
+        class_id: classId, // Use the explicitly extracted class_id
+        address: studentData.data.Info.address || '',
+        photo: studentData.data.Info.photo || '',
+        guardianFirstName: studentData.data.guardian_first_name || '',
+        guardianLastName: studentData.data.guardian_last_name || '',
+        guardianEmail: studentData.data.guardian_email || '',
+        guardianPhoneNumber: studentData.data.guardian_phone_number || '',
+        guardianRelationship: studentData.data.guardian_relationship || '',
       };
-      reset({
-        first_name: studentInfo.first_name,
-        last_name: studentInfo.last_name,
-        phone_number: studentInfo.phone_number,
-        gender: studentInfo.gender,
-        dob: studentInfo.dob,
-        class_id: studentInfo.class_id,
-        address: studentInfo.address,
-        photo: studentInfo.photo,
-        guardianFirstName: studentInfo.guardian_first_name,
-        guardianLastName: studentInfo.guardian_last_name,
-        guardianEmail: studentInfo.guardian_email,
-        guardianPhoneNumber: studentInfo.guardian_phone_number,
-        guardianRelationship: studentInfo.guardian_relationship,
-      });
+
+      reset(studentInfo);
       setClasses(formattedClassData);
       setDob(studentInfo.dob);
       setOriginalData(studentInfo);
@@ -155,94 +156,81 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     }
   }, [studentData, reset, classData, isClassSuccess]);
 
-
-
-  if (isError) {
-    dispatch(
-      setSnackbar({
-        open: true,
-        message: `Error fetching student data: ${error.data?.message || 'Unknown error'}`,
-        severity: 'error',
-      }),
-    );
-    return null;
-  }
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Student information updated successfully!',
-          severity: 'success',
-        }),
-      );
-      onClose();
-      navigate('/admin/teachers');
-    } else if (isUpdateError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Update failed: ' + (updateError.message || 'Unknown error'),
-          severity: 'error',
-        }),
-      );
-    }
-  }, [isUpdateError, isUpdateSuccess, dispatch, updateError]);
-
   const onSubmit = async (data) => {
-    const submittedData = {
-      first_name: data.first_name,
-      last_name: data.last_name,
-      phone_number: data.phone_number,
-      gender: data.gender,
-      dob:
-        data.dob && dayjs(data.dob).isValid()
+    try {
+      // Validate class_id before submission
+      const classId = data.class_id ? Number(data.class_id) : null;
+  
+      if (classId === null) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'Please select a class',
+            severity: 'error',
+          }),
+        );
+        return;
+      }
+  
+      const submittedData = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone_number: data.phone_number,
+        gender: data.gender,
+        dob: data.dob && dayjs(data.dob).isValid()
           ? dayjs(data.dob).format('YYYY-MM-DD')
           : null,
-      address: data.address,
-      class_id: data.class_id,
-      photo: data.photo,
-      guardian_first_name: data.guardianFirstName,
-      guardian_last_name: data.guardianLastName,
-      guardian_email: data.guardianEmail,
-      guardian_phone_number: data.guardianPhoneNumber,
-      guardian_relationship: data.guardianRelationship,
-    };
-
-    const hasChanges = Object.keys(submittedData).some(
-      (key) => submittedData[key] !== originalData[key],
-    );
-
-    if (!hasChanges && !hasPhotoChanges) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'No changes made.',
-          severity: 'info',
-          autoHideDuration: 6000,
-        }),
+        class_id: classId,
+        address: data.address,
+        guardian_first_name: data.guardianFirstName,
+        guardian_last_name: data.guardianLastName,
+        guardian_email: data.guardianEmail,
+        guardian_phone_number: data.guardianPhoneNumber,
+        guardian_relationship: data.guardianRelationship,
+      };
+  
+      // Check for changes
+      const hasChanges = Object.keys(submittedData).some(
+        (key) => submittedData[key] !== originalData[key],
       );
-      handleNext();
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      Object.keys(submittedData).forEach((key) =>
-        formData.append(key, submittedData[key]),
-      );
-
-      if (selectedFile) {
-        formData.append('photo', selectedFile);
+  
+      if (!hasChanges && !hasPhotoChanges) {
+        dispatch(
+          setSnackbar({
+            open: true,
+            message: 'No changes made.',
+            severity: 'info',
+          }),
+        );
+        return;
       }
-
+  
+      const formData = new FormData();
+  
+      // Append all non-null fields to FormData
+      Object.entries(submittedData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formData.append(key, value);
+        }
+      });
+  
+      // Handle photo upload - IMPORTANT: Change the field name to match the controller
+      if (selectedFile) {
+        formData.append('photo', selectedFile); // This matches the Multer field name
+      }
+  
+      // Log FormData contents for debugging
+      for (let pair of formData.entries()) {
+        console.log('FormData entry:', pair[0], pair[1]);
+      }
+  
       const result = await updateStudent({
         id: studentId,
         updates: formData,
       }).unwrap();
-
-      console.log('Update Result:', result); // Log the result
-
+  
+      console.log('Update result:', result);
+      
       if (result.status === 'success') {
         dispatch(
           setSnackbar({
@@ -251,29 +239,25 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
             severity: 'success',
           }),
         );
-        handleNext();
-      } else {
-        throw new Error('Update failed');
+        onClose();
+        navigate('/admin/students');
       }
     } catch (error) {
-      console.error('Update Error:', error); // Log the full error
+      console.error('Update Error:', error);
       dispatch(
         setSnackbar({
           open: true,
-          message: `Update failed: ${error.message}`,
+          message: error.data?.message || 'Failed to update student information',
           severity: 'error',
         }),
       );
     }
   };
-
+  
+  // Modify the handlePhotoChange function as well:
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    if (
-      file &&
-      file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
-    ) {
+    if (file && file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setValue('photo', file);
@@ -282,14 +266,12 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Invalid image file',
+          message: file ? 'File must be an image under 5MB' : 'Please select a file',
           severity: 'error',
         }),
       );
     }
   };
-
-  console.log('--------------prodfile : ', profileImg);
 
   const handleRemovePhoto = () => {
     setSelectedFile(null);
@@ -318,6 +300,8 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
           bgcolor: '#ffffff',
           borderRadius: '8px',
           p: 4,
+          height: '100%',
+          overflow: 'scroll',
         }}
       >
         {/* Title */}
@@ -480,6 +464,57 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                 )}
               />
             </Box>
+            <Typography variant="body2" fontWeight="bold" mb={1}>
+              Class <span style={{ color: 'red' }}>*</span>
+            </Typography>
+            <Controller
+              name="class_id"
+              control={control}
+              defaultValue=""
+              render={({ field, fieldState }) => (
+                <FormControl fullWidth error={!!errors?.class_id}>
+                  <Select
+                    {...field}
+                    value={field.value || ''}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                    displayEmpty
+                    renderValue={(selected) => {
+                      if (!selected) {
+                        return (
+                          <span style={{ color: theme.palette.grey[400] }}>
+                            Class
+                          </span>
+                        );
+                      }
+                      const selectedClass = classData?.data?.find(
+                        (classItem) => classItem.class_id === Number(selected),
+                      );
+                      return selectedClass ? selectedClass.class_name : '';
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      {isLoading ? 'Loading classes...' : 'Select a class'}
+                    </MenuItem>
+                    {classData?.data?.length ? (
+                      classData.data.map((classItem) => (
+                        <MenuItem
+                          key={classItem.class_id}
+                          value={classItem.class_id}
+                        >
+                          {classItem.class_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>No classes available</MenuItem>
+                    )}
+                  </Select>
+                  <FormHelperText>
+                    {fieldState.error ? fieldState.error.message : ''}
+                  </FormHelperText>
+                </FormControl>
+              )}
+            />
+
             {/* Phone Number */}
             <Box sx={{ ...textFieldGap, width: '100%' }}>
               <PhoneInputField
@@ -506,7 +541,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
               <Grid container spacing={2} alignItems={'center'}>
                 <Grid item xs={12} sm={6}>
                   <InputField
-                    name="guardianFirstName" // Update here
+                    name="guardianFirstName"
                     control={control}
                     label="Guardian First Name"
                     placeholder="First Name"
@@ -516,7 +551,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <InputField
-                    name="guardianLastName" // This is correct
+                    name="guardianLastName"
                     control={control}
                     label="Guardian Last Name"
                     placeholder="Last Name"
