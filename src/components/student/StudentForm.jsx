@@ -1,10 +1,11 @@
 // - React and third-party libraries
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import * as yup from 'yup';
+import { useTheme } from '@emotion/react';
 
 // - Material UI Components and luicide icons
 import {
@@ -16,7 +17,7 @@ import {
   capitalize,
   InputAdornment,
 } from '@mui/material';
-import { UserRoundPen, Upload, Trash2, ImagePlus, School } from 'lucide-react';
+import { UserRoundPen, Trash2, ImagePlus, School } from 'lucide-react';
 
 // - Custom Components
 import DOBPicker from '../common/DOBPicker';
@@ -25,13 +26,12 @@ import InputField from '../common/InputField';
 import GenderSelect from '../common/GenderSelect';
 import StyledButton from '../common/StyledMuiButton';
 import { StyledTextField } from '../common/GenderSelect';
+import RandomAvatar from '../common/RandomAvatar';
 // - Redux Slices and APIs
 import { useGetClassesDataQuery } from '../../services/classApi';
-import { useNavigate } from 'react-router-dom';
+
 // Redux Slice
 import { setSnackbar } from '../../store/slices/uiSlice';
-import RandomAvatar from '../common/RandomAvatar';
-import { useTheme } from '@emotion/react';
 
 const StudentForm = ({
   handleNext,
@@ -55,19 +55,7 @@ const StudentForm = ({
     isError,
   } = useGetClassesDataQuery({active : 1});
 
-  // Dispatch the action for error fetching classes data
-  useEffect(() => {
-    if (isError) {
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Error fetching classes data',
-          severity: 'error',
-        }),
-      );
-    }
-  }, [classesData, error]);
-
+  // React Hook Form
   const {
     control,
     handleSubmit,
@@ -93,6 +81,19 @@ const StudentForm = ({
       guardianRelationship: defaultValues.guardian_relationship || '',
     },
   });
+
+  // Dispatch the action for error fetching classes data
+  useEffect(() => {
+    if (isError) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Error fetching classes data',
+          severity: 'error',
+        }),
+      );
+    }
+  }, [classesData, error]);
 
   // Reset form and photo states when defaultValues change
   useEffect(() => {
@@ -156,14 +157,14 @@ const StudentForm = ({
     }
   };
 
+  // Photo preview
+  const photoSrc =
+    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
+
   // Handle cancel back home
   const handleCancel = () => {
     navigate('/admin/students');
   };
-
-  // Photo preview
-  const photoSrc =
-    photoPreview || (photoFile ? URL.createObjectURL(photoFile) : '');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -226,8 +227,9 @@ const StudentForm = ({
           </Stack>
         </Stack>
         {/* Input fields */}
-        <Grid container spacing={2} alignItems={'center'}>
-          <Grid item xs={12} sm={6}>
+        <Stack direction={'column'} spacing={2}>
+          {/* Name */}
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <InputField
               name="firstName"
               control={control}
@@ -237,8 +239,6 @@ const StudentForm = ({
               icon={UserRoundPen}
               fullWidth
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
             <InputField
               name="lastName"
               control={control}
@@ -248,30 +248,27 @@ const StudentForm = ({
               icon={UserRoundPen}
               fullWidth
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <GenderSelect
-              control={control}
-              errors={errors}
-              name="gender"
-              label="Gender"
-              defaultValue=""
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <DOBPicker
-              control={control}
-              errors={errors}
-              name="dob"
-              dob={dob}
-              setDob={setDob}
-              fullWidth
-            />
-          </Grid>
-
-          {/* STUDENT CLASS */}
-          <Grid item xs={12} sm={6}>
+          </Stack>
+          {/* Gender */}
+          <GenderSelect
+            control={control}
+            errors={errors}
+            name="gender"
+            label="Gender"
+            defaultValue=""
+            fullWidth
+          />
+          {/* Date of Birth */}
+          <DOBPicker
+            control={control}
+            errors={errors}
+            name="dob"
+            dob={dob}
+            setDob={setDob}
+            fullWidth
+          />
+          {/* Class */}
+          <Stack>
             <Typography variant="body2" fontWeight="bold" mb={1}>
               Class <span style={{ color: 'red' }}>*</span>
             </Typography>
@@ -295,7 +292,7 @@ const StudentForm = ({
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <School size={20} /> {/* Icon */}
+                          <School size={20} />
                         </InputAdornment>
                       ),
                     }}
@@ -337,28 +334,28 @@ const StudentForm = ({
                 </>
               )}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <PhoneInputField
-              name="phoneNumber"
-              control={control}
-              label="Contact Number"
-              errors={errors}
-              fullWidth
-            />
-          </Grid>
-        </Grid>
-        <InputField
-          name="address"
-          control={control}
-          label="Street Address"
-          placeholder="Phnom Penh, Street 210, ..."
-          errors={errors}
-          required={false}
-          multiline
-          minRows={5}
-          fullWidth
-        />
+          </Stack>
+          {/* Phone number */}
+          <PhoneInputField
+            name="phoneNumber"
+            control={control}
+            label="Contact Number"
+            errors={errors}
+            fullWidth
+          />
+          {/* Address */}
+          <InputField
+            name="address"
+            control={control}
+            label="Street Address"
+            placeholder="Phnom Penh, Street 210, ..."
+            errors={errors}
+            required={false}
+            multiline
+            minRows={5}
+            fullWidth
+          />
+        </Stack>
         {/* Buttons */}
         <Stack
           direction="row"
@@ -383,7 +380,7 @@ const StudentForm = ({
             type="submit"
             size="small"
           >
-            Submit
+            Continue
           </StyledButton>
         </Stack>
       </Stack>
