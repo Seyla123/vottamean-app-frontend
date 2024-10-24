@@ -16,6 +16,7 @@ import {
   Box,
   TablePagination,
   Typography,
+  CircularProgress
 } from '@mui/material';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -37,6 +38,7 @@ const AttendanceTable = ({
   status,
   hideColumns = [],
   onStatusChange,
+  isLoading
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -166,7 +168,7 @@ const AttendanceTable = ({
               ))}
           </TableBody>
         </Table>
-        {rows.length === 0 && (
+        {isLoading ?  <LoadingTable columns={columns} height={'500px'} />: (rows.length === 0 && (
           <Box
             sx={{
               display: 'flex',
@@ -189,7 +191,7 @@ const AttendanceTable = ({
               </Typography>
             </Box>
           </Box>
-        )}
+        ))}
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
@@ -216,6 +218,24 @@ const AttendanceTable = ({
           </MenuItem>
         ))}      </Menu>
     </Paper>
+  );
+};
+const LoadingTable = ({ columns, height }) => {
+  return (
+      <Box
+        colSpan={columns.length + 2}
+        sx={{
+          width:'100%',
+          height: height,
+          display:'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+        }}
+      >
+        <CircularProgress />
+      </Box>
   );
 };
 

@@ -5,16 +5,16 @@ import { Box, CircularProgress } from '@mui/material';
 import { SendIcon } from 'lucide-react';
 import { useGetAllStudentsByClassInSessionQuery } from '../../../services/teacherApi';
 import { useGetStatusQuery } from '../../../services/statusApi';
-import LoadingCircle from '../../../components/loading/LoadingCircle';
 import { transformMarkAttendancetTable } from '../../../utils/formatData';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMarkAttendanceMutation } from '../../../services/attendanceApi';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 import StyledButton from '../../../components/common/StyledMuiButton';
-import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import TeacherWelcomeCard from '../../../components/teacherSite/TeacherWelcomeCard';
 import TitleHeader from '../../../components/common/TitleHeader';
+import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 
 const columns = [
   {
@@ -84,6 +84,9 @@ function MarkAttendanceClass() {
   const [status, setStatus] = useState([]);
   const [classInfo, setClassInfo] = useState({});
 
+  // openModal : state for modal
+  const [openModal, setOpenModal] = useState(false);
+
   // if get all students by class in session is success,
   // then set rows to transformed data
   useEffect(() => {
@@ -92,7 +95,10 @@ function MarkAttendanceClass() {
       setRows(formattedData);
       setClassInfo(studentsData.Class);
     }
-  }, [studentsData, isSuccess]);
+    if (isError && error?.data?.message === 'This class is already marked today') {
+      setOpenModal(true);
+    }
+  }, [studentsData, isSuccess, isError]);
 
   // if get all status is success,
   // then set status to status data
@@ -122,7 +128,7 @@ function MarkAttendanceClass() {
           severity: 'success',
         }),
       );
-      navigate('/teacher/home');
+      navigate('/teacher/schedule');
     }
   }, [
     isMarkAttendanceSuccess,
@@ -132,16 +138,6 @@ function MarkAttendanceClass() {
     dispatch,
     isMarkAttendanceLoading,
   ]);
-
-  // handle loading
-  if (isLoading || isLoadingStatus) {
-    return <LoadingCircle />;
-  }
-
-  // if isError or isErrorStatus is true, then redict to teacher schedule page
-  if (isError || isErrorStatus) {
-    navigate('/teacher/schedule')
-  }
 
   //handle submit mark attendance student
   const handleSubmit = async () => {
@@ -161,12 +157,15 @@ function MarkAttendanceClass() {
       ),
     );
   };
-
+  if (isError && error?.data?.message !== 'This class is already marked today' || isErrorStatus) {
+    return <SomethingWentWrong description={`${error?.data?.message || errorStatus?.data?.message}`} />
+  }
   return (
     <FormComponent>
-      <TitleHeader title={'Mark Attendance Class'}/>
+      <TitleHeader title={'Mark Attendance Class'} />
       {/* welcome card */}
-      <TeacherWelcomeCard  subTitle={`Welcome to class ${classInfo?.class_name}`} />
+      <TeacherWelcomeCard subTitle={`Welcome to class ${classInfo?.class_name || ''}`} />
+      <ClassMarkedModal open={openModal} onClose={() => navigate('/teacher/schedule')} />
 
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
@@ -188,9 +187,10 @@ function MarkAttendanceClass() {
       <AttendanceTable
         rows={rows}
         columns={columns}
-        hideColumns={['dob', 'address', 'phone','id']}
+        hideColumns={['dob', 'address', 'phone', 'id']}
         status={status}
         onStatusChange={handleStatusChange}
+        isLoading={isLoading || isLoadingStatus}
       />
     </FormComponent>
   );

@@ -13,15 +13,9 @@ import {
   useTheme,
   Menu,
   Chip,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
-  Stack,
-  Alert,
 } from '@mui/material';
 import { styled } from '@mui/system';
-import { Clock, Calendar, Users, ListFilter, X } from 'lucide-react';
+import { Clock, Calendar, Users, ListFilter } from 'lucide-react';
 import { useGetTeacherScheduleClassesQuery } from '../../../services/teacherApi';
 import EmptyList from '../../../components/common/EmptyList';
 import classHeaderImg1 from '../../../assets/images/study-bg.avif';
@@ -35,9 +29,8 @@ import FormComponent from '../../../components/common/FormComponent';
 import emptyClassesImage from '../../../assets/images/teacher-99.svg';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
-import { BootstrapDialog } from '../../../components/common/BootstrapDialog'
-import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
-
+import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';;
+import TitleHeader from '../../../components/common/TitleHeader';
 const headerImages = [
   classHeaderImg1,
   classHeaderImg2,
@@ -96,10 +89,17 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
   ].indexOf(classData.day.toLowerCase());
   const headerImage = headerImages[dayIndex % headerImages.length];
 
+  /**
+   * Handle class item click
+   * If class is already marked, open the modal to show the warning
+   * If class is not marked, navigate to the class attendance mark page
+   */
   const handleClassClick = () => {
     if (classData.isClassMarked) {
+      // Class is already marked, open the modal to show the warning
       openModal(true);
     } else {
+      // Class is not marked, navigate to the class attendance mark page
       onClick();
     }
   }
@@ -211,12 +211,17 @@ function TeacherScheduleClassPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  // classesData : State to store the data of classes
   const [classesData, setClassesData] = useState([]);
-  const [selectedDay, setSelectedDay] = useState('Today');
+
+  // anchorEl : State to manage the anchor element
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const [filterDay, setFilterDay] = useState('all')
-
+  
+  // filterDay : State to schedule class selection filter for fetch from api
+  // selectedDay : State to store the currently selected day for filtering
+  // openModal : State to manage the modal open/close state
+  const [filterDay, setFilterDay] = useState('all');
+  const [selectedDay, setSelectedDay] = useState('Today');
   const [openModal, setOpenModal] = useState(false);
 
 
@@ -232,25 +237,28 @@ function TeacherScheduleClassPage() {
   useEffect(() => {
     if (getTeacherClasses && isSuccess) {
       setClassesData(getTeacherClasses.data);
-      console.log('get teacher class : ', getTeacherClasses.data);
-
-
     }
   }, [getTeacherClasses, isSuccess]);
 
-  // Returns all classesData if selectedDay is 'All', otherwise
-  // filters classesData to only include classes that match the selectedDay
+  // when either classesData or selectedDay changes.
+  // If selectedDay is 'Today', it will filter the classes to only include today's classes.
+  // If selectedDay is 'All', it will return all classes.
+  // If selectedDay is any other value, it will filter the classes to only include classes that
   const filteredClasses = useMemo(() => {
     if (selectedDay === 'Today') {
+      // filter the classes to only include today's classes
       setFilterDay('today')
       return classesData;
     } else {
+      // reset the filter to show all classes
       setFilterDay('all')
     }
+    // if selectedDay is 'All', return all classes
     if (selectedDay === 'All') {
       return classesData;
     }
 
+    // filter the classes to only include classes that match the selectedDay
     return classesData.filter(
       (c) => c.day.toLowerCase() === selectedDay.toLowerCase(),
     );
@@ -327,6 +335,7 @@ function TeacherScheduleClassPage() {
           </Grid>
         ))}
       </Grid>
+
     );
   };
 
@@ -386,9 +395,8 @@ function TeacherScheduleClassPage() {
 
   return (
     <FormComponent
-      title="Class Schedule"
-      subTitle={`You have ${classesData.length} upcoming classes scheduled`}
     >
+      <TitleHeader title={'Schedule'}/> 
       {renderDaySelector()}
       {renderContent()}
       <ClassMarkedModal open={openModal} onClose={() => setOpenModal(false)} />
