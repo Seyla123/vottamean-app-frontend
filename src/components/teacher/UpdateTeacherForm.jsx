@@ -357,11 +357,24 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             >
               {/* Profile */}
               {previewUrl || profileImg ? (
-                <Avatar
-                  src={previewUrl || profileImg}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140 }}
-                />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={previewUrl || profileImg}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140 }}
+                  />
+                </Box>
               ) : (
                 <RandomAvatar
                   username={`${getValues('firstName')} ${getValues('lastName')}`}

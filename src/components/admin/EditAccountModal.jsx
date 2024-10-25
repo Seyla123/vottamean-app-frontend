@@ -13,6 +13,7 @@ import {
   DialogTitle,
   Stack,
   DialogActions,
+  Box,
   IconButton,
 } from '@mui/material';
 
@@ -282,11 +283,24 @@ const EditAccountModal = ({
                   size={140}
                 />
               ) : (
-                <Avatar
-                  src={previewUrl || profilePhoto}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140 }}
-                />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={previewUrl || profilePhoto}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140 }}
+                  />
+                </Box>
               )}
 
               {/* UPLOAD PROFILE IMAGE */}
