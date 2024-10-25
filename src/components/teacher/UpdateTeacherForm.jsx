@@ -310,23 +310,10 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             xs: '100%',
             sm: '800px',
           },
-          overflowY: 'auto', 
+          overflowY: 'auto',
         },
       }}
     >
-      {/* Title and close button */}
-      <Stack direction="row" justifyContent="space-between" pt={2} px={2}>
-        <DialogTitle>Edit Teacher Information</DialogTitle>
-        <IconButton
-          onClick={onClose}
-          sx={(theme) => ({
-            alignSelf: 'start',
-            color: theme.palette.grey[500],
-          })}
-        >
-          <X />
-        </IconButton>
-      </Stack>
       <Box
         sx={{
           width: '100%',
@@ -335,6 +322,27 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           boxSizing: 'border-box',
         }}
       >
+        {/* Title and close button */}
+        <Stack direction="row" justifyContent="space-between">
+          <Typography
+            fontSize={{ xs: '1.25rem', sm: '1.5rem' }}
+            component="h2"
+            fontWeight={'bold'}
+          >
+            Edit Student Information
+          </Typography>
+          <IconButton
+            onClick={onClose}
+            sx={(theme) => ({
+              alignSelf: 'start',
+              bottom:8,
+              left:2,
+              color: theme.palette.grey[500],
+            })}
+          >
+            <X />
+          </IconButton>
+        </Stack>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Form Contents */}
@@ -345,7 +353,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 justifyContent: 'flex-start',
                 alignItems: 'center',
                 gap: 2,
-                pb: 4,
+                pb:2,
+                pt:3
               }}
             >
               {/* Profile */}
@@ -397,56 +406,47 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 </StyledButton>
               </Box>
             </Box>
-
             <Divider />
-            <Box
-              sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                gap: 2,
-                mt: 2,
-              }}
-            >
-              {/* First Name */}
-              <Box sx={{ flex: 1, width: '100%' }}>
-                <Controller
-                  name="firstName"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <InputField
-                      control={control}
-                      label="First Name"
-                      name={field.name}
-                      defaultValue={field.value}
-                      placeholder="First Name"
-                      errors={errors}
-                    />
-                  )}
-                />
-              </Box>
-              {/* Last Name */}
-              <Box sx={{ flex: 1, width: '100%' }}>
-                <Controller
-                  name="lastName"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <InputField
-                      control={control}
-                      label="Last Name"
-                      placeholder="Last Name"
-                      name={field.name}
-                      defaultValue={field.value}
-                      errors={errors}
-                    />
-                  )}
-                />
-              </Box>
-            </Box>
-            {/* Gender */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+            <Stack direction={'column'} gap={2} mt={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                {/* First Name */}
+                <Box sx={{ flex: 1, width: '100%' }}>
+                  <Controller
+                    name="firstName"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <InputField
+                        control={control}
+                        label="First Name"
+                        name={field.name}
+                        defaultValue={field.value}
+                        placeholder="First Name"
+                        errors={errors}
+                      />
+                    )}
+                  />
+                </Box>
+                {/* Last Name */}
+                <Box sx={{ flex: 1, width: '100%' }}>
+                  <Controller
+                    name="lastName"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <InputField
+                        control={control}
+                        label="Last Name"
+                        placeholder="Last Name"
+                        name={field.name}
+                        defaultValue={field.value}
+                        errors={errors}
+                      />
+                    )}
+                  />
+                </Box>
+              </Stack>
+              {/* Gender */}
               <Controller
                 name="gender"
                 control={control}
@@ -463,18 +463,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   />
                 )}
               />
-            </Box>
-            {/* Date of Birth */}
-            <Box
-              sx={{
-                ...textFieldGap,
-                width: '100%',
-                gap: {
-                  xs: '12px',
-                  sm: 3,
-                },
-              }}
-            >
+              {/* Date of Birth */}
               <Controller
                 name="dob"
                 control={control}
@@ -491,18 +480,14 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   />
                 )}
               />
-            </Box>
-            {/* Phone Number */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+              {/* Phone Number */}
               <PhoneInputField
                 name="phoneNumber"
                 control={control}
                 label="Contact Number"
                 errors={errors}
               />
-            </Box>
-            {/* Address */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+              {/* Address */}
               <InputField
                 name="address"
                 required={false}
@@ -513,7 +498,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 multiline={true}
                 minRows={5}
               />
-            </Box>
+            </Stack>
             {/* Buttons */}
             <Grid item xs={12}>
               <Box
@@ -548,21 +533,3 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
 };
 
 export default UpdateTeacherForm;
-
-// STYLES
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
-  flexDirection: 'column',
-  marginBottom: { xs: '12px', sm: 3 },
-};
-const boxContainer = {
-  width: '100%',
-  marginTop: '16px',
-  display: 'flex',
-  flexDirection: 'row',
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-};
