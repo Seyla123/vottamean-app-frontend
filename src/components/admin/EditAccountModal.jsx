@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 // MUI Components
 import {
   Avatar,
-  Typography,
   Grid,
   Divider,
   DialogContent,
@@ -24,6 +23,9 @@ import PhoneInputField from '../common/PhoneInputField';
 import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
 import SomethingWentWrong from '../common/SomethingWentWrong';
+import RandomAvatar from '../common/RandomAvatar';
+import { BootstrapDialog } from '../common/BootstrapDialog';
+
 // Redux Hooks and APIs
 import {
   useUpdateUserProfileMutation,
@@ -39,8 +41,6 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
 import { ImagePlus, MapPin, Trash2, UserRoundPen, X } from 'lucide-react';
-import RandomAvatar from '../common/RandomAvatar';
-import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const EditAccountModal = ({
   open,
