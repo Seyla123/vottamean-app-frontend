@@ -5,11 +5,11 @@ import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
 import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
 import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
-import { Box, Stepper, Step, StepLabel, Typography } from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Typography, CssBaseline } from '@mui/material';
 import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
-import Logo from '../../assets/images/VOTTAMEAN.svg';
+import Logo from '../../assets/images/new-logo-name.svg';
 import image1 from '../../assets/images/image-1.jpg';
 import image2 from '../../assets/images/image-2.jpg';
 import image3 from '../../assets/images/image-3.webp';
@@ -224,8 +224,11 @@ const SignupPage = () => {
         component={'div'}
         sx={{
           width: '100%',
+          display: 'flex',
+          justifyContent: "space-between",
+          flexDirection: 'column',
           height: '100%',
-          position: 'relative',
+          gap: 2,
         }}
       >
         {/* LOGO */}
@@ -234,7 +237,6 @@ const SignupPage = () => {
           alt="wavetrack logo"
           style={{
             width: '150px',
-            position: 'absolute',
             top: '10px',
             left: '10px',
             zIndex: 10,

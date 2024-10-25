@@ -1,10 +1,9 @@
 import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { lazy } from 'react';
-import { CssBaseline, CircularProgress } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import routesConfig from './routes/routesConfig';
 const LoadingPage = lazy(() => import('./pages/LoadingPage'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const renderRoutes = (routes) =>
   routes.map(({ path, element, children }) => (
@@ -24,8 +23,6 @@ const App = () => {
       <Suspense fallback={<LoadingPage />}>
         <Routes>
           {renderRoutes(routesConfig)}
-          {/* Add a catch-all route at the end */}
-          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </>

@@ -440,6 +440,7 @@ const AttendanceTable = ({
               sx={{
                 boxShadow: 'none',
                 width: '100%',
+                maxWidth:{xs: '360px',sm:'700px', md:'1000px', lg:'1000px',xl:'1500px'},
                 mx: 'auto',
                 padding: 2,
                 display: 'flex',

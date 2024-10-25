@@ -6,17 +6,13 @@ import ResetNewPasswordPage from '../pages/auth/ResetNewPasswordPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 import VerifyTeacherEmailPage from '../pages/auth/VerifyTeacherEmailPage';
 
-// Teacher Invitation and registration
-import TeacherRegistrationPage from '../pages/admin/teacher/TeacherRegistrationPage';
-import TeacherInvitationPage from '../pages/admin/teacher/TeacherInvitationPage';
-
 // Payment
 import PaymentSuccessPage from '../pages/payment/PaymentSuccessPage';
 import PaymentFailurePage from '../pages/payment/PaymentFailurePage';
 import SubscriptionPlansPage from '../pages/payment/SubscriptionPlansPage';
 
 import UnauthorizedPage from '../pages/UnauthorizedPage';
-
+import NotFoundPage from '../pages/NotFoundPage';
 // admin
 import AdminHomePage from '../pages/admin/home/HomePage';
 
@@ -43,7 +39,6 @@ import ClassPeriodUpdatePage from '../pages/admin/class-period/ClassPeriodUpdate
 import TeacherListPage from '../pages/admin/teacher/TeacherListPage';
 import TeacherDetailPage from '../pages/admin/teacher/TeacherDetailPage';
 import TeacherCreatePage from '../pages/admin/teacher/TeacherCreatePage';
-import TeacherUpdatePage from '../pages/admin/teacher/TeacherUpdatePage';
 
 import ClassListPage from '../pages/admin/class/ClassListPage';
 import ClassDetailPage from '../pages/admin/class/ClassDetailPage';
@@ -65,6 +60,7 @@ import TeacherAccountProfilePage from '../pages/teacherSite/settings/TeacherAcco
 import Layout from '../components/layout/Layout';
 import ProtectedRoutes from './ProtectedRoutes';
 import TeacherHomePage from '../pages/teacherSite/home/TeacherHomePage';
+import PageTitle from './PageTitle';
 // Routes configuration
 const routesConfig = [
   {
@@ -77,57 +73,82 @@ const routesConfig = [
     children: [
       {
         path: 'signin',
-        element: <SigninPage />,
+        element: <>
+          <PageTitle title={'Sign In'} />
+          <SigninPage />
+        </>,
       },
       {
         path: 'signup',
-        element: <SignupPage />,
+        element: <>
+          <PageTitle title={'Sing Up'} />
+          <SignupPage />
+        </>,
       },
       {
         path: 'verify-email/:verificationToken',
-        element: <VerifyEmailPage />,
+        element: <>
+          <PageTitle title={'Verify Email'} />
+          <VerifyEmailPage />,
+        </>
       },
       {
         path: 'verify-teacher-email/:verificationToken',
-        element: <VerifyTeacherEmailPage />,
+        element: <>
+          <PageTitle title={'Verify Email'} />
+          <VerifyTeacherEmailPage />
+        </>
       },
       {
         path: 'forgot-password',
-        element: <ForgotPasswordPage />,
+        element: <>
+          <PageTitle title={'Forgot Password'} />
+          <ForgotPasswordPage />
+        </>
       },
       {
         path: 'reset-password/:token',
-        element: <ResetNewPasswordPage />,
-      },
-      {
-        path: 'complete-registration/:token',
-        element: <TeacherRegistrationPage />,
-      },
+        element: <>
+          <PageTitle title={'Reset Password'} />
+          <ResetNewPasswordPage />
+        </>
+      }
     ],
   },
   {
     path: 'teacher',
-    element: <ProtectedRoutes teacherSite></ProtectedRoutes>,
+    element: <ProtectedRoutes teacherSite />,
     children: [
       {
         path: 'home',
         children: [
           {
             path: '',
-            element: <TeacherHomePage />,
+            element: <>
+              <PageTitle title={'Home'} />
+              <TeacherHomePage />
+            </>,
           },
         ],
       },
       {
         path: 'schedule',
+        title: 'Schedule',
         children: [
           {
             path: '',
-            element: <TeacherScheduleClassPage />,
+            element: <>
+              <PageTitle title={'Teacher Schedule'} />
+              <TeacherScheduleClassPage />
+            </>,
           },
           {
             path: ':id',
-            element: <MarkAttendanceClass />,
+            element:
+              <>
+                <PageTitle title={'Mark Attendance'} />
+                <MarkAttendanceClass />
+              </>,
           },
         ],
       },
@@ -136,7 +157,11 @@ const routesConfig = [
         children: [
           {
             path: 'account',
-            element: <TeacherAccountProfilePage />,
+            element:
+              <>
+                <PageTitle title={'Account Settings'} />
+                <TeacherAccountProfilePage />
+              </>,
           },
         ],
       },
@@ -148,7 +173,10 @@ const routesConfig = [
     children: [
       {
         path: 'home',
-        element: <AdminHomePage />,
+        element: <>
+          <PageTitle title={'Home'} />
+          <AdminHomePage />
+        </>,
         children: [],
       },
       {
@@ -156,79 +184,122 @@ const routesConfig = [
         children: [
           {
             path: '',
-            element: <SessionListPage />,
+            element: <>
+              <PageTitle title={'Sessions'} />
+              <SessionListPage />
+            </>,
           },
           {
             path: ':id',
-            element: <SessionDetailPage />,
+            element: <>
+              <PageTitle title={'Sessions'} />
+              <SessionDetailPage />
+            </>,
           },
           {
             path: 'create',
-            element: <SessionCreatePage />,
+            element: <>
+              <PageTitle title={'Sessions'} />
+              <SessionCreatePage />
+            </>,
           },
           {
             path: 'update/:id',
-            element: <SessionUpdatePage />,
+            element: <>
+              <PageTitle title={'Sessions'} />
+              <SessionUpdatePage />
+            </>,
           },
         ],
       },
       {
         path: 'students',
+        title: 'Students',
         children: [
           {
             path: '',
-            element: <StudentListPage />,
+            element: <>
+              <PageTitle title={'Students'} />
+              <StudentListPage />
+            </>,
           },
           {
             path: ':id',
-            element: <StudentDetailPage />,
+            element: <>
+              <PageTitle title={'Students'} />
+              <StudentDetailPage />
+            </>,
           },
           {
             path: 'create',
-            element: <StudentCreatePage />,
+            element: <>
+              <PageTitle title={'Students'} />
+              <StudentCreatePage />
+            </>,
           },
           {
             path: 'update/:id',
-            element: <StudentUpdatePage />,
+            element: <>
+              <PageTitle title={'Students'} />
+              <StudentUpdatePage />
+            </>,
           },
         ],
       },
       {
         path: 'payment',
-        noLayout:true,
+        noLayout: true,
         children: [
           {
             path: '',
-            element: <SubscriptionPlansPage />,
+            element: <>
+              <PageTitle title={'Subscription Plans'} />
+              <SubscriptionPlansPage />
+            </>,
           },
           {
             path: 'success',
-            element: <PaymentSuccessPage />,
+            element: <>
+              <PageTitle title={'Payment Success'} />
+              <PaymentSuccessPage />
+            </>,
           },
           {
-            path:'failure',
-            element: <PaymentFailurePage />,
+            path: 'failure',
+            element: <>
+              <PageTitle title={'Payment Failure'} />
+              <PaymentFailurePage />
+            </>,
           }
         ],
       },
       {
         path: 'subjects',
+        element: <>
+          <PageTitle title={'Subjects'} />
+          <SubjectListPage />
+        </>,
         children: [
           {
-            path: '',
-            element: <SubjectListPage />,
-          },
-          {
             path: ':id',
-            element: <SubjectDetailPage />,
+            element: <>
+              <PageTitle title={'Subjects'} />
+              <SubjectDetailPage />
+            </>,
           },
           {
             path: 'create',
-            element: <SubjectCreatePage />,
+            element: <>
+              <PageTitle title={'Subjects'} />
+              <SubjectCreatePage />
+            </>,
           },
           {
             path: 'update/:id',
-            element: <SubjectUpdatePage />,
+            element: <>
+              <PageTitle title={'Subjects'} />
+              <SubjectUpdatePage />
+            </>,
           },
         ],
       },
@@ -237,19 +308,31 @@ const routesConfig = [
         children: [
           {
             path: '',
-            element: <ClassPeriodListPage />,
+            element: <>
+              <PageTitle title={'Class Periods'} />
+              <ClassPeriodListPage />
+            </>,
           },
           {
             path: ':id',
-            element: <ClassPeriodDetailPage />,
+            element: <>
+              <PageTitle title={'Class Periods'} />
+              <ClassPeriodDetailPage />
+            </>,
           },
           {
             path: 'create',
-            element: <ClassPeriodCreatePage />,
+            element: <>
+              <PageTitle title={'Class Periods'} />
+              <ClassPeriodCreatePage />
+            </>,
           },
           {
             path: 'update/:id',
-            element: <ClassPeriodUpdatePage />,
+            element: <>
+              <PageTitle title={'Class Periods'} />
+              <ClassPeriodUpdatePage />
+            </>,
           },
         ],
       },
@@ -258,23 +341,24 @@ const routesConfig = [
         children: [
           {
             path: '',
-            element: <TeacherListPage />,
+            element: <>
+              <PageTitle title={'Teachers'} />
+              <TeacherListPage />
+            </>,
           },
           {
             path: ':id',
-            element: <TeacherDetailPage />,
+            element: <>
+              <PageTitle title={'Teachers'} />
+              <TeacherDetailPage />
+            </>,
           },
           {
             path: 'create',
-            element: <TeacherCreatePage />,
-          },
-          {
-            path: 'update/:id',
-            element: <TeacherUpdatePage />,
-          },
-          {
-            path: 'invitation',
-            element: <TeacherInvitationPage />,
+            element: <>
+              <PageTitle title={'Teachers'} />
+              <TeacherCreatePage />
+            </>,
           },
         ],
       },
@@ -283,64 +367,77 @@ const routesConfig = [
         children: [
           {
             path: '',
-            element: <ClassListPage />,
+            element: <>
+              <PageTitle title={'Classes'} />
+              <ClassListPage />
+            </>,
           },
           {
             path: ':id',
-            element: <ClassDetailPage />,
+            element: <>
+              <PageTitle title={'Classes'} />
+              <ClassDetailPage />
+            </>,
           },
           {
             path: 'create',
-            element: <ClassCreatePage />,
+            element: <>
+              <PageTitle title={'Classes'} />
+              <ClassCreatePage />
+            </>,
           },
           {
             path: 'update/:id',
-            element: <ClassUpdatePage />,
+            element: <>
+              <PageTitle title={'Classes'} />
+              <ClassUpdatePage />
+            </>,
           },
         ],
       },
       {
         path: 'attendance',
+        title: 'Attendance',
         children: [
           {
             path: '',
-            element: <AttendanceListPage />,
+            element: <>
+              <PageTitle title={'Attendance'} />
+              <AttendanceListPage />
+            </>,
           },
           {
             path: ':id',
-            element: <AttendanceViewPage />,
+            element: <>
+              <PageTitle title={'Attendance'} />
+              <AttendanceViewPage />
+            </>,
           },
         ],
       },
       {
         path: 'reports',
+        title: 'Reports',
         children: [
           {
             path: 'attendance',
-            element: <AttendanceReportPage />,
+            element: <>
+              <PageTitle title={'Attendance Reports'} />
+              <AttendanceReportPage />
+            </>,
           },
         ],
       },
       {
         path: 'settings',
+        title: 'Settings',
         children: [
           {
             path: 'account',
-            children: [
-              {
-                path: '',
-                element: <AccountSettingsPage />,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        path: 'reports',
-        children: [
-          {
-            path: 'attendance',
-            element: <AttendanceReportPage />,
+            element: <>
+              <PageTitle title={'Account'} />
+              <AccountSettingsPage />
+            </>,
           },
         ],
       },
@@ -348,7 +445,17 @@ const routesConfig = [
   },
   {
     path: '/unauthorized',
-    element: <UnauthorizedPage />,
+    element: <>
+      <PageTitle title={'Unauthorized Access'} />
+      <UnauthorizedPage />
+    </>,
+  },
+  {
+    path: '*',
+    element: <>
+      <PageTitle title={'404 Page Not Found'} />
+      <NotFoundPage />
+    </>,
   },
 ];
 

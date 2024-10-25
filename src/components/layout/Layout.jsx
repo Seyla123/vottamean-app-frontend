@@ -7,7 +7,7 @@ import { useGetUserProfileQuery } from '../../services/userApi';
 import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
-import Logo from '../../assets/images/VOTTAMEAN.svg';
+import Logo from '../../assets/images/new-logo-name.svg';
 import { Box, Container } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -100,7 +100,6 @@ const Layout = ({ teacherSite, adminSite }) => {
             style={{
               width: '150px',
               height: '100%',
-              objectFit: 'contain',
             }}
           />
         ),
@@ -116,7 +115,7 @@ const Layout = ({ teacherSite, adminSite }) => {
         },
       }}
       authentication={{
-        signIn: () => {},
+        signIn: () => { },
         signOut: handleLogout,
       }}
     >

@@ -28,7 +28,7 @@ import PasswordInput from '../../components/auth/PasswordInput';
 
 // Icons
 import BackgroundImage from '../../assets/images/reset-password-illustration.svg';
-import Logo from '../../assets/images/VOTTAMEAN.svg';
+import Logo from '../../assets/images/new-logo-name.svg';
 
 // Validator
 import { ResetPasswordValidator } from '../../validators/validationSchemas';
@@ -37,13 +37,13 @@ import StyledButton from '../../components/common/StyledMuiButton';
 const ResetNewPasswordPage = () => {
   const navigate = useNavigate();
   const { token } = useParams();
-  
-// - showPassword: a boolean to show/hide password input field
-// - isSubmit: a boolean to track if the form is submitted or not
-const [showPassword, setShowPassword] = useState(false);
-const [isSubmit, setIsSubmit] = useState(false);
 
-// - passwordValidation: an object to store the validation result of the password
+  // - showPassword: a boolean to show/hide password input field
+  // - isSubmit: a boolean to track if the form is submitted or not
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+
+  // - passwordValidation: an object to store the validation result of the password
   const [passwordValidation, setPasswordValidation] = useState({
     length: false,
     number: false,
@@ -382,7 +382,7 @@ const ResetPasswordSubmit = ({
           subTitle={
             isSuccess
               ? 'You can now sign in with your new password. '
-              : ( error ? `${error?.data?.message}. Please try again.`:'We were unable to reset your password at this time. Please try again later.')
+              : (error ? `${error?.data?.message}. Please try again.` : 'We were unable to reset your password at this time. Please try again later.')
           }
         />
         <form>

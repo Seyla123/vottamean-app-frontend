@@ -1,7 +1,7 @@
 import React from 'react';
-import { AppBar,Stack, Toolbar, CssBaseline } from '@mui/material';
+import { AppBar, Stack, Toolbar, CssBaseline } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/images/VOTTAMEAN.svg';
+import Logo from '../../assets/images/new-logo-name.svg';
 const ShortHeader = ({ children }) => {
   return (
     <>
@@ -15,7 +15,7 @@ const ShortHeader = ({ children }) => {
             />
           </Link>
         </Toolbar>
-        <Stack sx={{height: '80vh', justifyContent: 'center', alignItems: 'center', display:'flex', width: '100%'}}>
+        <Stack sx={{ height: '80vh', justifyContent: 'center', alignItems: 'center', display: 'flex', width: '100%' }}>
           {children}
         </Stack>
       </AppBar>
