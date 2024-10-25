@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/images/VOTTAMEAN.svg';
+import Logo from '../../assets/images/new-logo-name.svg';
 
 // Redux hooks and actions
 import { useForgotPasswordMutation } from '../../services/authApi';
