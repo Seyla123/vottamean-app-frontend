@@ -711,7 +711,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                 variant="contained"
                 disabled={isUpdateLoading}
               >
-                {isUpdateLoading ? 'Saving...' : 'Save'}
+                {isUpdateLoading ? 'Saving...' : 'Save Change'}
               </StyledButton>
             </Box>
           </form>

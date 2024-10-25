@@ -22,6 +22,7 @@ import { transformedForSelector } from '../../../utils/formatHelper'
 // - Validation Schema
 import { SessionValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 // Main Component
 const SessionCreatePage = () => {
@@ -112,9 +113,8 @@ const SessionCreatePage = () => {
 
   return (
     <FormComponent
-      title="Add session"
-      subTitle="Please Fill session information"
     >
+      <TitleHeader  title="Create Session" />
       <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
         <Box sx={containerStyle}>
           <Box sx={selectedStyle}>
@@ -192,7 +192,7 @@ const SessionCreatePage = () => {
             disabled={isLoading}
             onClick={handleSubmit(onSubmit)}
           >
-            {isLoading ? 'Adding...' : 'Add'}
+            {isLoading ? 'Creating...' : 'Create'}
           </StyledButton>
         </Stack>
       </CardComponent>
