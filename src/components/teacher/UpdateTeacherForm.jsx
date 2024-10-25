@@ -8,10 +8,11 @@ import {
   Box,
   Avatar,
   Typography,
-  Button,
   Grid,
   Divider,
   Modal,
+  IconButton,
+  Stack,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -37,7 +38,7 @@ import { setSnackbar } from '../../store/slices/uiSlice';
 import { formatTeacherFormData } from '../../utils/formatData';
 
 // icons from luicide react
-import { ImagePlus, Trash2 } from 'lucide-react';
+import { ImagePlus, Trash2, X } from 'lucide-react';
 
 // Custom components
 import InputField from '../common/InputField';
@@ -288,7 +289,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   };
 
   // Fetch data error message
-  if (isError) {
+  if ( isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
 
@@ -299,7 +300,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       key={isOpen ? 'open' : 'closed'}
       open={isOpen}
       onClose={onClose}
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , overflowY: 'scroll' }}
     >
       <Box
         sx={{
@@ -310,14 +311,33 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         }}
       >
         {/* Title */}
-        <Typography
-          variant="h5"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          my="auto"
+          mb={3}
         >
-          Edit Teacher Information
-        </Typography>
+          <Typography
+            sx={{
+              fontWeight: 'bold',
+              fontSize: {
+                xs: '1.25rem', // equivalent to h6
+                sm: '1.5rem',  // equivalent to h5
+              },
+            }}
+          >
+            Edit Teacher Information
+          </Typography>
+          <IconButton
+            onClick={onClose}
+            sx={(theme) => ({
+              alignSelf:'start',
+              color: theme.palette.grey[500],
+            })}
+          >
+            <X />
+          </IconButton>
+        </Stack>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box
