@@ -13,6 +13,7 @@ import {
   Modal,
   IconButton,
   Stack,
+  DialogTitle,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -48,6 +49,7 @@ import RandomAvatar from '../common/RandomAvatar';
 import StyledButton from '../common/StyledMuiButton';
 import DOBPicker from '../common/DOBPicker';
 import SomethingWentWrong from '../common/SomethingWentWrong';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const navigate = useNavigate();
@@ -289,72 +291,61 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   };
 
   // Fetch data error message
-  if ( isError) {
+  if (isError) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
 
   return (
-    <Modal
+    <BootstrapDialog
       aria-labelledby="update-teacher"
       aria-describedby="update-teacher-info"
       key={isOpen ? 'open' : 'closed'}
       open={isOpen}
       onClose={onClose}
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , overflowY: 'scroll' }}
+      fullWidth
+      maxWidth="md"
+      sx={{
+        '& .MuiDialog-paper': {
+          width: {
+            xs: '100%',
+            sm: '800px',
+          },
+          overflowY: 'auto', 
+        },
+      }}
     >
+      {/* Title and close button */}
+      <Stack direction="row" justifyContent="space-between" pt={2} px={2}>
+        <DialogTitle>Edit Teacher Information</DialogTitle>
+        <IconButton
+          onClick={onClose}
+          sx={(theme) => ({
+            alignSelf: 'start',
+            color: theme.palette.grey[500],
+          })}
+        >
+          <X />
+        </IconButton>
+      </Stack>
       <Box
         sx={{
-          width: '800px',
+          width: '100%',
           bgcolor: '#ffffff',
-          borderRadius: '8px',
           p: 4,
+          boxSizing: 'border-box',
         }}
       >
-        {/* Title */}
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          my="auto"
-          mb={3}
-        >
-          <Typography
-            sx={{
-              fontWeight: 'bold',
-              fontSize: {
-                xs: '1.25rem', // equivalent to h6
-                sm: '1.5rem',  // equivalent to h5
-              },
-            }}
-          >
-            Edit Teacher Information
-          </Typography>
-          <IconButton
-            onClick={onClose}
-            sx={(theme) => ({
-              alignSelf:'start',
-              color: theme.palette.grey[500],
-            })}
-          >
-            <X />
-          </IconButton>
-        </Stack>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Form Contents */}
             <Box
               sx={{
-                width: '100%',
                 display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
                 justifyContent: 'flex-start',
                 alignItems: 'center',
                 gap: 2,
-                pb: {
-                  xs: 2,
-                  sm: 4,
-                },
-                pt: {
-                  xs: 0,
-                  sm: 4,
-                },
+                pb: 4,
               }}
             >
               {/* Profile */}
@@ -380,7 +371,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               />
               <Box
                 display="flex"
-                flexDirection="column"
+                flexDirection={{ xs: 'row', sm: 'column' }}
                 alignItems="start"
                 gap={2}
               >
@@ -406,9 +397,17 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 </StyledButton>
               </Box>
             </Box>
+
             <Divider />
-            {/* Form */}
-            <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2,
+                mt: 2,
+              }}
+            >
               {/* First Name */}
               <Box sx={{ flex: 1, width: '100%' }}>
                 <Controller
@@ -544,7 +543,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           </form>
         </LocalizationProvider>
       </Box>
-    </Modal>
+    </BootstrapDialog>
   );
 };
 
