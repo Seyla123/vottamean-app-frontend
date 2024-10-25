@@ -38,16 +38,7 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
-import {
-  Calendar,
-  ImagePlus,
-  MapPin,
-  Phone,
-  Trash2,
-  UserRoundPen,
-  Users,
-  X,
-} from 'lucide-react';
+import { ImagePlus, MapPin, Trash2, UserRoundPen, X } from 'lucide-react';
 import RandomAvatar from '../common/RandomAvatar';
 import { BootstrapDialog } from '../common/BootstrapDialog';
 

@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { Box, Stack } from '@mui/material';
 
 // Lucid Icons
-import { UserRoundPlus, Calendar } from 'lucide-react';
+import { UserRoundPen } from 'lucide-react';
 
 // Custom Component
 import HeaderTitle from './HeaderTitle';
@@ -89,7 +89,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               label="First Name"
               placeholder="First Name"
               errors={errors}
-              icon={UserRoundPlus}
+              icon={UserRoundPen}
             />
 
             <InputField
@@ -98,7 +98,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
               label="Last Name"
               placeholder="Last Name"
               errors={errors}
-              icon={UserRoundPlus}
+              icon={UserRoundPen}
             />
           </Box>
 
