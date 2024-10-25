@@ -38,7 +38,7 @@ function CancelSubscription({ adminId }) {
 
   return (
     <>
-      <StyledButton disabled={isLoading} sx={{ bgcolor: 'error.main', '&:hover': { bgcolor: 'error.light' } }} variant="contained" type="submit" size="small" onClick={() => setOpen(true)}>
+      <StyledButton disabled={isLoading} variant="outlined" type="submit" color='error' size="small" onClick={() => setOpen(true)}>
         Cancel Subscription
       </StyledButton>
       <CancelSubscriptionModal isLoading={isLoading} open={open} onClose={() => setOpen(false)} onCancel={handleCancel} />

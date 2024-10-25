@@ -71,6 +71,17 @@ const AccountSettingsPage = () => {
     }
   }, [user, dispatch]);
 
+    // Handle delete button click
+    const handleDeleteAccount = async () => {
+      try {
+        await deleteUserAccount().unwrap();
+
+        window.location.href = '/auth/signin';
+      } catch (error) {
+        console.error('Failed to delete account:', error);
+      }
+    };
+
   // Handle tab switch
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -145,7 +156,7 @@ const AccountSettingsPage = () => {
 
             <TabPanel sx={{ flexGrow: 1 }} value="2">
               {/* SECURITY VIEW */}
-              <SecurityView handleDeleteAccount={deleteUserAccount} />
+              <SecurityView handleDeleteAccount={handleDeleteAccount} />
             </TabPanel>
           </TabContext>
         </Box>

@@ -63,8 +63,7 @@ const AccountSettingsPage = () => {
   const handleDeleteAccount = async () => {
     try {
       await deleteUserAccount().unwrap();
-
-      navigate('/auth/signin');
+      window.location.href = '/auth/signin';
     } catch (error) {
       console.error('Failed to delete account:', error);
     }
