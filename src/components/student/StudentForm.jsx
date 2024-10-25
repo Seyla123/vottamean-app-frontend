@@ -16,6 +16,7 @@ import {
   Stack,
   capitalize,
   InputAdornment,
+  Box,
 } from '@mui/material';
 import { UserRoundPen, Trash2, ImagePlus, School } from 'lucide-react';
 
@@ -53,7 +54,7 @@ const StudentForm = ({
     isLoading,
     error,
     isError,
-  } = useGetClassesDataQuery({active : 1});
+  } = useGetClassesDataQuery({ active: 1 });
 
   // React Hook Form
   const {
@@ -182,11 +183,24 @@ const StudentForm = ({
         {/* Profile */}
         <Stack direction="row" gap={2} alignItems="center" py={3}>
           {photoPreview || photoFile ? (
-            <Avatar
-              src={photoSrc}
-              alt="Profile"
-              sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-            />
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 1,
+                position: 'relative',
+                boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                p: 0.5,
+                borderRadius: 50,
+              }}
+            >
+              <Avatar
+                src={photoSrc}
+                alt="Profile"
+                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+              />
+            </Box>
           ) : (
             <RandomAvatar
               username={`${getValues('firstName')} ${getValues('lastName')}`}

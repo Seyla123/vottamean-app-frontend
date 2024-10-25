@@ -8,10 +8,10 @@ import {
   Box,
   Avatar,
   Typography,
-  Button,
   Grid,
   Divider,
-  Modal,
+  IconButton,
+  Stack,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -37,7 +37,7 @@ import { setSnackbar } from '../../store/slices/uiSlice';
 import { formatTeacherFormData } from '../../utils/formatData';
 
 // icons from luicide react
-import { ImagePlus, Trash2 } from 'lucide-react';
+import { ImagePlus, Trash2, X } from 'lucide-react';
 
 // Custom components
 import InputField from '../common/InputField';
@@ -47,6 +47,7 @@ import RandomAvatar from '../common/RandomAvatar';
 import StyledButton from '../common/StyledMuiButton';
 import DOBPicker from '../common/DOBPicker';
 import SomethingWentWrong from '../common/SomethingWentWrong';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   const navigate = useNavigate();
@@ -293,57 +294,87 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   }
 
   return (
-    <Modal
+    <BootstrapDialog
       aria-labelledby="update-teacher"
       aria-describedby="update-teacher-info"
       key={isOpen ? 'open' : 'closed'}
       open={isOpen}
       onClose={onClose}
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      fullWidth
+      maxWidth="md"
+      sx={{
+        '& .MuiDialog-paper': {
+          width: {
+            xs: '100%',
+            sm: '800px',
+          },
+          overflowY: 'auto',
+        },
+      }}
     >
       <Box
         sx={{
-          width: '800px',
+          width: '100%',
           bgcolor: '#ffffff',
-          borderRadius: '8px',
           p: 4,
+          boxSizing: 'border-box',
         }}
       >
-        {/* Title */}
-        <Typography
-          variant="h5"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
-        >
-          Edit Teacher Information
-        </Typography>
+        {/* Title and close button */}
+        <Stack direction="row" justifyContent="space-between">
+          <Typography
+            fontSize={{ xs: '1.25rem', sm: '1.5rem' }}
+            component="h2"
+            fontWeight={'bold'}
+          >
+            Edit Teacher Information
+          </Typography>
+          <IconButton
+            onClick={onClose}
+            sx={(theme) => ({
+              alignSelf: 'start',
+              bottom: 8,
+              left: 2,
+              color: theme.palette.grey[500],
+            })}
+          >
+            <X />
+          </IconButton>
+        </Stack>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Form Contents */}
             <Box
               sx={{
-                width: '100%',
                 display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
                 justifyContent: 'flex-start',
                 alignItems: 'center',
                 gap: 2,
-                pb: {
-                  xs: 2,
-                  sm: 4,
-                },
-                pt: {
-                  xs: 0,
-                  sm: 4,
-                },
+                pb: 2,
+                pt: 3,
               }}
             >
               {/* Profile */}
               {previewUrl || profileImg ? (
-                <Avatar
-                  src={previewUrl || profileImg}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140 }}
-                />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={previewUrl || profileImg}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140 }}
+                  />
+                </Box>
               ) : (
                 <RandomAvatar
                   username={`${getValues('firstName')} ${getValues('lastName')}`}
@@ -360,7 +391,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               />
               <Box
                 display="flex"
-                flexDirection="column"
+                flexDirection={{ xs: 'row', sm: 'column' }}
                 alignItems="start"
                 gap={2}
               >
@@ -374,7 +405,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                     Upload
                   </StyledButton>
                 </label>
-
                 <StyledButton
                   variant="outlined"
                   size="small"
@@ -387,10 +417,10 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               </Box>
             </Box>
             <Divider />
-            {/* Form */}
-            <Box display={'flex'} flexDirection={'row'} sx={boxContainer}>
-              {/* First Name */}
-              <Box sx={{ flex: 1, width: '100%' }}>
+            {/* INPUT FIELDS */}
+            <Stack direction={'column'} gap={2} mt={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                {/* First Name */}
                 <Controller
                   name="firstName"
                   control={control}
@@ -406,9 +436,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                     />
                   )}
                 />
-              </Box>
-              {/* Last Name */}
-              <Box sx={{ flex: 1, width: '100%' }}>
+                {/* Last Name */}
                 <Controller
                   name="lastName"
                   control={control}
@@ -424,10 +452,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                     />
                   )}
                 />
-              </Box>
-            </Box>
-            {/* Gender */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+              </Stack>
+              {/* Gender */}
               <Controller
                 name="gender"
                 control={control}
@@ -444,18 +470,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   />
                 )}
               />
-            </Box>
-            {/* Date of Birth */}
-            <Box
-              sx={{
-                ...textFieldGap,
-                width: '100%',
-                gap: {
-                  xs: '12px',
-                  sm: 3,
-                },
-              }}
-            >
+              {/* Date of Birth */}
               <Controller
                 name="dob"
                 control={control}
@@ -472,18 +487,14 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                   />
                 )}
               />
-            </Box>
-            {/* Phone Number */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+              {/* Phone Number */}
               <PhoneInputField
                 name="phoneNumber"
                 control={control}
                 label="Contact Number"
                 errors={errors}
               />
-            </Box>
-            {/* Address */}
-            <Box sx={{ ...textFieldGap, width: '100%' }}>
+              {/* Address */}
               <InputField
                 name="address"
                 required={false}
@@ -494,7 +505,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 multiline={true}
                 minRows={5}
               />
-            </Box>
+            </Stack>
             {/* Buttons */}
             <Grid item xs={12}>
               <Box
@@ -524,26 +535,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           </form>
         </LocalizationProvider>
       </Box>
-    </Modal>
+    </BootstrapDialog>
   );
 };
 
 export default UpdateTeacherForm;
-
-// STYLES
-const textFieldGap = {
-  display: 'flex',
-  gap: 0.5,
-  flexDirection: 'column',
-  marginBottom: { xs: '12px', sm: 3 },
-};
-const boxContainer = {
-  width: '100%',
-  marginTop: '16px',
-  display: 'flex',
-  flexDirection: 'row',
-  gap: {
-    xs: '12px',
-    sm: 3,
-  },
-};

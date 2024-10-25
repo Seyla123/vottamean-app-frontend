@@ -221,11 +221,24 @@ function TeacherDetailPage() {
                 sx={{ py: 4 }}
               >
                 {formattedTeacher.photo ? (
-                  <Avatar
-                    src={formattedTeacher.photo}
-                    alt="Profile"
-                    sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-                  />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 1,
+                      position: 'relative',
+                      boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                      p: 0.5,
+                      borderRadius: 50,
+                    }}
+                  >
+                    <Avatar
+                      src={formattedTeacher.photo}
+                      alt="Profile"
+                      sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                    />{' '}
+                  </Box>
                 ) : (
                   <RandomAvatar
                     username={formattedTeacher.fullName}
@@ -433,8 +446,8 @@ const GridDetail = ({ icon, label, value }) => {
         />
       </Grid>
       <Grid item xs={12} sm={8}>
-        <Typography 
-        component={'div'}
+        <Typography
+          component={'div'}
           variant="body2"
           sx={{
             textTransform: 'capitalize',

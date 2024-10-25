@@ -146,11 +146,24 @@ const TeacherInfo = ({
           <Box sx={profileContainer}>
             {/* Profile */}
             {photoPreview || photoFile ? (
-              <Avatar
-                src={photoSrc}
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-              />
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 1,
+                  position: 'relative',
+                  boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                  p: 0.5,
+                  borderRadius: 50,
+                }}
+              >
+                <Avatar
+                  src={photoSrc}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                />
+              </Box>
             ) : (
               <RandomAvatar
                 username={`${getValues('firstName')} ${getValues('lastName')}`}

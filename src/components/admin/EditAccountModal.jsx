@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -7,13 +7,13 @@ import dayjs from 'dayjs';
 // MUI Components
 import {
   Avatar,
-  Typography,
   Grid,
   Divider,
   DialogContent,
   DialogTitle,
   Stack,
   DialogActions,
+  Box,
   IconButton,
 } from '@mui/material';
 
@@ -23,6 +23,9 @@ import InputField from '../common/InputField';
 import PhoneInputField from '../common/PhoneInputField';
 import GenderSelect from '../common/GenderSelect';
 import DOBPicker from '../common/DOBPicker';
+import SomethingWentWrong from '../common/SomethingWentWrong';
+import RandomAvatar from '../common/RandomAvatar';
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 // Redux Hooks and APIs
 import {
@@ -39,8 +42,6 @@ import { UserProfileValidator } from '../../validators/validationSchemas';
 // UI Slice for snackbar
 import { setSnackbar } from '../../store/slices/uiSlice';
 import { ImagePlus, MapPin, Trash2, UserRoundPen, X } from 'lucide-react';
-import RandomAvatar from '../common/RandomAvatar';
-import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const EditAccountModal = ({
   open,
@@ -49,21 +50,36 @@ const EditAccountModal = ({
   userName,
   userGender,
   checkUserRole,
+  onPhotoUpdate,
 }) => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
 
-  // - Redux hooks update user api
-  const [updateUserProfile, { isLoading: isUpdateLoading, isError, error }] =
-    useUpdateUserProfileMutation();
+  // - Reference to the photo preview image, sed to reset the file input after a new image is selected
+  const photoPreviewRef = useRef(null);
 
-  // - Redux hooks get user api
-  const { data: userProfile, isLoading, isSuccess } = useGetUserProfileQuery();
+  // - useUpdateUserProfileMutation : a hook that returns a function to update user profile
+  const [
+    updateUserProfile,
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      error: updateError,
+      isSuccess: isUpdateSuccess,
+    },
+  ] = useUpdateUserProfileMutation();
 
-  // - State to store original form values
+  // - useGetUserProfileQuery : a hook that returns a function to get user profile and information
+  const {
+    data: userProfile,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  } = useGetUserProfileQuery();
+
+  // - State to store original form values for comparison purposes
   const [originalData, setOriginalData] = useState(null);
-
-  const [dob, setDob] = useState(null);
 
   // - State to store selected image file
   const [selectedFile, setSelectedFile] = useState(null);
@@ -74,6 +90,10 @@ const EditAccountModal = ({
   // Add a new state to track if the profile photo should be removed
   const [removePhoto, setRemovePhoto] = useState(false);
 
+  // - State to store the date of birth
+  const [dob, setDob] = useState(null);
+
+  // - Check if the user is a teacher
   const disableInputIfTeacher = checkUserRole === 'teacher';
 
   // - Form state management
@@ -107,6 +127,30 @@ const EditAccountModal = ({
     }
   }, [isSuccess, userProfile, reset]);
 
+  // Handle success and error of updating user profile
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      // show success snackbar and close the modal
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Profile updated successfully',
+          severity: 'success',
+        }),
+      );
+      onClose();
+    } else if (isUpdateError) {
+      // show error snackbar with the error message
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Failed to update profile: ${updateError?.data?.message || 'Unknown error'}`,
+          severity: 'error',
+        }),
+      );
+    }
+  }, [isUpdateSuccess, isUpdateError, updateError, dispatch, onClose]);
+
   // - Handle image file selection and preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -117,6 +161,7 @@ const EditAccountModal = ({
     ) {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
+      setRemovePhoto(false); // Reset the removePhoto state when a new file is selected
     } else {
       dispatch(
         setSnackbar({
@@ -128,21 +173,37 @@ const EditAccountModal = ({
     }
   };
 
+  // - Handle remove photo
+  const handleRemovePhoto = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setRemovePhoto(true); // trigger the random avatar
+  };
+
   // - Handle form submission
   const onSubmit = async (data) => {
+    // Fetch current form values
     const currentData = getValues();
+
+    // Check if form data has changed
     const isDataChanged =
       JSON.stringify(currentData) !== JSON.stringify(originalData);
+
+    // Check if a new image has been uploaded
     const isImageUploaded = selectedFile !== null;
+
+    // Check if photo removal has been requested
     const isPhotoRemoved = removePhoto;
 
+    // If no data changes, no image upload, and no photo removal, inform user
     if (!isDataChanged && !isImageUploaded && !isPhotoRemoved) {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'No changes detected',
+          message: 'No changes detected.',
           severity: 'info',
         }),
+        onClose(),
       );
       return;
     }
@@ -150,57 +211,43 @@ const EditAccountModal = ({
     // Create a new FormData object for multipart/form-data
     const formData = new FormData();
 
-    // Handle photo upload or removal
+    // If a new image is selected, add it to the form data
+    // Also, update the photo in MyProfileView file
     if (selectedFile) {
       formData.append('photo', selectedFile);
+      onPhotoUpdate(URL.createObjectURL(selectedFile)); // Update photo in MyProfileView
     } else if (isPhotoRemoved) {
+      // If the photo removal checkbox is checked, add a remove_photo parameter to the form data
+      // Also, clear the photo in MyProfileView
       formData.append('remove_photo', 'true');
+      onPhotoUpdate('');
     }
 
-    // Append the other fields, excluding the old photo URL if it's part of the `data`
+    // Iterate through the form data and add all the fields except for the photo
     Object.keys(data).forEach((key) => {
       if (key !== 'photo') {
-        // Exclude old photo URL
         formData.append(key, data[key]);
       }
     });
 
-    try {
-      if (checkUserRole === 'teacher') {
-        // teacher role can only upload photo
-        const teacherForm = new FormData();
-        teacherForm.append('photo', selectedFile);
-        await updateUserProfile(teacherForm).unwrap();
-      } else {
-        // Accessing the formData controller to retrieve the photo
-        await updateUserProfile(formData).unwrap();
-      }
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: 'Updated successfully',
-          severity: 'success',
-        }),
-      );
-      onClose();
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      dispatch(
-        setSnackbar({
-          open: true,
-          message: error?.data?.message || 'Update failed',
-          severity: 'error',
-        }),
-      );
+    if (checkUserRole === 'teacher') {
+      // Teachers can only update their photo
+      await updateUserProfile(
+        new FormData().append('photo', selectedFile),
+      ).unwrap();
+    } else {
+      // Admins can update all fields
+      await updateUserProfile(formData).unwrap();
     }
   };
 
+  // - Loading and error handling
   if (isLoading) {
     return <CircularProgress />;
   }
 
-  if (!isSuccess || !userProfile) {
-    return <Typography variant="h6">No user data found</Typography>;
+  if (isError || !userProfile) {
+    return <SomethingWentWrong description="Failed to fetch user profile" />;
   }
 
   return (
@@ -229,18 +276,31 @@ const EditAccountModal = ({
             {/* PROFILE CONTAINER */}
             <Stack direction={'row'} gap={2} alignItems={'center'}>
               {/* PROFILE IMAGE */}
-              {!removePhoto && (previewUrl || profilePhoto) ? (
-                <Avatar
-                  src={previewUrl || profilePhoto}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140 }}
-                />
-              ) : (
+              {removePhoto || (!previewUrl && !profilePhoto) ? (
                 <RandomAvatar
                   username={userName}
                   gender={userGender}
                   size={140}
                 />
+              ) : (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={previewUrl || profilePhoto}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140 }}
+                  />
+                </Box>
               )}
 
               {/* UPLOAD PROFILE IMAGE */}
@@ -248,6 +308,7 @@ const EditAccountModal = ({
                 accept="image/*"
                 type="file"
                 id="photo-upload"
+                ref={photoPreviewRef}
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
@@ -271,11 +332,7 @@ const EditAccountModal = ({
                   size="small"
                   color="error"
                   startIcon={<Trash2 size={18} />}
-                  onClick={() => {
-                    setSelectedFile(null);
-                    setPreviewUrl(null);
-                    setRemovePhoto(true);
-                  }}
+                  onClick={handleRemovePhoto}
                 >
                   Remove
                 </StyledButton>
@@ -373,7 +430,12 @@ const EditAccountModal = ({
             Cancel
           </StyledButton>
           {/* SAVE CHANGES BUTTON */}
-          <StyledButton size="small" type="submit" variant="contained">
+          <StyledButton
+            size="small"
+            type="submit"
+            variant="contained"
+            disabled={isUpdateLoading}
+          >
             {isUpdateLoading ? 'Saving...' : 'Save Changes'}
           </StyledButton>
         </DialogActions>

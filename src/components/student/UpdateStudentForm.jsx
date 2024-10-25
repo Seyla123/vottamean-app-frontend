@@ -10,10 +10,10 @@ import {
   Avatar,
   Typography,
   Divider,
-  Modal,
   InputAdornment,
   MenuItem,
   Stack,
+  IconButton,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -34,7 +34,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller } from 'react-hook-form';
 
 // icons from luicide react
-import { ImagePlus, Mail, School, Trash2, UserRoundPen } from 'lucide-react';
+import { ImagePlus, Mail, School, Trash2, UserRoundPen, X } from 'lucide-react';
 
 // Custom components
 import { setSnackbar } from '../../store/slices/uiSlice';
@@ -48,7 +48,7 @@ import { ensureOptionInList } from '../../utils/formatHelper';
 import LoadingCircle from '../loading/LoadingCircle';
 import { StyledTextField } from '../common/InputField';
 import SomethingWentWrong from '../common/SomethingWentWrong';
-
+import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   const dispatch = useDispatch();
@@ -359,58 +359,86 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   }
 
   return (
-    <Modal
-      aria-labelledby="update-teacher"
-      aria-describedby="update-teacher-info"
+    <BootstrapDialog
+      aria-labelledby="update-student"
+      aria-describedby="update-student-info"
       key={isOpen ? 'open' : 'closed'}
       open={isOpen}
       onClose={onClose}
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      fullWidth
+      maxWidth="md"
+      sx={{
+        '& .MuiDialog-paper': {
+          width: {
+            xs: '100%',
+            sm: '800px',
+          },
+          overflowY: 'auto',
+        },
+      }}
     >
       <Box
         sx={{
-          width: '800px',
+          width: '100%',
           bgcolor: '#ffffff',
-          borderRadius: '8px',
           p: 4,
-          overflowY: 'scroll',
+          boxSizing: 'border-box',
         }}
       >
-        {/* Title */}
-        <Typography
-          variant="h5"
-          component="h2"
-          fontWeight={'bold'}
-          gutterBottom
-        >
-          Edit Student Information
-        </Typography>
+        {/* Title and close button */}
+        <Stack direction="row" justifyContent="space-between">
+          <Typography
+            fontSize={{ xs: '1.25rem', sm: '1.5rem' }}
+            component="h2"
+            fontWeight={'bold'}
+          >
+            Edit Student Information
+          </Typography>
+          <IconButton
+            onClick={onClose}
+            sx={(theme) => ({
+              alignSelf: 'start',
+              bottom: 8,
+              left: 2,
+              color: theme.palette.grey[500],
+            })}
+          >
+            <X />
+          </IconButton>
+        </Stack>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box
               sx={{
-                width: '100%',
                 display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
                 justifyContent: 'flex-start',
                 alignItems: 'center',
                 gap: 2,
-                pb: {
-                  xs: 2,
-                  sm: 4,
-                },
-                pt: {
-                  xs: 0,
-                  sm: 4,
-                },
+                pb: 2,
+                pt: 3,
               }}
             >
               {/* Profile */}
               {previewUrl || profileImg ? (
-                <Avatar
-                  src={previewUrl || profileImg}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140 }}
-                />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={previewUrl || profileImg}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140 }}
+                  />
+                </Box>
               ) : (
                 <RandomAvatar
                   username={`${getValues('first_name')} ${getValues('last_name')}`}
@@ -427,7 +455,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
               />
               <Box
                 display="flex"
-                flexDirection="column"
+                flexDirection={{ xs: 'row', sm: 'column' }}
                 alignItems="start"
                 gap={2}
               >
@@ -441,7 +469,6 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     Upload
                   </StyledButton>
                 </label>
-
                 <StyledButton
                   variant="outlined"
                   size="small"
@@ -684,13 +711,13 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                 variant="contained"
                 disabled={isUpdateLoading}
               >
-                {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+                {isUpdateLoading ? 'Saving...' : 'Save'}
               </StyledButton>
             </Box>
           </form>
         </LocalizationProvider>
       </Box>
-    </Modal>
+    </BootstrapDialog>
   );
 };
 
