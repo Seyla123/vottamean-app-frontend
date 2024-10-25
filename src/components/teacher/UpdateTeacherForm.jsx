@@ -10,10 +10,8 @@ import {
   Typography,
   Grid,
   Divider,
-  Modal,
   IconButton,
   Stack,
-  DialogTitle,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -329,14 +327,14 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
             component="h2"
             fontWeight={'bold'}
           >
-            Edit Student Information
+            Edit Teacher Information
           </Typography>
           <IconButton
             onClick={onClose}
             sx={(theme) => ({
               alignSelf: 'start',
-              bottom:8,
-              left:2,
+              bottom: 8,
+              left: 2,
               color: theme.palette.grey[500],
             })}
           >
@@ -353,8 +351,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 justifyContent: 'flex-start',
                 alignItems: 'center',
                 gap: 2,
-                pb:2,
-                pt:3
+                pb: 2,
+                pt: 3,
               }}
             >
               {/* Profile */}
@@ -394,7 +392,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                     Upload
                   </StyledButton>
                 </label>
-
                 <StyledButton
                   variant="outlined"
                   size="small"
@@ -407,44 +404,41 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
               </Box>
             </Box>
             <Divider />
+            {/* INPUT FIELDS */}
             <Stack direction={'column'} gap={2} mt={2}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 {/* First Name */}
-                <Box sx={{ flex: 1, width: '100%' }}>
-                  <Controller
-                    name="firstName"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <InputField
-                        control={control}
-                        label="First Name"
-                        name={field.name}
-                        defaultValue={field.value}
-                        placeholder="First Name"
-                        errors={errors}
-                      />
-                    )}
-                  />
-                </Box>
+                <Controller
+                  name="firstName"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <InputField
+                      control={control}
+                      label="First Name"
+                      name={field.name}
+                      defaultValue={field.value}
+                      placeholder="First Name"
+                      errors={errors}
+                    />
+                  )}
+                />
                 {/* Last Name */}
-                <Box sx={{ flex: 1, width: '100%' }}>
-                  <Controller
-                    name="lastName"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <InputField
-                        control={control}
-                        label="Last Name"
-                        placeholder="Last Name"
-                        name={field.name}
-                        defaultValue={field.value}
-                        errors={errors}
-                      />
-                    )}
-                  />
-                </Box>
+                <Controller
+                  name="lastName"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <InputField
+                      control={control}
+                      label="Last Name"
+                      placeholder="Last Name"
+                      name={field.name}
+                      defaultValue={field.value}
+                      errors={errors}
+                    />
+                  )}
+                />
               </Stack>
               {/* Gender */}
               <Controller
