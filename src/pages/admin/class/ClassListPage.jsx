@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   BookMarked,
   Calendar,
-  CircleDashed,
   LetterText,
   PlusIcon,
 } from 'lucide-react';
@@ -252,13 +251,11 @@ const ClassListPage = () => {
     {
       name: 'description',
       label: 'Description',
-      required: true,
       multiline: true,
       icon: '',
     },
   ];
 
-  console.log(selectedClass);
 
   const dataToView = [
     { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },

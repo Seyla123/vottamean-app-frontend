@@ -40,8 +40,6 @@ import TeacherDetailPage from '../pages/admin/teacher/TeacherDetailPage';
 import TeacherCreatePage from '../pages/admin/teacher/TeacherCreatePage';
 
 import ClassListPage from '../pages/admin/class/ClassListPage';
-import ClassCreatePage from '../pages/admin/class/ClassCreatePage';
-import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 
 import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
@@ -362,21 +360,7 @@ const routesConfig = [
               <PageTitle title={'Classes'} />
               <ClassListPage />
             </>,
-          },
-          {
-            path: 'create',
-            element: <>
-              <PageTitle title={'Classes'} />
-              <ClassCreatePage />
-            </>,
-          },
-          {
-            path: 'update/:id',
-            element: <>
-              <PageTitle title={'Classes'} />
-              <ClassUpdatePage />
-            </>,
-          },
+          }
         ],
       },
       {
