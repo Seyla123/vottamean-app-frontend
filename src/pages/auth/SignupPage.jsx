@@ -84,7 +84,6 @@ const SignupPage = () => {
       handleSignUpSuccess={() => setSignUpSuccess(true)}
     />,
   ];
-  console.log('this is : ', signUpSuccess);
 
   const CustomIconBox = ({ icon }) => (
     <Box

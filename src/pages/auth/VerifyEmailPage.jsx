@@ -24,14 +24,7 @@ function VerifyEmailPage() {
   // Perform email verification on component mount
   useEffect(() => {
     if (verificationToken && tempToken) {
-      verifyEmail({ verificationToken, tempToken })
-        .unwrap()
-        .then((result) => {
-          console.log('Verification successful:', result);
-        })
-        .catch((error) => {
-          console.error('Verification failed:', error.data?.message || error);
-        });
+      verifyEmail({ verificationToken, tempToken }).unwrap();
     }
   }, [verificationToken, tempToken, verifyEmail]);
 
