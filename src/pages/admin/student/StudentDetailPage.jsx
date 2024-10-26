@@ -8,11 +8,8 @@ import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import TitleHeader from '../../../components/common/TitleHeader';
 
-
 import { useGetStudentsByIdQuery, useDeleteStudentMutation } from '../../../services/studentApi';
-
 import { setSnackbar } from '../../../store/slices/uiSlice';
-
 
 // Update Modal
 import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
