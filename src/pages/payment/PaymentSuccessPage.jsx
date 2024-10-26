@@ -1,35 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Box, Stack, Typography, CircularProgress } from '@mui/material';
-import { CircleCheckBig } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  CircularProgress,
+  Divider,
+  Alert,
+  Fade,
+  Grid,
+  useTheme,
+} from '@mui/material';
+import { CircleCheckBig, AlertCircle, CreditCard } from 'lucide-react';
 import StyledButton from '../../components/common/StyledMuiButton';
 import { useGetSessionDetailsQuery } from '../../services/paymentApi';
-import { useNavigate } from 'react-router-dom';
 import ShortHeader from '../../components/layout/ShortHeader';
-function PaymentSuccessPage() {
+import UnauthorizedPage from '../UnauthorizedPage';
+import { shadow } from '../../styles/global';
+import bgImage from '../../assets/images/payment-bg.png';
+
+const PaymentSuccessPage = () => {
   const navigate = useNavigate();
-  // Function to extract the session_id from the URL query parameter
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
   const session_id = urlParams.get('session_id');
 
   const [sessionData, setSessionData] = useState({});
-  const { data: getSessionDetails, isLoading, isError, error, isSuccess } = useGetSessionDetailsQuery(session_id);
+  const {
+    data: getSessionDetails,
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+  } = useGetSessionDetailsQuery(session_id);
 
   useEffect(() => {
     if (isError) {
-      navigate('/admin/payment/failure')
+      navigate('/admin/payment/failure');
     }
     if (getSessionDetails) {
       setSessionData(getSessionDetails.data);
     }
-  }, [getSessionDetails, isLoading, isSuccess])
+  }, [getSessionDetails, isError, navigate]);
 
-  // Get the session ID
-  const data = [
+  const paymentDetails = [
     {
       title: 'Amount Paid',
       value: `$${sessionData?.totalAmount}`,
+      highlight: true,
+      icon: <CreditCard size={20} />,
     },
     {
       title: 'Plan Type',
@@ -41,120 +61,218 @@ function PaymentSuccessPage() {
     },
     {
       title: 'Payment Status',
-      value: sessionData?.paymentStatus
+      value: sessionData?.paymentStatus,
+      status: true,
     },
     {
       title: 'Payment Date',
-      value: new Date(sessionData?.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
+      value: sessionData?.date
+        ? new Date(sessionData.date).toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+          })
+        : '-',
     },
   ];
 
+  if (error) return <UnauthorizedPage />;
+
   return (
-    <>
+    <ShortHeader sx={styles.pageWrapper}>
+      {/* Top Background Section */}
+      <Box sx={styles.topSection}></Box>
 
-     <ShortHeader>
-     <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: '#fff', width: '100%'}}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 2,
-            width: '100%',
-            maxWidth: '500px',
-            textAlign: 'center',
-           
-          }}
-        >
-          {!isLoading ?
-            <>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  color: 'success.light',
-                }}
-              >
-                <CircleCheckBig size={64} />
+      <Container maxWidth="md" sx={styles.container}>
+        <Fade in={!isLoading} timeout={800}>
+          <Paper elevation={4} sx={styles.paper}>
+            {isLoading ? (
+              <Box sx={styles.loaderContainer}>
+                <CircularProgress color="primary" size={40} />
+                <Typography variant="body1" color="text.secondary">
+                  Processing your payment...
+                </Typography>
               </Box>
-              <Typography variant="h4" fontWeight={'bold'}>
-                Payment Successful
-              </Typography>
-              <Typography variant="body1" color={'text.secondary'}>
-                Thank you for your purchase!
-              </Typography>
-              <Box
-                sx={{
-                  borderColor: 'gray',
-                  border: '1px solid #e0e0e0',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: 2,
-                  padding: 2,
-                  borderRadius: 2,
-                  fontWeight: 'bold',
-                  flexDirection: 'column',
-                  width: '100%',
-                }}
-              >
-                {data?.map((item, index) => (
-                  <Stack
-                    key={index + item}
-                    sx={{
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                      width: '100%',
-                      textTransform: 'capitalize',
-                    }}
+            ) : (
+              <Box sx={styles.contentContainer}>
+                <Box sx={styles.successIconWrapper}>
+                  <CircleCheckBig size={80} color="#6EC207" />
+                </Box>
+                <Box sx={styles.successHeader}>
+                  <Typography
+                    variant="h4"
+                    fontWeight="bold"
+                    color="primary"
+                    sx={{ mb: 1 }}
                   >
-                    <Typography variant="body2">{item.title}:</Typography>
-                    <Typography variant="body2" >{item.value}</Typography>
-                  </Stack>
-                ))}
-              </Box>
-              <StyledButton variant="contained" type="submit" size="small" onClick={() => navigate('/admin/home')}>
-                Return to Homepage
-              </StyledButton>
-            </>
-            :
-            <CircularProgress color="success" />
-          }
-        </Box>
-      </Stack>
-     </ShortHeader>
-    </>
-  );
-}
+                    Payment Successful
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    sx={{ mb: 3 }}
+                  >
+                    Thank you for your purchase! Your transaction has been
+                    completed.
+                  </Typography>
+                </Box>
 
-export default PaymentSuccessPage;
+                <Box sx={styles.amountDisplay}>
+                  <Typography variant="h3" fontWeight="bold">
+                    ${sessionData?.totalAmount}
+                  </Typography>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Total Amount Paid
+                  </Typography>
+                </Box>
+
+                <Divider sx={{ my: 3 }} />
+
+                <Grid container spacing={2.5} sx={styles.detailsGrid}>
+                  {paymentDetails.slice(1).map((detail, index) => (
+                    <Grid item xs={12} key={index}>
+                      <Box sx={styles.detailRow}>
+                        <Typography
+                          variant="body1"
+                          color="text.secondary"
+                          sx={{
+                            textTransform: 'capitalize',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                          }}
+                        >
+                          {detail.icon}
+                          {detail.title}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: detail.highlight ? 700 : 500,
+                            color: detail.status
+                              ? 'success.main'
+                              : 'text.primary',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          {detail.value}
+                        </Typography>
+                      </Box>
+                      {index !== paymentDetails.length - 2 && (
+                        <Divider sx={{ mt: 1 }} />
+                      )}
+                    </Grid>
+                  ))}
+                </Grid>
+
+                {/* <Alert
+                  severity="info"
+                  icon={<AlertCircle size={24} />}
+                  sx={styles.alert}
+                >
+                  A confirmation email has been sent to your registered email
+                  address.
+                </Alert> */}
+
+                <StyledButton
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  onClick={() => navigate('/admin/home')}
+                  sx={styles.button}
+                >
+                  Return to Homepage
+                </StyledButton>
+              </Box>
+            )}
+          </Paper>
+        </Fade>
+      </Container>
+    </ShortHeader>
+  );
+};
 
 const styles = {
-  pageContainer: {
-    height: '100vh',
-    width: '100vw',
+  pageWrapper: {
+    minHeight: '100vh',
+    position: 'relative',
+  },
+  topSection: {
+    height: '40vh',
+    width: '100%',
+    bgcolor: 'primary.main',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundImage: `url(${bgImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  },
+  successIconWrapper: {
+    borderRadius: '50%',
+    bgcolor: 'rgba(255, 255, 255, 0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    mb: 4,
+  },
+  container: {
+    position: 'relative',
+    pt: '15vh',
+    pb: 4,
+  },
+  paper: {
+    p: 4,
+    width: '100%',
+    borderRadius: 3,
+    bgcolor: 'background.paper',
+    boxShadow: shadow,
+  },
+  loaderContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    p: 2,
+    justifyContent: 'center',
     gap: 2,
-    bgcolor: 'white',
+    p: 4,
   },
-  leftContainer: {
-    width: '100%',
-  },
-  fieldContainer: {
+  contentContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 1,
   },
-  logo: {
-    width: '150px',
-    position: 'absolute',
-    top: '10px',
-    left: '10px',
-    zIndex: 10,
+  successHeader: {
+    textAlign: 'center',
+  },
+  amountDisplay: {
+    textAlign: 'center',
+    py: 3,
+    px: 4,
+    borderRadius: 2,
+    border: '1px solid #e0e0e0',
+    mt: 2,
+  },
+  detailsGrid: {
+    mb: 2,
+  },
+  detailRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  alert: {
+    mb: 3,
+  },
+  button: {
+    py: 1.5,
+    mt: 2,
   },
 };
+
+export default PaymentSuccessPage;
