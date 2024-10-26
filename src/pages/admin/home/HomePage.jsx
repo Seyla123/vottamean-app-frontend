@@ -5,8 +5,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Box,
-  CardContent,
-  Chip,
   Grid,
   Stack,
   CircularProgress,

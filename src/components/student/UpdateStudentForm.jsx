@@ -126,7 +126,8 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
         'class_id',
         'class_name',
       );
-
+      
+      
       // Set the class id to the selected class after ensuring it is a string
       const classId = studentData.data.class_id?.toString() || '';
 
@@ -172,6 +173,8 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     }
   }, [studentData, reset, classData, isClassSuccess, isError]);
 
+
+  
   // useEffect for handling update success and error
   // when update is successful, show a snackbar with a success message and close the modal
   // when update is failed, show a snackbar with an error message and close the modal
@@ -247,6 +250,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
       hasChanges: true,
     }));
   };
+  
 
   // Update data submit function
   // It will compare the submitted data to the original data and check for changes
@@ -604,12 +608,12 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                                     </span>
                                   );
                                 }
-                                const selectedClass = classData?.data?.find(
+                                const selectedClass = classes?.find(
                                   (classItem) =>
-                                    classItem.class_id === Number(selected),
+                                    classItem?.value === Number(selected),
                                 );
                                 return selectedClass
-                                  ? selectedClass.class_name
+                                  ? selectedClass?.label
                                   : '';
                               },
                             }}
@@ -617,13 +621,13 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                             <MenuItem value="" disabled>
                               {isLoading ? 'Loading classes...' : 'Select a class'}
                             </MenuItem>
-                            {classData?.data?.length ? (
-                              classData.data.map((classItem) => (
+                            {classes?.length > 0? (
+                              classes?.map((classItem) => (
                                 <MenuItem
-                                  key={classItem.class_id}
-                                  value={classItem.class_id}
+                                  key={classItem?.value}
+                                  value={classItem?.value}
                                 >
-                                  {classItem.class_name}
+                                  {classItem?.label}
                                 </MenuItem>
                               ))
                             ) : (

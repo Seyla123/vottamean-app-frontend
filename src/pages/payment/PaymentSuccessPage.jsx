@@ -7,12 +7,10 @@ import {
   Typography,
   CircularProgress,
   Divider,
-  Alert,
   Fade,
   Grid,
-  useTheme,
 } from '@mui/material';
-import { CircleCheckBig, AlertCircle, CreditCard } from 'lucide-react';
+import { CircleCheckBig, CreditCard } from 'lucide-react';
 import StyledButton from '../../components/common/StyledMuiButton';
 import { useGetSessionDetailsQuery } from '../../services/paymentApi';
 import ShortHeader from '../../components/layout/ShortHeader';
@@ -167,16 +165,6 @@ const PaymentSuccessPage = () => {
                     </Grid>
                   ))}
                 </Grid>
-
-                {/* <Alert
-                  severity="info"
-                  icon={<AlertCircle size={24} />}
-                  sx={styles.alert}
-                >
-                  A confirmation email has been sent to your registered email
-                  address.
-                </Alert> */}
-
                 <StyledButton
                   variant="contained"
                   size="large"
