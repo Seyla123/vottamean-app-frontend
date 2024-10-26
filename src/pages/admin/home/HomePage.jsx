@@ -16,7 +16,6 @@ import { Crown, GraduationCap, ShieldCheck, UsersIcon } from 'lucide-react';
 // - Custom Components
 import FormComponent from '../../../components/common/FormComponent';
 import WelcomeHandImage from '../../../assets/images/book-lover-25.svg';
-import ShortListTable from '../../../components/common/ShortListTable';
 import { shadow } from '../../../styles/global';
 import StaticTable from '../../../components/common/StaticTable';
 
