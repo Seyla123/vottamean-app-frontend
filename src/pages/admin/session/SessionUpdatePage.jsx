@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
@@ -9,7 +9,7 @@ import { Box, Stack } from '@mui/material';
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
 import { setSnackbar } from '../../../store/slices/uiSlice';
-import RenderSelect from './RenderSelect';
+import RenderSelect from '../../../components/common/RenderSelect';
 import StyledButton from '../../../components/common/StyledMuiButton';
 // api
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';
@@ -27,6 +27,7 @@ import {
 import { SessionValidator } from '../../../validators/validationSchemas';
 
 import { ensureOptionInList, transformedForSelector } from '../../../utils/formatHelper';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const SessionUpdatePage = () => {
   const navigate = useNavigate();
@@ -159,10 +160,9 @@ const SessionUpdatePage = () => {
 
   return (
     <FormComponent
-      title="Add session"
-      subTitle="Please Fill session information"
     >
-      <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
+      <TitleHeader title="Update Session" />
+      <CardComponent onSubmit={handleSubmit(onSubmit)} >
         <Box sx={containerStyle}>
           <Box sx={selectedStyle}>
             <Box>
