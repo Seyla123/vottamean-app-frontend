@@ -26,9 +26,6 @@ import StudentDetailPage from '../pages/admin/student/StudentDetailPage';
 import StudentCreatePage from '../pages/admin/student/StudentCreatePage';
 
 import SubjectListPage from '../pages/admin/subject/SubjectListPage';
-import SubjectDetailPage from '../pages/admin/subject/SubjectDetailPage';
-import SubjectCreatePage from '../pages/admin/subject/SubjectCreatePage';
-import SubjectUpdatePage from '../pages/admin/subject/SubjectUpdatePage';
 
 import ClassPeriodListPage from '../pages/admin/class-period/ClassPeriodListPage';
 
@@ -265,29 +262,6 @@ const routesConfig = [
           <PageTitle title={'Subjects'} />
           <SubjectListPage />
         </>,
-        children: [
-          {
-            path: ':id',
-            element: <>
-              <PageTitle title={'Subjects'} />
-              <SubjectDetailPage />
-            </>,
-          },
-          {
-            path: 'create',
-            element: <>
-              <PageTitle title={'Subjects'} />
-              <SubjectCreatePage />
-            </>,
-          },
-          {
-            path: 'update/:id',
-            element: <>
-              <PageTitle title={'Subjects'} />
-              <SubjectUpdatePage />
-            </>,
-          },
-        ],
       },
       {
         path: 'class-periods',

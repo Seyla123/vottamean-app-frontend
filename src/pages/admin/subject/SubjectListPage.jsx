@@ -4,11 +4,8 @@ import { Stack } from '@mui/material';
 import {
   Book,
   Calendar,
-  FolderPen,
-  IdCard,
   LetterText,
   PlusIcon,
-  Timer,
 } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
@@ -33,7 +30,6 @@ import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import TitleHeader from '../../../components/common/TitleHeader';
 
 const columns = [
-  { id: 'subject_id', label: 'Subject ID' },
   { id: 'subject_name', label: 'Subject Name' },
   { id: 'description', label: 'Description' },
 ];
@@ -243,7 +239,6 @@ function SubjectListPage() {
     {
       name: 'description',
       label: 'Description',
-      required: true,
       multiline: true,
       icon: '',
     },
@@ -287,7 +282,7 @@ function SubjectListPage() {
         emptyTitle="No Subjects"
         emptySubTitle="No subjects available"
         isLoading={isLoading}
-        showNO={false}
+        showNO={true}
         idField="subject_id"
         page={page}
         rowsPerPage={rowsPerPage}
