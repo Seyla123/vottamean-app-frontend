@@ -50,7 +50,6 @@ function TeacherListPage() {
     };
 
     const handleEdit = () => {
-        console.log("Edit row:", selectedRowId);
         handleMenuClose();
     };
 

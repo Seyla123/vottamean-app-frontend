@@ -134,7 +134,7 @@ const StudentForm = ({
 
   // form submission
   const onSubmit = (data) => {
-    console.log('data being submit form Student Form:', data);
+
     handleNext(true, {
       ...data,
       class_id: data.class_id ? Number(data.class_id) : null, // Converting to number

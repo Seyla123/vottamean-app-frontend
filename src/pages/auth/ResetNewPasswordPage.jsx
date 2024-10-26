@@ -369,7 +369,7 @@ const ResetPasswordSubmit = ({
   return (
     <>
       <Box sx={styles.formContainer}>
-        <Box component={'div'} sx={styles.iconContainer}>
+        <Box component={'div'} sx={isSuccess ? styles.iconContainer : {...styles.iconContainer, border: '1px solid red', color:'red'}}>
           {isSuccess ? <ShieldCheck size={100} /> : <ShieldX size={100} />}
         </Box>
         {/* FORM HEADER */}

@@ -74,14 +74,11 @@ const AttendanceListTable = ({
   const handleSelectedDelete = () => {
     if (selected.length > 0) {
       setIsDeleteModalOpen(true);
-    } else {
-      console.log('No rows selected for deletion');
-    }
+    } 
   };
 
   const handleConfirmDelete = () => {
     if (onSelectedDelete) {
-      console.log('Deleting selected rows:', selected);
       onSelectedDelete(selected);
       setSelected([]);
     }
@@ -96,10 +93,8 @@ const AttendanceListTable = ({
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n[idField]);
       setSelected(newSelecteds);
-      console.log('All rows selected:', newSelecteds);
     } else {
       setSelected([]);
-      console.log('All rows deselected');
     }
   };
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -122,8 +117,6 @@ const AttendanceListTable = ({
     }
 
     setSelected(newSelected);
-    console.log('Selected row ID:', id);
-    console.log('Updated selected IDs:', newSelected);
   };
 
   const handleClick = (event, row) => {

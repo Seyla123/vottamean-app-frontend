@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Box, Stack } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
+import { Box, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
-import { PlusIcon, BookIcon } from 'lucide-react';
+import { PlusIcon, } from 'lucide-react';
 import {
   useDeleteStudentMutation,
   useGetAllStudentsQuery,
@@ -23,7 +23,6 @@ import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
-import CreateStudentModal from '../../../components/common/CreateStudentModal';
 import TitleHeader from '../../../components/common/TitleHeader';
 import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 

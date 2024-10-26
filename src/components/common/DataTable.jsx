@@ -119,10 +119,8 @@ const DataTable = ({
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n[idField]);
       setSelected(newSelecteds);
-      console.log('All rows selected:', newSelecteds);
     } else {
       setSelected([]);
-      console.log('All rows deselected');
     }
   };
 
@@ -146,8 +144,7 @@ const DataTable = ({
     }
 
     setSelected(newSelected);
-    console.log('Selected row ID:', id);
-    console.log('Updated selected IDs:', newSelected);
+
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -181,8 +178,6 @@ const DataTable = ({
   const handleSelectedDelete = () => {
     if (selected.length > 0) {
       setIsDeleteModalOpen(true);
-    } else {
-      console.log('No rows selected for deletion');
     }
   };
   const handleConfirmDelete = () => {

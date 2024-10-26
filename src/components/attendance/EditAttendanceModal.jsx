@@ -123,9 +123,7 @@ const EditAttendanceModal = ({
             onClose();
         }
     }, [isUpdating, isUpdateError, isUpdatedSuccess, updateError, dispatch]);
-    console.log('edit modal', id);
-    console.log('edit  status', status);
-    console.log('edit data', initialData);
+
       const onSubmit = async () => {
         // If no changes were made, show a message and exit
         if (initialData.statusId == status) {
