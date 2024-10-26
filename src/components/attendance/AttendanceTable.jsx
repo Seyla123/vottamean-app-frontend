@@ -54,10 +54,9 @@ const AttendanceTable = ({
 }) => {
   const filter = useSelector((state) => state.attendance.filter);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const [isExporting, setIsExporting] = useState(false);
-
   const convertDayToShorthand = (day) => {
     const dayMap = {
       monday: 'MON',
@@ -111,6 +110,7 @@ const AttendanceTable = ({
         return '-';
     }
   };
+
   const renderedStatusAttendance = (attendance) => {
     return dates.map((date, index) =>
       date.subject?.map((subject, i) => (

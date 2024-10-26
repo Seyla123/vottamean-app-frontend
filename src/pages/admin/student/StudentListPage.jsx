@@ -27,7 +27,6 @@ import TitleHeader from '../../../components/common/TitleHeader';
 import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 
 const columns = [
-  { id: 'id', label: 'ID' },
   { id: 'name', label: 'Full Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'class', label: 'Class' },
@@ -284,7 +283,7 @@ const StudentListPage = () => {
         emptyTitle={'No Student'}
         emptySubTitle={'No Student Available'}
         hideColumns={['address', 'Date of Birth', 'id', 'gender']}
-        showNO={false}
+        showNO={true}
         page={page}
         rowsPerPage={rowsPerPage}
         setPage={handleChangePage}

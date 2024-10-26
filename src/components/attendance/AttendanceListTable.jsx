@@ -39,6 +39,7 @@ const AttendanceListTable = ({
   onSelectedDelete,
   loading,
   page,
+  showNO,
   rowsPerPage,
   setPage,
   setRowsPerPage,
@@ -169,6 +170,7 @@ const AttendanceListTable = ({
                   onChange={handleSelectAllClick}
                 />
               </TableCell>
+              {(showNO && !isMobile) && <TableCell align="left">No.</TableCell>}
               {visibleColumns.map((column) => (
                 <TableCell
                   key={column.id}
@@ -219,6 +221,7 @@ const AttendanceListTable = ({
                         inputProps={{ 'aria-labelledby': labelId }}
                       />
                     </TableCell>
+                    {(showNO && !isMobile) && <TableCell>{index + 1}</TableCell>}
                     {visibleColumns.map((column) => (
                       <TableCell key={column.id}>
                         {column.id === 'name' ? (

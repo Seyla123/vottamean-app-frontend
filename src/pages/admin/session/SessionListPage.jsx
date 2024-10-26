@@ -251,6 +251,7 @@ function SessionListPage() {
         setPage={handleChangePage}
         setRowsPerPage={handleChangeRowsPerPage}
         totalRows={totalRows}
+        showNO={true}
       />
       <DeleteConfirmationModal
         open={modal.open}
