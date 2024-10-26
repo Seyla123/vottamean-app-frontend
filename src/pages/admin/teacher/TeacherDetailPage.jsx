@@ -29,14 +29,11 @@ import {
   Divider,
   Avatar,
   Stack,
-  useMediaQuery,
-  Button,
   IconButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
 import {
-  X,
   User2Icon,
   CalendarFold,
   Mails,
@@ -44,27 +41,19 @@ import {
   Ellipsis,
   Home,
   Pencil,
-  Settings,
   ChevronLeft,
   Trash2,
-  File,
   Folder,
   Contact,
   CircleDashed,
 } from 'lucide-react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import viewImage from '../../../assets/images/data-storage.svg';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import CardActionArea from '@mui/material/CardActionArea';
 import { cardContainer, shadow, tableShadow } from '../../../styles/global';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
-import verifyBadge from '../../../assets/icon/verify_badge.svg';
 import RandomAvatar from '../../../components/common/RandomAvatar';
-import { formatDate } from '../../../utils/formatHelper';
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();

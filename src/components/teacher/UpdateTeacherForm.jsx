@@ -12,6 +12,7 @@ import {
   Divider,
   IconButton,
   Stack,
+  CircularProgress
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -46,7 +47,6 @@ import PhoneInputField from '../common/PhoneInputField';
 import RandomAvatar from '../common/RandomAvatar';
 import StyledButton from '../common/StyledMuiButton';
 import DOBPicker from '../common/DOBPicker';
-import SomethingWentWrong from '../common/SomethingWentWrong';
 import { BootstrapDialog } from '../common/BootstrapDialog';
 
 const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
@@ -131,6 +131,16 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           hasChanges: false,
         });
       }
+    }
+    if(isError){
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: error?.data?.message || 'failed to fetch teacher data',
+          severity: 'error',
+        }),
+      );
+      onClose();
     }
   }, [teacherData, reset, isSuccess]);
 
@@ -288,10 +298,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     }));
   };
 
-  // Fetch data error message
-  if (isError) {
-    return <SomethingWentWrong description={error?.data?.message} />;
-  }
 
   return (
     <BootstrapDialog
@@ -320,220 +326,235 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           boxSizing: 'border-box',
         }}
       >
-        {/* Title and close button */}
-        <Stack direction="row" justifyContent="space-between">
-          <Typography
-            fontSize={{ xs: '1.25rem', sm: '1.5rem' }}
-            component="h2"
-            fontWeight={'bold'}
+        {isLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="700px"
           >
-            Edit Teacher Information
-          </Typography>
-          <IconButton
-            onClick={onClose}
-            sx={(theme) => ({
-              alignSelf: 'start',
-              bottom: 8,
-              left: 2,
-              color: theme.palette.grey[500],
-            })}
-          >
-            <X />
-          </IconButton>
-        </Stack>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Form Contents */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                gap: 2,
-                pb: 2,
-                pt: 3,
-              }}
-            >
-              {/* Profile */}
-              {previewUrl || profileImg ? (
+            <CircularProgress />
+          </Box>
+        ) :
+
+          <>
+            {/* Title and close button */}
+            <Stack direction="row" justifyContent="space-between">
+              <Typography
+                fontSize={{ xs: '1.25rem', sm: '1.5rem' }}
+                component="h2"
+                fontWeight={'bold'}
+              >
+                Edit Teacher Information
+              </Typography>
+              <IconButton
+                onClick={onClose}
+                sx={(theme) => ({
+                  alignSelf: 'start',
+                  bottom: 8,
+                  left: 2,
+                  color: theme.palette.grey[500],
+                })}
+              >
+                <X />
+              </IconButton>
+            </Stack>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Form Contents */}
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: 'column',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
-                    gap: 1,
-                    position: 'relative',
-                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                    p: 0.5,
-                    borderRadius: 50,
+                    gap: 2,
+                    pb: 2,
+                    pt: 3,
                   }}
                 >
-                  <Avatar
-                    src={previewUrl || profileImg}
-                    alt="Profile"
-                    sx={{ width: 140, height: 140 }}
+                  {/* Profile */}
+                  {previewUrl || profileImg ? (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 1,
+                        position: 'relative',
+                        boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                        p: 0.5,
+                        borderRadius: 50,
+                      }}
+                    >
+                      <Avatar
+                        src={previewUrl || profileImg}
+                        alt="Profile"
+                        sx={{ width: 140, height: 140 }}
+                      />
+                    </Box>
+                  ) : (
+                    <RandomAvatar
+                      username={`${getValues('firstName')} ${getValues('lastName')}`}
+                      gender={getValues('gender')}
+                      size={140}
+                    />
+                  )}
+                  <input
+                    id="photo-upload"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handlePhotoChange}
                   />
-                </Box>
-              ) : (
-                <RandomAvatar
-                  username={`${getValues('firstName')} ${getValues('lastName')}`}
-                  gender={getValues('gender')}
-                  size={140}
-                />
-              )}
-              <input
-                id="photo-upload"
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handlePhotoChange}
-              />
-              <Box
-                display="flex"
-                flexDirection={{ xs: 'row', sm: 'column' }}
-                alignItems="start"
-                gap={2}
-              >
-                <label htmlFor="photo-upload">
-                  <StyledButton
-                    variant="contained"
-                    size="small"
-                    component="span"
-                    startIcon={<ImagePlus size={18} />}
+                  <Box
+                    display="flex"
+                    flexDirection={{ xs: 'row', sm: 'column' }}
+                    alignItems="start"
+                    gap={2}
                   >
-                    Upload
-                  </StyledButton>
-                </label>
-                <StyledButton
-                  variant="outlined"
-                  size="small"
-                  color="error"
-                  startIcon={<Trash2 size={18} />}
-                  onClick={handleRemovePhoto}
-                >
-                  Remove
-                </StyledButton>
-              </Box>
-            </Box>
-            <Divider />
-            {/* INPUT FIELDS */}
-            <Stack direction={'column'} gap={2} mt={2}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                {/* First Name */}
-                <Controller
-                  name="firstName"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <InputField
+                    <label htmlFor="photo-upload">
+                      <StyledButton
+                        variant="contained"
+                        size="small"
+                        component="span"
+                        startIcon={<ImagePlus size={18} />}
+                      >
+                        Upload
+                      </StyledButton>
+                    </label>
+                    <StyledButton
+                      variant="outlined"
+                      size="small"
+                      color="error"
+                      startIcon={<Trash2 size={18} />}
+                      onClick={handleRemovePhoto}
+                    >
+                      Remove
+                    </StyledButton>
+                  </Box>
+                </Box>
+                <Divider />
+                {/* INPUT FIELDS */}
+                <Stack direction={'column'} gap={2} mt={2}>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    {/* First Name */}
+                    <Controller
+                      name="firstName"
                       control={control}
-                      label="First Name"
-                      name={field.name}
-                      defaultValue={field.value}
-                      placeholder="First Name"
-                      errors={errors}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <InputField
+                          control={control}
+                          label="First Name"
+                          name={field.name}
+                          defaultValue={field.value}
+                          placeholder="First Name"
+                          errors={errors}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {/* Last Name */}
-                <Controller
-                  name="lastName"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <InputField
+                    {/* Last Name */}
+                    <Controller
+                      name="lastName"
                       control={control}
-                      label="Last Name"
-                      placeholder="Last Name"
-                      name={field.name}
-                      defaultValue={field.value}
-                      errors={errors}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <InputField
+                          control={control}
+                          label="Last Name"
+                          placeholder="Last Name"
+                          name={field.name}
+                          defaultValue={field.value}
+                          errors={errors}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Stack>
-              {/* Gender */}
-              <Controller
-                name="gender"
-                control={control}
-                defaultValue=""
-                rules={{ required: 'Gender is required' }}
-                render={({ field }) => (
-                  <GenderSelect
+                  </Stack>
+                  {/* Gender */}
+                  <Controller
+                    name="gender"
                     control={control}
-                    errors={errors}
-                    name={field.name}
-                    label="Gender"
-                    defaultValue={field.value}
-                    disabled={false}
+                    defaultValue=""
+                    rules={{ required: 'Gender is required' }}
+                    render={({ field }) => (
+                      <GenderSelect
+                        control={control}
+                        errors={errors}
+                        name={field.name}
+                        label="Gender"
+                        defaultValue={field.value}
+                        disabled={false}
+                      />
+                    )}
                   />
-                )}
-              />
-              {/* Date of Birth */}
-              <Controller
-                name="dob"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <DOBPicker
+                  {/* Date of Birth */}
+                  <Controller
+                    name="dob"
                     control={control}
-                    name={field.name}
-                    label="Date of Birth"
-                    defaultValue={field.value}
-                    value={dob || null} // Ensure dob is defined
-                    errors={errors}
-                    setDob={setDob}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <DOBPicker
+                        control={control}
+                        name={field.name}
+                        label="Date of Birth"
+                        defaultValue={field.value}
+                        value={dob || null} // Ensure dob is defined
+                        errors={errors}
+                        setDob={setDob}
+                      />
+                    )}
                   />
-                )}
-              />
-              {/* Phone Number */}
-              <PhoneInputField
-                name="phoneNumber"
-                control={control}
-                label="Contact Number"
-                errors={errors}
-              />
-              {/* Address */}
-              <InputField
-                name="address"
-                required={false}
-                control={control}
-                label="Street Address"
-                placeholder="Phnom Penh, Street 210,..."
-                errors={errors}
-                multiline={true}
-                minRows={5}
-              />
-            </Stack>
-            {/* Buttons */}
-            <Grid item xs={12}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: 2,
-                  mt: 2,
-                  width: '100%',
-                }}
-              >
-                {/* CANCEL BUTTON */}
-                <StyledButton variant="text" size="small" onClick={onClose}>
-                  Cancel
-                </StyledButton>
-                {/* SAVE CHANGES BUTTON */}
-                <StyledButton
-                  type="submit"
-                  size="small"
-                  variant="contained"
-                  disabled={isUpdateLoading}
-                >
-                  {isUpdateLoading ? 'Saving...' : 'Save Changes'}
-                </StyledButton>
-              </Box>
-            </Grid>
-          </form>
-        </LocalizationProvider>
+                  {/* Phone Number */}
+                  <PhoneInputField
+                    name="phoneNumber"
+                    control={control}
+                    label="Contact Number"
+                    errors={errors}
+                  />
+                  {/* Address */}
+                  <InputField
+                    name="address"
+                    required={false}
+                    control={control}
+                    label="Street Address"
+                    placeholder="Phnom Penh, Street 210,..."
+                    errors={errors}
+                    multiline={true}
+                    minRows={5}
+                  />
+                </Stack>
+                {/* Buttons */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      gap: 2,
+                      mt: 2,
+                      width: '100%',
+                    }}
+                  >
+                    {/* CANCEL BUTTON */}
+                    <StyledButton variant="text" size="small" onClick={onClose}>
+                      Cancel
+                    </StyledButton>
+                    {/* SAVE CHANGES BUTTON */}
+                    <StyledButton
+                      type="submit"
+                      size="small"
+                      variant="contained"
+                      disabled={isUpdateLoading}
+                    >
+                      {isUpdateLoading ? 'Saving...' : 'Save Changes'}
+                    </StyledButton>
+                  </Box>
+                </Grid>
+              </form>
+            </LocalizationProvider>
+
+          </>
+        }
       </Box>
     </BootstrapDialog>
   );

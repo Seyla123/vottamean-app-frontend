@@ -5,11 +5,9 @@ import { useDispatch } from 'react-redux';
 
 // Mui Component
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import dayjs from 'dayjs';
 import {
   Box,
   Typography,
-  Card,
   Grid,
   useMediaQuery,
   useTheme,
@@ -21,10 +19,8 @@ import {
   User,
   CalendarRange,
   UsersRound,
-  FolderDown,
   Settings,
   WandSparkles,
-  FileText,
 } from 'lucide-react';
 
 // Redux Slice
@@ -113,11 +109,7 @@ function FormInfo() {
   };
   // Handle Submit form
   const handleSubmitForm = async (formData) => {
-    try {
       await signUpTeacher(formData).unwrap();
-    } catch (error) {
-      console.error('Error signing up teacher:', error.message);
-    }
   };
 
   // handle back to teacher info

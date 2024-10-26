@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Stack, Button } from '@mui/material';
+import { Stack } from '@mui/material';
 
 // Custom components
 import FormComponent from '../../../components/common/FormComponent';
@@ -257,6 +257,7 @@ const TeacherListPage = () => {
         setPage={handleChangePage}
         setRowsPerPage={handleChangeRowsPerPage}
         totalRows={totalRows}
+        showNO={true}
         isLoading={isLoading}
       />
       {/* Delete confirmation modal */}
