@@ -19,7 +19,7 @@ const AttendanceReportPage = () => {
   const [totalStatusSummary, setTotalStatusSummary] = useState([]);
 
   const filter = useSelector((state) => state.attendance.filter);
-  const { data, isLoading, isError, isSuccess } =
+  const { data, isLoading, isSuccess } =
     useGetReportAttendanceByClassQuery(filter, { skip: !filter.class });
 
   useEffect(() => {
@@ -30,9 +30,6 @@ const AttendanceReportPage = () => {
       setTotalStatusSummary(data?.total_summary);
     }
   }, [data, isSuccess]);
-
-  console.log('this is the setSelectorSubjects data', selectorSubjects);
-  
 
   const { dates, result, classes, school } = reportData;
 

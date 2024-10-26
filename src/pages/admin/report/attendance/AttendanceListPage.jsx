@@ -17,15 +17,13 @@ import AttendanceFilter from '../../../../components/attendance/AttendanceFilter
 import TitleHeader from '../../../../components/common/TitleHeader';
 import ViewModal from '../../../../components/common/ViewModal';
 import ExportMenu from '../../../../components/attendance/ExportMenu';
-import { Stack, Divider } from '@mui/material';
-import { shadow, tableShadow } from './../../../../styles/global';
+import { Stack } from '@mui/material';
 import {
   FolderPen,
   IdCard,
   Timer,
   MapPinHouse,
   School,
-  Box,
 } from 'lucide-react';
 import EditAttendanceModal from '../../../../components/attendance/EditAttendanceModal';
 const columns = [
@@ -37,7 +35,6 @@ const columns = [
 ];
 
 const AttendanceListPage = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // - rows: the attendance records that are currently being displayed on the page
@@ -54,8 +51,6 @@ const AttendanceListPage = () => {
   const [selectorClasses, setSelectorClasses] = useState([]);
   const [selectorSubjects, setSelectorSubjects] = useState([]);
 
-  // totalStatusSummary: the total summary of attendance status
-  const [totalStatusSummary, setTotalStatusSummary] = useState([]);
 
   // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
@@ -80,7 +75,6 @@ const AttendanceListPage = () => {
     data: allAttendanceData,
     isLoading,
     isSuccess,
-    isFetching,
   } = useGetAllAttendanceQuery({
     page: page + 1,
     limit: rowsPerPage,
@@ -115,7 +109,6 @@ const AttendanceListPage = () => {
       setTotalRows(allAttendanceData.results);
       setSelectorClasses(allAttendanceData.all_classes_unique);
       setSelectorSubjects(allAttendanceData.all_subjects_unique);
-      setTotalStatusSummary(allAttendanceData?.total_summary);
     }
   }, [allAttendanceData, isSuccess]);
 
@@ -202,7 +195,6 @@ const AttendanceListPage = () => {
 
   // handle export csv
   const handleExportsCsv = async () => {
-    console.log('iwhaiwdn');
     setIsExporting(true); // Set exporting status to true
     try {
       // Create URL parameters from the filter state
@@ -324,6 +316,7 @@ const AttendanceListPage = () => {
         setPage={handleChangePage}
         setRowsPerPage={handleChangeRowsPerPage}
         totalRows={totalRows}
+        showNO={true}
       />
 
       <ViewModal

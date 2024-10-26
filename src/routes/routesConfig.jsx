@@ -37,7 +37,6 @@ import ClassListPage from '../pages/admin/class/ClassListPage';
 import AccountSettingsPage from '../pages/admin/setting/account/AccountSettingsPage';
 
 import AttendanceReportPage from '../pages/admin/report/attendance/AttendanceReportPage';
-import AttendanceViewPage from '../pages/admin/report/attendance/AttendanceViewPage';
 import AttendanceListPage from '../pages/admin/report/attendance/AttendanceListPage';
 
 // Teacher site
@@ -315,14 +314,7 @@ const routesConfig = [
               <PageTitle title={'Attendance'} />
               <AttendanceListPage />
             </>,
-          },
-          {
-            path: ':id',
-            element: <>
-              <PageTitle title={'Attendance'} />
-              <AttendanceViewPage />
-            </>,
-          },
+          }
         ],
       },
       {
