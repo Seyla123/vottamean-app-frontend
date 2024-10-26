@@ -31,9 +31,6 @@ import SubjectCreatePage from '../pages/admin/subject/SubjectCreatePage';
 import SubjectUpdatePage from '../pages/admin/subject/SubjectUpdatePage';
 
 import ClassPeriodListPage from '../pages/admin/class-period/ClassPeriodListPage';
-import ClassPeriodDetailPage from '../pages/admin/class-period/ClassPeriodDetailPage';
-import ClassPeriodCreatePage from '../pages/admin/class-period/ClassPeriodCreatePage';
-import ClassPeriodUpdatePage from '../pages/admin/class-period/ClassPeriodUpdatePage';
 
 import TeacherListPage from '../pages/admin/teacher/TeacherListPage';
 import TeacherDetailPage from '../pages/admin/teacher/TeacherDetailPage';
@@ -301,28 +298,7 @@ const routesConfig = [
               <PageTitle title={'Class Periods'} />
               <ClassPeriodListPage />
             </>,
-          },
-          {
-            path: ':id',
-            element: <>
-              <PageTitle title={'Class Periods'} />
-              <ClassPeriodDetailPage />
-            </>,
-          },
-          {
-            path: 'create',
-            element: <>
-              <PageTitle title={'Class Periods'} />
-              <ClassPeriodCreatePage />
-            </>,
-          },
-          {
-            path: 'update/:id',
-            element: <>
-              <PageTitle title={'Class Periods'} />
-              <ClassPeriodUpdatePage />
-            </>,
-          },
+          }
         ],
       },
       {
