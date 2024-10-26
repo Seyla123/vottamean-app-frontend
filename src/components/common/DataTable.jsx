@@ -213,7 +213,7 @@ const DataTable = ({
                 onChange={handleSelectAllClick}
               />
             </TableCell>
-            {showNO && <TableCell align="left">N/O</TableCell>}
+            {showNO && <TableCell align="left">No.</TableCell>}
             {columns.map((column) =>
               !isMobile || !hideColumns.includes(column.id) ? (
                 <TableCell key={column.id} align={column.align || 'left'}>

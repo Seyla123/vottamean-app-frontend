@@ -33,7 +33,6 @@ import TitleHeader from '../../../components/common/TitleHeader';
 import EditClassPeriodModal from '../../../components/common/EditClassPeriodModal';
 
 const tableTitles = [
-  { id: 'period_id', label: 'ID' },
   { id: 'start_time', label: 'Start Time' },
   { id: 'end_time', label: 'End Time' },
   { id: 'period', label: 'Period' },
@@ -291,7 +290,7 @@ function ClassPeriodListPage() {
         emptyTitle="No Class Periods"
         emptySubTitle="No class periods available"
         isLoading={isLoading}
-        showNO={false}
+        showNO={true}
         idField="period_id"
         page={page}
         rowsPerPage={rowsPerPage}

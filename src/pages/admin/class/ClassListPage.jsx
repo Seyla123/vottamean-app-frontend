@@ -34,7 +34,6 @@ import { formatDate } from '../../../utils/formatHelper';
 
 // Define table columns title
 const columns = [
-  { id: 'class_id', label: 'Class ID' },
   { id: 'class_name', label: 'Class Name' },
   { id: 'description', label: 'Description' },
 ];
@@ -309,7 +308,7 @@ const ClassListPage = () => {
         emptyTitle={'No Class'}
         emptySubTitle={'No Class Available'}
         isLoading={isLoading}
-        showNO={false}
+        showNO={true}
         idField="class_id"
         page={page}
         rowsPerPage={rowsPerPage}
