@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tab, Typography, Card, Tabs, Box } from '@mui/material';
+import { Tab, Typography, Card, Box } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 
@@ -26,14 +26,15 @@ import {
 import { getUserProfileData, getSchoolData } from '../../../utils/formatData';
 import { shadow } from '../../../styles/global';
 import LoadingPage from '../../LoadingPage';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import TitleHeader from '../../../components/common/TitleHeader';
 
 const AccountSettingsPage = () => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // Redux API calls to get user profile
-  const { data: user, isLoading, error, isSuccess } = useGetUserProfileQuery();
+  const { data: user, isLoading, error } = useGetUserProfileQuery();
   // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
@@ -92,13 +93,12 @@ const AccountSettingsPage = () => {
   }
 
   if (error) {
-    return <Typography>Error loading user data</Typography>;
+    return <SomethingWentWrong description={error?.data?.message} />;
   }
   return (
     <FormComponent
-      title={'Account Settings'}
-      subTitle={'Manage your account settings'}
     >
+      <TitleHeader title="Account Settings" />
       <Card sx={shadow}>
         <Box
           sx={{

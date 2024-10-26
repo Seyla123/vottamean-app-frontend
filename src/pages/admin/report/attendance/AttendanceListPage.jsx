@@ -183,7 +183,6 @@ const AttendanceListPage = () => {
   };
   // handle delete multiple subjects
   const handleSelectedDelete = async (selectedIds) => {
-    console.log('this select mul : ', selectedIds);
     await deleteManyAttendance(selectedIds).unwrap();
   };
   // handle view action

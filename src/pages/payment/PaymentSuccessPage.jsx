@@ -130,31 +130,3 @@ function PaymentSuccessPage() {
 }
 
 export default PaymentSuccessPage;
-
-const styles = {
-  pageContainer: {
-    height: '100vh',
-    width: '100vw',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    p: 2,
-    gap: 2,
-    bgcolor: 'white',
-  },
-  leftContainer: {
-    width: '100%',
-  },
-  fieldContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-  },
-  logo: {
-    width: '150px',
-    position: 'absolute',
-    top: '10px',
-    left: '10px',
-    zIndex: 10,
-  },
-};
