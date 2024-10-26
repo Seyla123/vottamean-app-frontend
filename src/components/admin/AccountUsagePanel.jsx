@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -20,6 +20,8 @@ import AlertCard from '../common/AlertCard';
 import CreditCardImage from '../../assets/images/credit-card.svg';
 import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import CancelSubscription from './CancelSubscription';
+import { useGetPaymentQuery } from '../../services/paymentApi';
+
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
@@ -37,9 +39,19 @@ const AccountUsagePanel = ({
   isSubscriptionActive,
   setValue,
 }) => {
-  console.log(currentSubscription);
-  console.log(isSubscriptionActive);
-  console.log(plans);
+
+  const [subscritionDetails, setSubscritionDetails] = useState({});
+
+  const { data, isLoading, isSuccess, isError } = useGetPaymentQuery();
+
+  useEffect(()=>{
+    if(data){
+      setSubscritionDetails(data.data.subscription);
+    }
+  },[data, isLoading])
+
+  console.log('this subscription data', subscritionDetails);
+  
 
   const activePlan = plans.find(
     (plan) => plan.type.toLowerCase() === currentSubscription,
@@ -56,7 +68,7 @@ const AccountUsagePanel = ({
           {currentSubscription === 'None' ?
             <NoSubscription setValue={setValue} />
             :
-            <UsageCard activePlan={activePlan} setValue={setValue} />}
+            <UsageCard activePlan={activePlan} setValue={setValue} subscritionDetails={subscritionDetails}/>}
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Stack spacing={3}>
@@ -86,9 +98,11 @@ const AccountUsagePanel = ({
   );
 };
 
-const UsageCard = ({ activePlan, setValue }) => {
+const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  const usagePercentage = 25; // Example usage percentage
+  const studentPercentage = subscritionDetails?.percentageStudentLimit;
+  const teacherPercentage = subscritionDetails?.percentageTeacherLimit;
+
 
   const visibleFeatures = showAllFeatures
     ? activePlan?.features
@@ -106,7 +120,7 @@ const UsageCard = ({ activePlan, setValue }) => {
           <Typography variant="h6" gutterBottom>
             Your Plan Details
           </Typography>
-          <Chip label={activePlan?.type} size="small" color="primary" />
+          <Chip label={subscritionDetails?.planType} size="small" color="primary" />
         </Box>
         <Grid container spacing={2} mt={2}>
           {visibleFeatures?.map((feature, index) => (
@@ -144,17 +158,29 @@ const UsageCard = ({ activePlan, setValue }) => {
         <Stack spacing={3}>
           <Box mt={3}>
             <Typography variant="body2" gutterBottom>
-              Usage
+              Student Usage
             </Typography>
             <BorderLinearProgress
               variant="determinate"
-              value={usagePercentage}
+              value={studentPercentage}
             />
             <Typography variant="body2" textAlign="right" mt={3}>
-              {usagePercentage}% of {activePlan.type} plan used
+              {studentPercentage}% of {activePlan.type} plan used
             </Typography>
           </Box>
-          {usagePercentage < 80 && (
+          <Box mt={3}>
+            <Typography variant="body2" gutterBottom>
+              Teacher Usage
+            </Typography>
+            <BorderLinearProgress
+              variant="determinate"
+              value={teacherPercentage}
+            />
+            <Typography variant="body2" textAlign="right" mt={3}>
+              {teacherPercentage}% of {activePlan.type} plan used
+            </Typography>
+          </Box>
+          {teacherPercentage < 80 && (
             <AlertCard
               title={'Unlock More Features'}
               description="Upgrade your plan to access advanced tools and increase your productivity. Our higher-tier plans offer extended limits and exclusive features to help your business grow."

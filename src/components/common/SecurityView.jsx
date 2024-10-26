@@ -119,7 +119,7 @@ const SecurityView = ({ handleDeleteAccount }) => {
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteModal}
-        itemName="Your account"
+        itemName="Account"
       />
 
       {/* CHANGE PASSWORD MODAL */}
