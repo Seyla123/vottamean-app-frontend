@@ -2,8 +2,16 @@
 import React, { useEffect, useState } from 'react';
 
 // - Material UI Components
-import { Typography, Box, CardContent, Chip, Grid, Stack, CircularProgress } from '@mui/material';
-import { Crown, GraduationCap, UsersIcon } from 'lucide-react';
+import {
+  Typography,
+  Box,
+  CardContent,
+  Chip,
+  Grid,
+  Stack,
+  CircularProgress,
+} from '@mui/material';
+import { Crown, GraduationCap, ShieldCheck, UsersIcon } from 'lucide-react';
 
 // - Custom Components
 import FormComponent from '../../../components/common/FormComponent';
@@ -33,7 +41,6 @@ import SectionTitle from '../../../components/common/SectionTitle';
 import TitleHeader from '../../../components/common/TitleHeader';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import { Link } from 'react-router-dom';
-
 
 const teacherArr = [
   {
@@ -67,46 +74,52 @@ const teacherArr = [
 ];
 const shortcutCards = [
   {
-    title: "Add Teachers",
-    description: "Create teacher accounts to unlock dashboard access, enabling efficient management of attendance, grades, and classroom activities.",
+    title: 'Add Teachers',
+    description:
+      'Create teacher accounts to unlock dashboard access, enabling efficient management of attendance, grades, and classroom activities.',
     icon: createTeacherImage,
-    href: "/admin/teachers",
-    buttonText: "Add Teacher",
+    href: '/admin/teachers',
+    buttonText: 'Add Teacher',
   },
   {
-    title: "Set Class Times",
-    description: "Define class periods to optimize the school day, balance subjects, and create a productive learning environment for students and teachers.",
+    title: 'Set Class Times',
+    description:
+      'Define class periods to optimize the school day, balance subjects, and create a productive learning environment for students and teachers.',
     icon: createClassPeriodImage,
-    href: "/admin/class-periods",
-    buttonText: "Set Periods",
+    href: '/admin/class-periods',
+    buttonText: 'Set Periods',
   },
   {
-    title: "Create Classrooms",
-    description: "Set up virtual or physical classrooms to organize students, allocate resources, and create focused environments for specific subjects or age groups.",
+    title: 'Create Classrooms',
+    description:
+      'Set up virtual or physical classrooms to organize students, allocate resources, and create focused environments for specific subjects or age groups.',
     icon: createClass,
-    href: "/admin/classes",
-    buttonText: "Create Class",
+    href: '/admin/classes',
+    buttonText: 'Create Class',
   },
   {
-    title: "Add Students",
-    description: "Add comprehensive student profiles to track academic progress, personalize learning experiences, and facilitate communication with parents.",
+    title: 'Add Students',
+    description:
+      'Add comprehensive student profiles to track academic progress, personalize learning experiences, and facilitate communication with parents.',
     icon: createStudent,
-    href: "/admin/students",
-    buttonText: "Enroll Student",
+    href: '/admin/students',
+    buttonText: 'Enroll Student',
   },
   {
-    title: "Add Subjects",
-    description: "Develop a rich academic offering by adding subjects like 'C++ Programming', ensuring a well-rounded and future-ready education for your students.",
+    title: 'Add Subjects',
+    description:
+      "Develop a rich academic offering by adding subjects like 'C++ Programming', ensuring a well-rounded and future-ready education for your students.",
     icon: createSubject,
-    href: "/admin/subjects",
-    buttonText: "Add Subject",
+    href: '/admin/subjects',
+    buttonText: 'Add Subject',
   },
   {
-    title: "Schedule Classes",
-    description: "Create teaching sessions by combining teachers, classes, subjects, and schedules, ensuring smooth operations and optimal resource allocation.",
+    title: 'Schedule Classes',
+    description:
+      'Create teaching sessions by combining teachers, classes, subjects, and schedules, ensuring smooth operations and optimal resource allocation.',
     icon: createSession,
-    href: "/admin/sessions",
-    buttonText: "Schedule Session",
+    href: '/admin/sessions',
+    buttonText: 'Schedule Session',
   },
 ];
 
@@ -115,22 +128,29 @@ const teacherColumnArr = [
   { id: 'email', label: 'Email' },
 ];
 
-
 function HomePage() {
   const [userData, setUserData] = useState({
     username: 'Username',
   });
   const [totalStudent, setTotalStudent] = useState(0);
   const [totalTeacher, setTotalTeacher] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState('');
   const [shortListTeacher, setShortListTeacher] = useState([]);
 
   const [getUserFirstName, setUserFirstName] = useState('');
 
   const { data: userDataProfile, isSuccess } = useGetUserProfileQuery();
 
-  const { data: getAllStudent, isSuccess: isStudentSuccess, isLoading: isStudentLoading } = useGetAllStudentsQuery({ active: 1, page: 1, limit: 5 });
-  const { data: getAllTeacher, isSuccess: isTeacherSuccess, isLoading: isTeacherLoading } = useGetAllTeachersQuery({ active: 1, page: 1, limit: 5 });
-
+  const {
+    data: getAllStudent,
+    isSuccess: isStudentSuccess,
+    isLoading: isStudentLoading,
+  } = useGetAllStudentsQuery({ active: 1, page: 1, limit: 5 });
+  const {
+    data: getAllTeacher,
+    isSuccess: isTeacherSuccess,
+    isLoading: isTeacherLoading,
+  } = useGetAllTeachersQuery({ active: 1, page: 1, limit: 5 });
 
   // - Fetch user data
   useEffect(() => {
@@ -144,7 +164,15 @@ function HomePage() {
     }
   }, [isSuccess, userDataProfile, isStudentSuccess, isTeacherSuccess]);
 
-
+  // Check user payment type
+  useEffect(() => {
+    if (userDataProfile?.data?.subscriptions?.length > 0) {
+      const lastSubscription = userDataProfile.data.subscriptions.at(-1);
+      setPaymentStatus(lastSubscription?.plan_type || null);
+    } else {
+      setPaymentStatus(null);
+    }
+  }, [userDataProfile]);
 
   // Get the current hour to determine the appropriate greeting
   const currentHour = new Date().getHours();
@@ -224,11 +252,19 @@ function HomePage() {
           background: '#FFFFFF',
         }}
       >
-        {isStudentLoading || isTeacherLoading ?
-          <Box sx={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+        {isStudentLoading || isTeacherLoading ? (
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <CircularProgress />
           </Box>
-          :
+        ) : (
           statusCard?.map((item) => (
             <Grid container key={item.id}>
               <Grid item>
@@ -256,7 +292,8 @@ function HomePage() {
                 </Box>
               </Grid>
             </Grid>
-          ))}
+          ))
+        )}
       </Box>
     );
   };
@@ -270,16 +307,30 @@ function HomePage() {
         alignItems={'center'}
       >
         <TitleHeader title={'Home'} />
-        <Link to={'/admin/payment'}>
-          <StyledButton
-            variant={'outlined'}
-            color={'primary'}
-            size={'small'}
-            startIcon={<Crown size={18} />}
-          >
-            Upgrade to Pro
-          </StyledButton>
-        </Link>
+
+        {paymentStatus === 'basic' ? (
+          <Link to={'/admin/payment'}>
+            <StyledButton
+              variant={'outlined'}
+              color={'primary'}
+              size={'small'}
+              startIcon={<Crown size={18} />}
+            >
+              Upgrade to Pro
+            </StyledButton>
+          </Link>
+        ) : (
+          <Link to={'/admin/payment'}>
+            <StyledButton
+              variant={'outlined'}
+              color={'primary'}
+              size={'small'}
+              startIcon={<ShieldCheck size={18} />}
+            >
+              Your plan is {paymentStatus}
+            </StyledButton>
+          </Link>
+        )}
       </Stack>
       <Grid container spacing={2}>
         <Grid item xs={12} lg={8}>
@@ -310,7 +361,7 @@ function HomePage() {
             ))}
           </Box>
         </Grid>
-        <Grid item xs={12} lg={4} >
+        <Grid item xs={12} lg={4}>
           <SectionTitle
             title={'Teacher Directory'}
             subtitle={"View and manage your school's teaching staff"}

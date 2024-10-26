@@ -6,16 +6,21 @@ const ShortHeader = ({ children }) => {
   return (
     <>
       <CssBaseline />
-      <AppBar position="absolute" color='white' sx={styles.pageContainer}>
+      <AppBar position="absolute" color="white" sx={styles.pageContainer}>
         <Toolbar component={'div'} sx={styles.leftContainer}>
           <Link to="/">
-            <img
-              src={Logo}
-              alt="wavetrack logo" style={styles.logo}
-            />
+            <img src={Logo} alt="wavetrack logo" style={styles.logo} />
           </Link>
         </Toolbar>
-        <Stack sx={{ height: '80vh', justifyContent: 'center', alignItems: 'center', display: 'flex', width: '100%' }}>
+        <Stack
+          sx={{
+            height: '80vh',
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            width: '100%',
+          }}
+        >
           {children}
         </Stack>
       </AppBar>
@@ -29,10 +34,11 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+
     p: 2,
     gap: 2,
     shadow: 'none',
-    boxShadow: "none",
+    boxShadow: 'none',
     backgroundColor: 'white',
     height: '100vh',
   },
