@@ -12,7 +12,7 @@ import {
   useGetAllStudentsQuery,
   useDeleteManyStudentsMutation,
 } from '../../../services/studentApi';
-import { useGetClassesDataQuery } from '../../../services/classApi';
+import { useStudentClassFilterQuery } from '../../../services/classApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import Grid from '@mui/material/Grid';
 import {
@@ -102,9 +102,9 @@ const StudentListPage = () => {
     },
   ] = useDeleteManyStudentsMutation();
 
-  //useGetClassesDataQuery : a hook for return function to fetch classes record
+  //useStudentClassFilterQuery : a hook for return function to fetch classes record
   const { data: classesData, isSuccess: isClassesSuccess } =
-    useGetClassesDataQuery({ active: 1 });
+    useStudentClassFilterQuery();
 
   //  when the student records are fetched successfully, transform the data and set the classes state
   useEffect(() => {

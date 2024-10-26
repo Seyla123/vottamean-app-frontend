@@ -71,6 +71,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     isError,
     error,
   } = useGetStudentsByIdQuery(studentId, { skip: !isOpen || !studentId });
+  
 
   // useGetClassesDataQuery: a hook return function for get classes data
   const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery(
@@ -612,9 +613,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                                   (classItem) =>
                                     classItem?.value === Number(selected),
                                 );
-                                return selectedClass
-                                  ? selectedClass?.label
-                                  : '';
+                                return selectedClass?.label
                               },
                             }}
                           >

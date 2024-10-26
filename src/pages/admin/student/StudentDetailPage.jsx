@@ -12,7 +12,7 @@ import { useGetStudentsByIdQuery, useDeleteStudentMutation } from '../../../serv
 import { setSnackbar } from '../../../store/slices/uiSlice';
 
 // Update Modal
-import UpdateTeacherForm from '../../../components/teacher/UpdateTeacherForm';
+import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 // Delete Modal
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import {
@@ -71,7 +71,7 @@ function StudentDetailPage() {
 
   // States
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
 
   // Menu for edit and delete state
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -105,7 +105,7 @@ function StudentDetailPage() {
 
   // Handle for edit modal
   const handleEdit = () => {
-    setSelectedTeacherId(id);
+    setSelectedStudentId(id);
     setIsUpdateOpen(true);
   };
 
@@ -372,11 +372,11 @@ function StudentDetailPage() {
 
         </Stack>
       </FormComponent>
-      {/* Update teacher form */}
-      <UpdateTeacherForm
+      {/* Update modal */}
+      <UpdateStudentForm
         isOpen={isUpdateOpen}
         onClose={() => setIsUpdateOpen(false)}
-        teacherId={selectedTeacherId}
+        studentId={selectedStudentId}
       />
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal
