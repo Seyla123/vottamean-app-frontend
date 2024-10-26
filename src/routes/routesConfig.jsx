@@ -17,7 +17,6 @@ import NotFoundPage from '../pages/NotFoundPage';
 import AdminHomePage from '../pages/admin/home/HomePage';
 
 import SessionListPage from '../pages/admin/session/SessionListPage';
-import SessionDetailPage from '../pages/admin/session/SessionDetailPage';
 import SessionCreatePage from '../pages/admin/session/SessionCreatePage';
 import SessionUpdatePage from '../pages/admin/session/SessionUpdatePage';
 
@@ -177,13 +176,6 @@ const routesConfig = [
             element: <>
               <PageTitle title={'Sessions'} />
               <SessionListPage />
-            </>,
-          },
-          {
-            path: ':id',
-            element: <>
-              <PageTitle title={'Sessions'} />
-              <SessionDetailPage />
             </>,
           },
           {
