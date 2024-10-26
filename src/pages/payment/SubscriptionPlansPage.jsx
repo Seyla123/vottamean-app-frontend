@@ -75,9 +75,7 @@ const SubscriptionPlansPage = () => {
 
   // Extract admin_id from user profile's adminProfile
   const adminId = userData?.data?.adminProfile?.admin_id;
-  console.log('Admin ID in Subscription Plans Page:', adminId);
-
-
+ 
 
   // Define plan prices for Monthly and Yearly billing
   const plans = [

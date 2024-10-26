@@ -24,7 +24,6 @@ import SessionUpdatePage from '../pages/admin/session/SessionUpdatePage';
 import StudentListPage from '../pages/admin/student/StudentListPage';
 import StudentDetailPage from '../pages/admin/student/StudentDetailPage';
 import StudentCreatePage from '../pages/admin/student/StudentCreatePage';
-import StudentUpdatePage from '../pages/admin/student/StudentUpdatePage';
 
 import SubjectListPage from '../pages/admin/subject/SubjectListPage';
 import SubjectDetailPage from '../pages/admin/subject/SubjectDetailPage';
@@ -41,7 +40,6 @@ import TeacherDetailPage from '../pages/admin/teacher/TeacherDetailPage';
 import TeacherCreatePage from '../pages/admin/teacher/TeacherCreatePage';
 
 import ClassListPage from '../pages/admin/class/ClassListPage';
-import ClassDetailPage from '../pages/admin/class/ClassDetailPage';
 import ClassCreatePage from '../pages/admin/class/ClassCreatePage';
 import ClassUpdatePage from '../pages/admin/class/ClassUpdatePage';
 
@@ -237,13 +235,6 @@ const routesConfig = [
               <StudentCreatePage />
             </>,
           },
-          {
-            path: 'update/:id',
-            element: <>
-              <PageTitle title={'Students'} />
-              <StudentUpdatePage />
-            </>,
-          },
         ],
       },
       {
@@ -370,13 +361,6 @@ const routesConfig = [
             element: <>
               <PageTitle title={'Classes'} />
               <ClassListPage />
-            </>,
-          },
-          {
-            path: ':id',
-            element: <>
-              <PageTitle title={'Classes'} />
-              <ClassDetailPage />
             </>,
           },
           {
