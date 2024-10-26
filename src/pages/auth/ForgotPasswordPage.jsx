@@ -79,7 +79,7 @@ const ForgotPasswordPage = () => {
       {/* LEFT CONTAINER */}
       <Box component="div" sx={styles.leftContainer}>
         {/* LOGO */}
-        <img src={Logo} alt="wavetrack logo" style={styles.logo} />
+        <img src={Logo} alt="vottamean logo" style={styles.logo} />
         {/* FORM CONTAINER */}
         <Box sx={styles.formContainer}>
           {isEmailSent ? (

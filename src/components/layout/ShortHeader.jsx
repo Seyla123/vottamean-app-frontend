@@ -11,7 +11,7 @@ const ShortHeader = ({ children }) => {
           <Link to="/">
             <img
               src={Logo}
-              alt="wavetrack logo" style={styles.logo}
+              alt="vottamean logo" style={styles.logo}
             />
           </Link>
         </Toolbar>
