@@ -1,14 +1,14 @@
 import React from 'react';
 import FormInfo from '../../../components/teacher/FormInfo';
 import FormComponent from '../../../components/common/FormComponent';
+import TitleHeader from '../../../components/common/TitleHeader';
 function TeacherCreatePage() {
   return (
     <>
       {/* Header */}
       <FormComponent
-        title="Add Teacher"
-        subTitle="Please Add Teacher Information"
       >
+        <TitleHeader title="Create Teacher" />
         {/* Form Content */}
         <FormInfo />
       </FormComponent>
