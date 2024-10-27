@@ -21,7 +21,7 @@ import CreditCardImage from '../../assets/images/credit-card.svg';
 import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import CancelSubscription from './CancelSubscription';
 import { useGetPaymentQuery } from '../../services/paymentApi';
-
+import { formatDate } from '../../utils/formatHelper';
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
@@ -44,13 +44,13 @@ const AccountUsagePanel = ({
 
   const { data, isLoading, isSuccess, isError } = useGetPaymentQuery();
 
-  useEffect(()=>{
-    if(data){
+  useEffect(() => {
+    if (data) {
       setSubscritionDetails(data.data.subscription);
     }
-  },[data, isLoading])
+  }, [data, isLoading])
 
-  
+
 
   const activePlan = plans.find(
     (plan) => plan.type.toLowerCase() === currentSubscription,
@@ -67,11 +67,11 @@ const AccountUsagePanel = ({
           {currentSubscription === 'None' ?
             <NoSubscription setValue={setValue} />
             :
-            <UsageCard activePlan={activePlan} setValue={setValue} subscritionDetails={subscritionDetails}/>}
+            <UsageCard activePlan={activePlan} setValue={setValue} subscritionDetails={subscritionDetails} />}
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Stack spacing={3}>
-            {activePlan && <SubcriptionCard/>}
+            {activePlan && <SubcriptionCard currentPlane={subscritionDetails?.planType} startDate={subscritionDetails?.startDate} expireDate={subscritionDetails?.endDate} />}
             <Card sx={shadow}>
               <CardContent>
                 <Typography variant="body1" gutterBottom>
@@ -164,7 +164,7 @@ const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
               value={studentPercentage}
             />
             <Typography variant="body2" textAlign="right" mt={3}>
-            {subscritionDetails?.currentStudent}  / {subscritionDetails?.limitStudent} Students
+              {subscritionDetails?.currentStudent}  / {subscritionDetails?.limitStudent} Students
             </Typography>
           </Box>
           <Box mt={3}>
@@ -247,12 +247,17 @@ const NoSubscription = ({ setValue }) => {
   );
 };
 
-const SubcriptionCard = () => {
+const SubcriptionCard = ({ currentPlane, startDate, expireDate }) => {
   return (
     <Card sx={{ height: '100%', boxShadow: shadow }}>
-      <CardContent sx={{ display:'flex', flexDirection: 'column', gap: 2 }}>
-        <Stack> 
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Stack>
           <Typography variant="h6">Subcription</Typography>
+          <Box>
+            <Typography variant="body2" textTransform={'capitalize'}>Current Plan : {currentPlane}</Typography>
+            <Typography variant="body2">Start Date : {formatDate(startDate)} </Typography>
+            <Typography variant="body2">Expires Date : {formatDate(expireDate)}</Typography>
+          </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               component="img"
@@ -262,11 +267,11 @@ const SubcriptionCard = () => {
             />
           </Box>
           <Stack gap={1}>
-          <Typography variant="body1" textAlign={'center'}>
-            Your subscription is currently <b>active</b>.
-            <br /> You can cancel anytime.
-          </Typography>
-          <CancelSubscription/>
+            <Typography variant="body1" textAlign={'center'}>
+              Your subscription is currently <b>active</b>.
+              <br /> You can cancel anytime.
+            </Typography>
+            <CancelSubscription />
           </Stack>
         </Stack>
 
