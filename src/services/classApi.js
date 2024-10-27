@@ -64,6 +64,16 @@ export const classApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['Classes'],
+    }),
+
+    // student class filter
+    studentClassFilter: builder.query({
+      query: () => ({
+        url: `classes/student-class-filter`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['Classes'],
     })
   }),
 });
@@ -73,5 +83,6 @@ export const {
   usePostClassesDataMutation,
   useUpdateClassesDataMutation,
   useDeleteClassesDataMutation,
-  useDeleteManyClassesMutation
+  useDeleteManyClassesMutation,
+  useStudentClassFilterQuery,
 } = classApi;

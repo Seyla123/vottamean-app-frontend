@@ -66,7 +66,6 @@ const GuardianForm = ({
 
     // Append the photo if it exists
     if (studentData.photo) {
-      console.log('Appending photo:', studentData.photo);
       formData.append('photo', studentData.photo);
     }
     // Direct file append to FormData

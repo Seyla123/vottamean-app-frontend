@@ -1,7 +1,5 @@
 // React and third-party libraries
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 // Components
@@ -26,9 +24,8 @@ import { StyledTab } from '../../../../components/common/StyledTabs';
 import TitleHeader from '../../../../components/common/TitleHeader';
 import SomethingWentWrong from '../../../../components/common/SomethingWentWrong';
 const AccountSettingsPage = () => {
-  // - Initialize dispatch and navigate hooks
+  // - Initialize dispatch 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // Redux API calls to get user profile
   const { data: user, isLoading, error } = useGetUserProfileQuery();
@@ -92,7 +89,6 @@ const AccountSettingsPage = () => {
           <StyledTab
             label="Profile Information"
             value="1"
-            // icon={<UserRound size={14} />}
             iconPosition="start"
           />
           <StyledTab
@@ -107,7 +103,7 @@ const AccountSettingsPage = () => {
             <MyProfileView
               profilePhoto={userData?.photo}
               userData={userData?.userProfile}
-              schoolProfileData={userData.schoolProfile}
+              schoolProfileData={userData?.schoolProfile}
             />
           </TabPanel>
 

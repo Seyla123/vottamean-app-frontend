@@ -122,7 +122,6 @@ function AttendanceFilter({
     dispatch(setFilter({ ...filter, endDate }));
   };
 
-  console.log('this filter L  = ', filter);
 
   return (
     <Grid container spacing={2}>

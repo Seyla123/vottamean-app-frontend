@@ -3,7 +3,6 @@ import { Grid2 as Grid, Typography } from '@mui/material';
 function HeaderReportTable({ schoolInfo, classInfo, startDate, endDate }) {
     const dateRange = classInfo?.date_range;
     const studentCount = classInfo?.student_count;
-    console.log('this total students : ', classInfo);
     
     return <>
         <Grid  xs={12}>

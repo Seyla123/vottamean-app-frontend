@@ -6,7 +6,7 @@ import { Box, Stack } from '@mui/material';
 
 import FormComponent from '../../../components/common/FormComponent';
 import CardComponent from '../../../components/common/CardComponent';
-import RenderSelect from './RenderSelect';
+import RenderSelect from '../../../components/common/RenderSelect';
 
 import { useCreateSessionMutation } from '../../../services/sessionApi';
 import { useGetClassPeriodQuery } from '../../../services/classPeriodApi';

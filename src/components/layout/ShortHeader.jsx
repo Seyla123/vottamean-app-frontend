@@ -9,7 +9,10 @@ const ShortHeader = ({ children }) => {
       <AppBar position="absolute" color="white" sx={styles.pageContainer}>
         <Toolbar component={'div'} sx={styles.leftContainer}>
           <Link to="/">
-            <img src={Logo} alt="wavetrack logo" style={styles.logo} />
+            <img
+              src={Logo}
+              alt="vottamean logo" style={styles.logo}
+            />
           </Link>
         </Toolbar>
         <Stack

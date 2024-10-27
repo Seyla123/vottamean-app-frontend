@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   BookMarked,
   Calendar,
-  CircleDashed,
   LetterText,
   PlusIcon,
 } from 'lucide-react';
@@ -35,7 +34,6 @@ import { formatDate } from '../../../utils/formatHelper';
 
 // Define table columns title
 const columns = [
-  { id: 'class_id', label: 'Class ID' },
   { id: 'class_name', label: 'Class Name' },
   { id: 'description', label: 'Description' },
 ];
@@ -252,13 +250,11 @@ const ClassListPage = () => {
     {
       name: 'description',
       label: 'Description',
-      required: true,
       multiline: true,
       icon: '',
     },
   ];
 
-  console.log(selectedClass);
 
   const dataToView = [
     { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },
@@ -312,7 +308,7 @@ const ClassListPage = () => {
         emptyTitle={'No Class'}
         emptySubTitle={'No Class Available'}
         isLoading={isLoading}
-        showNO={false}
+        showNO={true}
         idField="class_id"
         page={page}
         rowsPerPage={rowsPerPage}

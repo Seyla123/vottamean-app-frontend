@@ -5,7 +5,7 @@ import GetStartedNowForm from '../../components/auth/GetStartedNowForm';
 import PersonalDetailsForm from '../../components/auth/PersonalDetailsForm';
 import ContactForm from '../../components/auth/ContactForm';
 import CreateSchoolForm from '../../components/auth/CreateSchoolForm';
-import { Box, Stepper, Step, StepLabel, Typography, CssBaseline } from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Typography } from '@mui/material';
 import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
@@ -84,7 +84,6 @@ const SignupPage = () => {
       handleSignUpSuccess={() => setSignUpSuccess(true)}
     />,
   ];
-  console.log('this is : ', signUpSuccess);
 
   const CustomIconBox = ({ icon }) => (
     <Box
@@ -234,7 +233,7 @@ const SignupPage = () => {
         {/* LOGO */}
         <img
           src={Logo}
-          alt="wavetrack logo"
+          alt="vottamean logo"
           style={{
             width: '150px',
             top: '10px',

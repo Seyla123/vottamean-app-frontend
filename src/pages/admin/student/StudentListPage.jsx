@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Box, Stack } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
+import { Box, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
-import { PlusIcon, BookIcon } from 'lucide-react';
+import { PlusIcon, } from 'lucide-react';
 import {
   useDeleteStudentMutation,
   useGetAllStudentsQuery,
   useDeleteManyStudentsMutation,
 } from '../../../services/studentApi';
-import { useGetClassesDataQuery } from '../../../services/classApi';
+import { useStudentClassFilterQuery } from '../../../services/classApi';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import Grid from '@mui/material/Grid';
 import {
@@ -23,12 +23,10 @@ import { setSnackbar, setModal } from '../../../store/slices/uiSlice';
 import DataTable from '../../../components/common/DataTable';
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
-import CreateStudentModal from '../../../components/common/CreateStudentModal';
 import TitleHeader from '../../../components/common/TitleHeader';
 import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 
 const columns = [
-  { id: 'id', label: 'ID' },
   { id: 'name', label: 'Full Name' },
   { id: 'gender', label: 'Gender' },
   { id: 'class', label: 'Class' },
@@ -39,21 +37,8 @@ const StudentListPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [isPageLoading, setIsPageLoading] = useState(true);
-
-  const [open, setOpen] = useState(false);
-
-  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-
-  const handleCreateModalOpen = () => {
-    setOpenCreateModal(true);
-  };
-
-  const handleCreateModalClose = () => {
-    setOpenCreateModal(false);
-  };
 
   // - rows: the student records that are currently being displayed on the page
   // - searchTerm: the search term that is currently being used to filter the table
@@ -117,9 +102,9 @@ const StudentListPage = () => {
     },
   ] = useDeleteManyStudentsMutation();
 
-  //useGetClassesDataQuery : a hook for return function to fetch classes record
+  //useStudentClassFilterQuery : a hook for return function to fetch classes record
   const { data: classesData, isSuccess: isClassesSuccess } =
-    useGetClassesDataQuery({ active: 1 });
+    useStudentClassFilterQuery();
 
   //  when the student records are fetched successfully, transform the data and set the classes state
   useEffect(() => {
@@ -298,7 +283,7 @@ const StudentListPage = () => {
         emptyTitle={'No Student'}
         emptySubTitle={'No Student Available'}
         hideColumns={['address', 'Date of Birth', 'id', 'gender']}
-        showNO={false}
+        showNO={true}
         page={page}
         rowsPerPage={rowsPerPage}
         setPage={handleChangePage}

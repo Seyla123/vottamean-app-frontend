@@ -118,7 +118,7 @@ const ResetNewPasswordPage = () => {
     <Box component="section" sx={styles.pageContainer}>
       {/* LEFT CONTAINER */}
       <Box component="div" sx={styles.leftContainer}>
-        <img src={Logo} alt="wavetrack logo" style={styles.logo} />
+        <img src={Logo} alt="vottamean logo" style={styles.logo} />
         {isSubmit ? (
           <ResetPasswordSubmit
             isLoading={isLoading}
@@ -369,7 +369,7 @@ const ResetPasswordSubmit = ({
   return (
     <>
       <Box sx={styles.formContainer}>
-        <Box component={'div'} sx={styles.iconContainer}>
+        <Box component={'div'} sx={isSuccess ? styles.iconContainer : {...styles.iconContainer, border: '1px solid red', color:'red'}}>
           {isSuccess ? <ShieldCheck size={100} /> : <ShieldX size={100} />}
         </Box>
         {/* FORM HEADER */}

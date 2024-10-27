@@ -271,11 +271,8 @@ export const getUserProfileUpdateData = (user) => {
 export const getSchoolData = (user) => {
   const profileKey = getProfileKey(user?.data?.role);
 
-  console.log('profileKey', profileKey);
-
   const profileSchools = user?.data[profileKey]?.School[0];
   if (!profileSchools) return {};
-  console.log('profileSchools', profileSchools);
 
   return {
     info_id: user.data[profileKey]?.info_id,

@@ -50,13 +50,12 @@ const AccountUsagePanel = ({
     }
   },[data, isLoading])
 
-  console.log('this subscription data', subscritionDetails);
   
 
   const activePlan = plans.find(
     (plan) => plan.type.toLowerCase() === currentSubscription,
   );
-  console.log('active', activePlan);
+
 
   return (
     <Box>
@@ -165,7 +164,7 @@ const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
               value={studentPercentage}
             />
             <Typography variant="body2" textAlign="right" mt={3}>
-              {studentPercentage}% of {activePlan.type} plan used
+            {subscritionDetails?.currentStudent}  / {subscritionDetails?.limitStudent} Students
             </Typography>
           </Box>
           <Box mt={3}>
@@ -177,7 +176,7 @@ const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
               value={teacherPercentage}
             />
             <Typography variant="body2" textAlign="right" mt={3}>
-              {teacherPercentage}% of {activePlan.type} plan used
+              {subscritionDetails?.currentTeacher} / {subscritionDetails?.limitTeacher} Teachers
             </Typography>
           </Box>
           {teacherPercentage < 80 && (
