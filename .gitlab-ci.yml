@@ -1,0 +1,62 @@
+# Define pipeline stages
+stages:
+  - build
+  - deploy
+
+# Build Docker image job
+build-frontend:
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind
+      command: ['--insecure-registry=git.clp.kr:5050']
+  variables:
+    DOCKER_DRIVER: overlay2
+  script:
+    # Log into Docker registry
+    - echo "Logging in to Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+
+    # Build and push Docker image
+    - echo "Building Docker image..."
+    - docker build -t "$CI_REGISTRY_IMAGE/frontend:latest" -f ./DockerFile .
+    - echo "Pushing Docker image to the registry..."
+    - docker push "$CI_REGISTRY_IMAGE/frontend:latest"
+
+  only:
+    - main
+    - develop
+
+# Deploy job using rsync
+deploy-frontend:
+  stage: deploy
+  image: ubuntu:20.04
+  before_script:
+    # Install rsync and SSH client
+    - apt-get update && apt-get install -y rsync openssh-client
+
+  script:
+    # Set up SSH
+    - echo "Setting up SSH..."
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H ec2-44-206-226-251.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+
+    # SSH into EC2, log in to the Docker registry, and restart the application
+    - echo "Logging in to Docker registry and restarting application on EC2..."
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com "
+      echo '$CI_REGISTRY_PASSWORD' | sudo docker login -u '$CI_REGISTRY_USER' --password-stdin $CI_REGISTRY &&
+      cd /home/ubuntu/frontend &&
+      sudo docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
+      sudo docker-compose -f /home/ubuntu/frontend/docker-compose.yml up -d --build &&
+      sudo docker cp frontend:/usr/share/nginx/html /home/ubuntu/frontend-project
+      "
+
+  environment:
+    name: production
+    url: https://web.vottamean.com
+  only:
+    - main
+    - develop

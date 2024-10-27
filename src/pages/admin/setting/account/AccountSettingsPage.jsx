@@ -1,0 +1,119 @@
+// React and third-party libraries
+import { useState, useEffect } from 'react';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+
+// Components
+import FormComponent from '../../../../components/common/FormComponent';
+
+import MyProfileView from '../../../../components/common/MyProfileView';
+import SecurityView from '../../../../components/common/SecurityView';
+
+
+// Redux hooks and API
+import { useDispatch } from 'react-redux';
+import { updateFormData } from '../../../../store/slices/formSlice';
+import {
+  useGetUserProfileQuery,
+  useDeleteUserAccountMutation,
+} from '../../../../services/userApi';
+
+// User Profile Data formatting
+import { getUserProfileData } from '../../../../utils/formatData';
+import LoadingCircle from '../../../../components/loading/LoadingCircle';
+import { StyledTab } from '../../../../components/common/StyledTabs';
+import TitleHeader from '../../../../components/common/TitleHeader';
+import SomethingWentWrong from '../../../../components/common/SomethingWentWrong';
+const AccountSettingsPage = () => {
+  // - Initialize dispatch 
+  const dispatch = useDispatch();
+
+  // Redux API calls to get user profile
+  const { data: user, isLoading, error } = useGetUserProfileQuery();
+  // Redux API calls to delete user
+  const [deleteUserAccount] = useDeleteUserAccountMutation();
+
+  // Local state for transformed data
+  const [userData, setUserData] = useState({
+    userProfile: {},
+    schoolProfile: {},
+    photo: '',
+  });
+
+  // Local state for tab
+  const [value, setValue] = useState('1');
+
+  // - When the user data is fetched, format the data and set the user data in the state
+  useEffect(() => {
+    if (user) {
+      const transformedData = getUserProfileData(user);
+      setUserData(transformedData);
+      dispatch(updateFormData(transformedData));
+    }
+  }, [user, dispatch]);
+
+  // Handle tab switch
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  // Handle delete button click
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUserAccount().unwrap();
+      window.location.href = '/auth/signin';
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingCircle />;
+  }
+
+  if (error) {
+    return <SomethingWentWrong description={error?.data?.message} />;
+  }
+
+
+  return (
+    <FormComponent>
+      <TitleHeader title={'Account Settings'} />
+      <TabContext value={value}>
+        <TabList
+          orientation={'horizontal'}
+          variant="scrollable"
+          onChange={handleChange}
+          aria-label="Vertical tabs"
+          sx={{ width: '100%' }}
+        >
+          <StyledTab
+            label="Profile Information"
+            value="1"
+            iconPosition="start"
+          />
+          <StyledTab
+            label="Account Security"
+            value="2"
+            // icon={<Settings size={14} />}
+            iconPosition="start"
+          />
+        </TabList>
+          <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
+            {/* MY PROFILE VIEW */}
+            <MyProfileView
+              profilePhoto={userData?.photo}
+              userData={userData?.userProfile}
+              schoolProfileData={userData?.schoolProfile}
+            />
+          </TabPanel>
+
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="2">
+          {/* SECURITY VIEW */}
+          <SecurityView handleDeleteAccount={handleDeleteAccount} />
+        </TabPanel>
+      </TabContext>
+    </FormComponent>
+  );
+};
+
+export default AccountSettingsPage;
