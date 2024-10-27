@@ -310,7 +310,7 @@ const EmptyTable = ({ columns, emptyTitle, emptySubTitle }) => {
   return (
     <TableRow>
       <TableCell
-        colSpan={columns.length + 2}
+        colSpan={columns.length + 3}
         sx={{
           height: '600px',
           textAlign: 'center',
