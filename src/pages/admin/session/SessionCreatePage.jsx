@@ -65,11 +65,11 @@ const SessionCreatePage = () => {
   } = useForm({
     resolver: yupResolver(SessionValidator),
     defaultValues: {
-      teacher_id: '',
-      period_id: '',
-      class_id: '',
-      subject_id: '',
-      day_id: '',
+      teacherId: '',
+      periodId: '',
+      classId: '',
+      subjectId: '',
+      dayId: '',
     },
   });
 
@@ -77,15 +77,15 @@ const SessionCreatePage = () => {
   const onSubmit = async (formData) => {
     //Extract the relevant data from the form
     const sessionData = {
-      class_id: formData.class_id,
-      subject_id: formData.subject_id,
-      day_id: formData.day_id,
-      teacher_id: formData.teacher_id,
-      period_id: formData.period_id,
+      classId: formData.classId,
+      subjectId: formData.subject_id,
+      dayId: formData.day_id,
+      teacherId: formData.teacher_id,
+      periodId: formData.period_id,
     };
 
     //Call the createSession mutation and
-    await createSession(sessionData).unwrap();
+    await createSession(formData).unwrap();
   };
 
   // when create is failed, show a snackbar with an error message
@@ -120,7 +120,7 @@ const SessionCreatePage = () => {
           <Box sx={selectedStyle}>
             <Box>
               <RenderSelect
-                name="teacher_id"
+                name="teacherId"
                 label="Teacher"
                 options={teachers}
                 control={control}
@@ -129,7 +129,7 @@ const SessionCreatePage = () => {
             </Box>
             <Box>
               <RenderSelect
-                name="period_id"
+                name="periodId"
                 label="Class Period"
                 options={periods}
                 control={control}
@@ -140,7 +140,7 @@ const SessionCreatePage = () => {
           <Box sx={selectedStyle}>
             <Box>
               <RenderSelect
-                name="class_id"
+                name="classId"
                 label="Class"
                 options={classes}
                 control={control}
@@ -149,7 +149,7 @@ const SessionCreatePage = () => {
             </Box>
             <Box>
               <RenderSelect
-                name="subject_id"
+                name="subjectId"
                 label="Subject"
                 options={subjects}
                 control={control}
@@ -159,7 +159,7 @@ const SessionCreatePage = () => {
           </Box>
           <Box>
             <RenderSelect
-              name="day_id"
+              name="dayId"
               label="Day of Week"
               options={days}
               control={control}

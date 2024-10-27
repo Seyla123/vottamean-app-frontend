@@ -199,9 +199,9 @@ export const createSessionSchema = Yup.string().required(
   'This field is required',
 );
 // Class validation
-export const relationshipSchema = Yup.string().required(
-  'Relationship is required',
-);
+export const relationshipSchema = Yup.string()
+.required('Relationship is required')
+.matches(/^[a-zA-Z]+$/, 'Only alphabets are allowed');
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
@@ -226,10 +226,11 @@ export const createFormSchema = (fields) => {
     start_time: startTimeSchema,
     end_time: endTimeSchema,
     subjectName: subjectSchema,
-    teacher_id: createSessionSchema,
-    class_id: createSessionSchema,
-    period_id: createSessionSchema,
-    day_id: createSessionSchema,
+    teacherId: createSessionSchema,
+    classId: createSessionSchema,
+    periodId: createSessionSchema,
+    subjectId: createSessionSchema,
+    dayId: createSessionSchema,
     subject_name: subjectSchema,
     guardianFirstName: firstNameSchema,
     guardianLastName: lastNameSchema,
@@ -344,11 +345,11 @@ export const UpdateTeacherInfo = createFormSchema([
 
 // Update Subject Information
 export const SessionValidator = createFormSchema([
-  'teacher_id',
-  'class_id',
-  'period_id',
-  'day_id',
-  'subject_id',
+  'teacherId',
+  'classId',
+  'periodId',
+  'dayId',
+  'subjectId',
 ]);
 
 // Student Validations for Creating Student

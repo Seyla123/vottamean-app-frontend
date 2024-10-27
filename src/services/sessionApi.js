@@ -5,10 +5,16 @@ export const sessionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Update session
     updateSession: builder.mutation({
-      query: ({ id, sessionData }) => ({
+      query: ({ id, data }) => ({
         url: `sessions/${id}`,
         method: 'PATCH',
-        body: sessionData,
+        body: {
+          class_id:data.classId,
+          subject_id:data.subjectId,
+          period_id:data.periodId,
+          teacher_id:data.teacherId,
+          day_id: data.dayId,
+        },
         credentials: 'include',
       }),
       invalidatesTags: ['Sessions'],
@@ -19,7 +25,13 @@ export const sessionApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: 'sessions',
         method: 'POST',
-        body: data,
+        body: {
+          class_id:data.classId,
+          subject_id:data.subjectId,
+          period_id:data.periodId,
+          teacher_id:data.teacherId,
+          day_id: data.dayId,
+        },
         credentials: 'include',
       }),
       invalidatesTags: ['Sessions'],

@@ -69,11 +69,11 @@ const SessionUpdatePage = () => {
   } = useForm({
     resolver: yupResolver(SessionValidator),
     defaultValues: {
-      teacher_id: '',
-      period_id: '',
-      class_id: '',
-      subject_id: '',
-      day_id: '',
+      teacherId: '',
+      periodId: '',
+      classId: '',
+      subjectId: '',
+      dayId: '',
     },
   });
 
@@ -81,11 +81,11 @@ const SessionUpdatePage = () => {
   useEffect(() => {
     if (session && isPeriodSuccess && isClassSuccess && isTeacherSuccess && isDaySuccess && isSubjectSuccess) {
       const dataSession = {
-        teacher_id: session?.data?.Teacher?.teacher_id,
-        period_id: session?.data?.Period?.period_id,
-        class_id: session?.data?.Class?.class_id,
-        subject_id: session?.data?.Subject?.subject_id,
-        day_id: session?.data?.DayOfWeek?.day_id,
+        teacherId: session?.data?.Teacher?.teacher_id,
+        periodId: session?.data?.Period?.period_id,
+        classId: session?.data?.Class?.class_id,
+        subjectId: session?.data?.Subject?.subject_id,
+        dayId: session?.data?.DayOfWeek?.day_id,
       };
 
       // ensure the selected options are included in the list of options, event the deleted one
@@ -110,11 +110,11 @@ const SessionUpdatePage = () => {
   const onSubmit = async (formData) => {
     //Extract the relevant data from the form
     const sessionData = {
-      teacher_id: formData.teacher_id * 1,
-      period_id: formData.period_id * 1,
-      class_id: formData.class_id * 1,
-      subject_id: formData.subject_id * 1,
-      day_id: formData.day_id * 1,
+      teacherId: formData.teacherId * 1,
+      periodId: formData.periodId * 1,
+      classId: formData.classId * 1,
+      subjectId: formData.subjectId * 1,
+      dayId: formData.dayId * 1,
     };
 
     const noChange = JSON.stringify(sessionData) == JSON.stringify(originData);
@@ -167,7 +167,7 @@ const SessionUpdatePage = () => {
           <Box sx={selectedStyle}>
             <Box>
               <RenderSelect
-                name="teacher_id"
+                name="teacherId"
                 label="Teacher"
                 options={teachers}
                 control={control}
@@ -176,7 +176,7 @@ const SessionUpdatePage = () => {
             </Box>
             <Box>
               <RenderSelect
-                name="period_id"
+                name="periodId"
                 label="Class Period"
                 options={periods}
                 control={control}
@@ -187,7 +187,7 @@ const SessionUpdatePage = () => {
           <Box sx={selectedStyle}>
             <Box>
               <RenderSelect
-                name="class_id"
+                name="classId"
                 label="Class"
                 options={classes}
                 control={control}
@@ -196,7 +196,7 @@ const SessionUpdatePage = () => {
             </Box>
             <Box>
               <RenderSelect
-                name="subject_id"
+                name="subjectId"
                 label="Subject"
                 options={subjects}
                 control={control}
@@ -206,7 +206,7 @@ const SessionUpdatePage = () => {
           </Box>
           <Box>
             <RenderSelect
-              name="day_id"
+              name="dayId"
               label="Day of Week"
               options={days}
               control={control}

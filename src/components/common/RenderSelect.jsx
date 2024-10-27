@@ -13,6 +13,7 @@ const RenderSelect = ({ name, label, options, control, errors }) => (
           {...field}
           displayEmpty
           fullWidth
+          
           renderValue={(selected) =>
             !selected ? (
               <span style={{ color: 'gray' }}>{label}</span>
@@ -24,6 +25,7 @@ const RenderSelect = ({ name, label, options, control, errors }) => (
             '& .MuiSelect-placeholder': {
               color: 'gray',
             },
+            textTransform: 'capitalize'
           }}
         >
      {    options.length > 0 ? options.map((option) => (
