@@ -256,15 +256,6 @@ function FormInfoStudent() {
 export default FormInfoStudent;
 
 // Styles
-const cardContainer = {
-  display: 'flex',
-  flexDirection: { xs: 'column', sm: 'row' },
-  width: '100%',
-  height: '100%',
-  borderRadius: 1,
-  overflow: 'hidden',
-  ...shadow,
-};
 const tabStyle = {
   display: 'flex',
   flexDirection: 'row',

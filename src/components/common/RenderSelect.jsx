@@ -26,12 +26,13 @@ const RenderSelect = ({ name, label, options, control, errors }) => (
             },
           }}
         >
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+     {    options.length > 0 ? options.map((option) => (
+            <MenuItem sx={{ textTransform: 'capitalize'}} key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
-          ))}
-        </Select>
+          )) : <MenuItem disable sx={{ textTransform: 'capitalize'}}>No {label} available</MenuItem>}
+
+          </Select>
         {errors[name] && (
           <FormHelperText error>{errors[name].message}</FormHelperText>
         )}
