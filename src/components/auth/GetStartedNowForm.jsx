@@ -73,7 +73,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
         length: password.length >= 8,
         number: /[0-9]/.test(password),
         letter: /[a-zA-Z]/.test(password),
-        special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+        special: /[!@#$%^&*()_+-\[\]{};':"\\|,.<>\/?]/.test(password),
       });
     } else {
       // Reset validation state if password is empty
@@ -116,7 +116,9 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
     >
       <HeaderTitle
         title={'Get Started Now'}
-        subTitle={'Register your account today by providing your information in just four simple steps.'}
+        subTitle={
+          'Register your account today by providing your information in just four simple steps.'
+        }
       />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
