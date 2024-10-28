@@ -82,7 +82,10 @@ export const passwordSchema = Yup.string()
   .min(8, 'Password must be at least 8 characters')
   .matches(/[a-zA-Z]/, 'Password must contain at least one letter')
   .matches(/[0-9]/, 'Password must contain at least one number')
-  .matches(/[\W_]/, 'Password must contain at least one special character');
+  .matches(
+    /[!@#$%^&*()_+-\[\]{};':"\\|,.<>\/?]/,
+    'Password must contain at least one valid special character',
+  );
 
 // Confirm password validator
 export const passwordConfirmSchema = Yup.string()
@@ -200,8 +203,8 @@ export const createSessionSchema = Yup.string().required(
 );
 // Class validation
 export const relationshipSchema = Yup.string()
-.required('Relationship is required')
-.matches(/^[a-zA-Z]+$/, 'Only alphabets are allowed');
+  .required('Relationship is required')
+  .matches(/^[a-zA-Z]+$/, 'Only alphabets are allowed');
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
