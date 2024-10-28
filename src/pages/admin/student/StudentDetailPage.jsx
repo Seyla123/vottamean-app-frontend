@@ -7,7 +7,12 @@ import { useDispatch } from 'react-redux';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
 import TitleHeader from '../../../components/common/TitleHeader';
+import { cardContainer, shadow, tableShadow } from '../../../styles/global';
+import StyledButton from '../../../components/common/StyledMuiButton';
+import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import RandomAvatar from '../../../components/common/RandomAvatar';
 
+// API and slices
 import { useGetStudentsByIdQuery, useDeleteStudentMutation } from '../../../services/studentApi';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 
@@ -15,6 +20,8 @@ import { setSnackbar } from '../../../store/slices/uiSlice';
 import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 // Delete Modal
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
+
+// MUI 
 import {
   Chip,
   Typography,
@@ -27,6 +34,13 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
+import CastForEducationIcon from '@mui/icons-material/CastForEducation';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Card from '@mui/material/Card';
+
+// Lucide react icon
 import {
   User2Icon,
   CalendarFold,
@@ -40,15 +54,8 @@ import {
   Folder,
   Contact,
 } from 'lucide-react';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Card from '@mui/material/Card';
-import { cardContainer, shadow, tableShadow } from '../../../styles/global';
-import StyledButton from '../../../components/common/StyledMuiButton';
-import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
-import RandomAvatar from '../../../components/common/RandomAvatar';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import CastForEducationIcon from '@mui/icons-material/CastForEducation';
+
+// Format data
 import { StudentProfile } from '../../../utils/formatData';
 
 function StudentDetailPage() {
@@ -63,7 +70,6 @@ function StudentDetailPage() {
   const [formattedGuardian, setformattedGuardian] = useState([]);
 
   // useGetStudentsByIdQuery id : a hook return function for get student data by id
-
   const { data: studentData, isLoading, isError, error } = useGetStudentsByIdQuery(id);
 
   // useDeleteStudentMutation : a hook return function for delete student data by id
@@ -237,11 +243,11 @@ function StudentDetailPage() {
                         gutterBottom
                         variant="h5"
                         fontWeight={'bold'}
-                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1, textTransform: 'capitalize' }}
                       >
                         {formattedStudent.name}
                       </Typography>
-                      {/* Email */}
+                      {/* Class */}
                       <Stack direction={'row'} alignItems={'center'} spacing={1}>
                         <Chip
                           size="medium"
@@ -250,7 +256,7 @@ function StudentDetailPage() {
                             color: '#6c63ff',
                             padding: '0px 12px',
                             fontWeight: 500,
-                            fontSize: '1rem',
+                            fontSize: '14px',
                             borderRadius: '16px',
                             border: '1px solid #6c63ff',
                             '&:hover': {
@@ -260,7 +266,7 @@ function StudentDetailPage() {
                           }}
                           icon={
                             <CastForEducationIcon
-                              style={{ width: '22px', height: '22px', color: '#6c63ff' }}
+                              style={{ width:18, color: '#6c63ff' }}
                             />
                           }
                           label={`Class ${formattedStudent.class}`}
