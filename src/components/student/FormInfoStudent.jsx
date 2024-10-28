@@ -65,9 +65,13 @@ function FormInfoStudent() {
     event.preventDefault();
     const file = event.target.files[0];
     if (file) {
+      // If there's an existing preview URL, revoke it
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
       setPhotoFile(file);
       const newPreviewUrl = URL.createObjectURL(file);
-      photoPreviewRef.current.src = newPreviewUrl;
+      setPhotoPreview(newPreviewUrl);
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);

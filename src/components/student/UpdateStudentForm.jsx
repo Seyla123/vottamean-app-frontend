@@ -14,7 +14,7 @@ import {
   MenuItem,
   Stack,
   IconButton,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -71,7 +71,6 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     isError,
     error,
   } = useGetStudentsByIdQuery(studentId, { skip: !isOpen || !studentId });
-  
 
   // useGetClassesDataQuery: a hook return function for get classes data
   const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery(
@@ -127,10 +126,15 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
         'class_id',
         'class_name',
       );
-      
-      
+
       // Set the class id to the selected class after ensuring it is a string
       const classId = studentData.data.class_id?.toString() || '';
+      const photoUrl = studentData.data.Info.photo || '';
+      // Check if a photo exists and set it for preview and form data
+      if (photoUrl) {
+        setPreviewUrl(photoUrl);
+        setProfileImg(photoUrl); // Set the existing profile image URL
+      }
 
       // Set the student information
       const studentInfo = {
@@ -143,7 +147,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
           : null,
         class_id: classId,
         address: studentData.data.Info.address || '',
-        photo: studentData.data.Info.photo || '',
+        photo: photoUrl,
         guardianFirstName: studentData.data.guardian_first_name || '',
         guardianLastName: studentData.data.guardian_last_name || '',
         guardianEmail: studentData.data.guardian_email || '',
@@ -162,7 +166,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
         hasChanges: false,
       });
     }
-    if(isError) {
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -174,8 +178,6 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     }
   }, [studentData, reset, classData, isClassSuccess, isError]);
 
-
-  
   // useEffect for handling update success and error
   // when update is successful, show a snackbar with a success message and close the modal
   // when update is failed, show a snackbar with an error message and close the modal
@@ -243,6 +245,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   // Update the remove photo handler
   const handleRemovePhoto = () => {
     setSelectedFile(null);
+    setProfileImg('');
     setPreviewUrl(null);
     setValue('photo', null);
     setPhotoState((prev) => ({
@@ -251,7 +254,6 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
       hasChanges: true,
     }));
   };
-  
 
   // Update data submit function
   // It will compare the submitted data to the original data and check for changes
@@ -399,7 +401,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
           >
             <CircularProgress />
           </Box>
-        ) :
+        ) : (
           <>
             {/* Title and close button */}
             <Stack direction="row" justifyContent="space-between">
@@ -613,14 +615,16 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                                   (classItem) =>
                                     classItem?.value === Number(selected),
                                 );
-                                return selectedClass?.label
+                                return selectedClass?.label;
                               },
                             }}
                           >
                             <MenuItem value="" disabled>
-                              {isLoading ? 'Loading classes...' : 'Select a class'}
+                              {isLoading
+                                ? 'Loading classes...'
+                                : 'Select a class'}
                             </MenuItem>
-                            {classes?.length > 0? (
+                            {classes?.length > 0 ? (
                               classes?.map((classItem) => (
                                 <MenuItem
                                   key={classItem?.value}
@@ -731,7 +735,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
               </form>
             </LocalizationProvider>
           </>
-        }
+        )}
       </Box>
     </BootstrapDialog>
   );

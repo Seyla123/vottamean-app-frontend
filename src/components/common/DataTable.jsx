@@ -236,7 +236,7 @@ const DataTable = ({
             )}
           </TableRow>
         </TableHead>
-        <TableBody sx={{ position: 'relative' }}>
+        <TableBody sx={{ position: 'relative', textTransform:'capitalize' }}>
           {isLoading ? (
             <LoadingTable columns={columns} height={height} />
           ) : rows.length > 0 ? (
