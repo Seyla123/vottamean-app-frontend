@@ -29,7 +29,7 @@ import FormComponent from '../../../components/common/FormComponent';
 import emptyClassesImage from '../../../assets/images/teacher-99.svg';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
-import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';;
+import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
 import TitleHeader from '../../../components/common/TitleHeader';
 const headerImages = [
   classHeaderImg1,
@@ -102,7 +102,7 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
       // Class is not marked, navigate to the class attendance mark page
       onClick();
     }
-  }
+  };
   return (
     <StyledPaper onClick={handleClassClick}>
       <Box
@@ -128,7 +128,9 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
             zIndex: 10,
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             padding: 2,
-            color: classData.isClassMarked ? 'rgba(255, 255, 255, 0.5)' : 'white', // Lighten text if marked
+            color: classData.isClassMarked
+              ? 'rgba(255, 255, 255, 0.5)'
+              : 'white', // Lighten text if marked
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -166,7 +168,7 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
         </IconWrapper>
         {filterDay === 'today' && (
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            {!classData.isClassMarked ? (
+            {classData.isClassMarked ? (
               <Chip
                 size="small"
                 sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
@@ -216,14 +218,13 @@ function TeacherScheduleClassPage() {
 
   // anchorEl : State to manage the anchor element
   const [anchorEl, setAnchorEl] = useState(null);
-  
+
   // filterDay : State to schedule class selection filter for fetch from api
   // selectedDay : State to store the currently selected day for filtering
   // openModal : State to manage the modal open/close state
   const [filterDay, setFilterDay] = useState('all');
   const [selectedDay, setSelectedDay] = useState('Today');
   const [openModal, setOpenModal] = useState(false);
-
 
   //useGetTeacherScheduleClassesQuery : a hook return a function that fetch the classes schedule
   const {
@@ -247,11 +248,11 @@ function TeacherScheduleClassPage() {
   const filteredClasses = useMemo(() => {
     if (selectedDay === 'Today') {
       // filter the classes to only include today's classes
-      setFilterDay('today')
+      setFilterDay('today');
       return classesData;
     } else {
       // reset the filter to show all classes
-      setFilterDay('all')
+      setFilterDay('all');
     }
     // if selectedDay is 'All', return all classes
     if (selectedDay === 'All') {
@@ -263,7 +264,6 @@ function TeacherScheduleClassPage() {
       (c) => c.day.toLowerCase() === selectedDay.toLowerCase(),
     );
   }, [classesData, selectedDay]);
-
 
   // handle class clicked
   const handleClassClick = (sessionId) => {
@@ -335,7 +335,6 @@ function TeacherScheduleClassPage() {
           </Grid>
         ))}
       </Grid>
-
     );
   };
 
@@ -394,9 +393,8 @@ function TeacherScheduleClassPage() {
   };
 
   return (
-    <FormComponent
-    >
-      <TitleHeader title={'Schedule'}/> 
+    <FormComponent>
+      <TitleHeader title={'Schedule'} />
       {renderDaySelector()}
       {renderContent()}
       <ClassMarkedModal open={openModal} onClose={() => setOpenModal(false)} />

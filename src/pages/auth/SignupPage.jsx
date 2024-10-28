@@ -12,7 +12,7 @@ import EmailSentSucces from '../../components/auth/EmailSentSucces';
 import Logo from '../../assets/images/new-logo-name.svg';
 import image1 from '../../assets/images/image-1.jpg';
 import image2 from '../../assets/images/image-2.jpg';
-import image3 from '../../assets/images/image-3.webp';
+import image3 from '../../assets/images/image-3.jpg';
 import image4 from '../../assets/images/image-4.webp';
 
 const SignupPage = () => {

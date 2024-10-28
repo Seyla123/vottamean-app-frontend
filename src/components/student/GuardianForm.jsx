@@ -84,7 +84,7 @@ const GuardianForm = ({
         variant="h6"
         component="h2"
         fontWeight={'bold'}
-        mb={2}
+        mb={4}
       >
         Guardian Information
       </Typography>

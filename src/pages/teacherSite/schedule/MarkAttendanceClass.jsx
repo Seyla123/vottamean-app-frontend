@@ -95,7 +95,10 @@ function MarkAttendanceClass() {
       setRows(formattedData);
       setClassInfo(studentsData.Class);
     }
-    if (isError && error?.data?.message === 'This class is already marked today') {
+    if (
+      isError &&
+      error?.data?.message === 'This class is already marked today'
+    ) {
       setOpenModal(true);
     }
   }, [studentsData, isSuccess, isError]);
@@ -157,15 +160,28 @@ function MarkAttendanceClass() {
       ),
     );
   };
-  if (isError && error?.data?.message !== 'This class is already marked today' || isErrorStatus) {
-    return <SomethingWentWrong description={`${error?.data?.message || errorStatus?.data?.message}`} />
+  if (
+    (isError &&
+      error?.data?.message !== 'This class is already marked today') ||
+    isErrorStatus
+  ) {
+    return (
+      <SomethingWentWrong
+        description={`${error?.data?.message || errorStatus?.data?.message}`}
+      />
+    );
   }
   return (
     <FormComponent>
       <TitleHeader title={'Mark Attendance Class'} />
       {/* welcome card */}
-      <TeacherWelcomeCard subTitle={`Welcome to class ${classInfo?.class_name || ''}`} />
-      <ClassMarkedModal open={openModal} onClose={() => navigate('/teacher/schedule')} />
+      <TeacherWelcomeCard
+        subTitle={`Welcome to class ${classInfo?.class_name || ''}`}
+      />
+      <ClassMarkedModal
+        open={openModal}
+        onClose={() => navigate('/teacher/schedule')}
+      />
 
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
