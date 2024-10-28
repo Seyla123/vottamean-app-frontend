@@ -28,6 +28,7 @@ import { SessionValidator } from '../../../validators/validationSchemas';
 
 import { ensureOptionInList, transformedForSelector } from '../../../utils/formatHelper';
 import TitleHeader from '../../../components/common/TitleHeader';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 
 const SessionUpdatePage = () => {
   const navigate = useNavigate();
@@ -53,11 +54,11 @@ const SessionUpdatePage = () => {
     useUpdateSessionMutation();
 
   //  hook that returns a function to fetch all selector for updating sessions
-  const { data: periodData, isSuccess: isPeriodSuccess } = useGetClassPeriodQuery({ active: 1 });
-  const { data: classData, isSuccess: isClassSuccess } = useGetClassesDataQuery({ active: 1 });
-  const { data: teacherData, isSuccess: isTeacherSuccess } = useGetAllTeachersQuery({ active: 1 });
-  const { data: dayData, isSuccess: isDaySuccess } = useGetDayQuery();
-  const { data: subjectData, isSuccess: isSubjectSuccess } = useGetSubjectsQuery({ active: 1 });
+  const { data: periodData, isSuccess: isPeriodSuccess, isLoading: isPeriodLoading } = useGetClassPeriodQuery({ active: 1 });
+  const { data: classData, isSuccess: isClassSuccess, isLoading: isClassLoading } = useGetClassesDataQuery({ active: 1 });
+  const { data: teacherData, isSuccess: isTeacherSuccess, isLoading: isTeacherLoading } = useGetAllTeachersQuery({ active: 1 });
+  const { data: dayData, isSuccess: isDaySuccess, isLoading: isDayLoading } = useGetDayQuery();
+  const { data: subjectData, isSuccess: isSubjectSuccess, isLoading: isSubjectLoading } = useGetSubjectsQuery({ active: 1 });
 
   const {
     control,
@@ -129,8 +130,19 @@ const SessionUpdatePage = () => {
       );
       return;
     }
-    //Call the updateSession mutation and
-    await updateSession({ id, sessionData }).unwrap();
+    console.log(sessionData);
+
+// Call the updateSession mutation
+await updateSession({
+  id,
+  data: {
+    teacherId: 2,
+    periodId: 6,
+    classId: 2,
+    subjectId: 9,
+    dayId: 6,
+  }
+}).unwrap();
 
   };
 
@@ -163,6 +175,9 @@ const SessionUpdatePage = () => {
     >
       <TitleHeader title="Update Session" />
       <CardComponent onSubmit={handleSubmit(onSubmit)} >
+      {(isPeriodLoading || isClassLoading || isTeacherLoading || isDayLoading || isSubjectLoading) ? <LoadingCircle customStyle={{height: '40vh'}}/> 
+      :
+        <>
         <Box sx={containerStyle}>
           <Box sx={selectedStyle}>
             <Box>
@@ -242,6 +257,9 @@ const SessionUpdatePage = () => {
             {isLoading ? 'Updating...' : 'Update'}
           </StyledButton>
         </Stack>
+        </>
+      }
+
       </CardComponent>
     </FormComponent>
   );
