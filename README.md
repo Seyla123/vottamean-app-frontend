@@ -1,4 +1,8 @@
-# Client-Side Project README
+# HexCode+
+
+## Client-Side Project
+
+## [Convention Guide](https://outgoing-oval-b13.notion.site/Capstones-Convention-Guide-f8214576f0da41758941a1678c8a6e07?pvs=4)
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
