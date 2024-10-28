@@ -130,19 +130,11 @@ const SessionUpdatePage = () => {
       );
       return;
     }
-    console.log(sessionData);
-
-// Call the updateSession mutation
-await updateSession({
-  id,
-  data: {
-    teacherId: 2,
-    periodId: 6,
-    classId: 2,
-    subjectId: 9,
-    dayId: 6,
-  }
-}).unwrap();
+    // Call the updateSession mutation
+    await updateSession({
+      id,
+      data: sessionData,
+    }).unwrap();
 
   };
 
