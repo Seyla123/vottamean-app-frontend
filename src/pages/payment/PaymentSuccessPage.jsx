@@ -172,7 +172,7 @@ const PaymentSuccessPage = () => {
                   onClick={() => navigate('/admin/home')}
                   sx={styles.button}
                 >
-                  Return to Homepage
+                  Return Home
                 </StyledButton>
               </Box>
             )}
