@@ -83,7 +83,7 @@ export const passwordSchema = Yup.string()
   .matches(/[a-zA-Z]/, 'Password must contain at least one letter')
   .matches(/[0-9]/, 'Password must contain at least one number')
   .matches(
-    /[!@#$%^&*()_+-\[\]{};':"\\|,.<>\/?]/,
+    /[!@#$%^&*_+\-]/,
     'Password must contain at least one valid special character',
   );
 
