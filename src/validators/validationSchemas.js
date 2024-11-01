@@ -124,7 +124,7 @@ export const phoneSchema = Yup.string()
     (value) => {
       // Extract the number part (after the country code)
       const numberPart = value && value.replace(/[^0-9]/g, '');
-      return numberPart && numberPart.length >= 12 && numberPart.length <= 15;
+      return numberPart && numberPart.length >= 12 && numberPart.length <= 18;
     },
   )
   .matches(
