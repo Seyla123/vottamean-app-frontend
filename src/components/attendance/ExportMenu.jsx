@@ -14,6 +14,8 @@ import {
   Avatar,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
@@ -26,6 +28,7 @@ import StyledButton from '../common/StyledMuiButton';
 import { BootstrapDialog } from '../common/BootstrapDialog';
 import pdfIcon from '../../assets/icon/pdf.png';
 import excelIcon from '../../assets/icon/excel.png';
+import { StyledTextField } from '../common/InputField';
 
 // Styled ToggleButton for export options
 const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
@@ -35,6 +38,7 @@ const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
   justifyContent: 'flex-start',
   gap: theme.spacing(2),
   border: '1px solid',
+  borderRadius: 8,
   borderColor: theme.palette.primary.main,
   '&:not(.Mui-selected)': {
     backgroundColor: theme.palette.background.paper,
@@ -53,11 +57,16 @@ const ExportMenu = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [exportType, setExportType] = useState(null);
+  const [value, setValue] = useState(0);
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setExportType(null);
+  };
+
+  const handleOnChange = (event) => {
+    setValue(event.target.value);
   };
 
   const handleExportTypeChange = (event, newType) => {
@@ -116,12 +125,7 @@ const ExportMenu = ({
             maxWidth="sm"
             fullWidth
           >
-            <DialogTitle>
-              Choose Export Format
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Select the format you want to export your data to
-              </Typography>
-            </DialogTitle>
+            <DialogTitle>Choose Export Format</DialogTitle>
             <IconButton
               onClick={handleClose}
               sx={(theme) => ({
@@ -135,51 +139,84 @@ const ExportMenu = ({
             </IconButton>
 
             <DialogContent dividers>
-              <ToggleButtonGroup
-                value={exportType}
-                exclusive
-                onChange={handleExportTypeChange}
-                aria-label="export format"
-                orientation="vertical"
-                color="primary"
-              >
-                <Grid container gap={1}>
-                  <Grid item xs={12}>
-                    <StyledToggleButton value="pdf" aria-label="export as PDF">
-                      <Avatar src={pdfIcon} alt="PDF Icon" variant="rounded" />
-                      <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="subtitle1">
-                          PDF Document
-                        </Typography>
-                        <Typography variant="body2" color="inherit">
-                          Export data as a formatted PDF file
-                        </Typography>
-                      </Box>
-                    </StyledToggleButton>
-                  </Grid>
+              <Stack direction="column" gap={1} mb={1}>
+                <InputLabel>Select number of rows to export </InputLabel>
+                <StyledTextField
+                  fullWidth
+                  select
+                  value={value}
+                  onChange={handleOnChange}
+                  size="small"
+                  SelectProps={{
+                    renderValue: (selected) => (
+                      <Stack direction={'row'} gap={1} alignItems={'center'}>
+                        <InputLabel> {selected}</InputLabel>
+                      </Stack>
+                    ),
+                  }}
+                >
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={25}>25</MenuItem>
+                </StyledTextField>
+              </Stack>
 
-                  <Grid item xs={12}>
-                    <StyledToggleButton
-                      value="excel"
-                      aria-label="export as Excel"
-                    >
-                      <Avatar
-                        src={excelIcon}
-                        alt="EXCEL Icon"
-                        variant="rounded"
-                      />
-                      <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="subtitle1">
-                          Excel Spreadsheet
-                        </Typography>
-                        <Typography variant="body2" color="inherit">
-                          Export data as an Excel XLSX file
-                        </Typography>
-                      </Box>
-                    </StyledToggleButton>
+              <Stack direction="column" gap={1}>
+                <InputLabel>Select export format</InputLabel>
+                <ToggleButtonGroup
+                  value={exportType}
+                  exclusive
+                  onChange={handleExportTypeChange}
+                  aria-label="export format"
+                  orientation="vertical"
+                  color="primary"
+                >
+                  <Grid container gap={1}>
+                    <Grid item xs={12}>
+                      <StyledToggleButton
+                        value="pdf"
+                        aria-label="export as PDF"
+                      >
+                        <Avatar
+                          src={pdfIcon}
+                          alt="PDF Icon"
+                          variant="rounded"
+                        />
+                        <Box sx={{ textAlign: 'left' }}>
+                          <Typography variant="subtitle1">
+                            PDF Document
+                          </Typography>
+                          <Typography variant="body2" color="inherit">
+                            Export data as a formatted PDF file
+                          </Typography>
+                        </Box>
+                      </StyledToggleButton>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <StyledToggleButton
+                        value="excel"
+                        aria-label="export as Excel"
+                      >
+                        <Avatar
+                          src={excelIcon}
+                          alt="EXCEL Icon"
+                          variant="rounded"
+                        />
+                        <Box sx={{ textAlign: 'left' }}>
+                          <Typography variant="subtitle1">
+                            Excel Spreadsheet
+                          </Typography>
+                          <Typography variant="body2" color="inherit">
+                            Export data as an Excel XLSX file
+                          </Typography>
+                        </Box>
+                      </StyledToggleButton>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </ToggleButtonGroup>
+                </ToggleButtonGroup>
+              </Stack>
             </DialogContent>
 
             <DialogActions sx={{ p: 3 }}>
@@ -192,7 +229,7 @@ const ExportMenu = ({
                 size="small"
                 disabled={!exportType}
               >
-                {isExporting ? 'Exporting...' : 'Confirm'}
+                {isExporting ? 'Exporting...' : 'Export Now'}
               </StyledButton>
             </DialogActions>
           </BootstrapDialog>

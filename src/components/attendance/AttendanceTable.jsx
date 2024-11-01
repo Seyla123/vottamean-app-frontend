@@ -147,12 +147,12 @@ const AttendanceTable = ({
       if (!table) return;
       // Convert HTML table to worksheet
       const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-  
+
       // Generate Excel file and trigger download
       XLSX.writeFile(wb, 'attendance_report.xlsx');
     } catch (error) {
       console.error('Error exporting table to XLSX :', error);
-    }finally {
+    } finally {
       setIsExporting(false);
     }
   };
@@ -187,14 +187,13 @@ const AttendanceTable = ({
           }
         });
         // Save the PDF
-        pdf.save(`attendance_reports_class_id_${filter.class}_${filter.startDate}_${filter.endDate}.pdf`);
-
+        pdf.save(
+          `attendance_reports_class_id_${filter.class}_${filter.startDate}_${filter.endDate}.pdf`,
+        );
       });
     } catch (error) {
       console.error('export pdf error : ', error);
-
     } finally {
-      
       setIsExporting(false);
     }
   };
@@ -414,7 +413,7 @@ const AttendanceTable = ({
           selectedClasses={selectedClasses}
           selectedSubjects={selectedSubjects}
         />
-        <Box >
+        <Box>
           <ExportMenu
             handleExportPDF={exportPdfById}
             handleExportXLSX={exportTableToXLSX}
@@ -440,7 +439,13 @@ const AttendanceTable = ({
               sx={{
                 boxShadow: 'none',
                 width: '100%',
-                maxWidth:{xs: '360px',sm:'700px', md:'1000px', lg:'1000px',xl:'1500px'},
+                maxWidth: {
+                  xs: '360px',
+                  sm: '700px',
+                  md: '1000px',
+                  lg: '1000px',
+                  xl: '1500px',
+                },
                 mx: 'auto',
                 padding: 2,
                 display: 'flex',
@@ -561,4 +566,3 @@ const AttendanceTable = ({
 };
 
 export default AttendanceTable;
-
