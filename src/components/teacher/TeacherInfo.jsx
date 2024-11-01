@@ -363,18 +363,21 @@ export const validationSchema = yup.object({
     .string()
     .trim()
     .required('Phone number is required')
-    .test(
-      'length',
-      'Phone number must be between 9 and 15 digits (excluding country code)',
-      (value) => {
-        // Extract the number part (after the country code)
-        const numberPart = value && value.replace(/[^0-9]/g, '');
-        return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
-      },
-    )
     .matches(
       /^\+\d{1,3}\s\d{1,3}.*$/,
       'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    )
+    .matches(
+      /^\+\d{1,3}\s(?!0)/,
+      'Phone number should not start with a zero after the country code',
+    )
+    .test(
+      'length',
+      'Phone number must be between 8 and 15 digits (excluding country code)',
+      (value) => {
+        const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
+        return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
+      },
     ),
   photo: yup.mixed().nullable(),
   gender: yup
