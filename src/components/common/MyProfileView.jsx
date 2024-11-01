@@ -10,34 +10,113 @@ import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
 import SectionTitle from './SectionTitle';
 import { shadow } from '../../styles/global';
+import { getUserProfileData } from '../../utils/formatData';
 
-const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
+const MyProfileView = ({
+  profilePhoto,
+  userData,
+  schoolProfileData,
+  onProfileUpdate,
+}) => {
+  console.log(profilePhoto)
   // - State to keep track of the open modal type
   const [openModal, setOpenModal] = useState(null);
 
   // - State to keep track of the current profile photo
   const [currentProfilePhoto, setCurrentProfilePhoto] = useState(profilePhoto);
 
-  // - Update the current profile photo when it is updated
-  const handleProfilePhotoUpdate = (newPhoto) => {
-    setCurrentProfilePhoto(newPhoto);
-  };
+  // Add state to track if photo was removed
+  const [isPhotoRemoved, setIsPhotoRemoved] = useState(false);
 
-  // - Update the current profile photo when the profile photo changes
+  // // Update local state when profile photo changes
+  // useEffect(() => {
+  //   setCurrentProfilePhoto(profilePhoto);
+  //   setIsPhotoRemoved(!profilePhoto);
+  // }, [profilePhoto]);
+
+  // // Clean up blob URLs when component unmounts
+  // useEffect(() => {
+  //   return () => {
+  //     if (currentProfilePhoto && currentProfilePhoto.startsWith('blob:')) {
+  //       URL.revokeObjectURL(currentProfilePhoto);
+  //     }
+  //   };
+  // }, []);
+
+  // const handleProfilePhotoUpdate = async (newPhoto, removed) => {
+  //   // If there's an existing blob URL, revoke it
+  //   if (currentProfilePhoto && currentProfilePhoto.startsWith('blob:')) {
+  //     URL.revokeObjectURL(currentProfilePhoto);
+  //   }
+  //   console.log("new photo", newPhoto)
+  //   setCurrentProfilePhoto(removed ? null : newPhoto);
+  //   setIsPhotoRemoved(removed);
+
+  //   if (onProfileUpdate) {
+  //     await onProfileUpdate();
+  //   }
+  // };
+
+  // const handleCloseModal = async () => {
+  //   setOpenModal(null);
+  //   // Always refresh data when modal closes
+  //   if (onProfileUpdate) {
+  //     await onProfileUpdate();
+  //   }
+  // };
+  // // Instead of calling getUserProfileData as an async function
+  // useEffect(() => {
+  //   // Ensure userData is available and pass it to getUserProfileData
+  //   if (userData) {
+  //     const profileData = getUserProfileData(userData);
+  //     console.log(first)
+  //     setCurrentProfilePhoto(profileData.photo);
+  //   }
+  // }, [userData]);
+
+  
+  // Update local state when profile photo prop changes
   useEffect(() => {
-    setCurrentProfilePhoto(profilePhoto);
+    if (profilePhoto !== currentProfilePhoto) {
+      setCurrentProfilePhoto(profilePhoto);
+      setIsPhotoRemoved(!profilePhoto);
+    }
   }, [profilePhoto]);
 
-  // - Open the modal of the corresponding type
+  // Cleanup blob URLs
+  useEffect(() => {
+    return () => {
+      if (currentProfilePhoto && currentProfilePhoto.startsWith('blob:')) {
+        URL.revokeObjectURL(currentProfilePhoto);
+      }
+    };
+  }, [currentProfilePhoto]);
+
+  const handleProfilePhotoUpdate = async (newPhoto, removed) => {
+    // Clean up existing blob URL
+    if (currentProfilePhoto && currentProfilePhoto.startsWith('blob:')) {
+      URL.revokeObjectURL(currentProfilePhoto);
+    }
+
+    const photoToUse = removed ? null : newPhoto;
+    setCurrentProfilePhoto(photoToUse);
+    setIsPhotoRemoved(removed);
+
+    if (onProfileUpdate) {
+      await onProfileUpdate(photoToUse);
+    }
+  };
+
+  const handleCloseModal = async () => {
+    setOpenModal(null);
+    if (onProfileUpdate) {
+      await onProfileUpdate();
+    }
+  };
+
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
   };
-
-  // - Close the modal
-  const handleCloseModal = () => {
-    setOpenModal(null);
-  };
-
   // - Check the user's role
   const checkUserRole = userData?.userRole;
 
@@ -59,7 +138,7 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
       {/* PROFILE INFORMATION */}
       <Grid container>
         <Grid item xs={12}>
-          {/* Personal and School Information */} 
+          {/* Personal and School Information */}
           <InformationSection
             title="Personal Details"
             data={userData}
@@ -90,6 +169,7 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
           userGender={userData.userGender}
           checkUserRole={checkUserRole}
           onPhotoUpdate={handleProfilePhotoUpdate}
+          isPhotoRemoved={isPhotoRemoved}
         />
       )}
       {/* EDIT SCHOOL MODAL */}
