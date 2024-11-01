@@ -443,6 +443,10 @@ export const studentValidationSchema = yup.object({
     .matches(
       /^\+\d{1,3}\s\d{1,3}.*$/,
       'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    )
+    .matches(
+      /^\+\d{1,3}\s(?!0)/,
+      'Phone number should not start with a zero after the country code',
     ),
   photo: yup.mixed().nullable(),
   gender: yup
