@@ -461,7 +461,7 @@ export const studentValidationSchema = yup.object({
     ),
   class_id: yup.number().required('Class is required'),
   dob: yup
-    .string()
+    .date()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
     .typeError('Invalid date format'),
