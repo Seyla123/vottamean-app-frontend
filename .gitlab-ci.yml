@@ -99,6 +99,7 @@ deploy staging:
     - surge --project ./dist --domain $STAGING_DOMAIN
   only: 
     - main  # Only run on main
+    - develop
 
 deploy production:
   stage: deploy production
