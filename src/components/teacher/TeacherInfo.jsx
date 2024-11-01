@@ -373,7 +373,7 @@ export const validationSchema = yup.object({
     )
     .test(
       'length',
-      'Phone number must be between 9 and 15 digits (excluding country code)',
+      'Phone number must be between 8 and 15 digits (excluding country code)',
       (value) => {
         const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
         return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
