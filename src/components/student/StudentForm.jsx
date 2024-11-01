@@ -444,7 +444,7 @@ export const studentValidationSchema = yup.object({
       'Phone number must be between 9 and 15 digits (excluding country code)',
       (value) => {
         // Extract the number part (after the country code)
-        const numberPart = value && value.replace(/[^0-9]/g, '');
+        const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
         return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
       },
     )
