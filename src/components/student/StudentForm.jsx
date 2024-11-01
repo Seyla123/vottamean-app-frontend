@@ -431,6 +431,14 @@ export const studentValidationSchema = yup.object({
     .string()
     .trim()
     .required('Phone number is required')
+    .matches(
+      /^\+\d{1,3}\s\d{1,3}.*$/,
+      'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    )
+    .matches(
+      /^\+\d{1,3}\s(?!0)/,
+      'Phone number should not start with a zero after the country code',
+    )
     .test(
       'length',
       'Phone number must be between 9 and 15 digits (excluding country code)',
@@ -440,14 +448,7 @@ export const studentValidationSchema = yup.object({
         return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
       },
     )
-    .matches(
-      /^\+\d{1,3}\s\d{1,3}.*$/,
-      'Phone number must start with a country code and area code (e.g., +855 23 ...)',
-    )
-    .matches(
-      /^\+\d{1,3}\s(?!0)/,
-      'Phone number should not start with a zero after the country code',
-    ),
+,
   photo: yup.mixed().nullable(),
   gender: yup
     .string()
