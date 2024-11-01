@@ -133,8 +133,7 @@ export const phoneSchema = Yup.string()
       const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
       return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
     },
-  )
-  ;
+  );
 
 // Address validator
 export const addressSchema = Yup.string()

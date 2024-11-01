@@ -447,8 +447,7 @@ export const studentValidationSchema = yup.object({
         const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
         return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
       },
-    )
-,
+    ),
   photo: yup.mixed().nullable(),
   gender: yup
     .string()
