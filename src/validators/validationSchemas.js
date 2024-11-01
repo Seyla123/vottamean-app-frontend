@@ -131,7 +131,7 @@ export const phoneSchema = Yup.string()
     'Phone number must be between 9 and 15 digits (excluding country code)',
     (value) => {
       const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
-      return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
+      return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
     },
   )
   ;
