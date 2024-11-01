@@ -15,7 +15,7 @@ cache:
 
 variables:
   STAGING_DOMAIN: linkfly-staging-seyla.surge.sh
-  PRODUCTION_DOMAIN: hexcode.anbschool.org/app
+  PRODUCTION_DOMAIN: $PRODUCT_DOMAIN
   DEPLOY_USER: ubuntu
   DEPLOY_HOST: 13.212.6.189
   SSH_EC2_PRIVATE_KEY: $SSH_EC2_PRIVATE_KEY  # Store your PEM key content as a CI/CD variable
