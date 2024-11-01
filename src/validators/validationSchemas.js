@@ -156,10 +156,15 @@ export const genderSchema = Yup.string()
 export const ClassValidator = Yup.object().shape({
   class_name: Yup.string()
     .required('Class name is required')
-    .max(50, 'Class name is too long'),
+    .min(3, 'Class name must be 3 characters up')
+    .max(50, 'Class name is too long')
+    .matches(
+      /^[A-Za-z\d\s]+$/,
+      'Class name can contain only letters, numbers, and spaces'
+    ),
   description: Yup.string()
     .trim()
-    .max(225, 'description is too long')
+    .max(225, 'Description must be less than 225 characters')
     .optional(),
 });
 
@@ -168,10 +173,14 @@ export const SubjectValidator = Yup.object().shape({
   subject_name: Yup.string()
     .required('Subject name is required')
     .min(3, 'Subject name must be 3 characters up')
-    .max(50, 'Subject name is too long'),
+    .max(50, 'Subject name is too long')
+    .matches(
+      /^[A-Za-z\d\s]+$/,
+      'Subject name can contain only letters, numbers, and spaces'
+    ),
   description: Yup.string()
     .trim()
-    .max(225, 'description is too long')
+    .max(225, 'Description must be less than 225 characters')
     .optional(),
 });
 
