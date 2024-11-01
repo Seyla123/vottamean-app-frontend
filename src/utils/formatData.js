@@ -217,7 +217,10 @@ export const getUserProfileData = (user) => {
   const userProfile = transformUserProfile(user);
   const schoolProfile = transformSchoolProfile(user);
   const profileKey = getProfileKey(user.data.role);
-  const photo = user?.data[profileKey]?.Info?.photo ?? null;
+  const photo = user?.data?.profile_photo_url || 
+    user?.data[profileKey]?.Info?.photo || 
+    user?.data?.photo || 
+    null;
 
   return {
     userProfile,
