@@ -391,7 +391,7 @@ export const validationSchema = yup.object({
       'Gender must be either Male, Female, or Other',
     ),
   dob: yup
-    .string()
+    .date()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
     .typeError('Invalid date format'),
