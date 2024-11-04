@@ -78,14 +78,6 @@ export const dobSchema = Yup.string()
     }
   );
 
-  // .required('Date of birth is required')
-  // .max(new Date(), 'Date of birth cannot be in the future')
-  // .typeError('Date of birth must be a valid date')
-  // .matches(
-  //   /^\d{4}-\d{2}-\d{2}$/,
-  //   'Date of birth must be in the format YYYY-MM-DD',
-  // );
-
 // Email validator for admin, teacher, student, and guardian
 export const emailSchema = Yup.string()
   .required('Email is required')
