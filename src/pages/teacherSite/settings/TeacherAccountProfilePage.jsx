@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useState, useEffect,useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tab, Typography, Card, Box } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -54,23 +54,16 @@ const AccountSettingsPageTeacher = () => {
     schoolAddress: '',
     schoolPhoneNumber: '',
   });
+
   // Local state for tab
   const [value, setValue] = useState('1');
 
   // Determine if the screen size is mobile
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
-  // // Memoized photo handling to prevent unnecessary re-renders
-  // const memoizedPhoto = useMemo(() => {
-  //   if (currentPhoto) return currentPhoto;
-  //   return user?.profilePicture || null;
-  // }, [currentPhoto, user?.profilePicture]);
-
-  // Handle initial data load and subsequent updates
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
-      console.log(transformedData);
       // Only update the photo if we don't have a blob URL
       setPhotoUrl(transformedData.photo);
       setUserData({
@@ -87,13 +80,14 @@ const AccountSettingsPageTeacher = () => {
     }
   };
 
-  // Cleanup on unmount
+  // Clean Up when photo URL changes
   useEffect(() => {
     return () => {
       cleanupBlobUrl(photoUrl);
     };
   }, []);
 
+  // Handle profile update
   const handleProfileUpdate = async (newPhoto) => {
     try {
       // Handle photo removal
@@ -104,7 +98,7 @@ const AccountSettingsPageTeacher = () => {
         setPhotoFile(null);
         return;
       }
-  
+
       // Handle new photo upload (File object)
       if (newPhoto instanceof File) {
         cleanupBlobUrl(photoUrl);
@@ -118,7 +112,7 @@ const AccountSettingsPageTeacher = () => {
         setPhotoUrl(newPhoto);
         setPhotoFile(null);
       }
-  
+
       // Only refetch if there's a need (e.g., after uploading a new photo)
       await refetch();
     } catch (error) {
@@ -127,11 +121,12 @@ const AccountSettingsPageTeacher = () => {
           open: true,
           message: `Failed to update profile photo: ${error?.data?.message}`,
           severity: 'error',
-        })
+        }),
       );
     }
   };
-
+  
+  
   // Handle delete button click
   const handleDeleteAccount = async () => {
     try {
@@ -143,20 +138,23 @@ const AccountSettingsPageTeacher = () => {
     }
   };
 
- 
- // Handle tab switch with photo preservation
- const handleChange = (event, newValue) => {
-  setValue(newValue);
-};
+  // Handle tab switch with photo preservation
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
+
+  // Loading state
   if (isLoading) {
     return <LoadingPage />;
   }
 
+  // Error state handling
   if (error) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
-  console.log(userData);
+
+
   return (
     <FormComponent>
       <TitleHeader title="Account Settings" />
