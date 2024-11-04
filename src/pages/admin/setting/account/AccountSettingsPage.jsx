@@ -43,17 +43,7 @@ const AccountSettingsPage = () => {
 
   // Local state for tab
   const [value, setValue] = useState('1');
-  // Handle initial data load
-  // useEffect(() => {
-  //   if (user) {
-  //     const transformedData = getUserProfileData(user);
-  //     setServerPhotoUrl(transformedData.photo);
-  //     setUserData({
-  //       userProfile: transformedData.userProfile,
-  //       schoolProfile: transformedData.schoolProfile,
-  //     });
-  //   }
-  // }, [user]);
+
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
@@ -78,17 +68,17 @@ const AccountSettingsPage = () => {
       cleanupBlobUrl(photoUrl);
     };
   }, []);
-
   const handleProfileUpdate = async (newPhoto) => {
     try {
       // Handle photo removal
       if (newPhoto === null) {
+        // Cleanup and set photo URL to null immediately
         cleanupBlobUrl(photoUrl);
         setPhotoUrl(null);
         setPhotoFile(null);
         return;
       }
-
+  
       // Handle new photo upload (File object)
       if (newPhoto instanceof File) {
         cleanupBlobUrl(photoUrl);
@@ -101,8 +91,10 @@ const AccountSettingsPage = () => {
         cleanupBlobUrl(photoUrl);
         setPhotoUrl(newPhoto);
         setPhotoFile(null);
-        await refetch();
       }
+  
+      // Only refetch if there's a need (e.g., after uploading a new photo)
+      await refetch();
     } catch (error) {
       dispatch(
         setSnackbar({
@@ -113,6 +105,7 @@ const AccountSettingsPage = () => {
       );
     }
   };
+  
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
