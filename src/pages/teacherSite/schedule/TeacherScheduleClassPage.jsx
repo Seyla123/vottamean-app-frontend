@@ -164,10 +164,6 @@ const ClassListItem = ({ classData, onClick, filterDay, setOpenModalMarked, setO
         <IconWrapper sx={{ my: 1 }}>
           <Clock size={16} />
           <Typography variant="body2">
-            {/* {classData.start_time.slice(0, 5)}
-            {classData.start_time.slice(6, 7) === 'PM' ? ' PM' : ' AM'} -{' '}
-            {classData.end_time.slice(0, 5)}
-            {classData.end_time.slice(6, 7) === 'PM' ? ' PM' : ' AM'} */}
             {formatTimeTo12Hour(classData.start_time)} - {formatTimeTo12Hour(classData.end_time)}
           </Typography>
         </IconWrapper>
