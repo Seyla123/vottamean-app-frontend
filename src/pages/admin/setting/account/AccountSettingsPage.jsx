@@ -8,7 +8,6 @@ import FormComponent from '../../../../components/common/FormComponent';
 import MyProfileView from '../../../../components/common/MyProfileView';
 import SecurityView from '../../../../components/common/SecurityView';
 
-
 // Redux hooks and API
 import { useDispatch } from 'react-redux';
 import { updateFormData } from '../../../../store/slices/formSlice';
@@ -24,36 +23,91 @@ import { StyledTab } from '../../../../components/common/StyledTabs';
 import TitleHeader from '../../../../components/common/TitleHeader';
 import SomethingWentWrong from '../../../../components/common/SomethingWentWrong';
 const AccountSettingsPage = () => {
-  // - Initialize dispatch 
+  // - Initialize dispatch
   const dispatch = useDispatch();
 
-  // Redux API calls to get user profile
-  const { data: user, isLoading, error } = useGetUserProfileQuery();
-  // Redux API calls to delete user
+  // - Redux API calls to get user profile
+  const { data: user, isLoading, error, refetch } = useGetUserProfileQuery();
+
+  // - Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
-  // Local state for transformed data
+  // - State for managing the photo URL (either blob or server URL)
+  const [photoUrl, setPhotoUrl] = useState(null);
+  // - State for storing the actual File object when uploading
+  const [photoFile, setPhotoFile] = useState(null);
   const [userData, setUserData] = useState({
     userProfile: {},
     schoolProfile: {},
-    photo: '',
   });
 
-  // Local state for tab
+  // - Local state for tab
   const [value, setValue] = useState('1');
 
-  // - When the user data is fetched, format the data and set the user data in the state
+
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
-      setUserData(transformedData);
-      dispatch(updateFormData(transformedData));
+      // Only update the photo if we don't have a blob URL
+      setPhotoUrl(transformedData.photo);
+      setUserData({
+        userProfile: transformedData.userProfile,
+        schoolProfile: transformedData.schoolProfile,
+      });
     }
-  }, [user, dispatch]);
+  }, [user]);
 
-  // Handle tab switch
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  // Cleanup function prevent memory leaks
+  const cleanupBlobUrl = (url) => {
+    if (url?.startsWith('blob:')) {
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  // Cleanup effect for photo URLs
+  useEffect(() => {
+    return () => {
+      cleanupBlobUrl(photoUrl);
+    };
+  }, [])
+
+  // Handle profile update
+  const handleProfileUpdate = async (newPhoto) => {
+    try {
+      // Handle photo removal
+      if (newPhoto === null) {
+        // Cleanup and set photo URL to null immediately
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(null);
+        setPhotoFile(null);
+        return;
+      }
+  
+      // Handle new photo upload (File object)
+      if (newPhoto instanceof File) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoFile(newPhoto);
+        const newBlobUrl = URL.createObjectURL(newPhoto);
+        setPhotoUrl(newBlobUrl);
+      }
+      // Handle server URL update
+      else if (typeof newPhoto === 'string' && !newPhoto.startsWith('blob:')) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(newPhoto);
+        setPhotoFile(null);
+      }
+  
+      // Only refetch if there's a need (e.g., after uploading a new photo)
+      await refetch();
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Failed to update profile photo: ${error?.data?.message}`,
+          severity: 'error',
+        })
+      );
+    }
   };
 
   // Handle delete button click
@@ -66,14 +120,20 @@ const AccountSettingsPage = () => {
     }
   };
 
+  // Handle Change tabs
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  // loading state 
   if (isLoading) {
     return <LoadingCircle />;
   }
 
+  // error state
   if (error) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
-
 
   return (
     <FormComponent>
@@ -98,14 +158,15 @@ const AccountSettingsPage = () => {
             iconPosition="start"
           />
         </TabList>
-          <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
-            {/* MY PROFILE VIEW */}
-            <MyProfileView
-              profilePhoto={userData?.photo}
-              userData={userData?.userProfile}
-              schoolProfileData={userData?.schoolProfile}
-            />
-          </TabPanel>
+        <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
+          {/* MY PROFILE VIEW */}
+          <MyProfileView
+            profilePhoto={photoUrl}
+            userData={userData.userProfile}
+            schoolProfileData={userData.schoolProfile}
+            onProfileUpdate={handleProfileUpdate}
+          />
+        </TabPanel>
 
         <TabPanel sx={{ flexGrow: 1, p: 0 }} value="2">
           {/* SECURITY VIEW */}

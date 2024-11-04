@@ -186,7 +186,7 @@ export const transformUserProfile = (user) => {
   return {
     userRole: user.data.role,
     userId: user.data?.id || 'N/A',
-    userName: getFullName(profileInfo),
+    userName: capitalize(`${profileInfo.first_name} ${profileInfo.last_name}`),
     userGender: profileInfo.gender || 'Not specified',
     userDOB: formatDate(profileInfo.dob) || 'Not provided',
     userPhoneNumber:
@@ -217,7 +217,10 @@ export const getUserProfileData = (user) => {
   const userProfile = transformUserProfile(user);
   const schoolProfile = transformSchoolProfile(user);
   const profileKey = getProfileKey(user.data.role);
-  const photo = user?.data[profileKey]?.Info?.photo ?? null;
+  const photo = user?.data?.profile_photo_url || 
+    user?.data[profileKey]?.Info?.photo || 
+    user?.data?.photo || 
+    null;
 
   return {
     userProfile,
@@ -241,7 +244,7 @@ export const getUserProfileDataLayout = (user) => {
   const photo = profileInfo?.photo ?? '';
 
   return {
-    username: getFullName(profileInfo),
+    username: capitalize(`${profileInfo.first_name} ${profileInfo.last_name}`),
     email: user.data.email || 'Not provided',
     photo,
   };

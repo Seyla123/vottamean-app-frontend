@@ -10,34 +10,57 @@ import EditAccountModal from '../admin/EditAccountModal';
 import EditSchoolModal from '../admin/EditSchoolModal';
 import SectionTitle from './SectionTitle';
 import { shadow } from '../../styles/global';
+import { getUserProfileData } from '../../utils/formatData';
 
-const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
+const MyProfileView = ({
+  profilePhoto,
+  userData,
+  schoolProfileData,
+  onProfileUpdate,
+}) => {
+
   // - State to keep track of the open modal type
   const [openModal, setOpenModal] = useState(null);
 
   // - State to keep track of the current profile photo
   const [currentProfilePhoto, setCurrentProfilePhoto] = useState(profilePhoto);
 
-  // - Update the current profile photo when it is updated
-  const handleProfilePhotoUpdate = (newPhoto) => {
-    setCurrentProfilePhoto(newPhoto);
+  // Add state to track if photo was removed
+  const [isPhotoRemoved, setIsPhotoRemoved] = useState(false);
+
+  // Update currentProfilePhoto when profilePhoto prop changes
+  useEffect(() => {
+    if (profilePhoto !== currentProfilePhoto) {
+      setCurrentProfilePhoto(profilePhoto);
+      setIsPhotoRemoved(!profilePhoto);
+    }
+  }, [profilePhoto, currentProfilePhoto]);
+ 
+  // - Handle profile photo update
+  const handleProfilePhotoUpdate = async (newPhoto) => {
+    try {
+      if (onProfileUpdate) {
+        // Pass the actual File object or null, not the blob URL
+        await onProfileUpdate(newPhoto);
+      }
+    } catch (error) {
+      console.error('Error updating profile photo:', error);
+    }
+  };
+  
+  // - Handle modal close
+  const handleCloseModal = async () => {
+    setOpenModal(null);
+    if (onProfileUpdate) {
+      await onProfileUpdate();
+    }
   };
 
-  // - Update the current profile photo when the profile photo changes
-  useEffect(() => {
-    setCurrentProfilePhoto(profilePhoto);
-  }, [profilePhoto]);
-
-  // - Open the modal of the corresponding type
+  // - Handle modal open
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
   };
-
-  // - Close the modal
-  const handleCloseModal = () => {
-    setOpenModal(null);
-  };
-
+  
   // - Check the user's role
   const checkUserRole = userData?.userRole;
 
@@ -59,7 +82,7 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
       {/* PROFILE INFORMATION */}
       <Grid container>
         <Grid item xs={12}>
-          {/* Personal and School Information */} 
+          {/* Personal and School Information */}
           <InformationSection
             title="Personal Details"
             data={userData}
@@ -90,6 +113,7 @@ const MyProfileView = ({ profilePhoto, userData, schoolProfileData }) => {
           userGender={userData.userGender}
           checkUserRole={checkUserRole}
           onPhotoUpdate={handleProfilePhotoUpdate}
+          isPhotoRemoved={isPhotoRemoved}
         />
       )}
       {/* EDIT SCHOOL MODAL */}
