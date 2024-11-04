@@ -134,7 +134,6 @@ const StudentForm = ({
 
   // form submission
   const onSubmit = (data) => {
-
     handleNext(true, {
       ...data,
       class_id: data.class_id ? Number(data.class_id) : null, // Converting to number
@@ -251,6 +250,7 @@ const StudentForm = ({
               placeholder="First Name"
               errors={errors}
               icon={UserRoundPen}
+              required
               fullWidth
             />
             <InputField
@@ -260,6 +260,7 @@ const StudentForm = ({
               placeholder="Last Name"
               errors={errors}
               icon={UserRoundPen}
+              required
               fullWidth
             />
           </Stack>
@@ -411,8 +412,8 @@ export const studentValidationSchema = yup.object({
     .label('First Name')
     .required('First name is required')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
     .max(40, 'Name must be less than 40 characters'),
@@ -421,12 +422,12 @@ export const studentValidationSchema = yup.object({
     .trim()
     .label('Last Name')
     .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters long')
+    .max(50, 'Last name must be less than 50 characters')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
-    )
-    .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'Last name must contain only alphabetic characters and may contain a single space',
+    ),
   phoneNumber: yup
     .string()
     .trim()
@@ -444,7 +445,13 @@ export const studentValidationSchema = yup.object({
       'Phone number must be between 8 and 15 digits (excluding country code)',
       (value) => {
         // Extract the number part (after the country code)
-        const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
+        const numberPart =
+          value &&
+          value
+            .split(' ')
+            .slice(1)
+            .join('')
+            .replace(/[^0-9]/g, '');
         return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
       },
     ),

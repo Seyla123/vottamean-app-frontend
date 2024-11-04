@@ -113,7 +113,7 @@ function FormInfoStudent() {
       dispatch(
         setSnackbar({
           open: true,
-          message: error?.data?.message || 'An error occurred during signup',
+          message: error?.data?.message || 'An error occurred during sign up',
           severity: 'error',
           autoHideDuration: 6000,
         }),
