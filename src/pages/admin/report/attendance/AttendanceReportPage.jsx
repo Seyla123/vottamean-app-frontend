@@ -29,7 +29,7 @@ const AttendanceReportPage = () => {
       setSelectorSubjects(data.all_subjects_unique);
       setTotalStatusSummary(data?.total_summary);
     }
-  }, [data, isSuccess]);
+  }, [data, isSuccess, filter]);
 
   const { dates, result, classes, school } = reportData;
 

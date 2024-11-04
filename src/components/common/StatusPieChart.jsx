@@ -25,10 +25,10 @@ const StatusPieChart = ({ statusCounts }) => {
       <Card sx={{ boxShadow: shadow, height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CardContent>
           <Typography variant="h6" align="center">
-            No data available
+            No data available for this class
           </Typography>
           <Typography variant="body2" align="center">
-            Go to the attendance list and mark attendance for each student.
+            Attendance data will appear once the teacher marks attendance for each student.
           </Typography>
         </CardContent>
       </Card>

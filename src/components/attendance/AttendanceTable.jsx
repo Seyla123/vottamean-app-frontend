@@ -55,6 +55,7 @@ const AttendanceTable = ({
   const filter = useSelector((state) => state.attendance.filter);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [studentLimit, setStudentLimit] = useState(25);
 
   const [isExporting, setIsExporting] = useState(false);
   const convertDayToShorthand = (day) => {
@@ -195,19 +196,18 @@ const AttendanceTable = ({
       console.error('export pdf error : ', error);
     } finally {
       setIsExporting(false);
+      setStudentLimit(25)
     }
   };
+  
 
   const PdfDownloadContent = ({
     students,
     dates,
     school,
     classData,
-    isHide = true,
     fontSizeCell = '0.5rem',
-    studentLimit,
     dateLimit,
-    forPreview = false,
   }) => {
     const chunkArray = (array, size) => {
       const result = [];
@@ -252,19 +252,18 @@ const AttendanceTable = ({
       width: '100%',
     };
     return (
-      <Box sx={isHide ? hideStyle : {}}>
+      <Box sx={ hideStyle }>
         {dateChunks.map((dateChunk, dateIndex) => {
           let number = 1;
           return studentChunks.map((studentChunk, studentIndex) => {
             return (
               <Paper
-                id={!forPreview ? `pdf-page-export` : ''}
+                id={`pdf-page-export`}
                 key={`${studentIndex}-${dateIndex}`}
                 sx={{
                   boxShadow: 'none',
-                  width: '100%',
-                  maxWidth: isHide || !forPreview ? '900px' : '100%',
-                  mx: 'auto',
+                  width: '210mm',
+                  height: '297mm',
                   padding: 2,
                   flexDirection: 'column',
                   gap: 2,
@@ -418,6 +417,8 @@ const AttendanceTable = ({
             handleExportPDF={exportPdfById}
             handleExportXLSX={exportTableToXLSX}
             isExporting={isExporting}
+            handleStudentLimit={setStudentLimit}
+            studentLimit={studentLimit}
           />
         </Box>
       </Stack>
@@ -428,7 +429,6 @@ const AttendanceTable = ({
           dates={dates}
           school={school}
           classData={classData}
-          studentLimit={rowsPerPage}
           dateLimit={6}
         />
         {isLoading ? (
@@ -552,7 +552,7 @@ const AttendanceTable = ({
         )}
         <TablePagination
           component="div"
-          rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
+          rowsPerPageOptions={[1,5, 10, 15, 25, 50, 100]}
           count={classData?.student_count?.total_students || 0}
           page={page}
           onPageChange={handleChangePage}

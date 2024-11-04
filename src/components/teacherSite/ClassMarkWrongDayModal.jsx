@@ -13,7 +13,7 @@ import StyledButton from '../common/StyledMuiButton';
 import { BootstrapDialog } from '../common/BootstrapDialog';
 
 /**
- * ClassMarkedModal
+ * ClassMarkWrongDayModal
  * 
  * This component renders a modal dialog that is shown when a teacher tries to mark attendance for a class that has already been marked for the current day.
  * 
@@ -21,7 +21,7 @@ import { BootstrapDialog } from '../common/BootstrapDialog';
  * 
  * To use this component, simply import it and call it with the open and onClose props:
  * 
- * import ClassMarkedModal from './ClassMarkedModal';
+ * import ClassMarkWrongDayModal from './ClassMarkWrongDayModal';
  * 
  * const MyComponent = () => {
  *   const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ import { BootstrapDialog } from '../common/BootstrapDialog';
  *   return (
  *     <div>
  *       <Button onClick={handleOpen}>Open Class Marked Modal</Button>
- *       <ClassMarkedModal open={open} onClose={handleClose} />
+ *       <ClassMarkWrongDayModal open={open} onClose={handleClose} />
  *     </div>
  *   );
  * };
@@ -47,7 +47,7 @@ import { BootstrapDialog } from '../common/BootstrapDialog';
  * @param {function} props.onClose The function to call when the dialog is closed
  * */
 
-const ClassMarkedModal = ({ open, onClose }) => {
+const ClassMarkWrongDayModal = ({ open, onClose }) => {
     return (
         <BootstrapDialog
             open={open}
@@ -65,7 +65,7 @@ const ClassMarkedModal = ({ open, onClose }) => {
                         flexDirection: { xs: 'column', sm: 'row' },
                     }}
                 >
-                    Attendance Marking Alert
+                    Attendance Marking Reminder
                 </Box>
             </DialogTitle>
             <IconButton
@@ -82,10 +82,10 @@ const ClassMarkedModal = ({ open, onClose }) => {
             <DialogContent dividers>
                 <Stack justifyContent={'center'} gap={2}>
                     <Typography variant='body1'>
-                        You cannot mark attendance for this class again today.
+                        Attendance can only be marked for the scheduled day.
                     </Typography>
                     <Alert severity="warning">
-                        Attendance for this class has already been marked for today, please contact to your administrator for any questions.
+                        You cannot mark attendance for this class today, as it is not the scheduled day. Please ensure you are marking attendance on the correct date.
                     </Alert>
                 </Stack>
             </DialogContent>
@@ -101,4 +101,4 @@ const ClassMarkedModal = ({ open, onClose }) => {
         </BootstrapDialog>
     );
 };
-export default ClassMarkedModal
+export default ClassMarkWrongDayModal
