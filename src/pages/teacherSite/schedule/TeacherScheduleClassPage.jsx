@@ -101,12 +101,10 @@ const ClassListItem = ({ classData, onClick, filterDay, setOpenModalMarked, setO
    const today = dayjs();
    // Get the day of the week as a string (e.g., "Monday")
    const day = today.format('dddd'); // Use 'ddd' for abbreviated names (e.g., "Mon")
-
     if (classData.isClassMarked) {
       // Class is already marked, open the modal to show the warning
       setOpenModalMarked(true);
-    }else if(classData.day !== day.toLocaleLowerCase()) {
-
+    }else if(classData.day.toLocaleLowerCase() !== day.toLocaleLowerCase()) {
       setOpenModalWrongDay(true)
     }
     else {
