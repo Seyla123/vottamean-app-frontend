@@ -140,6 +140,19 @@ const EditAccountModal = ({
   //   }
   // }, [isSuccess, userProfile, reset]);
 
+  // Update preview when profilePhoto prop changes
+  useEffect(() => {
+    setPreviewUrl(profilePhoto);
+  }, [profilePhoto]);
+  // Cleanup blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, []);
+
   // Handle success and error of updating user profile
   useEffect(() => {
     if (isUpdateSuccess) {
@@ -163,8 +176,6 @@ const EditAccountModal = ({
       );
     }
   }, [isUpdateSuccess, isUpdateError, updateError, dispatch, onClose]);
-
-  // - Handle image file selection and preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (
@@ -173,8 +184,16 @@ const EditAccountModal = ({
       file.size <= 5 * 1024 * 1024
     ) {
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      setRemovePhoto(false); // Reset the removePhoto state when a new file is selected
+      // Cleanup previous blob URL if exists
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      // Create new preview URL
+      const newPreviewUrl = URL.createObjectURL(file);
+      setPreviewUrl(newPreviewUrl);
+      setRemovePhoto(false);
+      // Pass the File object to parent
+      onPhotoUpdate(file);
     } else {
       dispatch(
         setSnackbar({
@@ -186,11 +205,11 @@ const EditAccountModal = ({
     }
   };
 
-  // - Handle remove photo
   const handleRemovePhoto = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
-    setRemovePhoto(true); // trigger the random avatar
+    setRemovePhoto(true);
+    onPhotoUpdate(null);
   };
 
   // - Handle form submission

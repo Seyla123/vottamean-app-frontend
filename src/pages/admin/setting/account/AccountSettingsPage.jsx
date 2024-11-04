@@ -32,8 +32,10 @@ const AccountSettingsPage = () => {
   // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
-  // Separate photo state to handle both blob and server URLs
-  const [currentPhoto, setCurrentPhoto] = useState(null);
+  // State for managing the photo URL (either blob or server URL)
+  const [photoUrl, setPhotoUrl] = useState(null);
+  // State for storing the actual File object when uploading
+  const [photoFile, setPhotoFile] = useState(null);
   const [userData, setUserData] = useState({
     userProfile: {},
     schoolProfile: {},
@@ -41,16 +43,21 @@ const AccountSettingsPage = () => {
 
   // Local state for tab
   const [value, setValue] = useState('1');
-
-  // Handle initial data load and subsequent updates
+  // Handle initial data load
+  // useEffect(() => {
+  //   if (user) {
+  //     const transformedData = getUserProfileData(user);
+  //     setServerPhotoUrl(transformedData.photo);
+  //     setUserData({
+  //       userProfile: transformedData.userProfile,
+  //       schoolProfile: transformedData.schoolProfile,
+  //     });
+  //   }
+  // }, [user]);
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
-
-      // Only update the photo if we don't have a blob URL
-      if (!currentPhoto || !currentPhoto.startsWith('blob:')) {
-        setCurrentPhoto(transformedData.photo);
-      }
+      setPhotoUrl(transformedData.photo);
       setUserData({
         userProfile: transformedData.userProfile,
         schoolProfile: transformedData.schoolProfile,
@@ -58,20 +65,58 @@ const AccountSettingsPage = () => {
     }
   }, [user]);
 
-  // Cleanup blob URLs when component unmounts
+  // Cleanup function
+  const cleanupBlobUrl = (url) => {
+    if (url?.startsWith('blob:')) {
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (currentPhoto && currentPhoto.startsWith('blob:')) {
-        URL.revokeObjectURL(currentPhoto);
-      }
+      cleanupBlobUrl(photoUrl);
     };
   }, []);
 
-  // Handle tab switch
+  const handleProfileUpdate = async (newPhoto) => {
+    try {
+      // Handle photo removal
+      if (newPhoto === null) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(null);
+        setPhotoFile(null);
+        return;
+      }
+
+      // Handle new photo upload (File object)
+      if (newPhoto instanceof File) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoFile(newPhoto);
+        const newBlobUrl = URL.createObjectURL(newPhoto);
+        setPhotoUrl(newBlobUrl);
+      }
+      // Handle server URL update
+      else if (typeof newPhoto === 'string' && !newPhoto.startsWith('blob:')) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(newPhoto);
+        setPhotoFile(null);
+        await refetch();
+      }
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Failed to update profile photo: ${error?.data?.message}`,
+          severity: 'error',
+        })
+      );
+    }
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   // Handle delete button click
   const handleDeleteAccount = async () => {
     try {
@@ -82,34 +127,49 @@ const AccountSettingsPage = () => {
     }
   };
 
-  // Handle profile photo update
-  const handleProfileUpdate = async (newPhoto) => {
+  // const handleProfileUpdate = async (newPhoto) => {
+  //   try {
+  //     // Handle photo removal
+  //     if (newPhoto === null) {
+  //       if (tempBlobUrl) {
+  //         URL.revokeObjectURL(tempBlobUrl);
+  //         setTempBlobUrl(null);
+  //       }
+  //       setServerPhotoUrl(null);
+  //       return;
+  //     }
 
-    try {
-      // Revoke existing blob URL to prevent memory leaks
-      if (currentPhoto && currentPhoto.startsWith('blob:')) {
-        URL.revokeObjectURL(currentPhoto);
-      }
+  //     // Handle new photo upload
+  //     if (newPhoto instanceof File) {
+  //       // Clean up existing blob URL if it exists
+  //       if (tempBlobUrl) {
+  //         URL.revokeObjectURL(tempBlobUrl);
+  //       }
+  //       // Create new blob URL
+  //       const newBlobUrl = URL.createObjectURL(newPhoto);
+  //       setTempBlobUrl(newBlobUrl);
+  //     }
+  //     // Handle server URL update after successful upload
+  //     else if (typeof newPhoto === 'string' && newPhoto.startsWith('http')) {
+  //       setServerPhotoUrl(newPhoto);
+  //       // Clean up temp blob URL if it exists
+  //       if (tempBlobUrl) {
+  //         URL.revokeObjectURL(tempBlobUrl);
+  //         setTempBlobUrl(null);
+  //       }
+  //     }
 
-      // Update the current photo state with the new photo, if provided
-      if (newPhoto) {
-        setCurrentPhoto(newPhoto);
-      }
-
-      // Refresh user profile data from the server
-      await refetch();
-    } catch (error) {
-      // Log any errors encountered during the update
-      dispatch(
-        setSnackbar({
-          open: true,
-          message:` Failed to update profile photo: ${error?.data?.message}`,
-          severity: 'error',
-        })
-      )
-    }
-  };
-
+  //     await refetch();
+  //   } catch (error) {
+  //     dispatch(
+  //       setSnackbar({
+  //         open: true,
+  //         message: `Failed to update profile photo: ${error?.data?.message}`,
+  //         severity: 'error',
+  //       })
+  //     );
+  //   }
+  // };
 
   if (isLoading) {
     return <LoadingCircle />;
@@ -145,7 +205,7 @@ const AccountSettingsPage = () => {
         <TabPanel sx={{ flexGrow: 1, p: 0 }} value="1">
           {/* MY PROFILE VIEW */}
           <MyProfileView
-            profilePhoto={currentPhoto}
+            profilePhoto={photoUrl}
             userData={userData.userProfile}
             schoolProfileData={userData.schoolProfile}
             onProfileUpdate={handleProfileUpdate}
