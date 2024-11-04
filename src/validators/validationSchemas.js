@@ -64,10 +64,14 @@ export const lastNameSchema = Yup.string()
   );
 
 // Date of birth validator
-export const dobSchema = Yup.date()
+export const dobSchema = Yup.string()
   .required('Date of birth is required')
   .max(new Date(), 'Date of birth cannot be in the future')
-  .typeError('Date of birth must be a valid date');
+  .typeError('Date of birth must be a valid date')
+  .matches(
+    /^\d{4}-\d{2}-\d{2}$/,
+    'Date of birth must be in the format YYYY-MM-DD',
+  );
 
 // Email validator for admin, teacher, student, and guardian
 export const emailSchema = Yup.string()
@@ -128,7 +132,13 @@ export const phoneSchema = Yup.string()
     'length',
     'Phone number must be between 8 and 15 digits (excluding country code)',
     (value) => {
-      const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
+      const numberPart =
+        value &&
+        value
+          .split(' ')
+          .slice(1)
+          .join('')
+          .replace(/[^0-9]/g, '');
       return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
     },
   );
@@ -161,7 +171,7 @@ export const ClassValidator = Yup.object().shape({
     .max(50, 'Class name is too long')
     .matches(
       /^[A-Za-z\d\s]+$/,
-      'Class name can contain only letters, numbers, and spaces'
+      'Class name can contain only letters, numbers, and spaces',
     ),
   description: Yup.string()
     .trim()
@@ -177,7 +187,7 @@ export const SubjectValidator = Yup.object().shape({
     .max(50, 'Subject name is too long')
     .matches(
       /^[A-Za-z\d\s]+$/,
-      'Subject name can contain only letters, numbers, and spaces'
+      'Subject name can contain only letters, numbers, and spaces',
     ),
   description: Yup.string()
     .trim()

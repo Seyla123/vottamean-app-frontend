@@ -30,8 +30,8 @@ export const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
   },
   // Add this specific targeting for the calendar icon
   '& .MuiIconButton-root .MuiSvgIcon-root': {
-    fontSize: 18, // Adjust this value to make the icon smaller or larger
-    color: '#757575', // This matches the gray color shown in your image
+    fontSize: 18,
+    color: '#757575',
   },
 }));
 
