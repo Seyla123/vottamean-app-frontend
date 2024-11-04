@@ -24,6 +24,7 @@ import { X } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import { BootstrapDialog } from './BootstrapDialog';
+import InputField from './InputField';
 
 const EditModal = ({
   open,
@@ -160,6 +161,21 @@ const EditModal = ({
                 />
               </LocalizationProvider>
             )}
+          />
+        );
+
+      case 'textarea':
+        return (
+          <InputField
+            name={field.name}
+            control={control}
+            placeholder={field.placeholder}
+            errors={errors}
+            icon={field.icon}
+            multiline={true}
+            minRows={field.rows || 4}
+            maxLength={150}
+            disabled={field.disabled}
           />
         );
       default:

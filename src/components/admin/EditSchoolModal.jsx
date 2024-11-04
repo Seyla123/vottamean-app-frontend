@@ -75,7 +75,7 @@ const EditSchoolModal = ({ open, onClose }) => {
       school_phone_number: '',
     },
   });
-  
+
   // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
@@ -180,7 +180,6 @@ const EditSchoolModal = ({ open, onClose }) => {
                 label="School Name"
                 placeholder="Enter your school name"
                 errors={errors}
-                icon={NotebookPen}
               />
             </Grid>
 
@@ -202,8 +201,9 @@ const EditSchoolModal = ({ open, onClose }) => {
                 label="Street Address"
                 placeholder="Phnom Penh, Street 210, ..."
                 errors={errors}
-                multiline
+                multiline={true}
                 minRows={5}
+                maxLength={150}
                 required={false}
               />
             </Grid>
@@ -216,7 +216,12 @@ const EditSchoolModal = ({ open, onClose }) => {
           Cancel
         </StyledButton>
         {/* SAVE CHANGES BUTTON */}
-        <StyledButton size="small" type="submit" variant="contained" onClick={handleSubmit(onSubmit)}>
+        <StyledButton
+          size="small"
+          type="submit"
+          variant="contained"
+          onClick={handleSubmit(onSubmit)}
+        >
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>

@@ -37,15 +37,21 @@ const ChangePasswordForm = ({ open, onClose }) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(ChangePasswordValidator),
   });
 
-  const [changePassword, { isLoading, error, isSuccess, isError }] =
-    useChangePasswordMutation();
-  useEffect(() => {
-    if (isSuccess) {
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
+
+  const handlePasswordChange = async (formData) => {
+    try {
+      await changePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      }).unwrap();
+
       dispatch(
         setSnackbar({
           open: true,
@@ -53,23 +59,22 @@ const ChangePasswordForm = ({ open, onClose }) => {
           severity: 'success',
         }),
       );
+      reset({
+        currentPassword: '',
+        newPassword: '',
+        newPasswordConfirm: '',
+      });
       onClose();
-    } else if (isError) {
+    } catch (error) {
+      console.error('Password change error:', error);
       dispatch(
         setSnackbar({
           open: true,
-          message: error.data.message,
+          message: error.data?.message || 'Failed to change password',
           severity: 'error',
         }),
       );
     }
-  }, [error, dispatch, isError, isSuccess, onClose]);
-
-  const handlePasswordChange = async (formData) => {
-    await changePassword({
-      currentPassword: formData.currentPassword,
-      newPassword: formData.newPassword,
-    }).unwrap();
   };
 
   return (
