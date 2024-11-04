@@ -115,35 +115,26 @@ const EditAccountModal = ({
       address: '',
     },
   });
+
+
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
-
       // Set the profile photo from the server if available
       if (userProfile.photoUrl) {
-        setPreviewUrl(userProfile.photoUrl); // Assuming `photoUrl` is the photo URL from the server
+        setPreviewUrl(userProfile.photoUrl);
       }
-
       // Dynamically set the form default values
       reset(formattedData);
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
-  // // Fetching and setting up the original user profile data
-  // useEffect(() => {
-  //   if (isSuccess && userProfile) {
-  //     const formattedData = getUserProfileUpdateData(userProfile);
-  //     // Dynamically set the form default values
-  //     reset(formattedData);
-  //     // Store the original data for comparison
-  //     setOriginalData(formattedData);
-  //   }
-  // }, [isSuccess, userProfile, reset]);
 
-  // Update preview when profilePhoto prop changes
+  // Update preview when profilePhoto changes
   useEffect(() => {
     setPreviewUrl(profilePhoto);
   }, [profilePhoto]);
+  
   // Cleanup blob URL on unmount
   useEffect(() => {
     return () => {
@@ -176,6 +167,8 @@ const EditAccountModal = ({
       );
     }
   }, [isUpdateSuccess, isUpdateError, updateError, dispatch, onClose]);
+ 
+  // Handle Change photo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (
@@ -205,6 +198,7 @@ const EditAccountModal = ({
     }
   };
 
+  // Handle remove photo
   const handleRemovePhoto = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
@@ -247,14 +241,12 @@ const EditAccountModal = ({
     // Also, update the photo in MyProfileView file
     if (selectedFile) {
       formData.append('photo', selectedFile);
-      console.log('formData:', formData);
-      console.log('photo', selectedFile);
       onPhotoUpdate(URL.createObjectURL(selectedFile)); // Update photo in MyProfileView
     } else if (isPhotoRemoved) {
       // If the photo removal checkbox is checked, add a remove_photo parameter to the form data
       // Also, clear the photo in MyProfileView
       formData.append('remove_photo', 'true');
-      onPhotoUpdate('');
+      onPhotoUpdate(''); // Clear photo in MyProfileView
     }
 
     // Iterate through the form data and add all the fields except for the photo
@@ -267,7 +259,6 @@ const EditAccountModal = ({
     if (checkUserRole === 'teacher') {
       // Teachers can only update their photo
       await updateUserProfile(formData).unwrap();
-      console.log('teacher photo', selectedFile);
     } else {
       // Admins can update all fields
       await updateUserProfile(formData).unwrap();
@@ -278,7 +269,7 @@ const EditAccountModal = ({
   if (isLoading) {
     return <CircularProgress />;
   }
-
+  
   if (isError || !userProfile) {
     return <SomethingWentWrong description="Failed to fetch user profile" />;
   }
