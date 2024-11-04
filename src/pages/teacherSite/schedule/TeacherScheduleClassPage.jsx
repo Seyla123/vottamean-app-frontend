@@ -33,6 +33,7 @@ import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
 import ClassMarkWrongDayModal from '../../../components/teacherSite/ClassMarkWrongDayModal';
 import TitleHeader from '../../../components/common/TitleHeader';
 import dayjs from 'dayjs'
+import { formatTimeTo12Hour } from '../../../utils/formatHelper';
 const headerImages = [
   classHeaderImg1,
   classHeaderImg2,
@@ -101,12 +102,10 @@ const ClassListItem = ({ classData, onClick, filterDay, setOpenModalMarked, setO
    const today = dayjs();
    // Get the day of the week as a string (e.g., "Monday")
    const day = today.format('dddd'); // Use 'ddd' for abbreviated names (e.g., "Mon")
-
     if (classData.isClassMarked) {
       // Class is already marked, open the modal to show the warning
       setOpenModalMarked(true);
-    }else if(classData.day !== day.toLocaleLowerCase()) {
-
+    }else if(classData.day.toLocaleLowerCase() !== day.toLocaleLowerCase()) {
       setOpenModalWrongDay(true)
     }
     else {
@@ -165,10 +164,7 @@ const ClassListItem = ({ classData, onClick, filterDay, setOpenModalMarked, setO
         <IconWrapper sx={{ my: 1 }}>
           <Clock size={16} />
           <Typography variant="body2">
-            {classData.start_time.slice(0, 5)}
-            {classData.start_time.slice(6, 7) === 'PM' ? ' PM' : ' AM'} -{' '}
-            {classData.end_time.slice(0, 5)}
-            {classData.end_time.slice(6, 7) === 'PM' ? ' PM' : ' AM'}
+            {formatTimeTo12Hour(classData.start_time)} - {formatTimeTo12Hour(classData.end_time)}
           </Typography>
         </IconWrapper>
         <IconWrapper>
