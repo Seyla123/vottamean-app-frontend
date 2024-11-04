@@ -117,7 +117,6 @@ const GuardianForm = ({
           control={control}
           label="Contact Number"
           errors={errors}
-          required={true}
         />
 
         {/* Guardian Email */}
@@ -132,7 +131,6 @@ const GuardianForm = ({
         />
 
         {/* Guardian Relationship */}
-
         <InputField
           name="guardianRelationship"
           control={control}
