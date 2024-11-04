@@ -131,7 +131,6 @@ const CreateSchoolForm = ({
             errors={errors}
             multiline={true}
             minRows={5}
-            maxLength={50}
             required={false}
             maxLength={150}
           />
