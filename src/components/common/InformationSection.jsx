@@ -21,6 +21,7 @@ import {
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import ProfileSection from './ProfileSection';
+import { truncate } from '../../utils/truncate';
 
 const InfoItem = ({ icon, label, value }) => (
   <Grid item xs={12}>
@@ -56,7 +57,9 @@ const InfoItem = ({ icon, label, value }) => (
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography variant="body1">{value}</Typography>
+            <Typography variant="body1">
+              {value ? truncate(value, 30) : ''}
+            </Typography>
           </Grid>
         </Grid>
       </ListItem>
