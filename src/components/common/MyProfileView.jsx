@@ -18,7 +18,6 @@ const MyProfileView = ({
   schoolProfileData,
   onProfileUpdate,
 }) => {
-  console.log(profilePhoto);
 
   // - State to keep track of the open modal type
   const [openModal, setOpenModal] = useState(null);
@@ -29,7 +28,6 @@ const MyProfileView = ({
   // Add state to track if photo was removed
   const [isPhotoRemoved, setIsPhotoRemoved] = useState(false);
 
-  console.log(currentProfilePhoto);
   // Update currentProfilePhoto when profilePhoto prop changes
   useEffect(() => {
     if (profilePhoto !== currentProfilePhoto) {
@@ -38,6 +36,7 @@ const MyProfileView = ({
     }
   }, [profilePhoto, currentProfilePhoto]);
  
+  // - Handle profile photo update
   const handleProfilePhotoUpdate = async (newPhoto) => {
     try {
       if (onProfileUpdate) {
@@ -49,6 +48,7 @@ const MyProfileView = ({
     }
   };
   
+  // - Handle modal close
   const handleCloseModal = async () => {
     setOpenModal(null);
     if (onProfileUpdate) {
@@ -56,9 +56,11 @@ const MyProfileView = ({
     }
   };
 
+  // - Handle modal open
   const handleOpenModal = (modalType) => {
     setOpenModal(modalType);
   };
+  
   // - Check the user's role
   const checkUserRole = userData?.userRole;
 
