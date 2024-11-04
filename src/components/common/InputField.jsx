@@ -27,7 +27,6 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
 const InputField = ({
   name,
   control,
-  label,
   placeholder,
   errors,
   icon: Icon,

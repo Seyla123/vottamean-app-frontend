@@ -232,7 +232,6 @@ function SubjectListPage() {
       placeholder: 'Enter subject name',
       required: true,
       icon: '',
-      maxLength: 50,
     },
     {
       name: 'description',
@@ -241,9 +240,7 @@ function SubjectListPage() {
       placeholder: 'Enter subject description',
       multiline: true,
       minRows: 4,
-      maxLength: 500,
       icon: '',
-      required: false,
     },
   ];
 

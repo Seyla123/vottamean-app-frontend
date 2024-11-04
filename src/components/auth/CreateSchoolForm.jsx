@@ -21,7 +21,11 @@ import InputField from '../common/InputField';
 import { useSignupMutation } from '../../services/authApi';
 import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 
-const CreateSchoolForm = ({ handleBack, handleFormChange, handleSignUpSuccess }) => {
+const CreateSchoolForm = ({
+  handleBack,
+  handleFormChange,
+  handleSignUpSuccess,
+}) => {
   const formData = useSelector((state) => state.form);
   const dispatch = useDispatch();
   const [signup, { isLoading, isError, isSuccess, error }] =
@@ -129,6 +133,7 @@ const CreateSchoolForm = ({ handleBack, handleFormChange, handleSignUpSuccess })
             minRows={5}
             maxLength={50}
             required={false}
+            maxLength={150}
           />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
