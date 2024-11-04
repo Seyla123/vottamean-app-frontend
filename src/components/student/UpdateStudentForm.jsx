@@ -516,6 +516,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                           defaultValue={field.value}
                           placeholder="First Name"
                           errors={errors}
+                          required={true}
                         />
                       )}
                     />
@@ -532,6 +533,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                           name={field.name}
                           defaultValue={field.value}
                           errors={errors}
+                          required={true}
                         />
                       )}
                     />
@@ -668,6 +670,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       placeholder="First Name"
                       errors={errors}
                       icon={UserRoundPen}
+                      required={true}
                     />
                     <InputField
                       name="guardianLastName"
@@ -676,6 +679,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       placeholder="Last Name"
                       errors={errors}
                       icon={UserRoundPen}
+                      required={true}
                     />
                   </Stack>
                   {/* GUARDIAN CONTACT INFORMATION */}
