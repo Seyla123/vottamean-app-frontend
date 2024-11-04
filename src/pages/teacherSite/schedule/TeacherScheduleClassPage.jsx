@@ -33,6 +33,7 @@ import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
 import ClassMarkWrongDayModal from '../../../components/teacherSite/ClassMarkWrongDayModal';
 import TitleHeader from '../../../components/common/TitleHeader';
 import dayjs from 'dayjs'
+import { formatTimeTo12Hour } from '../../../utils/formatHelper';
 const headerImages = [
   classHeaderImg1,
   classHeaderImg2,
