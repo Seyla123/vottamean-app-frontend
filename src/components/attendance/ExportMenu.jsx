@@ -54,11 +54,12 @@ const ExportMenu = ({
   isExporting,
   handleExportPDF,
   handleExportXLSX,
+  handleStudentLimit,
+  studentLimit
 }) => {
   const [open, setOpen] = useState(false);
   const [exportType, setExportType] = useState(null);
-  const [value, setValue] = useState(0);
-
+  
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -66,7 +67,7 @@ const ExportMenu = ({
   };
 
   const handleOnChange = (event) => {
-    setValue(event.target.value);
+    handleStudentLimit(event.target.value);
   };
 
   const handleExportTypeChange = (event, newType) => {
@@ -144,7 +145,7 @@ const ExportMenu = ({
                 <StyledTextField
                   fullWidth
                   select
-                  value={value}
+                  value={studentLimit}
                   onChange={handleOnChange}
                   size="small"
                   SelectProps={{
@@ -155,6 +156,7 @@ const ExportMenu = ({
                     ),
                   }}
                 >
+                  <MenuItem value={1}>1</MenuItem>
                   <MenuItem value={5}>5</MenuItem>
                   <MenuItem value={10}>10</MenuItem>
                   <MenuItem value={15}>15</MenuItem>
