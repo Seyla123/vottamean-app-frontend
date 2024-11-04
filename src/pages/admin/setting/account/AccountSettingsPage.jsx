@@ -26,27 +26,29 @@ const AccountSettingsPage = () => {
   // - Initialize dispatch
   const dispatch = useDispatch();
 
-  // Redux API calls to get user profile
+  // - Redux API calls to get user profile
   const { data: user, isLoading, error, refetch } = useGetUserProfileQuery();
 
-  // Redux API calls to delete user
+  // - Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
-  // State for managing the photo URL (either blob or server URL)
+  // - State for managing the photo URL (either blob or server URL)
   const [photoUrl, setPhotoUrl] = useState(null);
-  // State for storing the actual File object when uploading
+  // - State for storing the actual File object when uploading
   const [photoFile, setPhotoFile] = useState(null);
   const [userData, setUserData] = useState({
     userProfile: {},
     schoolProfile: {},
   });
 
-  // Local state for tab
+  // - Local state for tab
   const [value, setValue] = useState('1');
+
 
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
+      // Only update the photo if we don't have a blob URL
       setPhotoUrl(transformedData.photo);
       setUserData({
         userProfile: transformedData.userProfile,
@@ -55,19 +57,21 @@ const AccountSettingsPage = () => {
     }
   }, [user]);
 
-  // Cleanup function
+  // Cleanup function prevent memory leaks
   const cleanupBlobUrl = (url) => {
     if (url?.startsWith('blob:')) {
       URL.revokeObjectURL(url);
     }
   };
 
-  // Cleanup on unmount
+  // Cleanup effect for photo URLs
   useEffect(() => {
     return () => {
       cleanupBlobUrl(photoUrl);
     };
-  }, []);
+  }, [])
+
+  // Handle profile update
   const handleProfileUpdate = async (newPhoto) => {
     try {
       // Handle photo removal
@@ -105,12 +109,7 @@ const AccountSettingsPage = () => {
       );
     }
   };
-  
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  
   // Handle delete button click
   const handleDeleteAccount = async () => {
     try {
@@ -121,54 +120,17 @@ const AccountSettingsPage = () => {
     }
   };
 
-  // const handleProfileUpdate = async (newPhoto) => {
-  //   try {
-  //     // Handle photo removal
-  //     if (newPhoto === null) {
-  //       if (tempBlobUrl) {
-  //         URL.revokeObjectURL(tempBlobUrl);
-  //         setTempBlobUrl(null);
-  //       }
-  //       setServerPhotoUrl(null);
-  //       return;
-  //     }
+  // Handle Change tabs
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-  //     // Handle new photo upload
-  //     if (newPhoto instanceof File) {
-  //       // Clean up existing blob URL if it exists
-  //       if (tempBlobUrl) {
-  //         URL.revokeObjectURL(tempBlobUrl);
-  //       }
-  //       // Create new blob URL
-  //       const newBlobUrl = URL.createObjectURL(newPhoto);
-  //       setTempBlobUrl(newBlobUrl);
-  //     }
-  //     // Handle server URL update after successful upload
-  //     else if (typeof newPhoto === 'string' && newPhoto.startsWith('http')) {
-  //       setServerPhotoUrl(newPhoto);
-  //       // Clean up temp blob URL if it exists
-  //       if (tempBlobUrl) {
-  //         URL.revokeObjectURL(tempBlobUrl);
-  //         setTempBlobUrl(null);
-  //       }
-  //     }
-
-  //     await refetch();
-  //   } catch (error) {
-  //     dispatch(
-  //       setSnackbar({
-  //         open: true,
-  //         message: `Failed to update profile photo: ${error?.data?.message}`,
-  //         severity: 'error',
-  //       })
-  //     );
-  //   }
-  // };
-
+  // loading state 
   if (isLoading) {
     return <LoadingCircle />;
   }
 
+  // error state
   if (error) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
