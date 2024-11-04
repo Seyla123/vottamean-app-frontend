@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
+    margin: 0,
     width: '100%',
     borderRadius: 8,
     backgroundColor: theme.palette.background.paper,
@@ -35,6 +36,7 @@ const InputField = ({
   minRows,
   required = true,
   disabled = false,
+  maxLength = 50,
 }) => {
   return (
     <Box
@@ -45,38 +47,68 @@ const InputField = ({
         width: '100%',
       }}
     >
-      <Typography variant="body2" fontWeight="bold" color="text.primary">
-        {label}
-        {required && (
-          <Typography component="span" color="error.main" marginLeft={0.5}>
-            *
-          </Typography>
-        )}
-      </Typography>
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
-          <StyledTextField
-            {...field}
-            variant="outlined"
-            fullWidth
-            type={type}
-            placeholder={placeholder}
-            error={!!errors[name]}
-            helperText={errors[name]?.message}
-            InputProps={{
-              startAdornment: Icon ? (
-                <InputAdornment position="start" sx={{ pr: 2 }}>
-                  <Icon size={18} color={disabled ? '#9e9e9e' : '#616161'} />
-                </InputAdornment>
-              ) : null,
-            }}
-            disabled={disabled}
-            multiline={multiline}
-            minRows={minRows}
-          />
-        )}
+        render={({ field }) => {
+          // Get the current character count
+          const currentLength = field.value?.length || 0;
+
+          return (
+            <Box sx={{ position: 'relative' }}>
+              <StyledTextField
+                {...field}
+                variant="outlined"
+                fullWidth
+                type={type}
+                placeholder={placeholder}
+                error={!!errors[name]}
+                helperText={errors[name]?.message}
+                InputProps={{
+                  startAdornment: Icon ? (
+                    <InputAdornment position="start" sx={{ pr: 2 }}>
+                      <Icon
+                        size={18}
+                        color={disabled ? '#9e9e9e' : '#616161'}
+                      />
+                    </InputAdornment>
+                  ) : null,
+                  ...(multiline &&
+                    maxLength && {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          sx={{
+                            position: 'absolute',
+                            bottom: 8,
+                            right: 8,
+                            background: 'rgba(255, 255, 255, 0.8)',
+                            padding: '2px 4px',
+                            borderRadius: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="caption"
+                            color={
+                              currentLength > maxLength
+                                ? 'error'
+                                : 'text.secondary'
+                            }
+                          >
+                            {currentLength}/{maxLength}
+                          </Typography>
+                        </InputAdornment>
+                      ),
+                    }),
+                }}
+                disabled={disabled}
+                multiline={multiline}
+                minRows={minRows}
+                onChange={field.onChange}
+              />
+            </Box>
+          );
+        }}
       />
     </Box>
   );

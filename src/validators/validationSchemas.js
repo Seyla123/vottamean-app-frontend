@@ -128,7 +128,13 @@ export const phoneSchema = Yup.string()
     'length',
     'Phone number must be between 8 and 15 digits (excluding country code)',
     (value) => {
-      const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
+      const numberPart =
+        value &&
+        value
+          .split(' ')
+          .slice(1)
+          .join('')
+          .replace(/[^0-9]/g, '');
       return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
     },
   );
@@ -161,11 +167,11 @@ export const ClassValidator = Yup.object().shape({
     .max(50, 'Class name is too long')
     .matches(
       /^[A-Za-z\d\s]+$/,
-      'Class name can contain only letters, numbers, and spaces'
+      'Class name can contain only letters, numbers, and spaces',
     ),
   description: Yup.string()
     .trim()
-    .max(225, 'Description must be less than 225 characters')
+    .max(150, 'Description must be less than 150 characters')
     .optional(),
 });
 
@@ -177,11 +183,11 @@ export const SubjectValidator = Yup.object().shape({
     .max(50, 'Subject name is too long')
     .matches(
       /^[A-Za-z\d\s]+$/,
-      'Subject name can contain only letters, numbers, and spaces'
+      'Subject name can contain only letters, numbers, and spaces',
     ),
   description: Yup.string()
     .trim()
-    .max(225, 'Description must be less than 225 characters')
+    .max(150, 'Description must be less than 150 characters')
     .optional(),
 });
 

@@ -125,8 +125,9 @@ const CreateSchoolForm = ({ handleBack, handleFormChange, handleSignUpSuccess })
             label="Street Address"
             placeholder="Phnom Penh, Street 210, ..."
             errors={errors}
-            multiline
+            multiline={true}
             minRows={5}
+            maxLength={50}
             required={false}
           />
 

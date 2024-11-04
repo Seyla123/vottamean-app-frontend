@@ -22,12 +22,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
 import { BootstrapDialog } from './BootstrapDialog';
+import InputField from './InputField';
 
 const CreateModal = ({
   open,
   onClose,
   title,
-  description,
   fields,
   onSubmit,
   validationSchema,
@@ -101,6 +101,22 @@ const CreateModal = ({
             )}
           />
         );
+
+      case 'textarea':
+        return (
+          <InputField
+            name={field.name}
+            control={control}
+            placeholder={field.placeholder}
+            errors={errors}
+            icon={field.icon}
+            multiline={true}
+            minRows={field.rows || 4}
+            maxLength={150}
+            disabled={field.disabled}
+          />
+        );
+
       default:
         return (
           <Controller
@@ -168,16 +184,14 @@ const CreateModal = ({
       <DialogContent dividers>
         <Stack spacing={2}>
           {fields.map((field) => (
-            <Box
-              key={field.name}
-              sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-            >
-              <Typography variant="body2" fontWeight="bold">
+            <Box key={field.name}>
+              <Typography variant="body2" fontWeight="bold" gutterBottom>
                 {field.label}{' '}
                 {field.required && (
                   <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                 )}
               </Typography>
+
               {renderField(field)}
             </Box>
           ))}
