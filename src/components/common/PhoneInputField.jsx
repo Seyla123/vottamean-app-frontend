@@ -17,9 +17,7 @@ const StyledMuiTelInput = styled(MuiTelInput)(({ theme }) => ({
       borderColor: theme.palette.primary.main,
     },
   },
-  '& .MuiInputBase-input': {
-    padding: '12px 14px',
-  },
+
   '& .MuiInputAdornment-root': {
     marginRight: 0,
   },
@@ -32,10 +30,8 @@ const PhoneInputField = ({
   disabled = false,
 }) => {
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}
-    >
-      <Typography variant="body2" fontWeight="bold">
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <Typography variant="body2" fontWeight="bold" gutterBottom>
         {label} <span style={{ color: 'red', marginLeft: 1 }}>*</span>
       </Typography>
       <Controller

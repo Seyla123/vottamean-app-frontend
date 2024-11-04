@@ -175,6 +175,7 @@ const EditSchoolModal = ({ open, onClose }) => {
             <Grid item xs={12} sm={6}>
               {/* SCHOOL NAME INPUT */}
               <InputField
+                required={true}
                 name="school_name"
                 control={control}
                 label="School Name"

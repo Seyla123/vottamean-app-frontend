@@ -33,7 +33,11 @@ const SearchComponent = ({ sx, placeholder, value, onChange, onSearch }) => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Search size={18} color="#757575" />
+              <Search
+                size={18}
+                color="#757575"
+                style={{ marginRight: '8px' }}
+              />
             </InputAdornment>
           ),
           endAdornment: value && (

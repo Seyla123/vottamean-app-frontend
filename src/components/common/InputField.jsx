@@ -1,5 +1,11 @@
 import React from 'react';
-import { TextField, Typography, InputAdornment, Box } from '@mui/material';
+import {
+  TextField,
+  Typography,
+  InputAdornment,
+  Box,
+  Stack,
+} from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 
@@ -12,6 +18,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
     '& fieldset': {
       borderColor: theme.palette.mode === 'light' ? '#e0e0e0' : '#424242',
     },
+
     '&:hover fieldset': {
       borderColor: theme.palette.mode === 'light' ? '#b0b0b0' : '#616161',
     },
@@ -26,6 +33,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
 
 const InputField = ({
   name,
+  required,
   control,
   placeholder,
   errors,
@@ -33,7 +41,7 @@ const InputField = ({
   type = 'text',
   multiline = false,
   minRows,
-  required = true,
+  label = '',
   disabled = false,
   maxLength = 50,
 }) => {
@@ -55,6 +63,18 @@ const InputField = ({
 
           return (
             <Box sx={{ position: 'relative' }}>
+              {label && (
+                <Stack direction={'row'} alignItems={'start'} gap={0.5}>
+                  <Typography variant="body2" fontWeight="bold" gutterBottom>
+                    {label}
+                  </Typography>
+                  {required && (
+                    <Typography variant="body2" color="error">
+                      *
+                    </Typography>
+                  )}
+                </Stack>
+              )}
               <StyledTextField
                 {...field}
                 variant="outlined"
