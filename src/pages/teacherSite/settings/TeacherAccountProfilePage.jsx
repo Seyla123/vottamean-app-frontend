@@ -38,8 +38,10 @@ const AccountSettingsPageTeacher = () => {
   // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
-  // Separate photo state to handle both blob and server URLs
-  const [currentPhoto, setCurrentPhoto] = useState(null);
+  // State for managing the photo URL (either blob or server URL)
+  const [photoUrl, setPhotoUrl] = useState(null);
+  // State for storing the actual File object when uploading
+  const [photoFile, setPhotoFile] = useState(null);
   // Local state for transformed data
   const [userData, setUserData] = useState({
     userProfile: {},
@@ -58,20 +60,19 @@ const AccountSettingsPageTeacher = () => {
   // Determine if the screen size is mobile
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
-  // Memoized photo handling to prevent unnecessary re-renders
-  const memoizedPhoto = useMemo(() => {
-    if (currentPhoto) return currentPhoto;
-    return user?.profilePicture || null;
-  }, [currentPhoto, user?.profilePicture]);
+  // // Memoized photo handling to prevent unnecessary re-renders
+  // const memoizedPhoto = useMemo(() => {
+  //   if (currentPhoto) return currentPhoto;
+  //   return user?.profilePicture || null;
+  // }, [currentPhoto, user?.profilePicture]);
+
   // Handle initial data load and subsequent updates
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
       console.log(transformedData);
       // Only update the photo if we don't have a blob URL
-      if (!currentPhoto || !currentPhoto.startsWith('blob:')) {
-        setCurrentPhoto(transformedData.photo);
-      }
+      setPhotoUrl(transformedData.photo);
       setUserData({
         userProfile: transformedData.userProfile,
         schoolProfile: transformedData.schoolProfile,
@@ -79,30 +80,46 @@ const AccountSettingsPageTeacher = () => {
     }
   }, [user]);
 
-  // Cleanup blob URLs
+  // Cleanup function
+  const cleanupBlobUrl = (url) => {
+    if (url?.startsWith('blob:')) {
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (currentPhoto && currentPhoto.startsWith('blob:')) {
-        URL.revokeObjectURL(currentPhoto);
-      }
+      cleanupBlobUrl(photoUrl);
     };
   }, []);
 
-  // Handle profile photo update
   const handleProfileUpdate = async (newPhoto) => {
-    console.log(newPhoto);
     try {
-      // Revoke old blob URL if exists
-      if (currentPhoto && currentPhoto.startsWith('blob:')) {
-        URL.revokeObjectURL(currentPhoto);
+      // Handle photo removal
+      if (newPhoto === null) {
+        // Cleanup and set photo URL to null immediately
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(null);
+        setPhotoFile(null);
+        return;
       }
-
-      // Update photo state if new photo provided
-      if (newPhoto) {
-        setCurrentPhoto(newPhoto);
+  
+      // Handle new photo upload (File object)
+      if (newPhoto instanceof File) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoFile(newPhoto);
+        const newBlobUrl = URL.createObjectURL(newPhoto);
+        setPhotoUrl(newBlobUrl);
       }
-
-      // Refresh user data from server
+      // Handle server URL update
+      else if (typeof newPhoto === 'string' && !newPhoto.startsWith('blob:')) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(newPhoto);
+        setPhotoFile(null);
+      }
+  
+      // Only refetch if there's a need (e.g., after uploading a new photo)
       await refetch();
     } catch (error) {
       dispatch(
@@ -110,10 +127,11 @@ const AccountSettingsPageTeacher = () => {
           open: true,
           message: `Failed to update profile photo: ${error?.data?.message}`,
           severity: 'error',
-        }),
+        })
       );
     }
   };
+
   // Handle delete button click
   const handleDeleteAccount = async () => {
     try {
@@ -129,10 +147,6 @@ const AccountSettingsPageTeacher = () => {
  // Handle tab switch with photo preservation
  const handleChange = (event, newValue) => {
   setValue(newValue);
-  // Persist profile picture across tabs
-  dispatch(updateFormData({ 
-    profilePicture: memoizedPhoto 
-  }));
 };
 
   if (isLoading) {
@@ -194,7 +208,7 @@ const AccountSettingsPageTeacher = () => {
             <TabPanel sx={{ flexGrow: 1 }} value="1">
               {/* MY PROFILE VIEW */}
               <MyProfileView
-                profilePhoto={currentPhoto}
+                profilePhoto={photoUrl}
                 userData={userData?.userProfile}
                 schoolProfileData={userData?.schoolProfile}
                 onProfileUpdate={handleProfileUpdate}

@@ -110,6 +110,7 @@ const AccountSettingsPage = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  
   // Handle delete button click
   const handleDeleteAccount = async () => {
     try {
