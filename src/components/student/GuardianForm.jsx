@@ -97,6 +97,7 @@ const GuardianForm = ({
             placeholder="First Name"
             errors={errors}
             icon={UserRoundPen}
+            required={true}
           />
 
           <InputField
@@ -106,6 +107,7 @@ const GuardianForm = ({
             placeholder="Last Name"
             errors={errors}
             icon={UserRoundPen}
+            required={true}
           />
         </Stack>
         {/* GUARDIAN CONTACT INFORMATION */}
@@ -118,7 +120,6 @@ const GuardianForm = ({
         />
 
         {/* Guardian Email */}
-
         <InputField
           name="guardianEmail"
           control={control}
@@ -126,10 +127,10 @@ const GuardianForm = ({
           placeholder="Enter guardian email"
           errors={errors}
           icon={Mail}
+          required={true}
         />
 
         {/* Guardian Relationship */}
-
         <InputField
           name="guardianRelationship"
           control={control}

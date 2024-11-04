@@ -94,6 +94,7 @@ const AccountInfo = ({
               placeholder="Email"
               errors={errors}
               icon={Mail}
+              required={true}
             />
           </Box>
           {/* Password */}

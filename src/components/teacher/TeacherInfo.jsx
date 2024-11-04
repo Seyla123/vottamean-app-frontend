@@ -226,6 +226,7 @@ const TeacherInfo = ({
                 icon={UserRoundPen}
                 placeholder="First Name"
                 errors={errors}
+                required={true}
               />
               <InputField
                 name="lastName"
@@ -234,6 +235,7 @@ const TeacherInfo = ({
                 placeholder="Last Name"
                 icon={UserRoundPen}
                 errors={errors}
+                required={true}
               />
             </Stack>
             {/* Gender */}
@@ -343,8 +345,8 @@ export const validationSchema = yup.object({
     .label('First Name')
     .required('First name is required')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
     .max(40, 'Name must be less than 40 characters'),
@@ -354,8 +356,8 @@ export const validationSchema = yup.object({
     .label('Last Name')
     .required('Last name is required')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'Last name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
     .max(40, 'Name must be less than 40 characters'),

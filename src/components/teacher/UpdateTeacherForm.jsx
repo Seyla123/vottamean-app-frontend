@@ -451,6 +451,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                           defaultValue={field.value}
                           placeholder="First Name"
                           errors={errors}
+                          required={true}
                         />
                       )}
                     />
@@ -467,6 +468,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                           name={field.name}
                           defaultValue={field.value}
                           errors={errors}
+                          required={true}
                         />
                       )}
                     />

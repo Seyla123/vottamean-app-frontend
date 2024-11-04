@@ -48,8 +48,8 @@ export const firstNameSchema = Yup.string()
   .min(2, 'First name must be at least 2 characters long')
   .max(50, 'First name must be less than 50 characters')
   .matches(
-    /^[A-Za-z]+( [A-Za-z]+)*$/,
-    'Name must contain only alphabetic characters and single spaces between words',
+    /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+    'First name must contain only alphabetic characters and may contain a single space',
   );
 
 // Last name validator
@@ -59,8 +59,8 @@ export const lastNameSchema = Yup.string()
   .min(2, 'Last name must be at least 2 characters long')
   .max(50, 'Last name must be less than 50 characters')
   .matches(
-    /^[A-Za-z]+( [A-Za-z]+)*$/,
-    'Name must contain only alphabetic characters and single spaces between words',
+    /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+    'Last name must contain only alphabetic characters and may contain a single space',
   );
 
 // Date of birth validator
@@ -226,10 +226,12 @@ export const subjectSchema = Yup.string().required('Subject is required');
 export const createSessionSchema = Yup.string().required(
   'This field is required',
 );
-// Class validation
+
+// Guardian Relationship validation
 export const relationshipSchema = Yup.string()
   .required('Relationship is required')
-  .matches(/^[a-zA-Z]+$/, 'Only alphabets are allowed');
+  .matches(/^[a-zA-Z\s]+$/, 'Only alphabets and spaces are allowed');
+
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {
