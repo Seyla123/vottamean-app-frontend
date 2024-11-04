@@ -30,7 +30,9 @@ import emptyClassesImage from '../../../assets/images/teacher-99.svg';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
+import ClassMarkWrongDayModal from '../../../components/teacherSite/ClassMarkWrongDayModal';
 import TitleHeader from '../../../components/common/TitleHeader';
+import dayjs from 'dayjs'
 const headerImages = [
   classHeaderImg1,
   classHeaderImg2,
@@ -77,7 +79,7 @@ const days = [
   'Sunday',
 ];
 
-const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
+const ClassListItem = ({ classData, onClick, filterDay, setOpenModalMarked, setOpenModalWrongDay }) => {
   const dayIndex = [
     'sunday',
     'monday',
@@ -95,10 +97,19 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
    * If class is not marked, navigate to the class attendance mark page
    */
   const handleClassClick = () => {
+   // Get the current date
+   const today = dayjs();
+   // Get the day of the week as a string (e.g., "Monday")
+   const day = today.format('dddd'); // Use 'ddd' for abbreviated names (e.g., "Mon")
+
     if (classData.isClassMarked) {
       // Class is already marked, open the modal to show the warning
-      openModal(true);
-    } else {
+      setOpenModalMarked(true);
+    }else if(classData.day !== day.toLocaleLowerCase()) {
+
+      setOpenModalWrongDay(true)
+    }
+    else {
       // Class is not marked, navigate to the class attendance mark page
       onClick();
     }
@@ -182,7 +193,7 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
                     }}
                   />
                 }
-                label="Pending Marked"
+                label="Completed Marked"
               />
             ) : (
               <Chip
@@ -198,7 +209,7 @@ const ClassListItem = ({ classData, onClick, filterDay, openModal }) => {
                     }}
                   />
                 }
-                label="Completed Marked"
+                label="Pending Marked"
               />
             )}
           </Box>
@@ -224,7 +235,10 @@ function TeacherScheduleClassPage() {
   // openModal : State to manage the modal open/close state
   const [filterDay, setFilterDay] = useState('all');
   const [selectedDay, setSelectedDay] = useState('Today');
-  const [openModal, setOpenModal] = useState(false);
+
+  // openModal : state for modal
+  const [openModalMarked, setOpenModalMarked] = useState(false);
+  const [openModalWrongDay, setOpenModalWrongDay] = useState(false);
 
   //useGetTeacherScheduleClassesQuery : a hook return a function that fetch the classes schedule
   const {
@@ -330,7 +344,8 @@ function TeacherScheduleClassPage() {
               classData={classData}
               onClick={() => handleClassClick(classData.session_id)}
               filterDay={filterDay}
-              openModal={setOpenModal}
+              setOpenModalMarked={setOpenModalMarked}
+              setOpenModalWrongDay={setOpenModalWrongDay}
             />
           </Grid>
         ))}
@@ -397,7 +412,8 @@ function TeacherScheduleClassPage() {
       <TitleHeader title={'Schedule'} />
       {renderDaySelector()}
       {renderContent()}
-      <ClassMarkedModal open={openModal} onClose={() => setOpenModal(false)} />
+      <ClassMarkedModal open={openModalMarked} onClose={() => setOpenModalMarked(false)} />
+      <ClassMarkWrongDayModal open={openModalWrongDay} onClose={() => setOpenModalWrongDay(false)} />
     </FormComponent>
   );
 }
