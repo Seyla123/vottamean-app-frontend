@@ -211,11 +211,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   // and the preview will be updated
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    // Check if the file is an image and is under 5MB
+    // Check if the file is an image and is under 1MB
     if (
       file &&
       file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
+      file.size <= 1 * 1024 * 1024
     ) {
       setSelectedFile(file);
       // Set the preview to the new image
@@ -234,8 +234,8 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
         setSnackbar({
           open: true,
           message: file
-            ? 'File must be an image under 5MB'
-            : 'Please select a file',
+            ? 'File must be an image under 1MB'
+            : 'No file selected',
           severity: 'error',
         }),
       );
@@ -438,32 +438,42 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                   }}
                 >
                   {/* Profile */}
-                  {previewUrl || profileImg ? (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 1,
-                        position: 'relative',
-                        boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                        p: 0.5,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <Avatar
-                        src={previewUrl || profileImg}
-                        alt="Profile"
-                        sx={{ width: 140, height: 140 }}
+                  <Stack spacing={1} alignItems={'center'}>
+                    {previewUrl || profileImg ? (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 1,
+                          position: 'relative',
+                          boxShadow:
+                            'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                          p: 0.5,
+                          borderRadius: 50,
+                        }}
+                      >
+                        <Avatar
+                          src={previewUrl || profileImg}
+                          alt="Profile"
+                          sx={{ width: 140, height: 140 }}
+                        />
+                      </Box>
+                    ) : (
+                      <RandomAvatar
+                        username={`${getValues('first_name')} ${getValues('last_name')}`}
+                        gender={getValues('gender')}
+                        size={140}
                       />
-                    </Box>
-                  ) : (
-                    <RandomAvatar
-                      username={`${getValues('first_name')} ${getValues('last_name')}`}
-                      gender={getValues('gender')}
-                      size={140}
-                    />
-                  )}
+                    )}
+                    <Typography
+                      variant="subtitle2"
+                      color="text.secondary"
+                      fontWeight={'regular'}
+                    >
+                      Max size: 1MB
+                    </Typography>
+                  </Stack>
                   <input
                     id="photo-upload"
                     type="file"
