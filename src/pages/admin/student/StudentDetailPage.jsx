@@ -325,6 +325,7 @@ function StudentDetailPage() {
                       icon={<Mails size={18} color={'#6c63ff'} />}
                       label="Guardian Email"
                       value={formattedGuardian.Email}
+                      email
                     />
                   </Box>
                 </Box>
@@ -419,7 +420,7 @@ const GridInfo = ({ icon, text }) => (
   </Grid>
 );
 // Personal detail grid function
-const GridDetail = ({ icon, label, value }) => {
+const GridDetail = ({ icon, label, value, email }) => {
   return (
     <Grid
       container
@@ -440,7 +441,7 @@ const GridDetail = ({ icon, label, value }) => {
         <Typography
           variant="body2"
           sx={{
-            textTransform: 'capitalize',
+            textTransform: email ? 'lowercase':'capitalize',
             wordBreak: 'break-word',
           }}
         >

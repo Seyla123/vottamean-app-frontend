@@ -236,7 +236,7 @@ const DataTable = ({
             )}
           </TableRow>
         </TableHead>
-        <TableBody sx={{ position: 'relative', textTransform:'capitalize' }}>
+        <TableBody sx={{ position: 'relative'}}>
           {isLoading ? (
             <LoadingTable columns={columns} height={height} />
           ) : rows.length > 0 ? (
@@ -264,7 +264,7 @@ const DataTable = ({
                   {(showNO && !isMobile) && <TableCell>{index + 1}</TableCell>}
                   {columns.map((column) =>
                     !isMobile || !hideColumns.includes(column.id) ? (
-                      <TableCell key={column.id} align={column.align || 'left'}>
+                      <TableCell key={column.id} align={column.align || 'left'} sx={{textTransform:column.id=='email' ? 'lowercase' : "Capitalize"}}>
                         {truncate(`${row[column.id]}`, isMobile ? 10 : 35) || 'N/A'}
                       </TableCell>
                     ) : null,

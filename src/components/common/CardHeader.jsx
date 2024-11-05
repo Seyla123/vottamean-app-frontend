@@ -40,7 +40,6 @@ function CardHeader({ title, handleEdit, handleDelete }) {
   return (
     <Stack component={'div'} direction="column" gap={1}>
       <Stack direction={'row'} justifyContent={'space-between'}>
-        <Typography variant="formTitle">{title}</Typography>
         <Stack direction="row" gap={1}>
           {handleEdit && (
             <IconButton onClick={handleEdit} color="primary">
@@ -54,7 +53,6 @@ function CardHeader({ title, handleEdit, handleDelete }) {
           )}
         </Stack>
       </Stack>
-      <Divider sx={{ borderWidth: 1, borderColor: 'text.secondary' }} />
     </Stack>
   );
 }
