@@ -17,7 +17,9 @@ const StyledMuiTelInput = styled(MuiTelInput)(({ theme }) => ({
       borderColor: theme.palette.primary.main,
     },
   },
-
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
   '& .MuiInputAdornment-root': {
     marginRight: 0,
   },

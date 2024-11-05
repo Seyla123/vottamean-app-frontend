@@ -29,7 +29,9 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
       borderColor: theme.palette.primary.main,
     },
   },
-
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
   '& .MuiInputAdornment-root': {
     marginRight: 0,
   },

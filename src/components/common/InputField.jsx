@@ -26,6 +26,9 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
       borderColor: theme.palette.primary.main,
     },
   },
+  '& .MuiInputBase-input': {
+    padding: '12px 14px',
+  },
   '& .MuiInputAdornment-root': {
     marginRight: 0,
   },
@@ -85,7 +88,7 @@ const InputField = ({
                 helperText={errors[name]?.message}
                 InputProps={{
                   startAdornment: Icon ? (
-                    <InputAdornment position="start" sx={{ pr: 2 }}>
+                    <InputAdornment position="start">
                       <Icon
                         size={18}
                         color={disabled ? '#9e9e9e' : '#616161'}

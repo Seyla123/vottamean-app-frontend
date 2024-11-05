@@ -16,17 +16,18 @@ import {
 } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { styled } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
 import { BootstrapDialog } from './BootstrapDialog';
-import InputField, { StyledTextField } from './InputField';
 
 const CreateModal = ({
   open,
   onClose,
   title,
+  description,
   fields,
   onSubmit,
   validationSchema,
@@ -100,29 +101,13 @@ const CreateModal = ({
             )}
           />
         );
-
-      case 'textarea':
-        return (
-          <InputField
-            name={field.name}
-            control={control}
-            placeholder={field.placeholder}
-            errors={errors}
-            icon={field.icon}
-            multiline={true}
-            minRows={field.rows || 4}
-            maxLength={150}
-            disabled={field.disabled}
-          />
-        );
-
       default:
         return (
           <Controller
             name={field.name}
             control={control}
             render={({ field: { onChange, value } }) => (
-              <StyledTextField
+              <TextField
                 variant="outlined"
                 fullWidth
                 type={field.type || 'text'}
@@ -183,14 +168,16 @@ const CreateModal = ({
       <DialogContent dividers>
         <Stack spacing={2}>
           {fields.map((field) => (
-            <Box key={field.name}>
-              <Typography variant="body2" fontWeight="bold" gutterBottom>
+            <Box
+              key={field.name}
+              sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+            >
+              <Typography variant="body2" fontWeight="bold">
                 {field.label}{' '}
                 {field.required && (
                   <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                 )}
               </Typography>
-
               {renderField(field)}
             </Box>
           ))}
