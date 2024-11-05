@@ -2,7 +2,7 @@ import { useGetSubjectsQuery } from '../../services/subjectApi';
 import { useGetClassesDataQuery } from '../../services/classApi';
 import { setFilter } from '../../store/slices/attendanceSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import {  Grid, Stack } from '@mui/material';
+import { Grid, Stack } from '@mui/material';
 import FilterComponent from '../common/FilterComponent';
 import { useEffect, useState } from 'react';
 
@@ -59,7 +59,7 @@ function AttendanceFilter({
         'subject_id',
         'subject_name',
       );
-      
+
       const formatDataClasses = ensureOptionInList(
         dataClass?.data,
         selectedClasses,
@@ -121,7 +121,6 @@ function AttendanceFilter({
   const handleEndDateChange = (endDate) => {
     dispatch(setFilter({ ...filter, endDate }));
   };
-
 
   return (
     <Grid container spacing={2}>

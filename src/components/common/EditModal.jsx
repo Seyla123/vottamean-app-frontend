@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import StyledButton from './StyledMuiButton';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { styled } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -23,7 +24,6 @@ import { X } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from '../../store/slices/uiSlice';
 import { BootstrapDialog } from './BootstrapDialog';
-import InputField, { StyledTextField } from './InputField';
 
 const EditModal = ({
   open,
@@ -162,28 +162,13 @@ const EditModal = ({
             )}
           />
         );
-
-      case 'textarea':
-        return (
-          <InputField
-            name={field.name}
-            control={control}
-            placeholder={field.placeholder}
-            errors={errors}
-            icon={field.icon}
-            multiline={true}
-            minRows={field.rows || 4}
-            maxLength={150}
-            disabled={field.disabled}
-          />
-        );
       default:
         return (
           <Controller
             name={field.name}
             control={control}
             render={({ field: { onChange, value } }) => (
-              <StyledTextField
+              <TextField
                 variant="outlined"
                 fullWidth
                 type={field.type || 'text'}

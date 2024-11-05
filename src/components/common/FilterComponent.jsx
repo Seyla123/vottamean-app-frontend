@@ -14,12 +14,7 @@ import { ChevronDown } from 'lucide-react';
 import { truncate } from '../../utils/truncate';
 import { StyledTextField } from './InputField';
 
-const FilterComponent = ({
-  data,
-  placeholder,
-  value,
-  onChange,
-}) => {
+const FilterComponent = ({ data, placeholder, value, onChange }) => {
   const selectedLabel =
     data.find((item) => item.value === value)?.label || placeholder;
 
