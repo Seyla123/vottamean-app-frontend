@@ -181,32 +181,41 @@ const StudentForm = ({
       <Stack direction="column" gap={2}>
         {/* Profile */}
         <Stack direction="row" gap={2} alignItems="center" py={3}>
-          {photoPreview || photoFile ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 1,
-                position: 'relative',
-                boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                p: 0.5,
-                borderRadius: 50,
-              }}
-            >
-              <Avatar
-                src={photoSrc}
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+          <Stack spacing={1} alignItems={'center'}>
+            {photoPreview || photoFile ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 1,
+                  position: 'relative',
+                  boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                  p: 0.5,
+                  borderRadius: 50,
+                }}
+              >
+                <Avatar
+                  src={photoSrc}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                />
+              </Box>
+            ) : (
+              <RandomAvatar
+                username={`${getValues('firstName')} ${getValues('lastName')}`}
+                gender={getValues('gender')}
+                size={140}
               />
-            </Box>
-          ) : (
-            <RandomAvatar
-              username={`${getValues('firstName')} ${getValues('lastName')}`}
-              gender={getValues('gender')}
-              size={140}
-            />
-          )}
+            )}
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              fontWeight={'regular'}
+            >
+              Max size: 1MB
+            </Typography>
+          </Stack>
           <Stack direction="column" gap={2}>
             <input
               accept="image/*"

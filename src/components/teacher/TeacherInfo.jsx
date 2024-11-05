@@ -145,40 +145,45 @@ const TeacherInfo = ({
           </Box>
           <Box sx={profileContainer}>
             {/* Profile */}
-            {photoPreview || photoFile ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 1,
-                  position: 'relative',
-                  boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                  p: 0.5,
-                  borderRadius: 50,
-                }}
-              >
-                <Avatar
-                  src={photoSrc}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+            <Stack spacing={1} alignItems={'center'}>
+              {photoPreview || photoFile ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={photoSrc}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                  />
+                </Box>
+              ) : (
+                <RandomAvatar
+                  username={`${getValues('firstName')} ${getValues('lastName')}`}
+                  gender={getValues('gender')}
+                  size={140}
                 />
-              </Box>
-            ) : (
-              <RandomAvatar
-                username={`${getValues('firstName')} ${getValues('lastName')}`}
-                gender={getValues('gender')}
-                size={140}
+              )}
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                ref={photoPreviewRef}
+                hidden
+                onChange={handlePhotoChange}
               />
-            )}
-            <input
-              id="photo-upload"
-              type="file"
-              accept="image/*"
-              ref={photoPreviewRef}
-              hidden
-              onChange={handlePhotoChange}
-            />
+              <Typography fontSize={'0.75rem'} color='text.secondary' fontWeight={'regular'}>
+                Max size: 1MB
+              </Typography>
+            </Stack>
             {/* Profile Buttons */}
             <Box
               sx={{
@@ -377,7 +382,13 @@ export const validationSchema = yup.object({
       'length',
       'Phone number must be between 8 and 15 digits (excluding country code)',
       (value) => {
-        const numberPart = value && value.split(' ').slice(1).join('').replace(/[^0-9]/g, '');
+        const numberPart =
+          value &&
+          value
+            .split(' ')
+            .slice(1)
+            .join('')
+            .replace(/[^0-9]/g, '');
         return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
       },
     ),
