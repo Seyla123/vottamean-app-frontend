@@ -352,8 +352,8 @@ export const transformMarkAttendancetTable = (apiResponse) => {
     id: `${item.student_id}`,
     img: item.Info.photo || '', // Adjust the URL as needed
     name: `${item.Info.first_name} ${item.Info.last_name}`,
-    gender: item.Info.gender === 'Male' ? 'M' : 'F', // Convert to 'M' or 'F'
-    phone: item.Info.phone_number,
+    gender: item.Info.gender , // Convert to 'M' or 'F'
+    phone: formatPhoneNumber(item.Info.phone_number),
     address: item.Info.address,
     dob: item.Info.dob,
     status: null,

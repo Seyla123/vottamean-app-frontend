@@ -38,7 +38,8 @@ const AttendanceTable = ({
   status,
   hideColumns = [],
   onStatusChange,
-  isLoading
+  isLoading,
+  showNO
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -99,6 +100,7 @@ const AttendanceTable = ({
         <Table>
           <TableHead>
             <TableRow>
+            {(showNO && !isMobile) && <TableCell align="left">No.</TableCell>}
               {visibleColumns.map((column) => (
                 <TableCell
                   key={column.id}
@@ -117,6 +119,7 @@ const AttendanceTable = ({
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
                 <TableRow key={index}>
+                  {(showNO && !isMobile) && <TableCell>{index + 1}</TableCell>}
                   {visibleColumns.map((column) => (
                     <TableCell key={column.id}>
                       {column.id === 'name' ? (
@@ -142,7 +145,7 @@ const AttendanceTable = ({
                       ) : column.id === 'id' ? (
                         row[column.id]
                       ) : (
-                        truncate(row[column.id], 30)
+                        truncate(row[column.id], 30) || 'N/A'
                       )}
                     </TableCell>
                   ))}
