@@ -19,10 +19,6 @@ import ClassMarkWrongDayModal from '../../../components/teacherSite/ClassMarkWro
 
 const columns = [
   {
-    id: 'id',
-    label: 'ID',
-  },
-  {
     id: 'name',
     label: 'Name',
   },
@@ -33,11 +29,11 @@ const columns = [
   },
   {
     id: 'dob',
-    label: 'DOB',
+    label: 'Date Of Birth',
   },
   {
     id: 'phone',
-    label: 'Phone',
+    label: 'Phone Number',
   },
   {
     id: 'address',
@@ -212,6 +208,7 @@ function MarkAttendanceClass() {
         status={status}
         onStatusChange={handleStatusChange}
         isLoading={isLoading || isLoadingStatus}
+        showNO={true}
       />
     </FormComponent>
   );
