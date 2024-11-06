@@ -15,6 +15,7 @@ import {
   DialogActions,
   Box,
   IconButton,
+  Typography,
 } from '@mui/material';
 
 // - Custom Components
@@ -116,7 +117,6 @@ const EditAccountModal = ({
     },
   });
 
-
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
@@ -134,7 +134,7 @@ const EditAccountModal = ({
   useEffect(() => {
     setPreviewUrl(profilePhoto);
   }, [profilePhoto]);
-  
+
   // Cleanup blob URL on unmount
   useEffect(() => {
     return () => {
@@ -167,14 +167,14 @@ const EditAccountModal = ({
       );
     }
   }, [isUpdateSuccess, isUpdateError, updateError, dispatch, onClose]);
- 
+
   // Handle Change photo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (
       file &&
       file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
+      file.size <= 1 * 1024 * 1024
     ) {
       setSelectedFile(file);
       // Cleanup previous blob URL if exists
@@ -191,7 +191,9 @@ const EditAccountModal = ({
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Invalid image file',
+          message: file
+            ? 'File must be an image under 1MB'
+            : 'No file selected',
           severity: 'error',
         }),
       );
@@ -269,7 +271,7 @@ const EditAccountModal = ({
   if (isLoading) {
     return <CircularProgress />;
   }
-  
+
   if (isError || !userProfile) {
     return <SomethingWentWrong description="Failed to fetch user profile" />;
   }
@@ -300,32 +302,41 @@ const EditAccountModal = ({
             {/* PROFILE CONTAINER */}
             <Stack direction={'row'} gap={2} alignItems={'center'}>
               {/* PROFILE IMAGE */}
-              {removePhoto || (!previewUrl && !profilePhoto) ? (
-                <RandomAvatar
-                  username={userName}
-                  gender={userGender}
-                  size={140}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 1,
-                    position: 'relative',
-                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                    p: 0.5,
-                    borderRadius: 50,
-                  }}
-                >
-                  <Avatar
-                    src={previewUrl || profilePhoto}
-                    alt="Profile"
-                    sx={{ width: 140, height: 140 }}
+              <Stack spacing={1} alignItems={'center'}> 
+                {removePhoto || (!previewUrl && !profilePhoto) ? (
+                  <RandomAvatar
+                    username={userName}
+                    gender={userGender}
+                    size={140}
                   />
-                </Box>
-              )}
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 1,
+                      position: 'relative',
+                      boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                      p: 0.5,
+                      borderRadius: 50,
+                    }}
+                  >
+                    <Avatar
+                      src={previewUrl || profilePhoto}
+                      alt="Profile"
+                      sx={{ width: 140, height: 140 }}
+                    />
+                  </Box>
+                )}
+                <Typography
+                  fontSize={'0.75rem'}
+                  color="text.secondary"
+                  fontWeight={'regular'}
+                >
+                  Max size: 1MB
+                </Typography>
+              </Stack>
 
               {/* UPLOAD PROFILE IMAGE */}
               <input
@@ -336,7 +347,6 @@ const EditAccountModal = ({
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
-
               {/* PROFILE BUTTONS */}
               <Stack direction={'column'} gap={2}>
                 <label htmlFor="photo-upload">
