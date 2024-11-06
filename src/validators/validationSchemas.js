@@ -46,7 +46,7 @@ export const firstNameSchema = Yup.string()
   .label('First name')
   .required('First name is required')
   .min(2, 'First name must be at least 2 characters long')
-  .max(50, 'First name must be less than 50 characters')
+  .max(20, 'First name must be less than 20 characters')
   .matches(
     /^[a-zA-Z]+( [a-zA-Z]+)?$/,
     'First name must contain only alphabetic characters and may contain a single space',
@@ -57,7 +57,7 @@ export const lastNameSchema = Yup.string()
   .label('Last name')
   .required('Last name is required')
   .min(2, 'Last name must be at least 2 characters long')
-  .max(50, 'Last name must be less than 50 characters')
+  .max(20, 'Last name must be less than 20 characters')
   .matches(
     /^[a-zA-Z]+( [a-zA-Z]+)?$/,
     'Last name must contain only alphabetic characters and may contain a single space',

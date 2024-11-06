@@ -354,7 +354,7 @@ export const validationSchema = yup.object({
       'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   lastName: yup
     .string()
     .trim()
@@ -365,7 +365,7 @@ export const validationSchema = yup.object({
       'Last name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   phoneNumber: yup
     .string()
     .trim()

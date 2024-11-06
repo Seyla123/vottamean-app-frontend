@@ -425,14 +425,14 @@ export const studentValidationSchema = yup.object({
       'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   lastName: yup
     .string()
     .trim()
     .label('Last Name')
     .required('Last name is required')
     .min(2, 'Last name must be at least 2 characters long')
-    .max(50, 'Last name must be less than 50 characters')
+    .max(20, 'Last name must be less than 20 characters')
     .matches(
       /^[a-zA-Z]+( [a-zA-Z]+)?$/,
       'Last name must contain only alphabetic characters and may contain a single space',
