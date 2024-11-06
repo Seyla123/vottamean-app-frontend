@@ -84,7 +84,7 @@ const AccountUsagePanel = ({
               <CardActions sx={{ justifyContent: 'flex-end' }}>
                 <StyledButton
                   size="small"
-                  onClick={() => window.location.assign('mailto:wavetrack.app@gmail.com')}
+                  onClick={() => window.location.assign('mailto:vottamean.app@gmail.com')}
                 >
                   Contact Our Support
                 </StyledButton>
