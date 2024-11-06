@@ -585,7 +585,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     />
                   </Stack>
                   {/* Class */}
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={'center'}>
                     <Box sx={{ width: '100%' }}>
                       <Typography variant="body2" fontWeight="bold" mb={1}>
                         Class <span style={{ color: 'red' }}>*</span>
@@ -709,6 +709,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       placeholder="Enter guardian email"
                       errors={errors}
                       icon={Mail}
+                      required={true}
                     />
                   </Stack>
                   {/* Guardian Relationship */}
@@ -719,6 +720,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     placeholder="Relationship"
                     errors={errors}
                     icon={Diversity1Icon}
+                    required={true}
                   />
                 </Stack>
 
