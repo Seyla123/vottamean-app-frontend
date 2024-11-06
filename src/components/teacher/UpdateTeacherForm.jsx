@@ -12,7 +12,7 @@ import {
   Divider,
   IconButton,
   Stack,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -132,7 +132,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         });
       }
     }
-    if(isError){
+    if (isError) {
       dispatch(
         setSnackbar({
           open: true,
@@ -253,11 +253,11 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
   // and the preview will be updated
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    // Check if the file is an image and is under 5MB
+    // Check if the file is an image and is under 1MB
     if (
       file &&
       file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
+      file.size <= 1 * 1024 * 1024
     ) {
       setSelectedFile(file);
       // Set the preview to the new image
@@ -276,7 +276,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
         setSnackbar({
           open: true,
           message: file
-            ? 'File must be an image under 5MB'
+            ? 'File must be an image under 1MB'
             : 'Please select a file',
           severity: 'error',
         }),
@@ -297,7 +297,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       hasChanges: true,
     }));
   };
-
 
   return (
     <BootstrapDialog
@@ -335,8 +334,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
           >
             <CircularProgress />
           </Box>
-        ) :
-
+        ) : (
           <>
             {/* Title and close button */}
             <Stack direction="row" justifyContent="space-between">
@@ -373,40 +371,50 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                     pt: 3,
                   }}
                 >
-                  {/* Profile */}
-                  {previewUrl || profileImg ? (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 1,
-                        position: 'relative',
-                        boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                        p: 0.5,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <Avatar
-                        src={previewUrl || profileImg}
-                        alt="Profile"
-                        sx={{ width: 140, height: 140 }}
+                  <Stack spacing={1} alignItems={'center'}> 
+                    {/* Profile */}
+                    {previewUrl || profileImg ? (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 1,
+                          position: 'relative',
+                          boxShadow:
+                            'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                          p: 0.5,
+                          borderRadius: 50,
+                        }}
+                      >
+                        <Avatar
+                          src={previewUrl || profileImg}
+                          alt="Profile"
+                          sx={{ width: 140, height: 140 }}
+                        />
+                      </Box>
+                    ) : (
+                      <RandomAvatar
+                        username={`${getValues('firstName')} ${getValues('lastName')}`}
+                        gender={getValues('gender')}
+                        size={140}
                       />
-                    </Box>
-                  ) : (
-                    <RandomAvatar
-                      username={`${getValues('firstName')} ${getValues('lastName')}`}
-                      gender={getValues('gender')}
-                      size={140}
+                    )}
+                    <input
+                      id="photo-upload"
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={handlePhotoChange}
                     />
-                  )}
-                  <input
-                    id="photo-upload"
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={handlePhotoChange}
-                  />
+                    <Typography
+                      fontSize={'0.75rem'}
+                      color="text.secondary"
+                      fontWeight={'regular'}
+                    >
+                      Max size: 1MB
+                    </Typography>
+                  </Stack>
                   <Box
                     display="flex"
                     flexDirection={{ xs: 'row', sm: 'column' }}
@@ -554,9 +562,8 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                 </Grid>
               </form>
             </LocalizationProvider>
-
           </>
-        }
+        )}
       </Box>
     </BootstrapDialog>
   );

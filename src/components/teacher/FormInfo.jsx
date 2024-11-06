@@ -85,7 +85,11 @@ function FormInfo() {
   const handlePhotoChange = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
-    if (file) {
+    if (
+      file &&
+      file.type.startsWith('image/') &&
+      file.size <= 1 * 1024 * 1024
+    ) {
       // If there's an existing preview URL, revoke it
       if (photoPreview) {
         URL.revokeObjectURL(photoPreview);
@@ -96,6 +100,15 @@ function FormInfo() {
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: file
+            ? 'File must be an image under 1MB'
+            : 'No file selected',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -113,7 +126,7 @@ function FormInfo() {
   };
   // Handle Submit form
   const handleSubmitForm = async (formData) => {
-      await signUpTeacher(formData).unwrap();
+    await signUpTeacher(formData).unwrap();
   };
 
   // handle back to teacher info
@@ -213,9 +226,7 @@ function FormInfo() {
         </TabContext>
       </Stack>
       {/* Info Box */}
-      <Stack
-        sx={infoBox}
-      >
+      <Stack sx={infoBox}>
         <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
             By setting up teacher accounts, Teachers will be able to:
@@ -284,7 +295,7 @@ const tabStyle = {
     color: 'text.disabled',
   },
 };
-const infoBox ={
+const infoBox = {
   display: { xs: 'none', sm: 'flex' },
   direction: 'column',
   gap: 3,
@@ -297,8 +308,8 @@ const infoBox ={
     sm: '100%',
     md: '240px',
     lg: '300px',
-  }
-}
+  },
+};
 const gridBox = {
   display: 'flex',
   width: '100%',

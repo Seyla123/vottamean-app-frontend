@@ -145,7 +145,7 @@ const TermsModal = ({ open, handleClose }) => {
         <Typography variant="body2" paragraph>
           If you have any questions or concerns about these Terms, please
           contact us at{' '}
-          <a href="mailto:wavetrack.app@gmail.com">wavetrack.app@gmail.com</a>
+          <a href="mailto:vottamean.app@gmail.com">vottamean.app@gmail.com</a>
           <br />
           <br />
           By using Vottamean, you agree to these Terms and Conditions.

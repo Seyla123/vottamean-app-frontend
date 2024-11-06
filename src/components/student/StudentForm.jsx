@@ -181,32 +181,41 @@ const StudentForm = ({
       <Stack direction="column" gap={2}>
         {/* Profile */}
         <Stack direction="row" gap={2} alignItems="center" py={3}>
-          {photoPreview || photoFile ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 1,
-                position: 'relative',
-                boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                p: 0.5,
-                borderRadius: 50,
-              }}
-            >
-              <Avatar
-                src={photoSrc}
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+          <Stack spacing={1} alignItems={'center'}>
+            {photoPreview || photoFile ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 1,
+                  position: 'relative',
+                  boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                  p: 0.5,
+                  borderRadius: 50,
+                }}
+              >
+                <Avatar
+                  src={photoSrc}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                />
+              </Box>
+            ) : (
+              <RandomAvatar
+                username={`${getValues('firstName')} ${getValues('lastName')}`}
+                gender={getValues('gender')}
+                size={140}
               />
-            </Box>
-          ) : (
-            <RandomAvatar
-              username={`${getValues('firstName')} ${getValues('lastName')}`}
-              gender={getValues('gender')}
-              size={140}
-            />
-          )}
+            )}
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              fontWeight={'regular'}
+            >
+              Max size: 1MB
+            </Typography>
+          </Stack>
           <Stack direction="column" gap={2}>
             <input
               accept="image/*"
@@ -416,14 +425,14 @@ export const studentValidationSchema = yup.object({
       'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   lastName: yup
     .string()
     .trim()
     .label('Last Name')
     .required('Last name is required')
     .min(2, 'Last name must be at least 2 characters long')
-    .max(50, 'Last name must be less than 50 characters')
+    .max(20, 'Last name must be less than 20 characters')
     .matches(
       /^[a-zA-Z]+( [a-zA-Z]+)?$/,
       'Last name must contain only alphabetic characters and may contain a single space',
