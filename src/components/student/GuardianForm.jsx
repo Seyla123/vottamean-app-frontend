@@ -138,6 +138,7 @@ const GuardianForm = ({
           placeholder="Relationship"
           errors={errors}
           icon={Diversity1Icon}
+          required={true}
         />
 
         {/* Action Buttons */}
