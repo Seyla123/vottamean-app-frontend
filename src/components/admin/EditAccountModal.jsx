@@ -302,7 +302,7 @@ const EditAccountModal = ({
             {/* PROFILE CONTAINER */}
             <Stack direction={'row'} gap={2} alignItems={'center'}>
               {/* PROFILE IMAGE */}
-              <Stack spacing={1} alignItems={'center'}> 
+              <Stack spacing={1} alignItems={'center'}>
                 {removePhoto || (!previewUrl && !profilePhoto) ? (
                   <RandomAvatar
                     username={userName}
@@ -387,6 +387,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={UserRoundPen}
                   disabled={disableInputIfTeacher}
+                  required={true}
                 />
               </Grid>
 
@@ -400,6 +401,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={UserRoundPen}
                   disabled={disableInputIfTeacher}
+                  required={true}
                 />
               </Grid>
 
@@ -411,6 +413,7 @@ const EditAccountModal = ({
                   label="Contact Number"
                   errors={errors}
                   disabled={disableInputIfTeacher}
+                  required={true}
                 />
               </Grid>
 
