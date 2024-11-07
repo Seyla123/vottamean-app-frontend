@@ -108,6 +108,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           severity: 'info',
         }),
       );
+      onClose();
       return;
     }
 
@@ -152,7 +153,13 @@ const EditSchoolModal = ({ open, onClose }) => {
   }
 
   if (!isSuccess || !userProfile) {
-    return <Typography variant="h6">No user data found</Typography>;
+    dispatch(
+      setSnackbar({
+        open: true,
+        message: 'No user data found.',
+        severity: 'error',
+      }),
+    );
   }
 
   return (
@@ -222,6 +229,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           type="submit"
           variant="contained"
           onClick={handleSubmit(onSubmit)}
+          disabled={isUpdateLoading}
         >
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
