@@ -116,6 +116,23 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     },
   });
 
+  // Clear everything when initial render
+  useEffect(() => {
+    // Reset form, preview URL, selected file, profile image, dob, original data and photo state
+    reset();
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    setProfileImg('');
+    setClasses(null);
+    setDob(null);
+    setOriginalData(null);
+    setPhotoState({
+      profileImg: '',
+      isRemoved: false,
+      hasChanges: false,
+    });
+  }, [isOpen]);
+
   // useEffect for setting initial data
   useEffect(() => {
     // If student data and classes data are available, set the initial values
@@ -548,7 +565,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       )}
                     />
                   </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={'center'}
+                  >
                     {/* Gender */}
                     <Controller
                       name="gender"
@@ -585,7 +606,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     />
                   </Stack>
                   {/* Class */}
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={'center'}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={'center'}
+                  >
                     <Box sx={{ width: '100%' }}>
                       <Typography variant="body2" fontWeight="bold" mb={1}>
                         Class <span style={{ color: 'red' }}>*</span>
@@ -694,7 +719,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                   </Stack>
                   {/* GUARDIAN CONTACT INFORMATION */}
                   {/* Guardian Phone Number */}
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={'center'}
+                  >
                     <PhoneInputField
                       name="guardianPhoneNumber"
                       control={control}
@@ -732,6 +761,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     gap: 2,
                     mt: 2,
                     width: '100%',
+                    alignItems: 'center',
                   }}
                 >
                   {/* CANCEL BUTTON */}
