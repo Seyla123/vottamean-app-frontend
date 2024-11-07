@@ -70,7 +70,6 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     data: teacherData,
     isLoading,
     isError,
-    isSuccess,
     error,
   } = useGetTeacherQuery(teacherId, { skip: !isOpen || !teacherId });
 
@@ -107,24 +106,35 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
     },
   });
 
-  // get values and set values
+  // Clear everything when initial render
   useEffect(() => {
-    // If teacherData is available (not null or undefined), set the form values
+    // Reset form, preview URL, selected file, profile image, dob, original data and photo state
+    reset();
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    setProfileImg('');
+    setDob(null);
+    setOriginalData(null);
+    setPhotoState({
+      profileImg: '',
+      isRemoved: false,
+      hasChanges: false,
+    });
+  }, [isOpen]);
+
+  // Set data after initial render
+  useEffect(() => {
     if (teacherData && teacherData.data) {
       const formattedData = formatTeacherFormData(teacherData);
       if (formattedData) {
-        // Format the date of birth
         const teacherInfo = {
           ...formattedData,
           dob: formattedData.dob ? dayjs(formattedData.dob) : null,
         };
-        // Reset the form values
         reset(teacherInfo);
         setDob(teacherInfo.dob);
         setProfileImg(formattedData.photo);
-        // Save the original data to compare with later
         setOriginalData(teacherInfo);
-        // Set the photo state
         setPhotoState({
           profileImg: teacherInfo.photo,
           isRemoved: false,
@@ -136,13 +146,13 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
       dispatch(
         setSnackbar({
           open: true,
-          message: error?.data?.message || 'failed to fetch teacher data',
+          message: error?.data?.message || 'Failed to fetch teacher data',
           severity: 'error',
         }),
       );
       onClose();
     }
-  }, [teacherData, reset, isSuccess]);
+  }, [teacherData, error, isError]);
 
   // Check if the update was successful and if so, close the modal and navigate to teachers page
   // If the update was not successful, show an error message
@@ -371,7 +381,7 @@ const UpdateTeacherForm = ({ isOpen, onClose, teacherId }) => {
                     pt: 3,
                   }}
                 >
-                  <Stack spacing={1} alignItems={'center'}> 
+                  <Stack spacing={1} alignItems={'center'}>
                     {/* Profile */}
                     {previewUrl || profileImg ? (
                       <Box
