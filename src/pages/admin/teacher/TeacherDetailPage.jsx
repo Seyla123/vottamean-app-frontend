@@ -12,6 +12,9 @@ import TitleHeader from '../../../components/common/TitleHeader';
 import {
   useGetTeacherQuery,
   useDeleteTeacherMutation,
+  useDeactivateTeacherMutation,
+  useReactivateTeacherMutation,
+  useResendVerificationTeacherMutation,
 } from '../../../services/teacherApi';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 
@@ -54,6 +57,7 @@ import { cardContainer, shadow, tableShadow } from '../../../styles/global';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import RandomAvatar from '../../../components/common/RandomAvatar';
+import ConfirmModal from '../../../components/teacher/ConfirmModal';
 function TeacherDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -62,6 +66,9 @@ function TeacherDetailPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [formattedTeacher, setFormattedTeacher] = useState([]);
+  const [isDeactivateConfirmModalOpen, setDeactivateConfirmModal] = useState(false);
+  const [isActivateConfirmModalOpen, setActivateConfirmModal] = useState(false);
+  const [isResendConfirmModalOpen, setResendConfirmModal] = useState(false);
 
   // useGetTeacherQueryby id : a hook return function for get teacher data by id
   const {
@@ -73,6 +80,13 @@ function TeacherDetailPage() {
 
   // useDeleteTeacherMutation : a hook return function for delete teacher data by id
   const [deleteTeacher] = useDeleteTeacherMutation();
+
+  // useResendVerificationTeacherMutation : a hook return function for resend verification teacher account 
+  // useDeactivateTeacherMutation : a hook return function for deactivate teacher account 
+  // useReactivateTeacherMutation : a hook return function for reactivate teacher account 
+  const [resendVerificationTeacher, { isLoading: isResending, isError: isResendError, error: resendError, isSuccess: isResendSuccess }] = useResendVerificationTeacherMutation(id);
+  const [deactivateTeacher, { isLoading: isDeactivating, isError: isDeactivateError, error: deactivateError, isSuccess: isDeactivateSuccess }] = useDeactivateTeacherMutation(id);
+  const [reactivateTeacher, { isLoading: isReactivating, isError: isReactivateError, error: reactivateError, isSuccess: isReactivateSuccess }] = useReactivateTeacherMutation(id);
 
   // States
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -137,6 +151,75 @@ function TeacherDetailPage() {
       );
     }
   };
+
+  //Confirm Deactivation Teacher Account 
+  const confirmDeactivateAccount = async () => {
+    try {
+      await deactivateTeacher(id).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Teacher account deactivated successfully',
+          severity: 'success',
+        }),
+      );
+      setDeactivateConfirmModal(false);
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Failed to deactivate teacher account',
+          severity: 'error',
+        }),
+      );
+    }
+  }
+
+  //Confirm Activation Teacher Account
+  const confirmActivateAccount = async () => {
+    try {
+      await reactivateTeacher(id).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Teacher account activated successfully',
+          severity: 'success',
+        }),
+      );
+      setActivateConfirmModal(false);
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Failed to activate teacher account',
+          severity: 'error',
+        }),
+      );
+    }
+  }
+
+  // confirm resend verification email to teacher
+  const resendVerificationEmail = async () => {
+    try { 
+      await resendVerificationTeacher(id).unwrap();
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Verification email resent successfully',
+          severity: 'success',
+        }),
+      );
+      setResendConfirmModal(false);
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: 'Failed to resend verification email',
+          severity: 'error',
+        }),
+      );
+    }
+  }
 
   // loading and error states
   if (isLoading) return <LoadingCircle />;
@@ -289,29 +372,69 @@ function TeacherDetailPage() {
                   icon={<CircleDashed size={18} color={'#6c63ff'} />}
                   label="Status"
                   value={
-                    formattedTeacher.emailVerified &&
-                    formattedTeacher.active ? (
-                      <Chip
-                        size="small"
-                        sx={{ backgroundColor: '#E0FBE2', color: '#347928' }}
-                        icon={
-                          <Box
-                            sx={{
-                              width: 10,
-                              height: 10,
-                              borderRadius: '50%',
-                              bgcolor: '#059212',
-                            }}
-                          />
-                        }
-                        label="Active"
-                      />
-                    ) : (
+                    formattedTeacher.emailVerified ?
+                      formattedTeacher.active ? (
+                        <Chip
+                          size="small"
+                          sx={{
+                            backgroundColor: '#E0FBE2', color: '#347928',
+                            ':hover': {
+                              backgroundColor: '#A9E5AD'
+                            }
+                          }}
+                          icon={
+                            <Box
+                              sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: '50%',
+                                bgcolor: '#059212',
+
+                              }}
+                            />
+                          }
+                          label="Active"
+                          onClick={() => setDeactivateConfirmModal(true)}
+                        />
+                      ) : (
+                        <Chip
+                          size="small"
+                          sx={{
+                            backgroundColor: '#fffbeb',
+                            color: '#edbb00',
+                            pointerEvents: 'auto',
+                            cursor: 'pointer',
+                            ':hover': {
+                              backgroundColor: '#FDE9AE'
+                            }
+
+                          }}
+                          icon={
+                            <Box
+                              sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: '50%',
+                                bgcolor: '#edbb00',
+                              }}
+                            />
+                          }
+                          label="Inactive"
+                          onClick={() => setActivateConfirmModal(true)}
+                        />
+                      )
+                      :
                       <Chip
                         size="small"
                         sx={{
                           backgroundColor: '#fffbeb',
                           color: '#edbb00',
+                          pointerEvents: 'auto',
+                          cursor: 'pointer',
+                          ':hover': {
+                            backgroundColor: '#FDE9AE'
+                          }
+
                         }}
                         icon={
                           <Box
@@ -323,9 +446,9 @@ function TeacherDetailPage() {
                             }}
                           />
                         }
-                        label="Inactive"
+                        label="Pending Verification"
+                        onClick={() => setResendConfirmModal(true)}
                       />
-                    )
                   }
                 />
               </Box>
@@ -388,6 +511,28 @@ function TeacherDetailPage() {
         onClose={() => setIsOpen(false)}
         onConfirm={confirmDelete}
         itemName="Teacher"
+      />
+      {/* Deactivate confirmation modal */}
+      <ConfirmModal
+        open={isDeactivateConfirmModalOpen}
+        onClose={() => setDeactivateConfirmModal(false)}
+        onConfirm={confirmDeactivateAccount}
+        type="deactivate"
+        isLoading={isDeactivating}
+      />
+      <ConfirmModal
+        open={isActivateConfirmModalOpen}
+        onClose={() => setActivateConfirmModal(false)}
+        onConfirm={confirmActivateAccount}
+        type="activate"
+        isLoading={isReactivating}
+      />
+      <ConfirmModal
+        open={isResendConfirmModalOpen}
+        onClose={() => setResendConfirmModal(false)}
+        onConfirm={resendVerificationEmail}
+        type="resendVerification"
+        isLoading={isResending}
       />
     </>
   );
