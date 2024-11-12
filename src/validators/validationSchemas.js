@@ -153,7 +153,7 @@ export const addressSchema = Yup.string()
   .trim()
   .nullable()
   .notRequired()
-  .max(150, 'Address must be less than 150 characters');
+  .max(255, 'Address must be less than 255 characters');
 
 // Age validator
 export const ageSchema = Yup.number()
@@ -179,7 +179,7 @@ export const ClassValidator = Yup.object().shape({
     ),
   description: Yup.string()
     .trim()
-    .max(150, 'Description must be less than 150 characters')
+    .max(255, 'Description must be less than 255 characters')
     .optional(),
 });
 
@@ -195,7 +195,7 @@ export const SubjectValidator = Yup.object().shape({
     ),
   description: Yup.string()
     .trim()
-    .max(150, 'Description must be less than 150 characters')
+    .max(255, 'Description must be less than 255 characters')
     .optional(),
 });
 

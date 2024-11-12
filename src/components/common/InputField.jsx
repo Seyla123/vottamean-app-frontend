@@ -46,7 +46,7 @@ const InputField = ({
   minRows,
   label = '',
   disabled = false,
-  maxLength = 50,
+  maxLength = 255,
 }) => {
   return (
     <Box
