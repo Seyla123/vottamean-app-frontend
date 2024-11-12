@@ -98,9 +98,6 @@ const ClassListPage = () => {
     postClassesData,
     {
       isLoading: isCreating,
-      isSuccess: isCreatedSuccess,
-      isError: isCreateError,
-      erorr: createError,
     },
   ] = usePostClassesDataMutation();
 
@@ -164,8 +161,10 @@ const ClassListPage = () => {
     setRowsPerPage(newRowsPerPage);
   };
 
-  useEffect(() => {
-    if (isCreatedSuccess) {
+  // CREATE FUNCTION
+  const handleCreate = async (formData) => {
+    try {
+      await postClassesData(formData).unwrap();
       dispatch(
         setSnackbar({
           open: true,
@@ -173,22 +172,17 @@ const ClassListPage = () => {
           severity: 'success',
         }),
       );
-      setCreateModalOpen(false);
-    } else if (isError) {
+    } catch (error) {
       dispatch(
         setSnackbar({
           open: true,
-          message: createError.data.message || 'Failed to create class',
+          message: error?.data?.message || 'Failed to create class',
           severity: 'error',
         }),
       );
+    }finally{
       setCreateModalOpen(false);
     }
-  }, [isCreateError, isCreatedSuccess, createError, dispatch]);
-
-  // CREATE FUNCTION
-  const handleCreate = async (formData) => {
-    await postClassesData(formData).unwrap();
   };
 
   // Handle delete button click

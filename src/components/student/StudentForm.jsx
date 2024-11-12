@@ -486,5 +486,5 @@ export const studentValidationSchema = yup.object({
     .trim()
     .nullable()
     .notRequired()
-    .max(200, 'Address must be less than 200 characters'),
+    .max(255, 'Address must be less than 255 characters'),
 });
