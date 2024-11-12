@@ -20,7 +20,7 @@ export const transformAttendanceData = (apiResponse) =>
     time: `${formatTimeTo12Hour(item.Sessions.Period.start_time)} - ${formatTimeTo12Hour(item.Sessions.Period.end_time)}`,
     subjectId: item.Sessions.Subject.subject_id,
     subject: item.Sessions.Subject.subject_name,
-    address: item.Student.Info.address,
+    address: item.Student.Info.address || 'N/A',
     statusId: item.status_id,
     status: capitalize(item.Status.status),
     img: item.Student.Info.photo,
@@ -370,7 +370,7 @@ export const formatTeacherFormData = (teacherData) => {
       phoneNumber: Info.phone_number || '',
       gender: Info.gender || '',
       dob: Info.dob || null,
-      address: Info.address || '',
+      address: Info.address || 'N/A',
       photo: Info.photo || '',
     };
   }
