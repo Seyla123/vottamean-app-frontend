@@ -262,7 +262,7 @@ const AttendanceTable = ({
                 key={`${studentIndex}-${dateIndex}`}
                 sx={{
                   boxShadow: 'none',
-                  width: '210mm',
+                  width: '230mm',
                   height: '297mm',
                   padding: 2,
                   flexDirection: 'column',
