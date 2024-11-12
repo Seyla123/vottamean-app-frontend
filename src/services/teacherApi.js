@@ -10,7 +10,7 @@ export const teacherApi = baseApi.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['Teachers'],
-      
+
     }),
 
     // Send invitation email
@@ -73,10 +73,10 @@ export const teacherApi = baseApi.injectEndpoints({
         method: 'GET',
         params: {
           filter: data?.filter || 'all',
-          active : 1
+          active: 1
         },
       }),
-      providesTags: ['Teachers','Attendance'],
+      providesTags: ['Teachers', 'Attendance'],
     }),
 
     getAllStudentsByClassInSession: builder.query({
@@ -93,11 +93,41 @@ export const teacherApi = baseApi.injectEndpoints({
       query: (ids) => ({
         url: `teachers`,
         method: 'DELETE',
-        body: {ids},
+        body: { ids },
         credentials: 'include',
       }),
       invalidatesTags: ['Teachers']
-    })
+    }),
+
+    // Deactivate teacher
+    deactivateTeacher: builder.mutation({
+      query: (id) => ({
+        url: `teachers/deactivate/${id}`,
+        method: 'POST',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Teachers'],
+    }),
+
+    //Reactivate teacher
+    reactivateTeacher: builder.mutation({
+      query: (id) => ({
+        url: `teachers/reactivate/${id}`,
+        method: 'POST',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Teachers'],
+    }),
+
+    //Resend verification teacher account
+    resendVerificationTeacher: builder.mutation({
+      query: (id) => ({
+        url: `teachers/resend-verification/${id}`,
+        method: 'POST',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Teachers'],
+    }),
   }),
 });
 
@@ -112,4 +142,7 @@ export const {
   useSendTeacherInvitationMutation,
   useCompleteRegistrationMutation,
   useDeleteManyTeachersMutation,
+  useDeactivateTeacherMutation,
+  useReactivateTeacherMutation,
+  useResendVerificationTeacherMutation,
 } = teacherApi;
