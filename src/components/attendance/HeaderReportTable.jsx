@@ -13,7 +13,7 @@ function HeaderReportTable({ schoolInfo, classInfo, startDate, endDate }) {
                 Attendance Report
             </Typography>
             <Typography variant="body2" align="center">
-                Form {startDate ? startDate : dateRange?.start_date} To {endDate ? endDate :dateRange?.end_date}
+                From {startDate ? startDate : dateRange?.start_date} To {endDate ? endDate :dateRange?.end_date}
             </Typography>
         </Grid>
 
