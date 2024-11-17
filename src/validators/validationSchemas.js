@@ -153,7 +153,7 @@ export const addressSchema = Yup.string()
   .trim()
   .nullable()
   .notRequired()
-  .max(255, 'Address must be less than 255 characters');
+  .max(225, 'Address must be less than 225 characters');
 
 // Age validator
 export const ageSchema = Yup.number()
