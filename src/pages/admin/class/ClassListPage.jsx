@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  BookMarked,
-  Calendar,
-  LetterText,
-  PlusIcon,
-} from 'lucide-react';
+import { BookMarked, Calendar, LetterText, PlusIcon } from 'lucide-react';
 // import components
 import DataTable from '../../../components/common/DataTable';
 import SearchComponent from '../../../components/common/SearchComponent';
@@ -103,9 +98,6 @@ const ClassListPage = () => {
     postClassesData,
     {
       isLoading: isCreating,
-      isSuccess: isCreatedSuccess,
-      isError: isCreateError,
-      erorr: createError,
     },
   ] = usePostClassesDataMutation();
 
@@ -169,8 +161,10 @@ const ClassListPage = () => {
     setRowsPerPage(newRowsPerPage);
   };
 
-  useEffect(() => {
-    if (isCreatedSuccess) {
+  // CREATE FUNCTION
+  const handleCreate = async (formData) => {
+    try {
+      await postClassesData(formData).unwrap();
       dispatch(
         setSnackbar({
           open: true,
@@ -178,22 +172,17 @@ const ClassListPage = () => {
           severity: 'success',
         }),
       );
-      setCreateModalOpen(false);
-    } else if (isError) {
+    } catch (error) {
       dispatch(
         setSnackbar({
           open: true,
-          message: createError.data.message || 'Failed to create class',
+          message: error?.data?.message || 'Failed to create class',
           severity: 'error',
         }),
       );
+    }finally{
       setCreateModalOpen(false);
     }
-  }, [isCreateError, isCreatedSuccess, createError, dispatch]);
-
-  // CREATE FUNCTION
-  const handleCreate = async (formData) => {
-    await postClassesData(formData).unwrap();
   };
 
   // Handle delete button click
@@ -244,17 +233,22 @@ const ClassListPage = () => {
     {
       name: 'class_name',
       label: 'Class Name',
+      type: 'text',
+      placeholder: 'Enter class name',
       required: true,
       icon: '',
+      maxLength: 50,
     },
     {
       name: 'description',
       label: 'Description',
+      type: 'textarea',
+      placeholder: 'Enter class description',
       multiline: true,
+      minRows: 4,
       icon: '',
     },
   ];
-
 
   const dataToView = [
     { 'Class name': selectedClass?.class_name, icon: <BookMarked size={18} /> },

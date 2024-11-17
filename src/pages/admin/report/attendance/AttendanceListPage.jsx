@@ -18,13 +18,7 @@ import TitleHeader from '../../../../components/common/TitleHeader';
 import ViewModal from '../../../../components/common/ViewModal';
 import ExportMenu from '../../../../components/attendance/ExportMenu';
 import { Stack } from '@mui/material';
-import {
-  FolderPen,
-  IdCard,
-  Timer,
-  MapPinHouse,
-  School,
-} from 'lucide-react';
+import { FolderPen, IdCard, Timer, MapPinHouse, School } from 'lucide-react';
 import EditAttendanceModal from '../../../../components/attendance/EditAttendanceModal';
 const columns = [
   { id: 'name', label: 'Full Name' },
@@ -50,7 +44,6 @@ const AttendanceListPage = () => {
   // - selectorSubjects: the list of all subjects in the attendance data, including deleted ones
   const [selectorClasses, setSelectorClasses] = useState([]);
   const [selectorSubjects, setSelectorSubjects] = useState([]);
-
 
   // - open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);

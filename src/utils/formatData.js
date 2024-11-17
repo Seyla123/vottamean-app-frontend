@@ -20,7 +20,7 @@ export const transformAttendanceData = (apiResponse) =>
     time: `${formatTimeTo12Hour(item.Sessions.Period.start_time)} - ${formatTimeTo12Hour(item.Sessions.Period.end_time)}`,
     subjectId: item.Sessions.Subject.subject_id,
     subject: item.Sessions.Subject.subject_name,
-    address: item.Student.Info.address,
+    address: item.Student.Info.address || 'N/A',
     statusId: item.status_id,
     status: capitalize(item.Status.status),
     img: item.Student.Info.photo,
@@ -186,7 +186,7 @@ export const transformUserProfile = (user) => {
   return {
     userRole: user.data.role,
     userId: user.data?.id || 'N/A',
-    userName: getFullName(profileInfo),
+    userName: capitalize(`${profileInfo.first_name} ${profileInfo.last_name}`),
     userGender: profileInfo.gender || 'Not specified',
     userDOB: formatDate(profileInfo.dob) || 'Not provided',
     userPhoneNumber:
@@ -217,7 +217,10 @@ export const getUserProfileData = (user) => {
   const userProfile = transformUserProfile(user);
   const schoolProfile = transformSchoolProfile(user);
   const profileKey = getProfileKey(user.data.role);
-  const photo = user?.data[profileKey]?.Info?.photo ?? null;
+  const photo = user?.data?.profile_photo_url || 
+    user?.data[profileKey]?.Info?.photo || 
+    user?.data?.photo || 
+    null;
 
   return {
     userProfile,
@@ -241,7 +244,7 @@ export const getUserProfileDataLayout = (user) => {
   const photo = profileInfo?.photo ?? '';
 
   return {
-    username: getFullName(profileInfo),
+    username: capitalize(`${profileInfo.first_name} ${profileInfo.last_name}`),
     email: user.data.email || 'Not provided',
     photo,
   };
@@ -349,8 +352,8 @@ export const transformMarkAttendancetTable = (apiResponse) => {
     id: `${item.student_id}`,
     img: item.Info.photo || '', // Adjust the URL as needed
     name: `${item.Info.first_name} ${item.Info.last_name}`,
-    gender: item.Info.gender === 'Male' ? 'M' : 'F', // Convert to 'M' or 'F'
-    phone: item.Info.phone_number,
+    gender: item.Info.gender , // Convert to 'M' or 'F'
+    phone: formatPhoneNumber(item.Info.phone_number),
     address: item.Info.address,
     dob: item.Info.dob,
     status: null,
@@ -367,7 +370,7 @@ export const formatTeacherFormData = (teacherData) => {
       phoneNumber: Info.phone_number || '',
       gender: Info.gender || '',
       dob: Info.dob || null,
-      address: Info.address || '',
+      address: Info.address || 'N/A',
       photo: Info.photo || '',
     };
   }

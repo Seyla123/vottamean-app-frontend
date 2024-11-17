@@ -15,12 +15,9 @@ import TeacherWelcomeCard from '../../../components/teacherSite/TeacherWelcomeCa
 import TitleHeader from '../../../components/common/TitleHeader';
 import ClassMarkedModal from '../../../components/teacherSite/ClassMarkedModal';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
+import ClassMarkWrongDayModal from '../../../components/teacherSite/ClassMarkWrongDayModal';
 
 const columns = [
-  {
-    id: 'id',
-    label: 'ID',
-  },
   {
     id: 'name',
     label: 'Name',
@@ -32,11 +29,11 @@ const columns = [
   },
   {
     id: 'dob',
-    label: 'DOB',
+    label: 'Date Of Birth',
   },
   {
     id: 'phone',
-    label: 'Phone',
+    label: 'Phone Number',
   },
   {
     id: 'address',
@@ -85,7 +82,8 @@ function MarkAttendanceClass() {
   const [classInfo, setClassInfo] = useState({});
 
   // openModal : state for modal
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalMarked, setOpenModalMarked] = useState(false);
+  const [openModalWrongDay, setOpenModalWrongDay] = useState(false);
 
   // if get all students by class in session is success,
   // then set rows to transformed data
@@ -95,12 +93,12 @@ function MarkAttendanceClass() {
       setRows(formattedData);
       setClassInfo(studentsData.Class);
     }
-    if (
-      isError &&
-      error?.data?.message === 'This class is already marked today'
-    ) {
-      setOpenModal(true);
-    }
+      if(isError   && error?.data?.message === 'This class is already marked today.'){
+        setOpenModalMarked(true);
+      }else if(isError   && error?.data?.message === 'Attendance can only be marked for the scheduled day.'){
+        setOpenModalWrongDay(true);
+      }
+    
   }, [studentsData, isSuccess, isError]);
 
   // if get all status is success,
@@ -162,8 +160,8 @@ function MarkAttendanceClass() {
   };
   if (
     (isError &&
-      error?.data?.message !== 'This class is already marked today') ||
-    isErrorStatus
+      error?.data?.message !== 'This class is already marked today.') && error?.data?.message !== 'Attendance can only be marked for the scheduled day.'
+      || isErrorStatus 
   ) {
     return (
       <SomethingWentWrong
@@ -179,10 +177,13 @@ function MarkAttendanceClass() {
         subTitle={`Welcome to class ${classInfo?.class_name || ''}`}
       />
       <ClassMarkedModal
-        open={openModal}
+        open={openModalMarked}
         onClose={() => navigate('/teacher/schedule')}
       />
-
+      <ClassMarkWrongDayModal
+        open={openModalWrongDay}
+        onClose={() => navigate('/teacher/schedule')}
+      />
       <Box display={'flex'} justifyContent={'end'} gap={2}>
         <StyledButton
           size="small"
@@ -207,6 +208,7 @@ function MarkAttendanceClass() {
         status={status}
         onStatusChange={handleStatusChange}
         isLoading={isLoading || isLoadingStatus}
+        showNO={true}
       />
     </FormComponent>
   );

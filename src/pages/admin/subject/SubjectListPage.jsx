@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Stack } from '@mui/material';
-import {
-  Book,
-  Calendar,
-  LetterText,
-  PlusIcon,
-} from 'lucide-react';
+import { Book, Calendar, LetterText, PlusIcon } from 'lucide-react';
 import DataTable from '../../../components/common/DataTable';
 import FormComponent from '../../../components/common/FormComponent';
 import LoadingCircle from '../../../components/loading/LoadingCircle';
@@ -233,13 +228,18 @@ function SubjectListPage() {
     {
       name: 'subject_name',
       label: 'Subject Name',
+      type: 'text',
+      placeholder: 'Enter subject name',
       required: true,
       icon: '',
     },
     {
       name: 'description',
       label: 'Description',
+      type: 'textarea',
+      placeholder: 'Enter subject description',
       multiline: true,
+      minRows: 4,
       icon: '',
     },
   ];

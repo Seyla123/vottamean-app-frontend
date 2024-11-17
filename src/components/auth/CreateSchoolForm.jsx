@@ -21,7 +21,11 @@ import InputField from '../common/InputField';
 import { useSignupMutation } from '../../services/authApi';
 import { RegisterSchoolValidator } from '../../validators/validationSchemas';
 
-const CreateSchoolForm = ({ handleBack, handleFormChange, handleSignUpSuccess }) => {
+const CreateSchoolForm = ({
+  handleBack,
+  handleFormChange,
+  handleSignUpSuccess,
+}) => {
   const formData = useSelector((state) => state.form);
   const dispatch = useDispatch();
   const [signup, { isLoading, isError, isSuccess, error }] =
@@ -125,9 +129,10 @@ const CreateSchoolForm = ({ handleBack, handleFormChange, handleSignUpSuccess })
             label="Street Address"
             placeholder="Phnom Penh, Street 210, ..."
             errors={errors}
-            multiline
+            multiline={true}
             minRows={5}
             required={false}
+            maxLength={150}
           />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>

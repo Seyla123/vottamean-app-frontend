@@ -73,7 +73,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
         length: password.length >= 8,
         number: /[0-9]/.test(password),
         letter: /[a-zA-Z]/.test(password),
-        special: /[!@#$%^&*()_+-\[\]{};':"\\|,.<>\/?]/.test(password),
+        special: /[!@#$%^&*_+\-]/.test(password), 
       });
     } else {
       // Reset validation state if password is empty

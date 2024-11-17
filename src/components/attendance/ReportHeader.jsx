@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import {  Grid } from '@mui/material';
 import StatusGrid from './StatusGrid';
 import StatusPieChart from '../common/StatusPieChart';
-import { shadow } from '../../styles/global';
 
 const ReportHeader = ({ data }) => {
   const dataCount =
@@ -23,7 +22,7 @@ const ReportHeader = ({ data }) => {
         <Grid item xs={12} md={6}>
           <StatusGrid statusCounts={dataCount} />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} >
           <StatusPieChart statusCounts={dataCount} />
         </Grid>
       </Grid>

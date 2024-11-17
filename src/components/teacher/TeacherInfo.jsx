@@ -145,40 +145,45 @@ const TeacherInfo = ({
           </Box>
           <Box sx={profileContainer}>
             {/* Profile */}
-            {photoPreview || photoFile ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 1,
-                  position: 'relative',
-                  boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                  p: 0.5,
-                  borderRadius: 50,
-                }}
-              >
-                <Avatar
-                  src={photoSrc}
-                  alt="Profile"
-                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+            <Stack spacing={1} alignItems={'center'}>
+              {photoPreview || photoFile ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 1,
+                    position: 'relative',
+                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                    p: 0.5,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Avatar
+                    src={photoSrc}
+                    alt="Profile"
+                    sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                  />
+                </Box>
+              ) : (
+                <RandomAvatar
+                  username={`${getValues('firstName')} ${getValues('lastName')}`}
+                  gender={getValues('gender')}
+                  size={140}
                 />
-              </Box>
-            ) : (
-              <RandomAvatar
-                username={`${getValues('firstName')} ${getValues('lastName')}`}
-                gender={getValues('gender')}
-                size={140}
+              )}
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                ref={photoPreviewRef}
+                hidden
+                onChange={handlePhotoChange}
               />
-            )}
-            <input
-              id="photo-upload"
-              type="file"
-              accept="image/*"
-              ref={photoPreviewRef}
-              hidden
-              onChange={handlePhotoChange}
-            />
+              <Typography fontSize={'0.75rem'} color='text.secondary' fontWeight={'regular'}>
+                Max size: 1MB
+              </Typography>
+            </Stack>
             {/* Profile Buttons */}
             <Box
               sx={{
@@ -226,6 +231,7 @@ const TeacherInfo = ({
                 icon={UserRoundPen}
                 placeholder="First Name"
                 errors={errors}
+                required={true}
               />
               <InputField
                 name="lastName"
@@ -234,6 +240,7 @@ const TeacherInfo = ({
                 placeholder="Last Name"
                 icon={UserRoundPen}
                 errors={errors}
+                required={true}
               />
             </Stack>
             {/* Gender */}
@@ -343,38 +350,47 @@ export const validationSchema = yup.object({
     .label('First Name')
     .required('First name is required')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   lastName: yup
     .string()
     .trim()
     .label('Last Name')
     .required('Last name is required')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'Last name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   phoneNumber: yup
     .string()
     .trim()
     .required('Phone number is required')
-    .test(
-      'length',
-      'Phone number must be between 9 and 15 digits (excluding country code)',
-      (value) => {
-        // Extract the number part (after the country code)
-        const numberPart = value && value.replace(/[^0-9]/g, '');
-        return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
-      },
-    )
     .matches(
       /^\+\d{1,3}\s\d{1,3}.*$/,
       'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    )
+    .matches(
+      /^\+\d{1,3}\s(?!0)/,
+      'Phone number should not start with a zero after the country code',
+    )
+    .test(
+      'length',
+      'Phone number must be between 8 and 15 digits (excluding country code)',
+      (value) => {
+        const numberPart =
+          value &&
+          value
+            .split(' ')
+            .slice(1)
+            .join('')
+            .replace(/[^0-9]/g, '');
+        return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
+      },
     ),
   photo: yup.mixed().nullable(),
   gender: yup
@@ -388,7 +404,7 @@ export const validationSchema = yup.object({
       'Gender must be either Male, Female, or Other',
     ),
   dob: yup
-    .string()
+    .date()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
     .typeError('Invalid date format'),
@@ -397,5 +413,5 @@ export const validationSchema = yup.object({
     .trim()
     .nullable()
     .notRequired()
-    .max(200, 'Address must be less than 200 characters'),
+    .max(255, 'Address must be less than 255 characters'),
 });

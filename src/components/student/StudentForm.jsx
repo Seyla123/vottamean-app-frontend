@@ -134,7 +134,6 @@ const StudentForm = ({
 
   // form submission
   const onSubmit = (data) => {
-
     handleNext(true, {
       ...data,
       class_id: data.class_id ? Number(data.class_id) : null, // Converting to number
@@ -182,32 +181,41 @@ const StudentForm = ({
       <Stack direction="column" gap={2}>
         {/* Profile */}
         <Stack direction="row" gap={2} alignItems="center" py={3}>
-          {photoPreview || photoFile ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 1,
-                position: 'relative',
-                boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                p: 0.5,
-                borderRadius: 50,
-              }}
-            >
-              <Avatar
-                src={photoSrc}
-                alt="Profile"
-                sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+          <Stack spacing={1} alignItems={'center'}>
+            {photoPreview || photoFile ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 1,
+                  position: 'relative',
+                  boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                  p: 0.5,
+                  borderRadius: 50,
+                }}
+              >
+                <Avatar
+                  src={photoSrc}
+                  alt="Profile"
+                  sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                />
+              </Box>
+            ) : (
+              <RandomAvatar
+                username={`${getValues('firstName')} ${getValues('lastName')}`}
+                gender={getValues('gender')}
+                size={140}
               />
-            </Box>
-          ) : (
-            <RandomAvatar
-              username={`${getValues('firstName')} ${getValues('lastName')}`}
-              gender={getValues('gender')}
-              size={140}
-            />
-          )}
+            )}
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              fontWeight={'regular'}
+            >
+              Max size: 1MB
+            </Typography>
+          </Stack>
           <Stack direction="column" gap={2}>
             <input
               accept="image/*"
@@ -251,6 +259,7 @@ const StudentForm = ({
               placeholder="First Name"
               errors={errors}
               icon={UserRoundPen}
+              required
               fullWidth
             />
             <InputField
@@ -260,6 +269,7 @@ const StudentForm = ({
               placeholder="Last Name"
               errors={errors}
               icon={UserRoundPen}
+              required
               fullWidth
             />
           </Stack>
@@ -411,38 +421,48 @@ export const studentValidationSchema = yup.object({
     .label('First Name')
     .required('First name is required')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'First name must contain only alphabetic characters and may contain a single space',
     )
     .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+    .max(20, 'Name must be less than 20 characters'),
   lastName: yup
     .string()
     .trim()
     .label('Last Name')
     .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters long')
+    .max(20, 'Last name must be less than 20 characters')
     .matches(
-      /^[A-Za-z]+( [A-Za-z]+)*$/,
-      'Name must contain only alphabetic characters and single spaces between words',
-    )
-    .min(2, 'Name must be at least 2 characters long')
-    .max(40, 'Name must be less than 40 characters'),
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      'Last name must contain only alphabetic characters and may contain a single space',
+    ),
   phoneNumber: yup
     .string()
     .trim()
     .required('Phone number is required')
-    .test(
-      'length',
-      'Phone number must be between 9 and 15 digits (excluding country code)',
-      (value) => {
-        // Extract the number part (after the country code)
-        const numberPart = value && value.replace(/[^0-9]/g, '');
-        return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
-      },
-    )
     .matches(
       /^\+\d{1,3}\s\d{1,3}.*$/,
       'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+    )
+    .matches(
+      /^\+\d{1,3}\s(?!0)/,
+      'Phone number should not start with a zero after the country code',
+    )
+    .test(
+      'length',
+      'Phone number must be between 8 and 15 digits (excluding country code)',
+      (value) => {
+        // Extract the number part (after the country code)
+        const numberPart =
+          value &&
+          value
+            .split(' ')
+            .slice(1)
+            .join('')
+            .replace(/[^0-9]/g, '');
+        return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
+      },
     ),
   photo: yup.mixed().nullable(),
   gender: yup
@@ -457,7 +477,7 @@ export const studentValidationSchema = yup.object({
     ),
   class_id: yup.number().required('Class is required'),
   dob: yup
-    .string()
+    .date()
     .required('Date of birth is required')
     .max(new Date(), 'Date of birth cannot be in the future')
     .typeError('Invalid date format'),
@@ -466,5 +486,5 @@ export const studentValidationSchema = yup.object({
     .trim()
     .nullable()
     .notRequired()
-    .max(200, 'Address must be less than 200 characters'),
+    .max(255, 'Address must be less than 255 characters'),
 });

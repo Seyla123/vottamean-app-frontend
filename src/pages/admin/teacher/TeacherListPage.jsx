@@ -76,7 +76,7 @@ const TeacherListPage = () => {
     search: searchTerm,
     limit: rowsPerPage,
     page: page + 1,
-    active:1
+    active: 1,
   });
 
   // useDeleteTeacherMutation : a hook return function for Delete teacher
@@ -175,9 +175,17 @@ const TeacherListPage = () => {
 
   // Handle Update clicked
   const handleEdit = (teacher) => {
-    setSelectedTeacherId(teacher.id);
-    setIsUpdateOpen(true);
+    // First close and clear everything
+    setIsUpdateOpen(false);
+    setSelectedTeacherId(null);
+
+    // Then set new ID and open modal after a brief delay
+    setTimeout(() => {
+      setSelectedTeacherId(teacher.id);
+      setIsUpdateOpen(true);
+    }, 100);
   };
+
 
   // Handle view teacher information
   const handleView = (row) => {
@@ -269,8 +277,12 @@ const TeacherListPage = () => {
       />
       {/* Update teacher modal */}
       <UpdateTeacherForm
+        key={selectedTeacherId}
         isOpen={isUpdateOpen}
-        onClose={() => setIsUpdateOpen(false)}
+        onClose={() => {
+          setIsUpdateOpen(false);
+          setSelectedTeacherId(null);
+        }}
         teacherId={selectedTeacherId}
       />
     </FormComponent>

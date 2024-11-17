@@ -2,13 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 // - Material UI Components
-import {
-  Typography,
-  Box,
-  Grid,
-  Stack,
-  CircularProgress,
-} from '@mui/material';
+import { Typography, Box, Grid, Stack, CircularProgress } from '@mui/material';
 import { Crown, GraduationCap, ShieldCheck, UsersIcon } from 'lucide-react';
 
 // - Custom Components
@@ -38,6 +32,7 @@ import SectionTitle from '../../../components/common/SectionTitle';
 import TitleHeader from '../../../components/common/TitleHeader';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import { Link } from 'react-router-dom';
+import { truncate } from '../../../utils/truncate';
 
 const teacherArr = [
   {
@@ -214,7 +209,7 @@ function HomePage() {
       >
         <Box sx={{ position: 'relative', zIndex: 2 }}>
           <Typography variant="h4" gutterBottom>
-            {greeting}, {getUserFirstName} 👋
+            {greeting}, {truncate(getUserFirstName, 10)} 👋
           </Typography>
           <Typography variant="subtitle1">
             Welcome to your admin's home

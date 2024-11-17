@@ -47,7 +47,7 @@ const SessionUpdatePage = () => {
   const [originData, setOriginData] = useState(null);
 
   // useGetSessionByIdQuery : a hook that returns a function to fetch session to be updated
-  const { data: session } = useGetSessionByIdQuery(id);
+  const { data: session, isLoading : isSessionLoading } = useGetSessionByIdQuery(id);
 
   // useUpdateSessionMutation : a hook return a function to update the session
   const [updateSession, { isLoading, isError, isSuccess, error }] =
@@ -160,14 +160,12 @@ const SessionUpdatePage = () => {
       navigate('/admin/sessions');
     }
   }, [isError, isSuccess, dispatch, error, navigate]);
-
-
   return (
     <FormComponent
     >
       <TitleHeader title="Update Session" />
       <CardComponent onSubmit={handleSubmit(onSubmit)} >
-      {(isPeriodLoading || isClassLoading || isTeacherLoading || isDayLoading || isSubjectLoading) ? <LoadingCircle customStyle={{height: '40vh'}}/> 
+      {isSessionLoading || isPeriodLoading || isClassLoading || isTeacherLoading || isDayLoading || isSubjectLoading  ? <LoadingCircle customStyle={{height: '30vh'}}/> 
       :
         <>
         <Box sx={containerStyle}>

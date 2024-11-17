@@ -13,7 +13,10 @@ import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import RandomAvatar from '../../../components/common/RandomAvatar';
 
 // API and slices
-import { useGetStudentsByIdQuery, useDeleteStudentMutation } from '../../../services/studentApi';
+import {
+  useGetStudentsByIdQuery,
+  useDeleteStudentMutation,
+} from '../../../services/studentApi';
 import { setSnackbar } from '../../../store/slices/uiSlice';
 
 // Update Modal
@@ -21,7 +24,7 @@ import UpdateStudentForm from '../../../components/student/UpdateStudentForm';
 // Delete Modal
 import DeleteConfirmationModal from '../../../components/common/DeleteConfirmationModal';
 
-// MUI 
+// MUI
 import {
   Chip,
   Typography,
@@ -67,10 +70,15 @@ function StudentDetailPage() {
   const [itemToDelete, setItemToDelete] = useState(null);
 
   const [formattedStudent, setFormattedStudent] = useState([]);
-  const [formattedGuardian, setformattedGuardian] = useState([]);
+  const [formattedGuardian, setFormattedGuardian] = useState([]);
 
   // useGetStudentsByIdQuery id : a hook return function for get student data by id
-  const { data: studentData, isLoading, isError, error } = useGetStudentsByIdQuery(id);
+  const {
+    data: studentData,
+    isLoading,
+    isError,
+    error,
+  } = useGetStudentsByIdQuery(id);
 
   // useDeleteStudentMutation : a hook return function for delete student data by id
   const [deleteStudent] = useDeleteStudentMutation();
@@ -83,13 +91,12 @@ function StudentDetailPage() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-
-  // Hanlde click for open menu 
+  // Handle click for open menu
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  // Hanlde click for close menu 
+  // Handle click for close menu
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -97,15 +104,14 @@ function StudentDetailPage() {
   // Format student data and set it in the state
   useEffect(() => {
     if (studentData) {
-      const formattedData = StudentProfile(studentData?.data)
+      const formattedData = StudentProfile(studentData?.data);
       setFormattedStudent({
         ...formattedData?.studentProfile,
         photo: formattedData.photo,
-        active: studentData?.data?.active
+        active: studentData?.data?.active,
       });
 
-      setformattedGuardian(formattedData?.guardianProfile)
-
+      setFormattedGuardian(formattedData?.guardianProfile);
     }
   }, [studentData]);
 
@@ -121,7 +127,7 @@ function StudentDetailPage() {
     setIsOpen(true);
   };
 
-  const hanldeBack = () => {
+  const handleBack = () => {
     navigate('/admin/students');
   };
 
@@ -154,8 +160,7 @@ function StudentDetailPage() {
 
   return (
     <>
-      <FormComponent
-      >
+      <FormComponent>
         <TitleHeader title={'Student Detail'} />
         <Stack direction={{ sm: 'column', md: 'row' }} spacing={3}>
           <Card
@@ -171,7 +176,7 @@ function StudentDetailPage() {
                 variant="text"
                 size={'small'}
                 startIcon={<ChevronLeft size={18} />}
-                onClick={hanldeBack}
+                onClick={handleBack}
               >
                 Back
               </StyledButton>
@@ -210,9 +215,9 @@ function StudentDetailPage() {
                 </MenuItem>
               </Menu>
             </Stack>
-            {isLoading ?
+            {isLoading ? (
               <LoadingCircle customStyle={{ height: '50vh' }} />
-              :
+            ) : (
               <>
                 <Box>
                   {/* Profile */}
@@ -225,11 +230,25 @@ function StudentDetailPage() {
                     sx={{ py: 4 }}
                   >
                     {formattedStudent.photo ? (
-                      <Avatar
-                        src={formattedStudent.photo}
-                        alt="Profile"
-                        sx={{ width: 140, height: 140, bgcolor: '#eee' }}
-                      />
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 1,
+                          position: 'relative',
+                          boxShadow:
+                            'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                          p: 0.5,
+                          borderRadius: 50,
+                        }}
+                      >
+                        <Avatar
+                          src={formattedStudent.photo}
+                          alt="Profile"
+                          sx={{ width: 140, height: 140, bgcolor: '#eee' }}
+                        />
+                      </Box>
                     ) : (
                       <RandomAvatar size={140} />
                     )}
@@ -243,12 +262,21 @@ function StudentDetailPage() {
                         gutterBottom
                         variant="h5"
                         fontWeight={'bold'}
-                        sx={{ display: 'flex', alignItems: 'center', gap: 1, textTransform: 'capitalize' }}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          textTransform: 'capitalize',
+                        }}
                       >
                         {formattedStudent.name}
                       </Typography>
                       {/* Class */}
-                      <Stack direction={'row'} alignItems={'center'} spacing={1}>
+                      <Stack
+                        direction={'row'}
+                        alignItems={'center'}
+                        spacing={1}
+                      >
                         <Chip
                           size="medium"
                           sx={{
@@ -266,7 +294,7 @@ function StudentDetailPage() {
                           }}
                           icon={
                             <CastForEducationIcon
-                              style={{ width:18, color: '#6c63ff' }}
+                              style={{ width: 18, color: '#6c63ff' }}
                             />
                           }
                           label={`Class ${formattedStudent.class}`}
@@ -296,12 +324,10 @@ function StudentDetailPage() {
                       label="Street Address"
                       value={formattedStudent.address}
                     />
-
                   </Box>
-
                 </Box>
                 <Typography variant="h6" py={2}>
-                  Guardian Infomation
+                  Guardian Information
                 </Typography>
                 <Box>
                   {/* Personal Details */}
@@ -312,7 +338,11 @@ function StudentDetailPage() {
                       value={formattedGuardian["Guardian's Name"]}
                     />
                     <GridDetail
-                      icon={<Diversity1Icon style={{ color: '#6c63ff', maxWidth: '18px' }} />}
+                      icon={
+                        <Diversity1Icon
+                          style={{ color: '#6c63ff', maxWidth: '18px' }}
+                        />
+                      }
                       label="Relationship"
                       value={formattedGuardian.Relationship}
                     />
@@ -325,12 +355,12 @@ function StudentDetailPage() {
                       icon={<Mails size={18} color={'#6c63ff'} />}
                       label="Guardian Email"
                       value={formattedGuardian.Email}
+                      email
                     />
                   </Box>
                 </Box>
               </>
-            }
-
+            )}
           </Card>
           {/* Insights Card Information */}
           <Box>
@@ -375,7 +405,6 @@ function StudentDetailPage() {
               </Stack>
             </Stack>
           </Box>
-
         </Stack>
       </FormComponent>
       {/* Update modal */}
@@ -411,7 +440,7 @@ const GridInfo = ({ icon, text }) => (
       <Box sx={{ display: 'flex', alignItems: 'center' }}>{icon}</Box>
       <Typography
         variant="body2"
-        sx={{ whiteSpace: 'break-spaces', elipsis: 'true' }}
+        sx={{ whiteSpace: 'break-spaces', ellipsis: 'true' }}
       >
         {text}
       </Typography>
@@ -419,7 +448,7 @@ const GridInfo = ({ icon, text }) => (
   </Grid>
 );
 // Personal detail grid function
-const GridDetail = ({ icon, label, value }) => {
+const GridDetail = ({ icon, label, value, email }) => {
   return (
     <Grid
       container
@@ -440,7 +469,7 @@ const GridDetail = ({ icon, label, value }) => {
         <Typography
           variant="body2"
           sx={{
-            textTransform: 'capitalize',
+            textTransform: email ? 'lowercase' : 'capitalize',
             wordBreak: 'break-word',
           }}
         >

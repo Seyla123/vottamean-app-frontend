@@ -64,7 +64,11 @@ function FormInfoStudent() {
   const handlePhotoChange = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
-    if (file) {
+    if (
+      file &&
+      file.type.startsWith('image/') &&
+      file.size <= 1 * 1024 * 1024
+    ) {
       // If there's an existing preview URL, revoke it
       if (photoPreview) {
         URL.revokeObjectURL(photoPreview);
@@ -75,6 +79,15 @@ function FormInfoStudent() {
     } else {
       setPhotoFile(null);
       setPhotoPreview(null);
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: file
+            ? 'File must be an image under 1MB'
+            : 'No file selected',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -113,7 +126,7 @@ function FormInfoStudent() {
       dispatch(
         setSnackbar({
           open: true,
-          message: error?.data?.message || 'An error occurred during signup',
+          message: error?.data?.message || 'An error occurred during sign up',
           severity: 'error',
           autoHideDuration: 6000,
         }),
@@ -197,7 +210,6 @@ function FormInfoStudent() {
             sx={{
               flexGrow: 1,
               padding: 2,
-
             }}
             value="2"
           >
@@ -212,33 +224,31 @@ function FormInfoStudent() {
         </TabContext>
       </Stack>
       {/* Info Box */}
-      <Stack
-      sx={infoBox}
-      >
+      <Stack sx={infoBox}>
         <Box width={'100%'}>
           <Typography variant="subtitle1" fontWeight="medium" marginBottom={2}>
-          Simply create a student account, and fill in guardian information:
+            Simply create a student account, and fill in guardian information:
           </Typography>
           <Grid container spacing={2}>
             <GridInfo
-              icon={<NotebookPen color={'#6c63ff'}/>}
+              icon={<NotebookPen color={'#6c63ff'} />}
               text="Easy Student Registration and Class Assignment"
             />
             <GridInfo
-              icon={<BookMarked color={'#6c63ff'}/>}
+              icon={<BookMarked color={'#6c63ff'} />}
               text="Real-time Attendance Updates and Reporting"
             />
             <GridInfo
-              icon={<BellRing color={'#6c63ff'}/>}
+              icon={<BellRing color={'#6c63ff'} />}
               text="Automated Guardian Notifications for Attendance Status"
             />
           </Grid>
         </Box>
-        <Stack sx={{ display: { xs: 'none', sm: 'block'}}}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap:1}}>
-            <Settings color={'#6c63ff'}/>
+        <Stack sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Settings color={'#6c63ff'} />
             <Typography variant="body2" fontWeight="medium">
-            Attendance Management and Parent Communication.
+              Attendance Management and Parent Communication.
             </Typography>
           </Box>
           <Typography
@@ -271,7 +281,7 @@ const tabStyle = {
     color: 'text.disabled',
   },
 };
-const infoBox ={
+const infoBox = {
   display: { xs: 'none', sm: 'flex' },
   direction: 'column',
   gap: 3,
@@ -284,5 +294,5 @@ const infoBox ={
     sm: '100%',
     md: '240px',
     lg: '300px',
-  }
-}
+  },
+};

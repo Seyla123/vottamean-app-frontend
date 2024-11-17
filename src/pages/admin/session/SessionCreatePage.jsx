@@ -23,6 +23,7 @@ import { transformedForSelector } from '../../../utils/formatHelper'
 import { SessionValidator } from '../../../validators/validationSchemas';
 import StyledButton from '../../../components/common/StyledMuiButton';
 import TitleHeader from '../../../components/common/TitleHeader';
+import LoadingCircle from '../../../components/loading/LoadingCircle';
 
 // Main Component
 const SessionCreatePage = () => {
@@ -34,11 +35,11 @@ const SessionCreatePage = () => {
     useCreateSessionMutation();
 
   //  hook that returns a function to fetch all selector for creating sessions
-  const { data: periodData } = useGetClassPeriodQuery({ active: 1 });
-  const { data: classData } = useGetClassesDataQuery({ active: 1 });
-  const { data: teacherData } = useGetAllTeachersQuery({ active: 1 });
-  const { data: dayData } = useGetDayQuery();
-  const { data: subjectData } = useGetSubjectsQuery({ active: 1 });
+  const { data: periodData, isLoading: isPeriodLoading } = useGetClassPeriodQuery({ active: 1 });
+  const { data: classData, isLoading: isClassLoading } = useGetClassesDataQuery({ active: 1 });
+  const { data: teacherData, isLoading: isTeacherLoading } = useGetAllTeachersQuery({ active: 1 });
+  const { data: dayData, isLoading: isDayLoading } = useGetDayQuery();
+  const { data: subjectData, isLoading: isSubjectLoading } = useGetSubjectsQuery({ active: 1 });
 
   // - stae of the list of all for session select creation
   const [periods, setPeriods] = useState([]);
@@ -75,15 +76,6 @@ const SessionCreatePage = () => {
 
   //handle the form submission
   const onSubmit = async (formData) => {
-    //Extract the relevant data from the form
-    const sessionData = {
-      classId: formData.classId,
-      subjectId: formData.subject_id,
-      dayId: formData.day_id,
-      teacherId: formData.teacher_id,
-      periodId: formData.period_id,
-    };
-
     //Call the createSession mutation and
     await createSession(formData).unwrap();
   };
@@ -116,6 +108,9 @@ const SessionCreatePage = () => {
     >
       <TitleHeader  title="Create Session" />
       <CardComponent onSubmit={handleSubmit(onSubmit)} title="Create Session">
+        {(isPeriodLoading || isClassLoading || isTeacherLoading || isDayLoading || isSubjectLoading ) ? <LoadingCircle customStyle={{height: '30vh'}}/> 
+        
+      : <>
         <Box sx={containerStyle}>
           <Box sx={selectedStyle}>
             <Box>
@@ -195,6 +190,8 @@ const SessionCreatePage = () => {
             {isLoading ? 'Creating...' : 'Create'}
           </StyledButton>
         </Stack>
+      
+      </>}
       </CardComponent>
     </FormComponent>
   );

@@ -116,6 +116,23 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
     },
   });
 
+  // Clear everything when initial render
+  useEffect(() => {
+    // Reset form, preview URL, selected file, profile image, dob, original data and photo state
+    reset();
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    setProfileImg('');
+    setClasses(null);
+    setDob(null);
+    setOriginalData(null);
+    setPhotoState({
+      profileImg: '',
+      isRemoved: false,
+      hasChanges: false,
+    });
+  }, [isOpen]);
+
   // useEffect for setting initial data
   useEffect(() => {
     // If student data and classes data are available, set the initial values
@@ -211,11 +228,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
   // and the preview will be updated
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    // Check if the file is an image and is under 5MB
+    // Check if the file is an image and is under 1MB
     if (
       file &&
       file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
+      file.size <= 1 * 1024 * 1024
     ) {
       setSelectedFile(file);
       // Set the preview to the new image
@@ -234,8 +251,8 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
         setSnackbar({
           open: true,
           message: file
-            ? 'File must be an image under 5MB'
-            : 'Please select a file',
+            ? 'File must be an image under 1MB'
+            : 'No file selected',
           severity: 'error',
         }),
       );
@@ -438,32 +455,42 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                   }}
                 >
                   {/* Profile */}
-                  {previewUrl || profileImg ? (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 1,
-                        position: 'relative',
-                        boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                        p: 0.5,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <Avatar
-                        src={previewUrl || profileImg}
-                        alt="Profile"
-                        sx={{ width: 140, height: 140 }}
+                  <Stack spacing={1} alignItems={'center'}>
+                    {previewUrl || profileImg ? (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 1,
+                          position: 'relative',
+                          boxShadow:
+                            'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                          p: 0.5,
+                          borderRadius: 50,
+                        }}
+                      >
+                        <Avatar
+                          src={previewUrl || profileImg}
+                          alt="Profile"
+                          sx={{ width: 140, height: 140 }}
+                        />
+                      </Box>
+                    ) : (
+                      <RandomAvatar
+                        username={`${getValues('first_name')} ${getValues('last_name')}`}
+                        gender={getValues('gender')}
+                        size={140}
                       />
-                    </Box>
-                  ) : (
-                    <RandomAvatar
-                      username={`${getValues('first_name')} ${getValues('last_name')}`}
-                      gender={getValues('gender')}
-                      size={140}
-                    />
-                  )}
+                    )}
+                    <Typography
+                      variant="subtitle2"
+                      color="text.secondary"
+                      fontWeight={'regular'}
+                    >
+                      Max size: 1MB
+                    </Typography>
+                  </Stack>
                   <input
                     id="photo-upload"
                     type="file"
@@ -516,6 +543,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                           defaultValue={field.value}
                           placeholder="First Name"
                           errors={errors}
+                          required={true}
                         />
                       )}
                     />
@@ -532,11 +560,16 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                           name={field.name}
                           defaultValue={field.value}
                           errors={errors}
+                          required={true}
                         />
                       )}
                     />
                   </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={'center'}
+                  >
                     {/* Gender */}
                     <Controller
                       name="gender"
@@ -573,7 +606,11 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     />
                   </Stack>
                   {/* Class */}
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={'center'}
+                  >
                     <Box sx={{ width: '100%' }}>
                       <Typography variant="body2" fontWeight="bold" mb={1}>
                         Class <span style={{ color: 'red' }}>*</span>
@@ -668,6 +705,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       placeholder="First Name"
                       errors={errors}
                       icon={UserRoundPen}
+                      required={true}
                     />
                     <InputField
                       name="guardianLastName"
@@ -676,11 +714,16 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       placeholder="Last Name"
                       errors={errors}
                       icon={UserRoundPen}
+                      required={true}
                     />
                   </Stack>
                   {/* GUARDIAN CONTACT INFORMATION */}
                   {/* Guardian Phone Number */}
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={'center'}
+                  >
                     <PhoneInputField
                       name="guardianPhoneNumber"
                       control={control}
@@ -695,6 +738,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                       placeholder="Enter guardian email"
                       errors={errors}
                       icon={Mail}
+                      required={true}
                     />
                   </Stack>
                   {/* Guardian Relationship */}
@@ -705,6 +749,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     placeholder="Relationship"
                     errors={errors}
                     icon={Diversity1Icon}
+                    required={true}
                   />
                 </Stack>
 
@@ -716,6 +761,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     gap: 2,
                     mt: 2,
                     width: '100%',
+                    alignItems: 'center',
                   }}
                 >
                   {/* CANCEL BUTTON */}
@@ -729,7 +775,7 @@ const UpdateStudentForm = ({ isOpen, onClose, studentId }) => {
                     variant="contained"
                     disabled={isUpdateLoading}
                   >
-                    {isUpdateLoading ? 'Saving...' : 'Save Change'}
+                    {isUpdateLoading ? 'Saving...' : 'Save Changes'}
                   </StyledButton>
                 </Box>
               </form>

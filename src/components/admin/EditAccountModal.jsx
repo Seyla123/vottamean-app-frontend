@@ -15,6 +15,7 @@ import {
   DialogActions,
   Box,
   IconButton,
+  Typography,
 } from '@mui/material';
 
 // - Custom Components
@@ -116,16 +117,32 @@ const EditAccountModal = ({
     },
   });
 
-  // Fetching and setting up the original user profile data
   useEffect(() => {
     if (isSuccess && userProfile) {
       const formattedData = getUserProfileUpdateData(userProfile);
+      // Set the profile photo from the server if available
+      if (userProfile.photoUrl) {
+        setPreviewUrl(userProfile.photoUrl);
+      }
       // Dynamically set the form default values
       reset(formattedData);
-      // Store the original data for comparison
       setOriginalData(formattedData);
     }
   }, [isSuccess, userProfile, reset]);
+
+  // Update preview when profilePhoto changes
+  useEffect(() => {
+    setPreviewUrl(profilePhoto);
+  }, [profilePhoto]);
+
+  // Cleanup blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, []);
 
   // Handle success and error of updating user profile
   useEffect(() => {
@@ -151,33 +168,44 @@ const EditAccountModal = ({
     }
   }, [isUpdateSuccess, isUpdateError, updateError, dispatch, onClose]);
 
-  // - Handle image file selection and preview
+  // Handle Change photo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (
       file &&
       file.type.startsWith('image/') &&
-      file.size <= 5 * 1024 * 1024
+      file.size <= 1 * 1024 * 1024
     ) {
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      setRemovePhoto(false); // Reset the removePhoto state when a new file is selected
+      // Cleanup previous blob URL if exists
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      // Create new preview URL
+      const newPreviewUrl = URL.createObjectURL(file);
+      setPreviewUrl(newPreviewUrl);
+      setRemovePhoto(false);
+      // Pass the File object to parent
+      onPhotoUpdate(file);
     } else {
       dispatch(
         setSnackbar({
           open: true,
-          message: 'Invalid image file',
+          message: file
+            ? 'File must be an image under 1MB'
+            : 'No file selected',
           severity: 'error',
         }),
       );
     }
   };
 
-  // - Handle remove photo
+  // Handle remove photo
   const handleRemovePhoto = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
-    setRemovePhoto(true); // trigger the random avatar
+    setRemovePhoto(true);
+    onPhotoUpdate(null);
   };
 
   // - Handle form submission
@@ -220,7 +248,7 @@ const EditAccountModal = ({
       // If the photo removal checkbox is checked, add a remove_photo parameter to the form data
       // Also, clear the photo in MyProfileView
       formData.append('remove_photo', 'true');
-      onPhotoUpdate('');
+      onPhotoUpdate(''); // Clear photo in MyProfileView
     }
 
     // Iterate through the form data and add all the fields except for the photo
@@ -232,9 +260,7 @@ const EditAccountModal = ({
 
     if (checkUserRole === 'teacher') {
       // Teachers can only update their photo
-      await updateUserProfile(
-        new FormData().append('photo', selectedFile),
-      ).unwrap();
+      await updateUserProfile(formData).unwrap();
     } else {
       // Admins can update all fields
       await updateUserProfile(formData).unwrap();
@@ -276,32 +302,41 @@ const EditAccountModal = ({
             {/* PROFILE CONTAINER */}
             <Stack direction={'row'} gap={2} alignItems={'center'}>
               {/* PROFILE IMAGE */}
-              {removePhoto || (!previewUrl && !profilePhoto) ? (
-                <RandomAvatar
-                  username={userName}
-                  gender={userGender}
-                  size={140}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 1,
-                    position: 'relative',
-                    boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
-                    p: 0.5,
-                    borderRadius: 50,
-                  }}
-                >
-                  <Avatar
-                    src={previewUrl || profilePhoto}
-                    alt="Profile"
-                    sx={{ width: 140, height: 140 }}
+              <Stack spacing={1} alignItems={'center'}>
+                {removePhoto || (!previewUrl && !profilePhoto) ? (
+                  <RandomAvatar
+                    username={userName}
+                    gender={userGender}
+                    size={140}
                   />
-                </Box>
-              )}
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 1,
+                      position: 'relative',
+                      boxShadow: 'rgba(17, 12, 46, 0.15) 0px 28px 100px 0px',
+                      p: 0.5,
+                      borderRadius: 50,
+                    }}
+                  >
+                    <Avatar
+                      src={previewUrl || profilePhoto}
+                      alt="Profile"
+                      sx={{ width: 140, height: 140 }}
+                    />
+                  </Box>
+                )}
+                <Typography
+                  fontSize={'0.75rem'}
+                  color="text.secondary"
+                  fontWeight={'regular'}
+                >
+                  Max size: 1MB
+                </Typography>
+              </Stack>
 
               {/* UPLOAD PROFILE IMAGE */}
               <input
@@ -312,7 +347,6 @@ const EditAccountModal = ({
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
-
               {/* PROFILE BUTTONS */}
               <Stack direction={'column'} gap={2}>
                 <label htmlFor="photo-upload">
@@ -353,6 +387,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={UserRoundPen}
                   disabled={disableInputIfTeacher}
+                  required={true}
                 />
               </Grid>
 
@@ -366,6 +401,7 @@ const EditAccountModal = ({
                   errors={errors}
                   icon={UserRoundPen}
                   disabled={disableInputIfTeacher}
+                  required={true}
                 />
               </Grid>
 
@@ -377,6 +413,7 @@ const EditAccountModal = ({
                   label="Contact Number"
                   errors={errors}
                   disabled={disableInputIfTeacher}
+                  required={true}
                 />
               </Grid>
 

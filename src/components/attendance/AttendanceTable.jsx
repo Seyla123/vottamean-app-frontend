@@ -55,6 +55,7 @@ const AttendanceTable = ({
   const filter = useSelector((state) => state.attendance.filter);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [studentLimit, setStudentLimit] = useState(25);
 
   const [isExporting, setIsExporting] = useState(false);
   const convertDayToShorthand = (day) => {
@@ -147,12 +148,12 @@ const AttendanceTable = ({
       if (!table) return;
       // Convert HTML table to worksheet
       const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-  
+
       // Generate Excel file and trigger download
       XLSX.writeFile(wb, 'attendance_report.xlsx');
     } catch (error) {
       console.error('Error exporting table to XLSX :', error);
-    }finally {
+    } finally {
       setIsExporting(false);
     }
   };
@@ -187,28 +188,26 @@ const AttendanceTable = ({
           }
         });
         // Save the PDF
-        pdf.save(`attendance_reports_class_id_${filter.class}_${filter.startDate}_${filter.endDate}.pdf`);
-
+        pdf.save(
+          `attendance_reports_class_id_${filter.class}_${filter.startDate}_${filter.endDate}.pdf`,
+        );
       });
     } catch (error) {
       console.error('export pdf error : ', error);
-
     } finally {
-      
       setIsExporting(false);
+      setStudentLimit(25)
     }
   };
+  
 
   const PdfDownloadContent = ({
     students,
     dates,
     school,
     classData,
-    isHide = true,
     fontSizeCell = '0.5rem',
-    studentLimit,
     dateLimit,
-    forPreview = false,
   }) => {
     const chunkArray = (array, size) => {
       const result = [];
@@ -253,19 +252,18 @@ const AttendanceTable = ({
       width: '100%',
     };
     return (
-      <Box sx={isHide ? hideStyle : {}}>
+      <Box sx={ hideStyle }>
         {dateChunks.map((dateChunk, dateIndex) => {
           let number = 1;
           return studentChunks.map((studentChunk, studentIndex) => {
             return (
               <Paper
-                id={!forPreview ? `pdf-page-export` : ''}
+                id={`pdf-page-export`}
                 key={`${studentIndex}-${dateIndex}`}
                 sx={{
                   boxShadow: 'none',
-                  width: '100%',
-                  maxWidth: isHide || !forPreview ? '900px' : '100%',
-                  mx: 'auto',
+                  width: '230mm',
+                  height: '297mm',
                   padding: 2,
                   flexDirection: 'column',
                   gap: 2,
@@ -414,11 +412,13 @@ const AttendanceTable = ({
           selectedClasses={selectedClasses}
           selectedSubjects={selectedSubjects}
         />
-        <Box >
+        <Box>
           <ExportMenu
             handleExportPDF={exportPdfById}
             handleExportXLSX={exportTableToXLSX}
             isExporting={isExporting}
+            handleStudentLimit={setStudentLimit}
+            studentLimit={studentLimit}
           />
         </Box>
       </Stack>
@@ -429,7 +429,6 @@ const AttendanceTable = ({
           dates={dates}
           school={school}
           classData={classData}
-          studentLimit={rowsPerPage}
           dateLimit={6}
         />
         {isLoading ? (
@@ -440,7 +439,13 @@ const AttendanceTable = ({
               sx={{
                 boxShadow: 'none',
                 width: '100%',
-                maxWidth:{xs: '360px',sm:'700px', md:'1000px', lg:'1000px',xl:'1500px'},
+                maxWidth: {
+                  xs: '360px',
+                  sm: '700px',
+                  md: '1000px',
+                  lg: '1000px',
+                  xl: '1500px',
+                },
                 mx: 'auto',
                 padding: 2,
                 display: 'flex',
@@ -547,7 +552,7 @@ const AttendanceTable = ({
         )}
         <TablePagination
           component="div"
-          rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
+          rowsPerPageOptions={[1,5, 10, 15, 25, 50, 100]}
           count={classData?.student_count?.total_students || 0}
           page={page}
           onPageChange={handleChangePage}
@@ -561,4 +566,3 @@ const AttendanceTable = ({
 };
 
 export default AttendanceTable;
-

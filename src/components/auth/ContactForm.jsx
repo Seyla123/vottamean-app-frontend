@@ -86,6 +86,7 @@ const ContactForm = ({ handleNext, handleBack, handleFormChange }) => {
             multiline
             minRows={5}
             required={false}
+            maxLength={150}
           />
 
           <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>

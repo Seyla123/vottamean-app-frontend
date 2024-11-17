@@ -45,22 +45,22 @@ export const schoolNameSchema = Yup.string()
 export const firstNameSchema = Yup.string()
   .label('First name')
   .required('First name is required')
-  .min(2, 'School name must be at least 2 characters long')
-  .max(50, 'School name must be less than 50 characters')
+  .min(2, 'First name must be at least 2 characters long')
+  .max(20, 'First name must be less than 20 characters')
   .matches(
-    /^[A-Za-z]+( [A-Za-z]+)*$/,
-    'Name must contain only alphabetic characters and single spaces between words',
+    /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+    'First name must contain only alphabetic characters and may contain a single space',
   );
 
 // Last name validator
 export const lastNameSchema = Yup.string()
   .label('Last name')
   .required('Last name is required')
-  .min(2, 'School name must be at least 2 characters long')
-  .max(50, 'School name must be less than 50 characters')
+  .min(2, 'Last name must be at least 2 characters long')
+  .max(20, 'Last name must be less than 20 characters')
   .matches(
-    /^[A-Za-z]+( [A-Za-z]+)*$/,
-    'Name must contain only alphabetic characters and single spaces between words',
+    /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+    'Last name must contain only alphabetic characters and may contain a single space',
   );
 
 // Date of birth validator
@@ -68,7 +68,14 @@ export const dobSchema = Yup.string()
   .required('Date of birth is required')
   .matches(
     /^\d{4}-\d{2}-\d{2}$/,
-    'Date of birth must be in the format YYYY-MM-DD',
+    'Date of birth must be in the format YYYY-MM-DD'
+  )
+  .test(
+    'is-past-date',
+    'Date of birth cannot be in the future',
+    (value) => {
+      return value ? new Date(value) <= new Date() : false;
+    }
   );
 
 // Email validator for admin, teacher, student, and guardian
@@ -83,7 +90,7 @@ export const passwordSchema = Yup.string()
   .matches(/[a-zA-Z]/, 'Password must contain at least one letter')
   .matches(/[0-9]/, 'Password must contain at least one number')
   .matches(
-    /[!@#$%^&*()_+-\[\]{};':"\\|,.<>\/?]/,
+    /[!@#$%^&*_+\-]/,
     'Password must contain at least one valid special character',
   );
 
@@ -118,18 +125,27 @@ export const newPasswordConfirmSchema = Yup.string()
 export const phoneSchema = Yup.string()
   .trim()
   .required('Phone number is required')
-  .test(
-    'length',
-    'Phone number must be between 9 and 15 digits (excluding country code)',
-    (value) => {
-      // Extract the number part (after the country code)
-      const numberPart = value && value.replace(/[^0-9]/g, '');
-      return numberPart && numberPart.length >= 9 && numberPart.length <= 15;
-    },
-  )
   .matches(
     /^\+\d{1,3}\s\d{1,3}.*$/,
     'Phone number must start with a country code and area code (e.g., +855 23 ...)',
+  )
+  .matches(
+    /^\+\d{1,3}\s(?!0)/,
+    'Phone number should not start with a zero after the country code',
+  )
+  .test(
+    'length',
+    'Phone number must be between 8 and 15 digits (excluding country code)',
+    (value) => {
+      const numberPart =
+        value &&
+        value
+          .split(' ')
+          .slice(1)
+          .join('')
+          .replace(/[^0-9]/g, '');
+      return numberPart && numberPart.length >= 8 && numberPart.length <= 15;
+    },
   );
 
 // Address validator
@@ -137,7 +153,7 @@ export const addressSchema = Yup.string()
   .trim()
   .nullable()
   .notRequired()
-  .max(200, 'Address must be less than 200 characters');
+  .max(255, 'Address must be less than 255 characters');
 
 // Age validator
 export const ageSchema = Yup.number()
@@ -156,10 +172,14 @@ export const genderSchema = Yup.string()
 export const ClassValidator = Yup.object().shape({
   class_name: Yup.string()
     .required('Class name is required')
-    .max(50, 'Class name is too long'),
+    .max(50, 'Class name must be less than 50 characters')
+    .matches(
+      /^[A-Za-z\d\s]+$/,
+      'Class name can contain only letters, numbers, and spaces',
+    ),
   description: Yup.string()
     .trim()
-    .max(225, 'description is too long')
+    .max(255, 'Description must be less than 255 characters')
     .optional(),
 });
 
@@ -168,10 +188,14 @@ export const SubjectValidator = Yup.object().shape({
   subject_name: Yup.string()
     .required('Subject name is required')
     .min(3, 'Subject name must be 3 characters up')
-    .max(50, 'Subject name is too long'),
+    .max(50, 'Subject must be less than 50 characters')
+    .matches(
+      /^[A-Za-z\d\s]+$/,
+      'Subject name can contain only letters, numbers, and spaces',
+    ),
   description: Yup.string()
     .trim()
-    .max(225, 'description is too long')
+    .max(255, 'Description must be less than 255 characters')
     .optional(),
 });
 
@@ -201,10 +225,12 @@ export const subjectSchema = Yup.string().required('Subject is required');
 export const createSessionSchema = Yup.string().required(
   'This field is required',
 );
-// Class validation
+
+// Guardian Relationship validation
 export const relationshipSchema = Yup.string()
   .required('Relationship is required')
-  .matches(/^[a-zA-Z]+$/, 'Only alphabets are allowed');
+  .matches(/^[a-zA-Z\s]+$/, 'Only alphabets and spaces are allowed');
+
 
 // Dynamic form schema generator
 export const createFormSchema = (fields) => {

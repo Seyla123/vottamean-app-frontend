@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tab, Typography, Card, Box } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -29,18 +29,23 @@ import LoadingPage from '../../LoadingPage';
 import SomethingWentWrong from '../../../components/common/SomethingWentWrong';
 import TitleHeader from '../../../components/common/TitleHeader';
 
-const AccountSettingsPage = () => {
+const AccountSettingsPageTeacher = () => {
   // - Initialize dispatch and navigate hooks
   const dispatch = useDispatch();
 
   // Redux API calls to get user profile
-  const { data: user, isLoading, error } = useGetUserProfileQuery();
+  const { data: user, isLoading, error, refetch } = useGetUserProfileQuery();
   // Redux API calls to delete user
   const [deleteUserAccount] = useDeleteUserAccountMutation();
 
+  // State for managing the photo URL (either blob or server URL)
+  const [photoUrl, setPhotoUrl] = useState(null);
+  // State for storing the actual File object when uploading
+  const [photoFile, setPhotoFile] = useState(null);
   // Local state for transformed data
   const [userData, setUserData] = useState({
     userProfile: {},
+    schoolProfile: {},
   });
 
   const [schoolProfile, setSchoolProfile] = useState({
@@ -49,55 +54,109 @@ const AccountSettingsPage = () => {
     schoolAddress: '',
     schoolPhoneNumber: '',
   });
+
   // Local state for tab
   const [value, setValue] = useState('1');
 
   // Determine if the screen size is mobile
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
-  // - When the user data is fetched, format the data and set the user data in the state
   useEffect(() => {
     if (user) {
       const transformedData = getUserProfileData(user);
-      const schoolData = getSchoolData(user);
-      
-      setUserData(transformedData);
-      setSchoolProfile({
-        schoolId: schoolData?.school_id,
-        schoolName: schoolData?.school_name,
-        schoolAddress: schoolData?.school_address,
-        schoolPhoneNumber: schoolData?.school_phone_number,
+      // Only update the photo if we don't have a blob URL
+      setPhotoUrl(transformedData.photo);
+      setUserData({
+        userProfile: transformedData.userProfile,
+        schoolProfile: transformedData.schoolProfile,
       });
-      dispatch(updateFormData(transformedData));
     }
-  }, [user, dispatch]);
+  }, [user]);
 
-    // Handle delete button click
-    const handleDeleteAccount = async () => {
-      try {
-        await deleteUserAccount().unwrap();
+  // Cleanup function
+  const cleanupBlobUrl = (url) => {
+    if (url?.startsWith('blob:')) {
+      URL.revokeObjectURL(url);
+    }
+  };
 
-        window.location.href = '/auth/signin';
-      } catch (error) {
-        console.error('Failed to delete account:', error);
-      }
+  // Clean Up when photo URL changes
+  useEffect(() => {
+    return () => {
+      cleanupBlobUrl(photoUrl);
     };
+  }, []);
 
-  // Handle tab switch
+  // Handle profile update
+  const handleProfileUpdate = async (newPhoto) => {
+    try {
+      // Handle photo removal
+      if (newPhoto === null) {
+        // Cleanup and set photo URL to null immediately
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(null);
+        setPhotoFile(null);
+        return;
+      }
+
+      // Handle new photo upload (File object)
+      if (newPhoto instanceof File) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoFile(newPhoto);
+        const newBlobUrl = URL.createObjectURL(newPhoto);
+        setPhotoUrl(newBlobUrl);
+      }
+      // Handle server URL update
+      else if (typeof newPhoto === 'string' && !newPhoto.startsWith('blob:')) {
+        cleanupBlobUrl(photoUrl);
+        setPhotoUrl(newPhoto);
+        setPhotoFile(null);
+      }
+
+      // Only refetch if there's a need (e.g., after uploading a new photo)
+      await refetch();
+    } catch (error) {
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: `Failed to update profile photo: ${error?.data?.message}`,
+          severity: 'error',
+        }),
+      );
+    }
+  };
+  
+  
+  // Handle delete button click
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUserAccount().unwrap();
+
+      window.location.href = '/auth/signin';
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
+  };
+
+  // Handle tab switch with photo preservation
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+
+  // Loading state
   if (isLoading) {
     return <LoadingPage />;
   }
 
+  // Error state handling
   if (error) {
     return <SomethingWentWrong description={error?.data?.message} />;
   }
+
+
   return (
-    <FormComponent
-    >
+    <FormComponent>
       <TitleHeader title="Account Settings" />
       <Card sx={shadow}>
         <Box
@@ -147,10 +206,10 @@ const AccountSettingsPage = () => {
             <TabPanel sx={{ flexGrow: 1 }} value="1">
               {/* MY PROFILE VIEW */}
               <MyProfileView
-                title={'My Profile'}
-                profilePhoto={userData.photo}
-                userData={userData.userProfile}
-                schoolProfileData={schoolProfile}
+                profilePhoto={photoUrl}
+                userData={userData?.userProfile}
+                schoolProfileData={userData?.schoolProfile}
+                onProfileUpdate={handleProfileUpdate}
               />
             </TabPanel>
 
@@ -165,4 +224,4 @@ const AccountSettingsPage = () => {
   );
 };
 
-export default AccountSettingsPage;
+export default AccountSettingsPageTeacher;

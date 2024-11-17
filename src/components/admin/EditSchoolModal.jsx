@@ -75,7 +75,7 @@ const EditSchoolModal = ({ open, onClose }) => {
       school_phone_number: '',
     },
   });
-  
+
   // - useEffect hook to fetch user profile data and set default values
   useEffect(() => {
     if (isSuccess && userProfile) {
@@ -108,6 +108,7 @@ const EditSchoolModal = ({ open, onClose }) => {
           severity: 'info',
         }),
       );
+      onClose();
       return;
     }
 
@@ -152,7 +153,13 @@ const EditSchoolModal = ({ open, onClose }) => {
   }
 
   if (!isSuccess || !userProfile) {
-    return <Typography variant="h6">No user data found</Typography>;
+    dispatch(
+      setSnackbar({
+        open: true,
+        message: 'No user data found.',
+        severity: 'error',
+      }),
+    );
   }
 
   return (
@@ -175,12 +182,12 @@ const EditSchoolModal = ({ open, onClose }) => {
             <Grid item xs={12} sm={6}>
               {/* SCHOOL NAME INPUT */}
               <InputField
+                required={true}
                 name="school_name"
                 control={control}
                 label="School Name"
                 placeholder="Enter your school name"
                 errors={errors}
-                icon={NotebookPen}
               />
             </Grid>
 
@@ -202,8 +209,9 @@ const EditSchoolModal = ({ open, onClose }) => {
                 label="Street Address"
                 placeholder="Phnom Penh, Street 210, ..."
                 errors={errors}
-                multiline
+                multiline={true}
                 minRows={5}
+                maxLength={225}
                 required={false}
               />
             </Grid>
@@ -216,7 +224,13 @@ const EditSchoolModal = ({ open, onClose }) => {
           Cancel
         </StyledButton>
         {/* SAVE CHANGES BUTTON */}
-        <StyledButton size="small" type="submit" variant="contained" onClick={handleSubmit(onSubmit)}>
+        <StyledButton
+          size="small"
+          type="submit"
+          variant="contained"
+          onClick={handleSubmit(onSubmit)}
+          disabled={isUpdateLoading}
+        >
           {isUpdateLoading ? 'Saving...' : 'Save Changes'}
         </StyledButton>
       </DialogActions>

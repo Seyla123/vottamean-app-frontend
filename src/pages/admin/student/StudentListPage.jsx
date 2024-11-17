@@ -6,7 +6,7 @@ import StyledButton from '../../../components/common/StyledMuiButton';
 import FormComponent from '../../../components/common/FormComponent';
 import FilterComponent from '../../../components/common/FilterComponent';
 import SearchComponent from '../../../components/common/SearchComponent';
-import { PlusIcon, } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import {
   useDeleteStudentMutation,
   useGetAllStudentsQuery,
@@ -68,7 +68,7 @@ const StudentListPage = () => {
   //classes : the state for filter classes
   const [classes, setClasses] = useState(allSelector);
 
-  // open: the state of the delete confirmation moda
+  // open: the state of the delete confirmation modal
   const { modal } = useSelector((state) => state.ui);
 
   //useGetAllStudentsQuery : a hook for return function to fetch students record
@@ -194,8 +194,14 @@ const StudentListPage = () => {
 
   // Handle Update clicked
   const handleEdit = (student) => {
-    setSelectedStudentId(student.id);
-    setIsUpdateOpen(true);
+    // First close and clear everything
+    setIsUpdateOpen(false);
+    setSelectedStudentId(null);
+
+    setTimeout(() => {
+      setSelectedStudentId(student.id);
+      setIsUpdateOpen(true);
+    }, 100);
   };
 
   // Handle delete one clicked
@@ -299,8 +305,12 @@ const StudentListPage = () => {
       />
       {/* Update modal */}
       <UpdateStudentForm
+        key={selectedStudentId}
         isOpen={isUpdateOpen}
-        onClose={() => setIsUpdateOpen(false)}
+        onClose={() => {
+          setIsUpdateOpen(false);
+          setSelectedStudentId(null);
+        }}
         studentId={selectedStudentId}
       />
     </FormComponent>

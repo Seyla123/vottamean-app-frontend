@@ -1,62 +1,142 @@
-# Define pipeline stages
+image: node:20
+
 stages:
   - build
-  - deploy
+  - test
+  - deploy review
+  - deploy staging
+  - deploy production
+  - production test
 
-# Build Docker image job
-build-frontend:
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+variables:
+  STAGING_DOMAIN: $STAGING_DOMAIN
+  PRODUCTION_DOMAIN: $PRODUCT_DOMAIN
+  DEPLOY_USER: $DEPLOY_USER
+  DEPLOY_HOST: $DEPLOY_HOST
+  SSH_EC2_PRIVATE_KEY: $SSH_EC2_PRIVATE_KEY  # Store your PEM key content as a CI/CD variable
+  DIST_DEPLOY_PATH : $DIST_DEPLOY_PATH
+
+build website:
   stage: build
-  image: docker:latest
-  services:
-    - name: docker:dind
-      command: ['--insecure-registry=git.clp.kr:5050']
-  variables:
-    DOCKER_DRIVER: overlay2
   script:
-    # Log into Docker registry
-    - echo "Logging in to Docker registry..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-
-    # Build and push Docker image
-    - echo "Building Docker image..."
-    - docker build -t "$CI_REGISTRY_IMAGE/frontend:latest" -f ./DockerFile .
-    - echo "Pushing Docker image to the registry..."
-    - docker push "$CI_REGISTRY_IMAGE/frontend:latest"
-
+    - npm install
+    - npm run build
+    - ls -la ./dist  # Verify dist directory contents
+  artifacts:
+    paths:
+      - ./dist
   only:
     - main
     - develop
+    - merge_requests  # Run on merge requests
 
-# Deploy job using rsync
-deploy-frontend:
-  stage: deploy
-  image: ubuntu:20.04
-  before_script:
-    # Install rsync and SSH client
-    - apt-get update && apt-get install -y rsync openssh-client
-
+test artifacts:
+  stage: test
+  image: alpine
   script:
-    # Set up SSH
-    - echo "Setting up SSH..."
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H ec2-44-206-226-251.compute-1.amazonaws.com >> ~/.ssh/known_hosts
-    - eval $(ssh-agent -s)
+    - grep -q "Vottamean" ./dist/index.html
+  dependencies:
+    - build website
+  only:
+    - main
+    - develop
+    - merge_requests  # Run on merge requests
 
-    # SSH into EC2, log in to the Docker registry, and restart the application
-    - echo "Logging in to Docker registry and restarting application on EC2..."
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@ec2-44-206-226-251.compute-1.amazonaws.com "
-      echo '$CI_REGISTRY_PASSWORD' | sudo docker login -u '$CI_REGISTRY_USER' --password-stdin $CI_REGISTRY &&
-      cd /home/ubuntu/frontend &&
-      sudo docker pull $CI_REGISTRY_IMAGE/frontend:latest &&
-      sudo docker-compose -f /home/ubuntu/frontend/docker-compose.yml up -d --build &&
-      sudo docker cp frontend:/usr/share/nginx/html /home/ubuntu/frontend-project
-      "
+test serve:
+  stage: test
+  script:
+    - npm install -g serve
+    - serve -s dist -l 3000 &
+    - sleep 3
+    - curl -s http://localhost:3000 | grep -q "Vottamean"
+  dependencies:
+    - build website
+  only:
+    - main
+    - develop
+    - merge_requests  # Run on merge requests
 
+deploy review:
+  stage: deploy review
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://linkfly-$CI_ENVIRONMENT_SLUG.surge.sh
+    on_stop: stop review
+  script:
+    - npm install --global surge
+    - surge --project ./dist --domain linkfly-$CI_ENVIRONMENT_SLUG.surge.sh
+  dependencies:
+    - build website
+  only:
+    - merge_requests  # Only run on merge requests
+
+stop review:
+  stage: deploy review
+  only:
+    - merge_requests  # Only run on merge requests
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Remove review app"
+    - npm install --global surge
+    - surge teardown linkfly-$CI_ENVIRONMENT_SLUG.surge.sh
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+deploy staging:
+  stage: deploy staging
+  environment:
+    name: staging
+    url: https://$STAGING_DOMAIN
+  script:
+    - npm install --global surge
+    - surge --project ./dist --domain $STAGING_DOMAIN
+  only: 
+    - main  # Only run on main
+    - develop
+
+deploy production:
+  stage: deploy production
   environment:
     name: production
-    url: https://web.vottamean.com
-  only:
+    url: https://$PRODUCTION_DOMAIN
+  before_script:
+    - apt-get update -y && apt-get install -y openssh-client rsync   # Ensure SSH client is available
+    - eval $(ssh-agent -s)  # Start SSH agent
+    - echo "$SSH_EC2_PRIVATE_KEY" | tr -d '\r' > private_key.pem  # Create key file
+    - chmod 400 private_key.pem  # Set the appropriate permissions for the key
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts  # Trust the host key
+
+  script:
+    - echo "Deploying to EC2 staging..."
+    - rsync -avz -e "ssh -i private_key.pem" ./dist/ ubuntu@$DEPLOY_HOST:$DIST_DEPLOY_PATH
+    - ssh -i "private_key.pem" ubuntu@$DEPLOY_HOST "
+      echo 'Deployment complete!' && 
+      ls -l $DIST_DEPLOY_PATH &&
+      sudo nginx -t &&
+      sudo systemctl restart nginx &&
+      sudo systemctl status nginx
+      "
+    - if [ $? -eq 0 ]; then echo "SSH connection successful!"; else echo "SSH connection failed!"; fi
+  only: 
+    - develop 
     - main
-    - develop
+
+production test:
+  image: alpine
+  stage: production test
+  script: 
+    - apk add --no-cache curl
+    - curl -s https://$PRODUCTION_DOMAIN
+    - curl -s https://$PRODUCTION_DOMAIN | grep -q "Vottamean"
+  only: 
+    - develop  # Only run on main
+    - main
