@@ -211,7 +211,7 @@ const EditSchoolModal = ({ open, onClose }) => {
                 errors={errors}
                 multiline={true}
                 minRows={5}
-                maxLength={150}
+                maxLength={225}
                 required={false}
               />
             </Grid>
