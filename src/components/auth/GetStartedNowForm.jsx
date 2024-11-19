@@ -125,6 +125,7 @@ const GetStartedNowForm = ({ handleNext, handleFormChange }) => {
         <Stack direction={'column'} gap={3}>
           {/* EMAIL INPUT */}
           <InputField
+            required={true}
             name="email"
             control={control}
             label="Email"
