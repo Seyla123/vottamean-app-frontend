@@ -10,10 +10,10 @@ import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/new-logo-name.svg';
-import image1 from '../../assets/images/image-1.jpg';
-import image2 from '../../assets/images/image-2.jpg';
-import image3 from '../../assets/images/image-3.jpg';
-import image4 from '../../assets/images/image-4.webp';
+import image1 from '../../assets/images/signup-image1.svg';
+import image2 from '../../assets/images/signup-image2.svg';
+import image3 from '../../assets/images/signup-image3.svg';
+import image4 from '../../assets/images/signup-image4.svg';
 
 const SignupPage = () => {
   // Dispatch the action to update the form data
@@ -88,13 +88,14 @@ const SignupPage = () => {
   const CustomIconBox = ({ icon }) => (
     <Box
       sx={{
+        color: 'white',
         width: 40,
         height: 40,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 2,
-        backgroundColor: '#fff',
+        backgroundColor: '#6c63ff',
         padding: '8px',
       }}
     >
@@ -153,7 +154,7 @@ const SignupPage = () => {
                   <StepLabel
                     icon={<CustomIconBox icon={step.icon} />}
                     optional={
-                      <Typography variant="body2" color="grey.300">
+                      <Typography variant="body2" color="grey.200">
                         {step.description}
                       </Typography>
                     }
@@ -211,7 +212,7 @@ const SignupPage = () => {
               width: '100%',
               height: '100%',
               background:
-                ' linear-gradient(145deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
+                ' linear-gradient(145deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 40%)',
               pointerEvents: 'none',
             }}
           />
