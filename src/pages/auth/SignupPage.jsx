@@ -10,10 +10,10 @@ import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/new-logo-name.svg';
-import image1 from '../../assets/images/signup-image1.svg';
-import image2 from '../../assets/images/signup-image2.svg';
-import image3 from '../../assets/images/signup-image3.svg';
-import image4 from '../../assets/images/signup-image4.svg';
+import image1 from '../../assets/images/image-01.jpg';
+import image2 from '../../assets/images/image-02.jpg';
+import image3 from '../../assets/images/image-03.jpg';
+import image4 from '../../assets/images/image-04.jpg';
 
 const SignupPage = () => {
   // Dispatch the action to update the form data
@@ -97,6 +97,7 @@ const SignupPage = () => {
         borderRadius: 2,
         backgroundColor: '#6c63ff',
         padding: '8px',
+        boxShadow: '0 0 20px 5px #b2aeff'
       }}
     >
       {icon}
@@ -141,7 +142,12 @@ const SignupPage = () => {
             <Stepper
               activeStep={activeStep}
               orientation="vertical"
-              sx={{ mt: 4 }}
+              sx={{
+                mt: 4,
+                '& .MuiStepConnector-line': {
+                  borderColor: 'white',
+                  borderWidth: '2px'
+              }}}
             >
               {steps.map((step, index) => (
                 <Step
@@ -192,7 +198,7 @@ const SignupPage = () => {
               alt={`Image ${index + 1}`}
               style={{
                 position: 'absolute',
-                width: '100%',
+                width: index === 1 ? '105%' : '121%',
                 height: '100%',
                 objectFit: 'cover',
                 opacity: activeStep === index ? 1 : 0,
