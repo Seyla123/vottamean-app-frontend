@@ -85,7 +85,7 @@ const SignupPage = () => {
     />,
   ];
 
-  const CustomIconBox = ({ icon }) => (
+  const CustomIconBox = ({ icon, activeIcon }) => (
     <Box
       sx={{
         color: 'white',
@@ -97,7 +97,7 @@ const SignupPage = () => {
         borderRadius: 2,
         backgroundColor: '#6c63ff',
         padding: '8px',
-        boxShadow: '0 0 20px 5px #b2aeff'
+        boxShadow: activeIcon ? '0 0 20px 5px #b2aeff' : 'none'
       }}
     >
       {icon}
@@ -158,7 +158,7 @@ const SignupPage = () => {
                   }}
                 >
                   <StepLabel
-                    icon={<CustomIconBox icon={step.icon} />}
+                    icon={<CustomIconBox icon={step.icon} activeIcon={activeStep === index}/>}
                     optional={
                       <Typography variant="body2" color="grey.200">
                         {step.description}
