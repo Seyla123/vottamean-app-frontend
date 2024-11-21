@@ -11,9 +11,9 @@ import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/new-logo-name.svg';
 import image1 from '../../assets/images/image-01.jpg';
-import image2 from '../../assets/images/image-02.jpg';
-import image3 from '../../assets/images/image-03.jpg';
-import image4 from '../../assets/images/image-04.jpg';
+import image2 from '../../assets/images/image-a.jpeg';
+import image3 from '../../assets/images/image-b.jpeg';
+import image4 from '../../assets/images/image-c.jpeg';
 
 const SignupPage = () => {
   // Dispatch the action to update the form data
@@ -198,7 +198,7 @@ const SignupPage = () => {
               alt={`Image ${index + 1}`}
               style={{
                 position: 'absolute',
-                width: index === 1 ? '105%' : '121%',
+                width: index === 0 || 3 ? '121%': '100%',
                 height: '100%',
                 objectFit: 'cover',
                 opacity: activeStep === index ? 1 : 0,
