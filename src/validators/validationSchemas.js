@@ -166,7 +166,7 @@ export const ageSchema = Yup.number()
 // Gender validator
 export const genderSchema = Yup.string()
   .required('Gender is required')
-  .oneOf(['Male', 'Female', 'Other'], 'Please select a valid gender');
+  .oneOf(['Male', 'Female'], 'Please select a valid gender');
 
 //Class Valid
 export const ClassValidator = Yup.object().shape({

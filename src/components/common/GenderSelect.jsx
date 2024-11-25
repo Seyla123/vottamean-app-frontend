@@ -13,7 +13,6 @@ import { Controller } from 'react-hook-form';
 import GroupIcon from '@mui/icons-material/Group';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
-import TransgenderIcon from '@mui/icons-material/Transgender';
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
@@ -54,8 +53,6 @@ const GenderSelect = ({
         return <MaleIcon />;
       case 'Female':
         return <FemaleIcon />;
-      case 'Other':
-        return <TransgenderIcon />;
       default:
         return <GroupIcon />;
     }
@@ -102,7 +99,6 @@ const GenderSelect = ({
           >
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
           </StyledTextField>
         )}
       />

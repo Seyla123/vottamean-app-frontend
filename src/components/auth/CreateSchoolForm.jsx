@@ -106,6 +106,7 @@ const CreateSchoolForm = ({
         <Stack direction={'column'} gap={3}>
           {/* SCHOOL NAME INPUT */}
           <InputField
+            required={true}
             name="school_name"
             control={control}
             label="School Name"
