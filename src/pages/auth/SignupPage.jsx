@@ -10,10 +10,10 @@ import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/new-logo-name.svg';
-import image1 from '../../assets/images/image-01.jpg';
-import image2 from '../../assets/images/image-001.webp';
-import image3 from '../../assets/images/ok.webp';
-import image4 from '../../assets/images/image-c.jpeg';
+import image1 from '../../assets/images/image-A.jpg';
+import image2 from '../../assets/images/image-B.webp';
+import image3 from '../../assets/images/image-C.webp';
+import image4 from '../../assets/images/image-D.jpeg';
 
 const SignupPage = () => {
   // Dispatch the action to update the form data
