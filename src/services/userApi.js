@@ -10,7 +10,7 @@ export const userApi = baseApi.injectEndpoints({
         method: 'GET',
         credentials: 'include',
       }),
-      providesTags: ['Users'],
+      providesTags: ['Auth'],
     }),
 
     // Update user info (including photo)

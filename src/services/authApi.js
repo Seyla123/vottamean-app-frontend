@@ -41,6 +41,7 @@ export const authApi = baseApi.injectEndpoints({
         body: user,
         credentials: 'include',
       }),
+      providesTags: ['Auth'],
     }),
 
     // Logout

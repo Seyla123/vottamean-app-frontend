@@ -9,11 +9,13 @@ const ProtectedRoutes = ({ teacherSite, adminSite }) => {
   // Fetch authentication state from Redux
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
+
   // Call checkAuth query to verify session from the server
   const { isLoading } = useCheckAuthQuery();
 
   // If checkAuth query is still loading, we can render a loading screen
   if (isLoading) return <LoadingPage />;
+
 
   // If not authenticated, redirect to the login page
   if (!isAuthenticated) {
