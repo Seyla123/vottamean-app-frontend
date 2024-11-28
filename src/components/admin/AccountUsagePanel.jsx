@@ -22,6 +22,7 @@ import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import CancelSubscription from './CancelSubscription';
 import { useGetPaymentQuery } from '../../services/paymentApi';
 import { formatDate } from '../../utils/formatHelper';
+import LoadingCircle from '../loading/LoadingCircle';
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
@@ -58,58 +59,60 @@ const AccountUsagePanel = ({
       <Typography variant="h5" py={4} fontWeight={'bold'}>
         Account Usage
       </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} md={8}>
-          {currentSubscription === 'None' ? (
-            <NoSubscription setValue={setValue} />
-          ) : (
-            <UsageCard
-              activePlan={activePlan}
-              setValue={setValue}
-              subscritionDetails={subscritionDetails}
-            />
-          )}
-        </Grid>
-        <Grid item xs={12} sm={12} md={4}>
-          <Stack spacing={3}>
-            {activePlan && (
-              <SubcriptionCard
-                currentPlane={subscritionDetails?.planType}
-                startDate={subscritionDetails?.startDate}
-                expireDate={subscritionDetails?.endDate}
+      {isLoading  ? <LoadingCircle /> :
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} md={8}>
+            {currentSubscription === 'None' ? (
+              <NoSubscription setValue={setValue} />
+            ) : (
+              <UsageCard
+                activePlan={activePlan}
+                setValue={setValue}
+                subscritionDetails={subscritionDetails}
               />
             )}
-            <Card sx={shadow}>
-              <CardContent>
-                <Typography variant="body1" gutterBottom>
-                  You need some help to know the right plan that fits your
-                  needs?
-                  <br />
-                  Please let our support team answer you.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <StyledButton
-                  size="small"
-                  onClick={() =>
-                    window.location.assign('mailto:vottamean.app@gmail.com')
-                  }
-                >
-                  Contact Our Support
-                </StyledButton>
-              </CardActions>
-            </Card>
-          </Stack>
+          </Grid>
+          <Grid item xs={12} sm={12} md={4}>
+            <Stack spacing={3}>
+              {activePlan && (
+                <SubcriptionCard
+                  currentPlane={subscritionDetails?.planType}
+                  startDate={subscritionDetails?.startDate}
+                  expireDate={subscritionDetails?.endDate}
+                />
+              )}
+              <Card sx={shadow}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    You need some help to know the right plan that fits your
+                    needs?
+                    <br />
+                    Please let our support team answer you.
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'flex-end' }}>
+                  <StyledButton
+                    size="small"
+                    onClick={() =>
+                      window.location.assign('mailto:vottamean.app@gmail.com')
+                    }
+                  >
+                    Contact Our Support
+                  </StyledButton>
+                </CardActions>
+              </Card>
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
+      }
     </Box>
   );
 };
 
 const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  const studentPercentage = subscritionDetails?.percentageStudentLimit;
-  const teacherPercentage = subscritionDetails?.percentageTeacherLimit;
+  const studentPercentage = subscritionDetails?.percentageStudentLimit || 0;
+  const teacherPercentage = subscritionDetails?.percentageTeacherLimit || 0;
 
   const visibleFeatures = showAllFeatures
     ? activePlan?.features
@@ -262,7 +265,6 @@ const NoSubscription = ({ setValue }) => {
 };
 
 const SubcriptionCard = ({ currentPlane, startDate, expireDate }) => {
-  console.log(currentPlane);
   return (
     <Card sx={{ height: '100%', boxShadow: shadow }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

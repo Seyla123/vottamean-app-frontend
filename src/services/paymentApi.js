@@ -19,6 +19,7 @@ export const paymentApi = baseApi.injectEndpoints({
         method: 'POST',
         body: sessionData,
       }),
+      providesTags: ['Payments'],
     }),
 
     // get session data from Stripe
@@ -38,6 +39,7 @@ export const paymentApi = baseApi.injectEndpoints({
         body: paymentData,
       }),
     }),
+    providesTags: ['Payments'],
   }),
 });
 
