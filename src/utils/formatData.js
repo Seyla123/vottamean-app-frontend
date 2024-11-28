@@ -239,12 +239,12 @@ export const getUserProfileDataLayout = (user) => {
     };
   }
 
-  const profileKey = getProfileKey(user.data.role);
-  const profileInfo = user.data[profileKey]?.Info;
+  const profileKey = getProfileKey(user?.data?.role);
+  const profileInfo = user?.data[profileKey]?.Info;
   const photo = profileInfo?.photo ?? '';
 
   return {
-    username: capitalize(`${profileInfo.first_name} ${profileInfo.last_name}`),
+    username: capitalize(`${profileInfo?.first_name} ${profileInfo?.last_name}`),
     email: user.data.email || 'Not provided',
     photo,
   };
