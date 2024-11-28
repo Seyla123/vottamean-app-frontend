@@ -10,10 +10,10 @@ import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/new-logo-name.svg';
-import image1 from '../../assets/images/image-01.jpg';
-import image2 from '../../assets/images/image-a.jpeg';
-import image3 from '../../assets/images/image-b.jpeg';
-import image4 from '../../assets/images/image-c.jpeg';
+import image1 from '../../assets/images/image-classPractice.jpeg';
+import image4 from '../../assets/images/image-teamwork.jpeg';
+import image3 from '../../assets/images/image-classActivity.jpeg';
+import image2 from '../../assets/images/teacher.jpeg';
 
 const SignupPage = () => {
   // Dispatch the action to update the form data
@@ -198,7 +198,7 @@ const SignupPage = () => {
               alt={`Image ${index + 1}`}
               style={{
                 position: 'absolute',
-                width: index === 0 || 3 ? '121%': '100%',
+                width: index === 0 || 1 ? '120%': '110%',
                 height: '100%',
                 objectFit: 'cover',
                 opacity: activeStep === index ? 1 : 0,
