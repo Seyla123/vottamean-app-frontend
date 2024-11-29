@@ -99,7 +99,6 @@ deploy staging:
     - surge --project ./dist --domain $STAGING_DOMAIN
   only: 
     - main  # Only run on main
-    - develop
 
 deploy production:
   stage: deploy production
@@ -127,7 +126,6 @@ deploy production:
       "
     - if [ $? -eq 0 ]; then echo "SSH connection successful!"; else echo "SSH connection failed!"; fi
   only: 
-    - develop 
     - main
 
 production test:
@@ -138,5 +136,4 @@ production test:
     - curl -s https://$PRODUCTION_DOMAIN
     - curl -s https://$PRODUCTION_DOMAIN | grep -q "Vottamean"
   only: 
-    - develop  # Only run on main
     - main

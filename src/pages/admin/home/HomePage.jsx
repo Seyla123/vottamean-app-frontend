@@ -34,36 +34,6 @@ import StyledButton from '../../../components/common/StyledMuiButton';
 import { Link } from 'react-router-dom';
 import { truncate } from '../../../utils/truncate';
 
-const teacherArr = [
-  {
-    id: 1,
-    name: 'Sokha Seng',
-    gender: 'Female',
-    email: 'sokha.seng@example.com',
-    phonenumber: '012 345 678',
-  },
-  {
-    id: 2,
-    name: 'Vuthy Vong',
-    gender: 'Male',
-    email: 'vuthy.vong@example.com',
-    phonenumber: '098 765 432',
-  },
-  {
-    id: 3,
-    name: 'Sopheaktra Sorn',
-    gender: 'Male',
-    email: 'sopheaktra.sorn@example.com',
-    phonenumber: '012 987 654',
-  },
-  {
-    id: 4,
-    name: 'Sovannary Seng',
-    gender: 'Female',
-    email: 'sovannary.seng@example.com',
-    phonenumber: '098 123 456',
-  },
-];
 const shortcutCards = [
   {
     title: 'Add Teachers',
@@ -160,12 +130,13 @@ function HomePage() {
   useEffect(() => {
     if (userDataProfile?.data?.subscriptions?.length > 0) {
       const lastSubscription = userDataProfile.data.subscriptions.at(-1);
+      
       setPaymentStatus(lastSubscription?.plan_type || null);
     } else {
       setPaymentStatus(null);
     }
   }, [userDataProfile]);
-
+  
   // Get the current hour to determine the appropriate greeting
   const currentHour = new Date().getHours();
 
@@ -300,7 +271,7 @@ function HomePage() {
       >
         <TitleHeader title={'Home'} />
 
-        {paymentStatus === 'basic' ? (
+        {paymentStatus === 'basic' || !paymentStatus ? (
           <Link to={'/admin/payment'}>
             <StyledButton
               variant={'outlined'}
