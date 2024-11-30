@@ -400,8 +400,8 @@ export const validationSchema = yup.object({
     // Transform the value before validation
     .required('Gender is required')
     .oneOf(
-      ['Male', 'Female', 'Other'],
-      'Gender must be either Male, Female, or Other',
+      ['Male', 'Female'],
+      'Gender must be either Male or Female',
     ),
   dob: yup
     .date()

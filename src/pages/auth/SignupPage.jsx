@@ -10,10 +10,10 @@ import { User, Users, Contact, School } from 'lucide-react';
 import EmailSentSucces from '../../components/auth/EmailSentSucces';
 // IMAGES & ICONS
 import Logo from '../../assets/images/new-logo-name.svg';
-import image1 from '../../assets/images/image-1.jpg';
-import image2 from '../../assets/images/image-2.jpg';
-import image3 from '../../assets/images/image-3.jpg';
-import image4 from '../../assets/images/image-4.webp';
+import image1 from '../../assets/images/image-classPractice.jpeg';
+import image4 from '../../assets/images/image-teamwork.jpeg';
+import image3 from '../../assets/images/image-classActivity.jpeg';
+import image2 from '../../assets/images/teacher.jpeg';
 
 const SignupPage = () => {
   // Dispatch the action to update the form data
@@ -85,17 +85,19 @@ const SignupPage = () => {
     />,
   ];
 
-  const CustomIconBox = ({ icon }) => (
+  const CustomIconBox = ({ icon, activeIcon }) => (
     <Box
       sx={{
+        color: 'white',
         width: 40,
         height: 40,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 2,
-        backgroundColor: '#fff',
+        backgroundColor: '#6c63ff',
         padding: '8px',
+        boxShadow: activeIcon ? '0 0 20px 5px #b2aeff' : 'none'
       }}
     >
       {icon}
@@ -140,7 +142,12 @@ const SignupPage = () => {
             <Stepper
               activeStep={activeStep}
               orientation="vertical"
-              sx={{ mt: 4 }}
+              sx={{
+                mt: 4,
+                '& .MuiStepConnector-line': {
+                  borderColor: 'white',
+                  borderWidth: '2px'
+              }}}
             >
               {steps.map((step, index) => (
                 <Step
@@ -151,9 +158,9 @@ const SignupPage = () => {
                   }}
                 >
                   <StepLabel
-                    icon={<CustomIconBox icon={step.icon} />}
+                    icon={<CustomIconBox icon={step.icon} activeIcon={activeStep === index}/>}
                     optional={
-                      <Typography variant="body2" color="grey.300">
+                      <Typography variant="body2" color="grey.200">
                         {step.description}
                       </Typography>
                     }
@@ -191,7 +198,7 @@ const SignupPage = () => {
               alt={`Image ${index + 1}`}
               style={{
                 position: 'absolute',
-                width: '100%',
+                width: index === 0 || 1 ? '120%': '110%',
                 height: '100%',
                 objectFit: 'cover',
                 opacity: activeStep === index ? 1 : 0,
@@ -211,7 +218,7 @@ const SignupPage = () => {
               width: '100%',
               height: '100%',
               background:
-                ' linear-gradient(145deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
+                ' linear-gradient(145deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 40%)',
               pointerEvents: 'none',
             }}
           />

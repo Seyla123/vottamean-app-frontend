@@ -27,12 +27,14 @@ import EmailSentIcon from '../../assets/icon/email-sent.svg';
 // Validator
 import { ForgotPasswordValidator } from '../../validators/validationSchemas';
 import StyledButton from '../../components/common/StyledMuiButton';
+import InputField from '../../components/common/InputField';
 
 const ForgotPasswordPage = () => {
   const dispatch = useDispatch();
   const [isEmailSent, setIsEmailSent] = useState(false);
   // Hook form setup with Yup validation
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -115,7 +117,15 @@ const ForgotPasswordPage = () => {
                 subTitle={`Enter your email, and we'll send you instructions to reset your password.`}
               />
               {/* EMAIL INPUT */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <InputField
+                name="email"
+                control={control}
+                label="Email"
+                placeholder="Enter your email"
+                errors={errors}
+                icon={Mail}
+              />
+              {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography variant="body2" fontWeight="bold">
                   Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
                 </Typography>
@@ -138,7 +148,7 @@ const ForgotPasswordPage = () => {
                     },
                   }}
                 />
-              </Box>
+              </Box> */}
               <StyledButton
                 variant="contained"
                 fullWidth

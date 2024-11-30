@@ -472,8 +472,8 @@ export const studentValidationSchema = yup.object({
     // Transform the value before validation
     .required('Gender is required')
     .oneOf(
-      ['Male', 'Female', 'Other'],
-      'Gender must be either Male, Female, or Other',
+      ['Male', 'Female'],
+      'Gender must be either Male or Female',
     ),
   class_id: yup.number().required('Class is required'),
   dob: yup

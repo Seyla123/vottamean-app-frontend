@@ -84,6 +84,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             }}
           >
             <InputField
+              required={true}
               name="first_name"
               control={control}
               label="First Name"
@@ -93,6 +94,7 @@ const PersonalDetailsForm = ({ handleNext, handleBack, handleFormChange }) => {
             />
 
             <InputField
+              required={true}
               name="last_name"
               control={control}
               label="Last Name"

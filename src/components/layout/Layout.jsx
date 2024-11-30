@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 import { useLogoutMutation } from '../../services/authApi';
-import { useGetUserProfileQuery } from '../../services/userApi';
+import { useCheckAuthQuery } from '../../services/authApi';
 import { logout as logoutAction } from '../../store/slices/authSlice';
 
 import { teacherSiteNavigation, navigation } from '../../data/navigation';
@@ -28,15 +28,17 @@ const Layout = ({ teacherSite, adminSite }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-
-  const { data: userDataProfile, isSuccess } = useGetUserProfileQuery();
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isSuccess && userDataProfile) {
-      const transformedData = getUserProfileDataLayout(userDataProfile);
+    if ( user) {
+      const userAuth = {
+        data: user
+      }
+      const transformedData = getUserProfileDataLayout(userAuth);
       setUserData(transformedData);
     }
-  }, [isSuccess, userDataProfile]);
+  }, [user]);
 
 
   const [logout] = useLogoutMutation();

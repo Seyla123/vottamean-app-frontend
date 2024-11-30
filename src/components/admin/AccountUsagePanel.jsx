@@ -22,6 +22,7 @@ import NoSubscriptionIamge from '../../assets/images/online-pay.png';
 import CancelSubscription from './CancelSubscription';
 import { useGetPaymentQuery } from '../../services/paymentApi';
 import { formatDate } from '../../utils/formatHelper';
+import LoadingCircle from '../loading/LoadingCircle';
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
   borderRadius: 5,
@@ -39,7 +40,6 @@ const AccountUsagePanel = ({
   isSubscriptionActive,
   setValue,
 }) => {
-
   const [subscritionDetails, setSubscritionDetails] = useState({});
 
   const { data, isLoading, isSuccess, isError } = useGetPaymentQuery();
@@ -48,60 +48,71 @@ const AccountUsagePanel = ({
     if (data) {
       setSubscritionDetails(data.data.subscription);
     }
-  }, [data, isLoading])
-
-
+  }, [data, isLoading]);
 
   const activePlan = plans.find(
     (plan) => plan.type.toLowerCase() === currentSubscription,
   );
-
 
   return (
     <Box>
       <Typography variant="h5" py={4} fontWeight={'bold'}>
         Account Usage
       </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} md={8}>
-          {currentSubscription === 'None' ?
-            <NoSubscription setValue={setValue} />
-            :
-            <UsageCard activePlan={activePlan} setValue={setValue} subscritionDetails={subscritionDetails} />}
+      {isLoading  ? <LoadingCircle /> :
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} md={8}>
+            {currentSubscription === 'None' ? (
+              <NoSubscription setValue={setValue} />
+            ) : (
+              <UsageCard
+                activePlan={activePlan}
+                setValue={setValue}
+                subscritionDetails={subscritionDetails}
+              />
+            )}
+          </Grid>
+          <Grid item xs={12} sm={12} md={4}>
+            <Stack spacing={3}>
+              {activePlan && (
+                <SubcriptionCard
+                  currentPlane={subscritionDetails?.planType}
+                  startDate={subscritionDetails?.startDate}
+                  expireDate={subscritionDetails?.endDate}
+                />
+              )}
+              <Card sx={shadow}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    You need some help to know the right plan that fits your
+                    needs?
+                    <br />
+                    Please let our support team answer you.
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'flex-end' }}>
+                  <StyledButton
+                    size="small"
+                    onClick={() =>
+                      window.location.assign('mailto:vottamean.app@gmail.com')
+                    }
+                  >
+                    Contact Our Support
+                  </StyledButton>
+                </CardActions>
+              </Card>
+            </Stack>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={12} md={4}>
-          <Stack spacing={3}>
-            {activePlan && <SubcriptionCard currentPlane={subscritionDetails?.planType} startDate={subscritionDetails?.startDate} expireDate={subscritionDetails?.endDate} />}
-            <Card sx={shadow}>
-              <CardContent>
-                <Typography variant="body1" gutterBottom>
-                  You need some help to know the right plan that fits your
-                  needs?
-                  <br />
-                  Please let our support team answer you.
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <StyledButton
-                  size="small"
-                  onClick={() => window.location.assign('mailto:vottamean.app@gmail.com')}
-                >
-                  Contact Our Support
-                </StyledButton>
-              </CardActions>
-            </Card>
-          </Stack>
-        </Grid>
-      </Grid>
+      }
     </Box>
   );
 };
 
 const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  const studentPercentage = subscritionDetails?.percentageStudentLimit;
-  const teacherPercentage = subscritionDetails?.percentageTeacherLimit;
-
+  const studentPercentage = subscritionDetails?.percentageStudentLimit || 0;
+  const teacherPercentage = subscritionDetails?.percentageTeacherLimit || 0;
 
   const visibleFeatures = showAllFeatures
     ? activePlan?.features
@@ -119,7 +130,11 @@ const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
           <Typography variant="h6" gutterBottom>
             Your Plan Details
           </Typography>
-          <Chip label={subscritionDetails?.planType} size="small" color="primary" />
+          <Chip
+            label={subscritionDetails?.planType}
+            size="small"
+            color="primary"
+          />
         </Box>
         <Grid container spacing={2} mt={2}>
           {visibleFeatures?.map((feature, index) => (
@@ -164,7 +179,8 @@ const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
               value={studentPercentage}
             />
             <Typography variant="body2" textAlign="right" mt={3}>
-              {subscritionDetails?.currentStudent}  / {subscritionDetails?.limitStudent} Students
+              {subscritionDetails?.currentStudent} /{' '}
+              {subscritionDetails?.limitStudent} Students
             </Typography>
           </Box>
           <Box mt={3}>
@@ -176,7 +192,8 @@ const UsageCard = ({ activePlan, setValue, subscritionDetails }) => {
               value={teacherPercentage}
             />
             <Typography variant="body2" textAlign="right" mt={3}>
-              {subscritionDetails?.currentTeacher} / {subscritionDetails?.limitTeacher} Teachers
+              {subscritionDetails?.currentTeacher} /{' '}
+              {subscritionDetails?.limitTeacher} Teachers
             </Typography>
           </Box>
           {teacherPercentage < 80 && (
@@ -254,9 +271,15 @@ const SubcriptionCard = ({ currentPlane, startDate, expireDate }) => {
         <Stack>
           <Typography variant="h6">Subcription</Typography>
           <Box>
-            <Typography variant="body2" textTransform={'capitalize'}>Current Plan : {currentPlane}</Typography>
-            <Typography variant="body2">Start Date : {formatDate(startDate)} </Typography>
-            <Typography variant="body2">Expires Date : {formatDate(expireDate)}</Typography>
+            <Typography variant="body2" textTransform={'capitalize'}>
+              Current Plan : {currentPlane}
+            </Typography>
+            <Typography variant="body2">
+              Start Date : {formatDate(startDate)}{' '}
+            </Typography>
+            <Typography variant="body2">
+              Expires Date : {formatDate(expireDate)}
+            </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
@@ -269,13 +292,11 @@ const SubcriptionCard = ({ currentPlane, startDate, expireDate }) => {
           <Stack gap={1}>
             <Typography variant="body1" textAlign={'center'}>
               Your subscription is currently <b>active</b>.
-              <br /> You can cancel anytime.
+              <br /> {currentPlane !== 'basic' && 'You can cancel anytime.'}
             </Typography>
-            <CancelSubscription />
+            {currentPlane !== 'basic' && <CancelSubscription />}
           </Stack>
         </Stack>
-
-
       </CardContent>
     </Card>
   );
