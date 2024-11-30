@@ -13,8 +13,6 @@ import { setSnackbar } from '../../store/slices/uiSlice';
 import {
   Box,
   Typography,
-  TextField,
-  InputAdornment,
   CircularProgress,
 } from '@mui/material';
 
