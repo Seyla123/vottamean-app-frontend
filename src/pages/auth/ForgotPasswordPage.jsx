@@ -123,6 +123,7 @@ const ForgotPasswordPage = () => {
                 label="Email"
                 placeholder="Enter your email"
                 errors={errors}
+                required={true}
                 icon={Mail}
               />
               {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
