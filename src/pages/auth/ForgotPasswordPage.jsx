@@ -126,30 +126,6 @@ const ForgotPasswordPage = () => {
                 required={true}
                 icon={Mail}
               />
-              {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Typography variant="body2" fontWeight="bold">
-                  Email <span style={{ color: 'red', marginLeft: 1 }}>*</span>
-                </Typography>
-                <TextField
-                  id="email"
-                  variant="outlined"
-                  fullWidth
-                  type="email"
-                  {...register('email')}
-                  error={!!errors.email}
-                  helperText={errors.email ? errors.email.message : ''}
-                  placeholder="Enter your email"
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Mail size={18} />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-              </Box> */}
               <StyledButton
                 variant="contained"
                 fullWidth
