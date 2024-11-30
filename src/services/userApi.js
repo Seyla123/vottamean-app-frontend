@@ -21,7 +21,7 @@ export const userApi = baseApi.injectEndpoints({
         body: formData,
         credentials: 'include',
       }),
-      invalidatesTags: ['Users'],
+      invalidatesTags: ['Auth'],
     }),
 
     // Delete a user by ID
