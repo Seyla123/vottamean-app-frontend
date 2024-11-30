@@ -92,6 +92,7 @@ const LoginForm = () => {
           placeholder="Enter your email"
           errors={errors}
           icon={Mail}
+          required={true}
         />
 
         {/* PASSWORD INPUT */}
